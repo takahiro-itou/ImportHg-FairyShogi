@@ -1,0 +1,14 @@
+
+syntax: glob
+
+syntax: regexp
+Makefile$
+Makefile\.in$
+\.h\.in$
+^\.Config/
+^Referenes$
+^aclocal\.m4$
+^autom4te\.cache\/
+^configure$
+Tests/Makefile.am
+
