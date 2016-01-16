@@ -34,6 +34,7 @@ dnl
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_SRCDIR([Makefile.am])
+AC_CONFIG_HEADER([Include/.FairyShogi.Config.h:Include/FairyShogi/.Config/Config.h.in])
 
 dnl
 dnl   デフォルトのコンパイルオプション
@@ -90,6 +91,10 @@ dnl
 
 AC_CONFIG_FILES([
     Makefile
+])
+
+AC_CONFIG_FILES([
+    Include/FairyShogi/.Config/ConfiguredFairyShogi.h
 ])
 
 dnl

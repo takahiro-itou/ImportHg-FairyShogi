@@ -1,0 +1,35 @@
+//  -*-  coding: utf-8; mode: c++  -*-  //
+/*************************************************************************
+**                                                                      **
+**                      ---  Fairy Shogi Game  ---                      **
+**                                                                      **
+**                                                                      **
+**          Copyright (C), 2015-2016, Takahiro Itou                     **
+**          All Rights Reserved.                                        **
+**                                                                      **
+*************************************************************************/
+
+/**
+**      スクリプトによる設定値が書き込まれるヘッダファイル。
+**
+**      @file       .Config/ConfiguredFairyShogi.h.in
+**/
+
+#if !defined( FAIRYSHOGI_CONFIG_INCLUDED_CONFIGURED_FAIRY_SHOGI_H )
+#    define   FAIRYSHOGI_CONFIG_INCLUDED_CONFIGURED_FAIRY_SHOGI_H
+
+//========================================================================
+//
+//    Name Space.
+//
+
+/**
+**    名前空間。
+**/
+
+#define     FAIRYSHOGI_NAMESPACE        @FAIRYSHOGI_CNF_NAMESPACE@
+
+#define     FAIRYSHOGI_NAMESPACE_BEGIN  namespace  FAIRYSHOGI_NAMESPACE  {
+#define     FAIRYSHOGI_NAMESPACE_END    }
+
+#endif
