@@ -1,0 +1,4 @@
+
+/*  Linker Script.  */
+INPUT( AS_NEEDED(Game/libfsgGame.staticd.a) )
+
