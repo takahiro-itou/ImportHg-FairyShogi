@@ -13,7 +13,7 @@ INCLIBDIR       =  $(INCTOPDIR)/.Config
 
 CNF_SRCTOPDIR   =  @top_builddir@
 CNF_INCTOPDIR   =  $(CNF_SRCTOPDIR)/Include/FairyShogi
-CNF_INCLIBDIR   =  $(CNF_INCLIBDIR)/.Config
+CNF_INCLIBDIR   =  $(CNF_INCTOPDIR)/.Config
 
 ##
 ##    List of Source and Header Files.
@@ -24,7 +24,7 @@ NOINSTHEADERS        =
 INCLIBHEADERS        =
 
 NODISTHEADERS        =  \
-        $(INCLIBDIR)/ConfiguredFairyShogi.h
+        $(CNF_INCLIBDIR)/ConfiguredFairyShogi.h
 
 ##
 ##    Compile and Link Options.

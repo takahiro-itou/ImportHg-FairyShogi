@@ -81,6 +81,22 @@ AC_SUBST(FAIRYSHOGI_CNF_NAMESPACE)
 
 dnl----------------------------------------------------------------
 dnl
+dnl   外部パッケージの追加
+dnl   Additional Packages.
+dnl
+
+AC_ARG_WITH(
+    [cppunit],
+    AC_HELP_STRING([--with-cppunit=PATH], [path to cppunit]),
+    [myac_with_cppunit_val=${withval}],
+    [myac_with_cppunit_val='yes'])
+
+AM_CONDITIONAL(
+    [AMCNF_CPPUNIT_ENABLED],
+    [test  "X${myac_with_cppunit_val}Y" = "XyesY"])
+
+dnl----------------------------------------------------------------
+dnl
 dnl   Outputs.
 dnl   出力ファイルを設定する。
 dnl
@@ -93,6 +109,7 @@ AC_CONFIG_FILES([
     Makefile
     Bin/Makefile
     Lib/Makefile
+    Lib/.Config/Makefile
 ])
 
 AC_CONFIG_FILES([
@@ -102,6 +119,10 @@ AC_CONFIG_FILES([
 dnl
 dnl   Test Festures.
 dnl
+
+AC_CONFIG_FILES([
+    Lib/Tests/Makefile
+])
 
 dnl
 dnl   指定したファイルを生成する。
