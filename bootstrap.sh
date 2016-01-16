@@ -6,3 +6,7 @@ mkdir  -p  .Config  \
   &&  automake  --add-missing  --copy  --foreign  \
   &&  autoconf
 
+(cd  .Config  \
+  &&  chmod  u+rx  compile  depcomp  install-sh  missing
+)
+
