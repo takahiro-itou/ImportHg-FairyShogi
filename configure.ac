@@ -91,6 +91,8 @@ dnl
 
 AC_CONFIG_FILES([
     Makefile
+    Bin/Makefile
+    Lib/Makefile
 ])
 
 AC_CONFIG_FILES([
