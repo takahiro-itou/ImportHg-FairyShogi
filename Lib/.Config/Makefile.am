@@ -7,41 +7,83 @@
 ##    List of Directories.
 ##
 
-SRCTOPDIR       =  @top_srcdir@
-INCTOPDIR       =  $(SRCTOPDIR)/Include/FairyShogi
-INCLIBDIR       =  $(INCTOPDIR)/.Config
+SRCTOPDIR               =  @top_srcdir@
+INCTOPDIR               =  $(SRCTOPDIR)/Include
+INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
+INCLIBDIR               =  $(INCPKGDIR)/.Config
 
-CNF_SRCTOPDIR   =  @top_builddir@
-CNF_INCTOPDIR   =  $(CNF_SRCTOPDIR)/Include/FairyShogi
-CNF_INCLIBDIR   =  $(CNF_INCTOPDIR)/.Config
+CNF_SRCTOPDIR           =  @top_builddir@
+CNF_INCTOPDIR           =  $(CNF_SRCTOPDIR)/Include
+CNF_INCPKGDIR           =  $(CNF_INCTOPDIR)/FairyShogi
+CNF_INCLIBDIR           =  $(CNF_INCPKGDIR)/.Config
 
 ##
 ##    List of Source and Header Files.
 ##
 
-NOINSTHEADERS        =
+EXTRALIBSOURCES         =
+EXTRANOINSTHEADERS      =
+EXTRALIBHEADERS         =
 
-INCLIBHEADERS        =
+LIBCXXSOURCEFILES       =  \
+        $(EXTRALIBSOURCES)
 
-NODISTHEADERS        =  \
+LIBINSTANTIATIONS       =
+LIBCXXINLINEFILES       =
+
+LIBNOINSTHEADERS        =  \
+        $(EXTRANOINSTHEADERS)
+
+INCLIBHEADERS           =  \
+        $(EXTRALIBHEADERS)
+
+LIBNODISTHEADERS        =  \
         $(CNF_INCLIBDIR)/ConfiguredFairyShogi.h
+
+LIBINSTALLSOURCES       =
+LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+
+##
+##    List of Libraries.
+##
+
+LIB_STATIC              =
+LIB_SHARED              =
+
+##
+##    Internal Libraries.
+##
 
 ##
 ##    Compile and Link Options.
 ##
 
+AM_CPPFLAGS             =  -I$(INCTOPDIR)
+AM_CFLAGS               =
+AM_CXXFLAGS             =
+
 ##
 ##    List of Installs.
 ##
 
-fairyshogi_includedir              =  $(includedir)/FairyShogi
-fairyshogi_include_HEADERS         =  $(INCLIBHEADERS)
+fshogi_includedir               =  $(includedir)/FairyShogi
+fshogi_libdir                   =  $(libdir)
+fshogi_config_includedir        =  $(fshogi_includedir)/.Config
+fshogi_config_libdir            =  $(fshogi_libdir)/.Config
 
-dist_noinst_HEADERS                =  $(NOINSTHEADERS)
-nodist_fairyshogi_include_HEADERS  =  $(NODISTHEADERS)
+fshogi_config_include_HEADERS   =  $(INCLIBHEADERS)
+dist_noinst_HEADERS             =  $(LIBNOINSTHEADERS)
 
-fairyshogi_libdir                  =  $(libdir)
-fairyshogi_config_libdir           =  $(dshogi_libdir)/.Config
-fairyshogi_config_lib_LTLIBRARIES  =
-fairyshogi_config_lib_LIBRARIES    =
+fshogi_config_lib_LTLIBRARIES   =  $(LIB_SHARED)
+fshogi_config_lib_LIBRARIES     =  $(LIB_STATIC)
+
+##
+##    List of (No Dist) Installs.
+##
+
+nodist_fshogi_config_include_HEADERS    =  $(LIBNODISTHEADERS)
+
+##
+##    Build Libraries.
+##
 
