@@ -113,6 +113,8 @@ AC_CONFIG_FILES([
     Lib/Makefile
     Lib/.Config/Makefile
     Lib/Common/Makefile
+    Lib/Game/Makefile
+    Lib/Interface/Makefile
 ])
 
 AC_CONFIG_FILES([
@@ -128,6 +130,9 @@ dnl   Test Festures.
 dnl
 
 AC_CONFIG_FILES([
+    Lib/Common/Tests/Makefile
+    Lib/Game/Tests/Makefile
+    Lib/Interface/Tests/Makefile
     Lib/Tests/Makefile
 ])
 

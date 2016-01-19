@@ -3,10 +3,11 @@
 ##    ライブラリのビルドとインストール。
 ##
 
-
 ##
 ##    List of Directories.
 ##
+
+SUBDIRS                 =  .  Tests
 
 SRCTOPDIR               =  @top_srcdir@
 INCTOPDIR               =  $(SRCTOPDIR)/Include
