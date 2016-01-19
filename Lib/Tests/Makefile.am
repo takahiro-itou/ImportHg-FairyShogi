@@ -23,7 +23,7 @@ TESTEE_SRCDIR           =  @srcdir@/..
 
 TESTDRIVERS             =
 LIBNOINSTHEADERS        =
-EXTRADRIVERS            =
+EXTRATESTDRIVERS        =
 LDTESTDRIVERS           =
 TESTCPPFLAGS            =
 TESTLDFLAGS             =
@@ -40,7 +40,7 @@ include  @srcdir@/TestConf.mak
 
 TESTDRIVERS             +=  TestDriver.cpp
 LIBNOINSTHEADERS        +=  TestDriver.h
-EXTRADRIVERS            +=
+EXTRATESTDRIVERS        +=
 LDTESTDRIVERS           +=
 
 ##
