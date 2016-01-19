@@ -31,7 +31,9 @@ dnl
 dnl   プロジェクトの基本設定。
 dnl
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE(
+    [serial-tests]
+)
 
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADER([Include/.FairyShogi.Config.h:Include/FairyShogi/.Config/Config.h.in])
