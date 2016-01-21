@@ -110,6 +110,7 @@ dnl
 AC_CONFIG_FILES([
     Makefile
     Bin/Makefile
+    Bin/Win32/Makefile
     Lib/Makefile
     Lib/.Config/Makefile
     Lib/Common/Makefile
