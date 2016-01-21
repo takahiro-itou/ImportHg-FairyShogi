@@ -62,7 +62,22 @@ dnl
 dnl   Check Header Files.
 dnl
 
-AC_CHECK_HEADERS([stdint.h])
+AC_CHECK_HEADER([stdint.h])
+
+AC_CHECK_HEADER(
+    [windows.h],
+    [fsgcnf_have_windows_h=TRUE],
+    [fsgcnf_have_windows_h=FALSE]
+)
+
+AM_CONDITIONAL(
+    FAIRYSHOGI_AMCNF_ENABLE_WINDOWS_H,
+    test  "x${fsgcnf_have_windows_h}" = 'xTRUE')
+if  test  "x${fsgcnf_have_windows_h}" = 'xTRUE' ; then
+  AC_DEFINE(
+      [HAVE_WINDOWS_H], [1],
+      [Define to 1 if you have the <windows.h> header file.])
+fi
 
 dnl
 dnl   Check Libraries.

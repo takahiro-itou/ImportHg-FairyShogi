@@ -7,7 +7,12 @@
 ##    List of Directories.
 ##
 
-SUBDIRS                 =  .  Win32
+SUBMODULES              =
+if  FAIRYSHOGI_AMCNF_ENABLE_WINDOWS_H
+SUBMODULES              +=  Win32
+endif
+
+SUBDIRS                 =  .  $(SUBMODULES)
 
 SRCTOPDIR               =  @top_srcdir@
 INCTOPDIR               =  $(SRCTOPDIR)/Include
