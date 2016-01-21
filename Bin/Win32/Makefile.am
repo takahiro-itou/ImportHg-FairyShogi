@@ -7,7 +7,7 @@
 ##    List of Directories.
 ##
 
-SUBDIRS                 =  .  Tests
+SUBDIRS                 =  .
 
 SRCTOPDIR               =  @top_srcdir@
 INCTOPDIR               =  $(SRCTOPDIR)/Include
