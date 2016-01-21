@@ -23,6 +23,7 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
+        GameController.cpp  \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =

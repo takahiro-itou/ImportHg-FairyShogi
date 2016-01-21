@@ -10,19 +10,12 @@
 *************************************************************************/
 
 /**
-**      An Interface of GameController class.
+**      An Implementation of GameController class.
 **
-**      @file       Interface/GameController.h
+**      @file       Interface/GameController.cpp
 **/
 
-#if !defined( FAIRYSHOGI_INTERFACE_INCLUDED_GAME_CONTROLLER_H )
-#    define   FAIRYSHOGI_INTERFACE_INCLUDED_GAME_CONTROLLER_H
-
-#include    "FairyShogi/Common/FairyShogiTypes.h"
-
-#include    <iosfwd>
-#include    <string>
-#include    <vector>
+#include    "FairyShogi/Interface/GameController.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  INTERFACE  {
@@ -31,33 +24,29 @@ namespace  INTERFACE  {
 //
 //    GameController  class.
 //
-/**
-**    ゲームの進行を管理するクラス。
-**/
-
-class  GameController
-{
-public:
 
 //========================================================================
 //
 //    Constructor(s) and Destructor.
 //
-public:
 
-    //----------------------------------------------------------------
-    /**   インスタンスを初期化する
-    **  （デフォルトコンストラクタ）。
-    **
-    **/
-    GameController();
+//----------------------------------------------------------------
+//    インスタンスを初期化する
+//  （デフォルトコンストラクタ）。
+//
 
-    //----------------------------------------------------------------
-    /**   インスタンスを破棄する
-    **  （デストラクタ）。
-    **
-    **/
-    virtual  ~GameController();
+GameController::GameController()
+{
+}
+
+//----------------------------------------------------------------
+//    インスタンスを破棄する
+//  （デストラクタ）。
+//
+
+GameController::~GameController()
+{
+}
 
 //========================================================================
 //
@@ -94,23 +83,6 @@ public:
 //    For Internal Use Only.
 //
 
-//========================================================================
-//
-//    Member Variables.
-//
-
-//========================================================================
-//
-//    Other Features.
-//
-private:
-
-public:
-    //  テストクラス。  //
-    friend  class   GameControllerTest;
-};
-
 }   //  End of namespace  INTERFACE
 FAIRYSHOGI_NAMESPACE_END
 
-#endif
