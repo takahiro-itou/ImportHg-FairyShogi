@@ -34,6 +34,7 @@ LIBNOINSTHEADERS        =  \
 
 INCLIBHEADERS           =  \
         $(INCLIBDIR)/GameController.h  \
+        $(INCLIBDIR)/ViewBuffer.h      \
         $(EXTRALIBHEADERS)
 
 LIBNODISTHEADERS        =

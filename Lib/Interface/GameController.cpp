@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Interface/GameController.h"
 
+#include    "FairyShogi/Interface/ViewBuffer.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  INTERFACE  {
 
