@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Interface/GameController.h"
+
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
 #    define     STRICT
 #    define     WIN32_LEAN_AND_MEAN
@@ -33,6 +35,8 @@
 #    define     UTL_HELP_UNUSED_ARGUMENT(var)   (void)(var)
 #endif
 
+using   namespace   FAIRYSHOGI_NAMESPACE;
+
 namespace  {
 
 constexpr   char
@@ -44,7 +48,7 @@ g_szClassName[] = "FairyShogiWindow";
 
 constexpr   const   char  *
 s_tblPieceName[]    = {
-    "",  "",
+    "",
     "Pawn ",  "Sil. ",  "Gold ",  "Bis. ",  "Rook ",  "King ",
     "P.Pw ",  "P.Si ",  "P.Bi ",  "P.Rk ",
     "PawnV",  "Sil.V",  "GoldV",  "Bis.V",  "RookV",  "KingV"
@@ -57,7 +61,6 @@ s_tblPieceName[]    = {
 
 constexpr   const   char  *
 s_tblHandName[]     =  {
-    nullptr,
     "P",  "S",  "G",  "B",  "R",  "K",
     "P",  "S",  "G",  "B",  "R",  "K"
 };
@@ -67,10 +70,13 @@ s_tblHandName[]     =  {
 //    ダミー定数。
 //
 
-constexpr   int     POS_NUM_COLS        = 5;
-constexpr   int     POS_NUM_ROWS        = 5;
-constexpr   int     HANDS_WHITE_PAWN    = 0;
-constexpr   int     HANDS_WHITE_KING    = 5;
+constexpr   int     POS_NUM_COLS        =  5;
+constexpr   int     POS_NUM_ROWS        =  5;
+
+constexpr   int     HANDS_BLACK_PAWN    =  0;
+constexpr   int     HANDS_BLACK_KING    =  5;
+constexpr   int     HANDS_WHITE_PAWN    =  6;
+constexpr   int     HANDS_WHITE_KING    = 11;
 
 
 constexpr   int     BOARD_TOP_OFFSET    = 1;
@@ -94,6 +100,8 @@ int     g_selX;
 int     g_selY;
 int     g_movX;
 int     g_movY;
+
+INTERFACE::GameController   gc;
 
 }   //  End of (Unnamed) namespace.
 
@@ -308,6 +316,66 @@ onPaint(
         ::DeleteObject(hbrBack);
     }
 
+    INTERFACE::ViewBuffer   vb;
+    memset(&vb, 0, sizeof(vb));
+    gc.writeToViewBuffer(vb);
+
+    //  後手の持ち駒を表示する。    //
+    int     tx  = 0;
+    for ( int c = HANDS_WHITE_PAWN; c < HANDS_WHITE_KING; ++ c, ++ tx )
+    {
+        const  THandCount   numHand = vb.nHands[c];
+        if ( numHand <= 0 ) { continue; }
+
+        sx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = TOP_MARGIN;
+        if ( (g_selY != 0)
+                || (g_selX != tx + BOARD_LEFT_OFFSET) )
+        {
+            ::Rectangle(hDC, sx, sy, sx + SQUARE_WIDTH, sy + SQUARE_HEIGHT);
+        }
+        sx  += (SQUARE_WIDTH  / 4);
+        sy  += (SQUARE_HEIGHT / 2);
+        const  char  *  pn  = s_tblHandName[c];
+        ::TextOut(hDC, sx, sy, pn, strlen(pn));
+    }
+
+    //  盤上にある駒を表示する。    //
+    for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
+        for ( int x = 0; x < POS_NUM_COLS; ++ x ) {
+            sx  = (x * SQUARE_WIDTH) + LEFT_MARGIN;
+            sy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
+            dx  = sx + (SQUARE_WIDTH  / 4);
+            dy  = sy + (SQUARE_HEIGHT / 2);
+            const  int          pi  = (y * POS_NUM_COLS) + x;
+            const  PieceIndex   dp  = vb.piBoard[pi];
+            if ( dp == 0 ) { continue; }
+
+            const  char  *      pn  = s_tblPieceName[dp];
+            ::TextOut(hDC, dx, dy, pn, strlen(pn));
+        }
+    }
+
+    //  先手の持ち駒を表示する。    //
+    tx  = 0;
+    for ( int c = HANDS_BLACK_PAWN; c < HANDS_WHITE_KING; ++ c, ++ tx )
+    {
+        const  THandCount   numHand = vb.nHands[c];
+        if ( numHand <= 0 ) { continue; }
+
+        sx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = TOP_MARGIN;
+        if ( (g_selY != POS_NUM_ROWS + BOARD_TOP_OFFSET)
+                || (g_selX != tx + BOARD_LEFT_OFFSET) )
+        {
+            ::Rectangle(hDC, sx, sy, sx + SQUARE_WIDTH, sy + SQUARE_HEIGHT);
+        }
+        sx  += (SQUARE_WIDTH  / 4);
+        sy  += (SQUARE_HEIGHT / 2);
+        const  char  *  pn  = s_tblHandName[c];
+        ::TextOut(hDC, sx, sy, pn, strlen(pn));
+    }
+
     return ( 0 );
 }
 
@@ -387,12 +455,6 @@ WinMain(
     HWND        hWnd;
     WNDCLASSEX  wcEx;
 
-    //  グローバル変数を初期化する。    //
-    g_selX  = -1;
-    g_selY  = -1;
-    g_movX  = -1;
-    g_movY  = -1;
-
     //  ウィンドウクラスを登録する。    //
     wcEx.cbSize         = sizeof(WNDCLASSEX);
     wcEx.style          = CS_HREDRAW | CS_VREDRAW;
@@ -436,6 +498,14 @@ WinMain(
         return ( 0 );
     }
 
+    //  グローバル変数を初期化する。    //
+    gc.resetGame();
+    g_selX  = -1;
+    g_selY  = -1;
+    g_movX  = -1;
+    g_movY  = -1;
+
+    //  ウィンドウを表示する。  //
     ::ShowWindow(hWnd, nCmdShow);
     ::UpdateWindow(hWnd);
 
