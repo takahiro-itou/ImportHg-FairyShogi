@@ -55,5 +55,5 @@ bin_PROGRAMS            =  \
 ##
 
 FairyShogiWin32_SOURCES   =  FairyShogiWin32.cpp
-FairyShogiWin32_LDADD     =  -lfsgInterface
+FairyShogiWin32_LDADD     =  -lfsgInterface  -lGdi32
 
