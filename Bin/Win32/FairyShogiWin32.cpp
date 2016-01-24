@@ -271,6 +271,19 @@ onPaint(
         ::LineTo  (hDC, dx, dy);
     }
 
+    //  何らかの理由で、マウスボタンが離された事実が、  //
+    //  メインウィンドウに通知されなかった時の処理。    //
+    //  例えば、マウスボタンを押して、AlT+Tab キーで    //
+    //  別のウィンドウに切り替え、ボタンを離した等。    //
+    if ( (g_selX >= 0) && (g_selY >= 0) ) {
+        if ( ::GetCapture() != hWnd ) {
+            g_selX  = -1;
+            g_selY  = -1;
+            g_movX  = -1;
+            g_movY  = -1;
+        }
+    }
+
     //  選択しているマスがあれば強調表示。  //
     if ( (g_selX >= 0) && (g_selY >= 0) ) {
         HBRUSH  hbrBack = ::CreateSolidBrush( RGB(255, 255, 0) );
