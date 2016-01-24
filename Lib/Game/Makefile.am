@@ -23,6 +23,7 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
+        BoardState.cpp      \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =
