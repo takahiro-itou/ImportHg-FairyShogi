@@ -139,9 +139,10 @@ onLButtonDown(
             g_movY  = -1;
             ::InvalidateRect(hWnd, NULL, TRUE);
             return ( 0 );
+        } else {
+            g_selX  = mx;
+            g_selY  = my;
         }
-        g_selX  = mx;
-        g_selY  = my;
     } else if ( (VIEW_NUM_COLS) <= mx ) {
         g_selX  = -1;
         g_selY  = -1;
@@ -153,6 +154,10 @@ onLButtonDown(
     g_movX  = -1;
     g_movY  = -1;
     ::InvalidateRect(hWnd, NULL, TRUE);
+
+    if ( (g_selX >= 0) && (g_selY >= 0) ) {
+        ::SetCapture(hWnd);
+    }
 
     return ( 0 );
 }
@@ -170,6 +175,8 @@ onLButtonUp(
         const   UINT    yPos)
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
+
+    ::ReleaseCapture();
 
     if ( (g_selX < 0) || (g_selY < 0) ) {
         return ( 0 );
@@ -366,6 +373,12 @@ WinMain(
 {
     HWND        hWnd;
     WNDCLASSEX  wcEx;
+
+    //  グローバル変数を初期化する。    //
+    g_selX  = -1;
+    g_selY  = -1;
+    g_movX  = -1;
+    g_movY  = -1;
 
     //  ウィンドウクラスを登録する。    //
     wcEx.cbSize         = sizeof(WNDCLASSEX);
