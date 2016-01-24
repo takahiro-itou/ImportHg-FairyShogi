@@ -65,12 +65,18 @@ BoardState::encodeMoveAction(
         const  PosRow       yNewRow,
         const  PieceIndex   flgProm)  const
 {
-    (void)(xOldCol);
-    (void)(yOldRow);
-    (void)(xNewCol);
-    (void)(yNewRow);
-    (void)(flgProm);
-    return ( ActionData() );
+    const  InternState  &  curStat  = (this->m_icState);
+    const  PieceIndex   tmp = curStat.m_bsField[yOldRow][xOldCol];
+
+    ActionData  act = {
+        xNewCol,    yNewRow,
+        xOldCol,    yOldRow,
+        curStat.m_bsField[yNewRow][xNewCol],
+        tmp,
+        tmp,
+        FIELD_EMPTY_SQUARE
+    };
+    return ( act );
 }
 
 //----------------------------------------------------------------
@@ -97,7 +103,50 @@ ErrCode
 BoardState::playForward(
         const  ActionData   &actFwd)
 {
-    (void)(actFwd);
+    InternState  & icSt = (this->m_icState);
+
+    constexpr   PieceIndex  piCatchTable[]  = {
+        FIELD_EMPTY_SQUARE,
+
+        HAND_WHITE_PAWN,
+        HAND_WHITE_SILVER,
+        HAND_WHITE_GOLD,
+        HAND_WHITE_BISHOP,
+        HAND_WHITE_ROOK,
+        HAND_WHITE_KING,
+        HAND_WHITE_PAWN,
+        HAND_WHITE_SILVER,
+        HAND_WHITE_BISHOP,
+        HAND_WHITE_ROOK,
+
+        HAND_BLACK_PAWN,
+        HAND_BLACK_SILVER,
+        HAND_BLACK_GOLD,
+        HAND_BLACK_BISHOP,
+        HAND_BLACK_ROOK,
+        HAND_BLACK_KING,
+        HAND_BLACK_PAWN,
+        HAND_BLACK_SILVER,
+        HAND_BLACK_BISHOP,
+        HAND_BLACK_ROOK
+    };
+
+    //  移動元のマスを空きマスにする。  //
+    icSt.m_bsField[actFwd.yOldRow][actFwd.xOldCol]  = FIELD_EMPTY_SQUARE;
+
+    //  移動先に指定した駒を書き込む。  //
+    icSt.m_bsField[actFwd.yNewRow][actFwd.xNewCol]  = actFwd.fpAfter;
+
+    //  取った相手の駒を持ち駒にする。  //
+    if ( actFwd.fpCatch != FIELD_EMPTY_SQUARE ) {
+        const  PieceIndex   piHand  = piCatchTable[actFwd.fpCatch];
+        ++  icSt.m_nHands[piHand];
+    }
+
+    //  駒を打つ場合は持ち駒を減らす。  //
+    if ( actFwd.putHand != FIELD_EMPTY_SQUARE ) {
+    }
+
     return ( ERR_FAILURE );
 }
 
@@ -172,6 +221,10 @@ BoardState::copyToViewBuffer(
             const  int  pi  = (yr * POS_NUM_COLS) + (xc);
             bufView.piBoard[pi] = curStat.m_bsField[yr][xc];
         }
+    }
+
+    for ( int hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
+        bufView.nHands[hp]  = curStat.m_nHands[hp];
     }
 
     return ( ERR_FAILURE );
