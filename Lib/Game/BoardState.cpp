@@ -108,7 +108,38 @@ BoardState::playForward(
 ErrCode
 BoardState::resetGameBoard()
 {
-    return ( ERR_FAILURE );
+    return ( resetGameBoard(&(this->m_icState)) );
+}
+
+//----------------------------------------------------------------
+//    盤面を初期状態に設定する。
+//
+
+ErrCode
+BoardState::resetGameBoard(
+        InternState  *  pCurStat)
+{
+    for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
+        for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
+            pCurStat->m_bsField[yr][xc] = FIELD_EMPTY_SQUARE;
+        }
+    }
+
+    pCurStat->m_bsField[0][0]   = FIELD_WHITE_ROOK;
+    pCurStat->m_bsField[0][1]   = FIELD_WHITE_BISHOP;
+    pCurStat->m_bsField[0][2]   = FIELD_WHITE_SILVER;
+    pCurStat->m_bsField[0][3]   = FIELD_WHITE_GOLD;
+    pCurStat->m_bsField[0][4]   = FIELD_WHITE_KING;
+    pCurStat->m_bsField[1][4]   = FIELD_WHITE_PAWN;
+
+    pCurStat->m_bsField[3][0]   = FIELD_BLACK_PAWN;
+    pCurStat->m_bsField[4][0]   = FIELD_BLACK_KING;
+    pCurStat->m_bsField[4][1]   = FIELD_BLACK_GOLD;
+    pCurStat->m_bsField[4][2]   = FIELD_BLACK_SILVER;
+    pCurStat->m_bsField[4][3]   = FIELD_BLACK_BISHOP;
+    pCurStat->m_bsField[4][4]   = FIELD_BLACK_ROOK;
+
+    return ( ERR_SUCCESS );
 }
 
 //========================================================================

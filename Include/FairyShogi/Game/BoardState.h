@@ -42,6 +42,64 @@ class  BoardState
 //
 public:
 
+    enum  {
+        POS_NUM_ROWS    = 5,
+        POS_NUM_COLS    = 5
+    };
+
+    enum  {
+        FIELD_EMPTY_SQUARE,
+
+        FIELD_BLACK_PAWN,
+        FIELD_BLACK_SILVER,
+        FIELD_BLACK_GOLD,
+        FIELD_BLACK_BISHOP,
+        FIELD_BLACK_ROOK,
+        FIELD_BLACK_KING,
+        FIELD_BLACK_PR_PAWN,
+        FIELD_BLACK_PR_SILVER,
+        FIELD_BLACK_HORSE,
+        FIELD_BLACK_DRAGON,
+
+        FIELD_WHITE_PAWN,
+        FIELD_WHITE_SILVER,
+        FIELD_WHITE_GOLD,
+        FIELD_WHITE_BISHOP,
+        FIELD_WHITE_ROOK,
+        FIELD_WHITE_KING,
+        FIELD_WHITE_PR_PAWN,
+        FIELD_WHITE_PR_SILVER,
+        FIELD_WHITE_HORSE,
+        FIELD_WHITE_DRAGON,
+
+        NUM_FIELD_PIECE_TYPES
+    };
+
+    enum  {
+        HAND_BLACK_PAWN,
+        HAND_BLACK_SILVER,
+        HAND_BLACK_GOLD,
+        HAND_BLACK_BISHOP,
+        HAND_BLACK_ROOK,
+        HAND_BLACK_KING,
+
+        HAND_WHITE_PAWN,
+        HAND_WHITE_SILVER,
+        HAND_WHITE_GOLD,
+        HAND_WHITE_BISHOP,
+        HAND_WHITE_ROOK,
+        HAND_WHITE_KING,
+
+        NUM_HAND_TYPES
+    };
+
+    /**   盤面データの内部形式の型。    **/
+    struct  InternState
+    {
+        PieceIndex  m_bsField[POS_NUM_ROWS][POS_NUM_COLS];
+        THandCount  m_nHands [NUM_HAND_TYPES];
+    };
+
     /**   指し手データの内部形式の型。  **/
     struct  ActionData
     {
@@ -135,6 +193,19 @@ public:
     ErrCode
     resetGameBoard();
 
+    //----------------------------------------------------------------
+    /**   盤面を初期状態に設定する。
+    **
+    **  @param[out] pCurStat    盤面データを書き込む領域。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    resetGameBoard(
+            InternState  *  pCurStat);
+
 //========================================================================
 //
 //    Accessors.
@@ -163,6 +234,10 @@ public:
 //
 //    Member Variables.
 //
+private:
+
+    /**   現在の盤面。  **/
+    InternState     m_icState;
 
 //========================================================================
 //
