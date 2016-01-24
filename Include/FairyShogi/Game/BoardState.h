@@ -225,6 +225,21 @@ public:
     copyToViewBuffer(
             INTERFACE::ViewBuffer  &bufView)  const;
 
+    //----------------------------------------------------------------
+    /**   現在の盤面を取得して、表示用バッファにコピーする。
+    **
+    **  @param [in] curStat   現在の盤面データ。
+    **  @param[out] bufView   表示用バッファ。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    copyToViewBuffer(
+            const  InternState     &curStat,
+            INTERFACE::ViewBuffer  &bufView);
+
 //========================================================================
 //
 //    For Internal Use Only.

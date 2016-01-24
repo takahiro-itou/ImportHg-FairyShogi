@@ -155,7 +155,25 @@ ErrCode
 BoardState::copyToViewBuffer(
         INTERFACE::ViewBuffer  &bufView)  const
 {
-    (void)(bufView);
+    return ( copyToViewBuffer(this->m_icState, bufView) );
+}
+
+//----------------------------------------------------------------
+//  現在の盤面を取得して、表示用バッファにコピーする。
+//
+
+ErrCode
+BoardState::copyToViewBuffer(
+        const  InternState     &curStat,
+        INTERFACE::ViewBuffer  &bufView)
+{
+    for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
+        for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
+            const  int  pi  = (yr * POS_NUM_COLS) + (xc);
+            bufView.piBoard[pi] = curStat.m_bsField[yr][xc];
+        }
+    }
+
     return ( ERR_FAILURE );
 }
 
