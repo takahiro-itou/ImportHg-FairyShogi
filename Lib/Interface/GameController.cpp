@@ -38,6 +38,7 @@ namespace  INTERFACE  {
 //
 
 GameController::GameController()
+    : m_gcBoard()
 {
 }
 
@@ -69,6 +70,67 @@ GameController::~GameController()
 //
 //    Public Member Functions (Virtual Functions).
 //
+
+//----------------------------------------------------------------
+//    駒を移動する指し手を入力して盤面を進める。
+//
+
+ErrCode
+GameController::playMoveAction(
+        const  PosCol       xOldCol,
+        const  PosRow       yOldRow,
+        const  PosCol       xNewCol,
+        const  PosRow       yNewRow,
+        const  PieceIndex   flgProm)
+{
+    const  GAME::BoardState::ActionData
+        act = this->m_gcBoard.encodeMoveAction(
+                    xOldCol, yOldRow, xNewCol, yNewRow, flgProm);
+
+    const  ErrCode  retErr  = this->m_gcBoard.playForward(act);
+
+    return ( retErr );
+}
+
+//----------------------------------------------------------------
+//    持ち駒を打つ指し手を入力して盤面を進める。
+//
+
+ErrCode
+GameController::playPutAction(
+        const  PosCol       xPutCol,
+        const  PosRow       yPutRow,
+        const  PieceIndex   pHand)
+{
+    const  GAME::BoardState::ActionData
+        act = this->m_gcBoard.encodePutAction(
+                    xPutCol, yPutRow, pHand);
+
+    const  ErrCode  retErr  = this->m_gcBoard.playForward(act);
+
+    return ( retErr );
+}
+
+//----------------------------------------------------------------
+//    盤面を初期状態に設定する。
+//
+
+ErrCode
+GameController::resetGame()
+{
+    return ( this->m_gcBoard.resetGameBoard() );
+}
+
+//----------------------------------------------------------------
+//    現在の盤面を表示用バッファにコピーする。
+//
+
+ErrCode
+GameController::writeToViewBuffer(
+        ViewBuffer  &bufView)  const
+{
+    return ( this->m_gcBoard.copyToViewBuffer(bufView) );
+}
 
 //========================================================================
 //
