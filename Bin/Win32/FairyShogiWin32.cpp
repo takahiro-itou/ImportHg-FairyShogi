@@ -65,7 +65,6 @@ s_tblHandName[]     =  {
     "P",  "S",  "G",  "B",  "R",  "K"
 };
 
-
 //
 //    ダミー定数。
 //
@@ -78,6 +77,20 @@ constexpr   int     HANDS_BLACK_KING    =  5;
 constexpr   int     HANDS_WHITE_PAWN    =  6;
 constexpr   int     HANDS_WHITE_KING    = 11;
 
+
+constexpr   PieceIndex
+s_tblHandEncBlack[] = {
+    0, 1, 2, 3, 4, 5
+};
+
+constexpr   PieceIndex
+s_tblHandEncWhite[] = {
+    6, 7, 8, 9, 10, 11
+};
+
+//
+//    画面に関する定数。
+//
 
 constexpr   int     BOARD_TOP_OFFSET    = 1;
 constexpr   int     BOARD_LEFT_OFFSET   = 0;
@@ -190,6 +203,42 @@ onLButtonUp(
         return ( 0 );
     }
 
+    const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
+    const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
+
+    if ( (mx < BOARD_LEFT_OFFSET) || (my < BOARD_TOP_OFFSET)
+            || (POS_NUM_COLS + BOARD_LEFT_OFFSET <= mx)
+            || (POS_NUM_ROWS + BOARD_TOP_OFFSET  <= my) )
+    {
+        goto    label_redaw_board;
+    }
+    if ( (mx == g_selX) && (my == g_selY) ) {
+        goto    label_redaw_board;
+    }
+
+    if ( (g_selY == 0) ) {
+        //  後手の持ち駒を打つ。    //
+        gc.playPutAction(
+                mx - BOARD_LEFT_OFFSET,
+                my - BOARD_TOP_OFFSET,
+                s_tblHandEncWhite[g_selX - BOARD_LEFT_OFFSET]);
+    } else if ( g_selY == POS_NUM_ROWS + BOARD_TOP_OFFSET ) {
+        //  先手の持ち駒を打つ。    //
+        gc.playPutAction(
+                mx - BOARD_LEFT_OFFSET,
+                my - BOARD_TOP_OFFSET,
+                s_tblHandEncBlack[g_selX - BOARD_LEFT_OFFSET]);
+    } else {
+        //  盤上の駒を移動させる。  //
+        gc.playMoveAction(
+                g_selX - BOARD_LEFT_OFFSET,
+                g_selY - BOARD_TOP_OFFSET,
+                mx - BOARD_LEFT_OFFSET,
+                my - BOARD_TOP_OFFSET,
+                0);
+    }
+
+label_redaw_board:
     g_selX  = -1;
     g_selY  = -1;
     g_movX  = -1;
