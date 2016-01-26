@@ -382,7 +382,7 @@ onPaint(
 
     //  後手の持ち駒を表示する。    //
     int     tx  = 0;
-    for ( int c = HANDS_WHITE_PAWN; c < HANDS_WHITE_KING; ++ c, ++ tx )
+    for ( int c = HANDS_WHITE_PAWN; c <= HANDS_WHITE_KING; ++ c, ++ tx )
     {
         const  THandCount   numHand = vb.nHands[c];
         if ( numHand <= 0 ) { continue; }
@@ -418,7 +418,7 @@ onPaint(
 
     //  先手の持ち駒を表示する。    //
     tx  = 0;
-    for ( int c = HANDS_BLACK_PAWN; c < HANDS_BLACK_KING; ++ c, ++ tx )
+    for ( int c = HANDS_BLACK_PAWN; c <= HANDS_BLACK_KING; ++ c, ++ tx )
     {
         const  THandCount   numHand = vb.nHands[c];
         if ( numHand <= 0 ) { continue; }
