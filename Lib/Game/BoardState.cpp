@@ -189,7 +189,9 @@ BoardState::playForward(
     };
 
     //  移動元のマスを空きマスにする。  //
-    icSt.m_bsField[actFwd.yOldRow][actFwd.xOldCol]  = FIELD_EMPTY_SQUARE;
+    if ( (actFwd.fpMoved) != FIELD_EMPTY_SQUARE ) {
+        icSt.m_bsField[actFwd.yOldRow][actFwd.xOldCol]  = FIELD_EMPTY_SQUARE;
+    }
 
     //  移動先に指定した駒を書き込む。  //
     icSt.m_bsField[actFwd.yNewRow][actFwd.xNewCol]  = actFwd.fpAfter;
