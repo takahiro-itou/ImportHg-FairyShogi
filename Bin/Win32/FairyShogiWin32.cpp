@@ -51,7 +51,7 @@ s_tblPieceName[]    = {
     "",
     "Pawn ",  "Sil. ",  "Gold ",  "Bis. ",  "Rook ",  "King ",
     "P.Pw ",  "P.Si ",  "P.Bi ",  "P.Rk ",
-    "PawnV",  "Sil.V",  "GoldV",  "Bis.V",  "RookV",  "KingV"
+    "PawnV",  "Sil.V",  "GoldV",  "Bis.V",  "RookV",  "KingV",
     "P.PwV",  "P.SiV",  "P.BiV",  "P.RkV"
 };
 
@@ -61,6 +61,7 @@ s_tblPieceName[]    = {
 
 constexpr   const   char  *
 s_tblHandName[]     =  {
+    nullptr,
     "P",  "S",  "G",  "B",  "R",  "K",
     "P",  "S",  "G",  "B",  "R",  "K"
 };
@@ -72,20 +73,30 @@ s_tblHandName[]     =  {
 constexpr   int     POS_NUM_COLS        =  5;
 constexpr   int     POS_NUM_ROWS        =  5;
 
-constexpr   int     HANDS_BLACK_PAWN    =  0;
-constexpr   int     HANDS_BLACK_KING    =  5;
-constexpr   int     HANDS_WHITE_PAWN    =  6;
-constexpr   int     HANDS_WHITE_KING    = 11;
+constexpr   int     HANDS_BLACK_PAWN    = GAME::BoardState::HAND_BLACK_PAWN;
+constexpr   int     HANDS_BLACK_KING    = GAME::BoardState::HAND_BLACK_KING;
+constexpr   int     HANDS_WHITE_PAWN    = GAME::BoardState::HAND_WHITE_PAWN;
+constexpr   int     HANDS_WHITE_KING    = GAME::BoardState::HAND_WHITE_KING;
 
 
 constexpr   PieceIndex
 s_tblHandEncBlack[] = {
-    0, 1, 2, 3, 4, 5
+    GAME::BoardState::HAND_BLACK_PAWN,
+    GAME::BoardState::HAND_BLACK_SILVER,
+    GAME::BoardState::HAND_BLACK_GOLD,
+    GAME::BoardState::HAND_BLACK_BISHOP,
+    GAME::BoardState::HAND_BLACK_ROOK,
+    GAME::BoardState::HAND_BLACK_KING
 };
 
 constexpr   PieceIndex
 s_tblHandEncWhite[] = {
-    6, 7, 8, 9, 10, 11
+    GAME::BoardState::HAND_WHITE_PAWN,
+    GAME::BoardState::HAND_WHITE_SILVER,
+    GAME::BoardState::HAND_WHITE_GOLD,
+    GAME::BoardState::HAND_WHITE_BISHOP,
+    GAME::BoardState::HAND_WHITE_ROOK,
+    GAME::BoardState::HAND_WHITE_KING
 };
 
 //
@@ -407,13 +418,13 @@ onPaint(
 
     //  先手の持ち駒を表示する。    //
     tx  = 0;
-    for ( int c = HANDS_BLACK_PAWN; c < HANDS_WHITE_KING; ++ c, ++ tx )
+    for ( int c = HANDS_BLACK_PAWN; c < HANDS_BLACK_KING; ++ c, ++ tx )
     {
         const  THandCount   numHand = vb.nHands[c];
         if ( numHand <= 0 ) { continue; }
 
         sx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
-        sy  = TOP_MARGIN;
+        sy  = (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT + TOP_MARGIN;
         if ( (g_selY != POS_NUM_ROWS + BOARD_TOP_OFFSET)
                 || (g_selX != tx + BOARD_LEFT_OFFSET) )
         {
