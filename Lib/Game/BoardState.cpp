@@ -143,7 +143,7 @@ BoardState::encodePutAction(
     const   ActionData  act = {
         xPutCol,    yPutRow,
         -1,         -1,
-        FIELD_EMPTY_SQUARE,
+        curStat.m_bsField[yPutRow][xPutCol],
         FIELD_EMPTY_SQUARE,
         s_tblHandConv[pHand],
         pHand
