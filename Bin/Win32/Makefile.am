@@ -7,12 +7,7 @@
 ##    List of Directories.
 ##
 
-SUBMODULES              =
-if  FAIRYSHOGI_AMCNF_ENABLE_WINDOWS_H
-SUBMODULES              +=  Win32
-endif
-
-SUBDIRS                 =  .  $(SUBMODULES)
+SUBDIRS                 =  .
 
 SRCTOPDIR               =  @top_srcdir@
 INCTOPDIR               =  $(SRCTOPDIR)/Include
@@ -42,6 +37,8 @@ AM_CFLAGS               =
 AM_CXXFLAGS             =
 AM_LDFLAGS              =  -L$(LIBTOPDIR)
 
+AM_CPPFLAGS             += -DDSHOGI_WIN32=1
+
 ##
 ##    Include Common Settings.
 ##
@@ -51,12 +48,12 @@ AM_LDFLAGS              =  -L$(LIBTOPDIR)
 ##
 
 bin_PROGRAMS            =  \
-        FairyShogi
+        FairyShogiWin32
 
 ##
 ##    Build Programs.
 ##
 
-FairyShogi_SOURCES      =  FairyShogi.cpp
-FairyShogi_LDADD        =  -lfsgInterface
+FairyShogiWin32_SOURCES   =  FairyShogiWin32.cpp
+FairyShogiWin32_LDADD     =  -lfsgInterface  -lGdi32
 

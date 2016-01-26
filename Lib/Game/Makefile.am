@@ -7,15 +7,12 @@
 ##    List of Directories.
 ##
 
+SUBDIRS                 =  .  Tests
+
 SRCTOPDIR               =  @top_srcdir@
 INCTOPDIR               =  $(SRCTOPDIR)/Include
 INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
-INCLIBDIR               =  $(INCPKGDIR)/.Config
-
-CNF_SRCTOPDIR           =  @top_builddir@
-CNF_INCTOPDIR           =  $(CNF_SRCTOPDIR)/Include
-CNF_INCPKGDIR           =  $(CNF_INCTOPDIR)/FairyShogi
-CNF_INCLIBDIR           =  $(CNF_INCPKGDIR)/.Config
+INCLIBDIR               =  $(INCPKGDIR)/Game
 
 ##
 ##    List of Source and Header Files.
@@ -26,6 +23,7 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
+        BoardState.cpp      \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =
@@ -35,10 +33,10 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
+        $(INCLIBDIR)/BoardState.h  \
         $(EXTRALIBHEADERS)
 
-LIBNODISTHEADERS        =  \
-        $(CNF_INCLIBDIR)/ConfiguredFairyShogi.h
+LIBNODISTHEADERS        =
 
 LIBINSTALLSOURCES       =
 LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
@@ -47,7 +45,7 @@ LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
 ##    List of Libraries.
 ##
 
-LIB_STATIC              =
+LIB_STATIC              =  libfsgGame.staticd.a
 LIB_SHARED              =
 
 ##
@@ -63,27 +61,28 @@ AM_CFLAGS               =
 AM_CXXFLAGS             =
 
 ##
+##    Include Common Settings.
+##
+
+##
 ##    List of Installs.
 ##
 
-fshogi_includedir               =  $(includedir)/FairyShogi
-fshogi_libdir                   =  $(libdir)
-fshogi_config_includedir        =  $(fshogi_includedir)/.Config
-fshogi_config_libdir            =  $(fshogi_libdir)/.Config
+fshogi_includedir            =  $(includedir)/FairyShogi
+fshogi_libdir                =  $(libdir)
+fshogi_game_includedir       =  $(fshogi_includedir)/Game
+fshogi_game_libdir           =  $(fshogi_libdir)/Game
 
-fshogi_config_include_HEADERS   =  $(INCLIBHEADERS)
-dist_noinst_HEADERS             =  $(LIBNOINSTHEADERS)
+fshogi_game_include_HEADERS  =  $(INCLIBHEADERS)
 
-fshogi_config_lib_LTLIBRARIES   =  $(LIB_SHARED)
-fshogi_config_lib_LIBRARIES     =  $(LIB_STATIC)
+dist_noinst_HEADERS          =  $(LIBNOINSTHEADERS)
 
-##
-##    List of (No Dist) Installs.
-##
-
-nodist_fshogi_config_include_HEADERS    =  $(LIBNODISTHEADERS)
+fshogi_game_lib_LTLIBRARIES  =  $(LIB_SHARED)
+fshogi_game_lib_LIBRARIES    =  $(LIB_STATIC)
 
 ##
 ##    Build Libraries.
 ##
+
+libfsgGame_staticd_a_SOURCES   =  $(LIBCOMPILESOURCES)
 

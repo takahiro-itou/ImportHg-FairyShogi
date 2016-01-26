@@ -1,4 +1,7 @@
-#! /bin/bash -x
+#! /bin/bash  -x
+
+chmod  u+x  setuplinks.sh
+./setuplinks.sh
 
 mkdir  -p  .Config  \
   &&  aclocal  -I  .Config  \

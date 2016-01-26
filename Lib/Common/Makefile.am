@@ -7,15 +7,12 @@
 ##    List of Directories.
 ##
 
+SUBDIRS                 =  .  Tests
+
 SRCTOPDIR               =  @top_srcdir@
 INCTOPDIR               =  $(SRCTOPDIR)/Include
 INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
-INCLIBDIR               =  $(INCPKGDIR)/.Config
-
-CNF_SRCTOPDIR           =  @top_builddir@
-CNF_INCTOPDIR           =  $(CNF_SRCTOPDIR)/Include
-CNF_INCPKGDIR           =  $(CNF_INCTOPDIR)/FairyShogi
-CNF_INCLIBDIR           =  $(CNF_INCPKGDIR)/.Config
+INCLIBDIR               =  $(INCPKGDIR)/Common
 
 ##
 ##    List of Source and Header Files.
@@ -35,10 +32,11 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
+        $(INCLIBDIR)/FairyShogiSettings.h  \
+        $(INCLIBDIR)/FairyShogiTypes.h     \
         $(EXTRALIBHEADERS)
 
-LIBNODISTHEADERS        =  \
-        $(CNF_INCLIBDIR)/ConfiguredFairyShogi.h
+LIBNODISTHEADERS        =
 
 LIBINSTALLSOURCES       =
 LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
@@ -63,25 +61,24 @@ AM_CFLAGS               =
 AM_CXXFLAGS             =
 
 ##
+##    Include Common Settings.
+##
+
+##
 ##    List of Installs.
 ##
 
-fshogi_includedir               =  $(includedir)/FairyShogi
-fshogi_libdir                   =  $(libdir)
-fshogi_config_includedir        =  $(fshogi_includedir)/.Config
-fshogi_config_libdir            =  $(fshogi_libdir)/.Config
+fshogi_includedir              =  $(includedir)/FairyShogi
+fshogi_libdir                  =  $(libdir)
+fshogi_common_includedir       =  $(fshogi_includedir)/Common
+fshogi_common_libdir           =  $(fshogi_libdir)/Common
 
-fshogi_config_include_HEADERS   =  $(INCLIBHEADERS)
-dist_noinst_HEADERS             =  $(LIBNOINSTHEADERS)
+fshogi_common_include_HEADERS  =  $(INCLIBHEADERS)
 
-fshogi_config_lib_LTLIBRARIES   =  $(LIB_SHARED)
-fshogi_config_lib_LIBRARIES     =  $(LIB_STATIC)
+dist_noinst_HEADERS            =  $(LIBNOINSTHEADERS)
 
-##
-##    List of (No Dist) Installs.
-##
-
-nodist_fshogi_config_include_HEADERS    =  $(LIBNODISTHEADERS)
+fshogi_common_lib_LTLIBRARIES  =  $(LIB_SHARED)
+fshogi_common_lib_LIBRARIES    =  $(LIB_STATIC)
 
 ##
 ##    Build Libraries.

@@ -7,15 +7,12 @@
 ##    List of Directories.
 ##
 
+SUBDIRS                 =  .  Tests
+
 SRCTOPDIR               =  @top_srcdir@
 INCTOPDIR               =  $(SRCTOPDIR)/Include
 INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
-INCLIBDIR               =  $(INCPKGDIR)/.Config
-
-CNF_SRCTOPDIR           =  @top_builddir@
-CNF_INCTOPDIR           =  $(CNF_SRCTOPDIR)/Include
-CNF_INCPKGDIR           =  $(CNF_INCTOPDIR)/FairyShogi
-CNF_INCLIBDIR           =  $(CNF_INCPKGDIR)/.Config
+INCLIBDIR               =  $(INCPKGDIR)/Interface
 
 ##
 ##    List of Source and Header Files.
@@ -26,6 +23,7 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
+        GameController.cpp  \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =
@@ -35,10 +33,11 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
+        $(INCLIBDIR)/GameController.h  \
+        $(INCLIBDIR)/ViewBuffer.h      \
         $(EXTRALIBHEADERS)
 
-LIBNODISTHEADERS        =  \
-        $(CNF_INCLIBDIR)/ConfiguredFairyShogi.h
+LIBNODISTHEADERS        =
 
 LIBINSTALLSOURCES       =
 LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
@@ -47,7 +46,7 @@ LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
 ##    List of Libraries.
 ##
 
-LIB_STATIC              =
+LIB_STATIC              =  libfsgInterface.staticd.a
 LIB_SHARED              =
 
 ##
@@ -63,27 +62,28 @@ AM_CFLAGS               =
 AM_CXXFLAGS             =
 
 ##
+##    Include Common Settings.
+##
+
+##
 ##    List of Installs.
 ##
 
-fshogi_includedir               =  $(includedir)/FairyShogi
-fshogi_libdir                   =  $(libdir)
-fshogi_config_includedir        =  $(fshogi_includedir)/.Config
-fshogi_config_libdir            =  $(fshogi_libdir)/.Config
+fshogi_includedir                 =  $(includedir)/FairyShogi
+fshogi_libdir                     =  $(libdir)
+fshogi_interface_includedir       =  $(fshogi_includedir)/Interface
+fshogi_interface_libdir           =  $(fshogi_libdir)/Interface
 
-fshogi_config_include_HEADERS   =  $(INCLIBHEADERS)
-dist_noinst_HEADERS             =  $(LIBNOINSTHEADERS)
+fshogi_interface_include_HEADERS  =  $(INCLIBHEADERS)
 
-fshogi_config_lib_LTLIBRARIES   =  $(LIB_SHARED)
-fshogi_config_lib_LIBRARIES     =  $(LIB_STATIC)
+dist_noinst_HEADERS               =  $(LIBNOINSTHEADERS)
 
-##
-##    List of (No Dist) Installs.
-##
-
-nodist_fshogi_config_include_HEADERS    =  $(LIBNODISTHEADERS)
+fshogi_interface_lib_LTLIBRARIES  =  $(LIB_SHARED)
+fshogi_interface_lib_LIBRARIES    =  $(LIB_STATIC)
 
 ##
 ##    Build Libraries.
 ##
+
+libfsgInterface_staticd_a_SOURCES   =  $(LIBCOMPILESOURCES)
 
