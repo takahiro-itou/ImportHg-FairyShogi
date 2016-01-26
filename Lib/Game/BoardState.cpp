@@ -65,7 +65,25 @@ BoardState::encodeMoveAction(
         const  PosRow       yNewRow,
         const  PieceIndex   flgProm)  const
 {
-    const  InternState  &  curStat  = (this->m_icState);
+    return ( encodeMoveAction(
+                     this->m_icState,
+                     xOldCol, yOldRow, xNewCol, yNewRow,
+                     flgProm) );
+}
+
+//----------------------------------------------------------------
+//    駒を移動する指し手を内部形式に変換する。
+//
+
+const   BoardState::ActionData
+BoardState::encodeMoveAction(
+        const  InternState  &curStat,
+        const  PosCol       xOldCol,
+        const  PosRow       yOldRow,
+        const  PosCol       xNewCol,
+        const  PosRow       yNewRow,
+        const  PieceIndex   flgProm)
+{
     const  PieceIndex   tmp = curStat.m_bsField[yOldRow][xOldCol];
 
     ActionData  act = {
@@ -76,6 +94,7 @@ BoardState::encodeMoveAction(
         tmp,
         FIELD_EMPTY_SQUARE
     };
+
     return ( act );
 }
 
@@ -86,13 +105,51 @@ BoardState::encodeMoveAction(
 const   BoardState::ActionData
 BoardState::encodePutAction(
         const  PosCol       xPutCol,
-        const  PosRow       yPosRow,
+        const  PosRow       yPutRow,
         const  PieceIndex   pHand)  const
 {
-    (void)(xPutCol);
-    (void)(yPosRow);
-    (void)(pHand);
-    return ( ActionData() );
+    return ( encodePutAction(this->m_icState, xPutCol, yPutRow, pHand) );
+}
+
+//----------------------------------------------------------------
+//    持ち駒を打つ指し手を内部形式に変換する。
+//
+
+const   BoardState::ActionData
+BoardState::encodePutAction(
+        const  InternState  &curStat,
+        const  PosCol       xPutCol,
+        const  PosRow       yPutRow,
+        const  PieceIndex   pHand)
+{
+    constexpr   PieceIndex  s_tblHandConv[] = {
+        FIELD_EMPTY_SQUARE,
+
+        FIELD_BLACK_PAWN,
+        FIELD_BLACK_SILVER,
+        FIELD_BLACK_GOLD,
+        FIELD_BLACK_BISHOP,
+        FIELD_BLACK_ROOK,
+        FIELD_BLACK_KING,
+
+        FIELD_WHITE_PAWN,
+        FIELD_WHITE_SILVER,
+        FIELD_WHITE_GOLD,
+        FIELD_WHITE_BISHOP,
+        FIELD_WHITE_ROOK,
+        FIELD_WHITE_KING
+    };
+
+    const   ActionData  act = {
+        xPutCol,    yPutRow,
+        -1,         -1,
+        FIELD_EMPTY_SQUARE,
+        FIELD_EMPTY_SQUARE,
+        s_tblHandConv[pHand],
+        pHand
+    };
+
+    return ( act );
 }
 
 //----------------------------------------------------------------
@@ -106,7 +163,7 @@ BoardState::playForward(
     InternState  & icSt = (this->m_icState);
 
     constexpr   PieceIndex  piCatchTable[]  = {
-        FIELD_EMPTY_SQUARE,
+        HAND_EMPTY_PIECE,
 
         HAND_WHITE_PAWN,
         HAND_WHITE_SILVER,
@@ -144,7 +201,8 @@ BoardState::playForward(
     }
 
     //  駒を打つ場合は持ち駒を減らす。  //
-    if ( actFwd.putHand != FIELD_EMPTY_SQUARE ) {
+    if ( actFwd.putHand != HAND_EMPTY_PIECE ) {
+        --  icSt.m_nHands[actFwd.putHand];
     }
 
     return ( ERR_FAILURE );
@@ -187,6 +245,10 @@ BoardState::resetGameBoard(
     pCurStat->m_bsField[4][2]   = FIELD_BLACK_SILVER;
     pCurStat->m_bsField[4][3]   = FIELD_BLACK_BISHOP;
     pCurStat->m_bsField[4][4]   = FIELD_BLACK_ROOK;
+
+    for ( int hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
+        pCurStat->m_nHands[hp]  = 0;
+    }
 
     return ( ERR_SUCCESS );
 }

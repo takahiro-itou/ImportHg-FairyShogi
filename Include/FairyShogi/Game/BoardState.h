@@ -76,6 +76,8 @@ public:
     };
 
     enum  {
+        HAND_EMPTY_PIECE,
+
         HAND_BLACK_PAWN,
         HAND_BLACK_SILVER,
         HAND_BLACK_GOLD,
@@ -158,6 +160,26 @@ public:
             const  PieceIndex   flgProm)  const;
 
     //----------------------------------------------------------------
+    /**   駒を移動する指し手を内部形式に変換する。
+    **
+    **  @param [in] curStat   現在の盤面データ。
+    **  @param [in] xOldCol   移動元の座標（横方向）。
+    **  @param [in] yOldRow   移動元の座標（縦方向）。
+    **  @param [in] xNewCol   移動先の座標（横方向）。
+    **  @param [in] yNewRow   移動先の座標（縦方向）。
+    **  @param [in] flgProm   駒の成り、不成り。
+    **  @return     指し手の内部形式。
+    **/
+    static  const   ActionData
+    encodeMoveAction(
+            const  InternState  &curStat,
+            const  PosCol       xOldCol,
+            const  PosRow       yOldRow,
+            const  PosCol       xNewCol,
+            const  PosRow       yNewRow,
+            const  PieceIndex   flgProm);
+
+    //----------------------------------------------------------------
     /**   持ち駒を打つ指し手を内部形式に変換する。
     **
     **  @param [in] xPutCol   駒を打つ座標（横方向）。
@@ -168,8 +190,24 @@ public:
     const   ActionData
     encodePutAction(
             const  PosCol       xPutCol,
-            const  PosRow       yPosRow,
+            const  PosRow       yPutRow,
             const  PieceIndex   pHand)  const;
+
+    //----------------------------------------------------------------
+    /**   持ち駒を打つ指し手を内部形式に変換する。
+    **
+    **  @param [in] curStat   現在の盤面データ。
+    **  @param [in] xPutCol   駒を打つ座標（横方向）。
+    **  @param [in] yPutRow   駒を打つ座標（縦方向）。
+    **  @param [in] pHand     打つ駒の種類。
+    **  @return     指し手の内部形式。
+    **/
+    static  const   ActionData
+    encodePutAction(
+            const  InternState  &curStat,
+            const  PosCol       xPutCol,
+            const  PosRow       yPutRow,
+            const  PieceIndex   pHand);
 
     //----------------------------------------------------------------
     /**   指定した指し手で盤面を進める。
