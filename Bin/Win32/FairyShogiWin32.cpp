@@ -376,7 +376,7 @@ onPaint(
         ::DeleteObject(hbrBack);
     }
 
-    Interface::ViewBuffer   vb;
+    Common::ViewBuffer  vb;
     memset(&vb, 0, sizeof(vb));
     gc.writeToViewBuffer(vb);
 

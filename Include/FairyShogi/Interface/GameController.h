@@ -180,10 +180,6 @@ public:
 };
 
 }   //  End of namespace  Interface
-
-/**     @todo   暫定処理。後で消す。    **/
-namespace   INTERFACE   = Interface;
-
 FAIRYSHOGI_NAMESPACE_END
 
 #endif
