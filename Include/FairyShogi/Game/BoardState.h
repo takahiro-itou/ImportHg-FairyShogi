@@ -20,7 +20,7 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
-#include    "FairyShogi/Interface/ViewBuffer.h"
+#include    "FairyShogi/Common/ViewBuffer.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
@@ -304,10 +304,6 @@ public:
 };
 
 }   //  End of namespace  Game
-
-/**     @todo   暫定処理。後で消す。    **/
-namespace   GAME    = Game;
-
 FAIRYSHOGI_NAMESPACE_END
 
 #endif
