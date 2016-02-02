@@ -59,7 +59,7 @@ struct  ViewBuffer
 }   //  End of namespace  Common
 
 /**     @todo   暫定処理。後で消す。    **/
-namespace  INTERFACE  {
+namespace  Interface  {
 typedef     Common::ViewBuffer      ViewBuffer;
 }
 

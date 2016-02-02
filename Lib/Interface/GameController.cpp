@@ -17,10 +17,10 @@
 
 #include    "FairyShogi/Interface/GameController.h"
 
-#include    "FairyShogi/Interface/ViewBuffer.h"
+#include    "FairyShogi/Common/ViewBuffer.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  INTERFACE  {
+namespace  Interface  {
 
 //========================================================================
 //
@@ -83,7 +83,7 @@ GameController::playMoveAction(
         const  PosRow       yNewRow,
         const  PieceIndex   flgProm)
 {
-    const  GAME::BoardState::ActionData
+    const  Game::BoardState::ActionData
         act = this->m_gcBoard.encodeMoveAction(
                     xOldCol, yOldRow, xNewCol, yNewRow, flgProm);
 
@@ -102,7 +102,7 @@ GameController::playPutAction(
         const  PosRow       yPutRow,
         const  PieceIndex   pHand)
 {
-    const  GAME::BoardState::ActionData
+    const  Game::BoardState::ActionData
         act = this->m_gcBoard.encodePutAction(
                     xPutCol, yPutRow, pHand);
 
@@ -127,7 +127,7 @@ GameController::resetGame()
 
 ErrCode
 GameController::writeToViewBuffer(
-        ViewBuffer  &bufView)  const
+        Common::ViewBuffer  &bufView)  const
 {
     return ( this->m_gcBoard.copyToViewBuffer(bufView) );
 }
@@ -147,6 +147,5 @@ GameController::writeToViewBuffer(
 //    For Internal Use Only.
 //
 
-}   //  End of namespace  INTERFACE
+}   //  End of namespace  Interface
 FAIRYSHOGI_NAMESPACE_END
-
