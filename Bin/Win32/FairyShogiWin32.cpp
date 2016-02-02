@@ -73,30 +73,30 @@ s_tblHandName[]     =  {
 constexpr   int     POS_NUM_COLS        =  5;
 constexpr   int     POS_NUM_ROWS        =  5;
 
-constexpr   int     HANDS_BLACK_PAWN    = GAME::BoardState::HAND_BLACK_PAWN;
-constexpr   int     HANDS_BLACK_KING    = GAME::BoardState::HAND_BLACK_KING;
-constexpr   int     HANDS_WHITE_PAWN    = GAME::BoardState::HAND_WHITE_PAWN;
-constexpr   int     HANDS_WHITE_KING    = GAME::BoardState::HAND_WHITE_KING;
+constexpr   int     HANDS_BLACK_PAWN    = Game::BoardState::HAND_BLACK_PAWN;
+constexpr   int     HANDS_BLACK_KING    = Game::BoardState::HAND_BLACK_KING;
+constexpr   int     HANDS_WHITE_PAWN    = Game::BoardState::HAND_WHITE_PAWN;
+constexpr   int     HANDS_WHITE_KING    = Game::BoardState::HAND_WHITE_KING;
 
 
 constexpr   PieceIndex
 s_tblHandEncBlack[] = {
-    GAME::BoardState::HAND_BLACK_PAWN,
-    GAME::BoardState::HAND_BLACK_SILVER,
-    GAME::BoardState::HAND_BLACK_GOLD,
-    GAME::BoardState::HAND_BLACK_BISHOP,
-    GAME::BoardState::HAND_BLACK_ROOK,
-    GAME::BoardState::HAND_BLACK_KING
+    Game::BoardState::HAND_BLACK_PAWN,
+    Game::BoardState::HAND_BLACK_SILVER,
+    Game::BoardState::HAND_BLACK_GOLD,
+    Game::BoardState::HAND_BLACK_BISHOP,
+    Game::BoardState::HAND_BLACK_ROOK,
+    Game::BoardState::HAND_BLACK_KING
 };
 
 constexpr   PieceIndex
 s_tblHandEncWhite[] = {
-    GAME::BoardState::HAND_WHITE_PAWN,
-    GAME::BoardState::HAND_WHITE_SILVER,
-    GAME::BoardState::HAND_WHITE_GOLD,
-    GAME::BoardState::HAND_WHITE_BISHOP,
-    GAME::BoardState::HAND_WHITE_ROOK,
-    GAME::BoardState::HAND_WHITE_KING
+    Game::BoardState::HAND_WHITE_PAWN,
+    Game::BoardState::HAND_WHITE_SILVER,
+    Game::BoardState::HAND_WHITE_GOLD,
+    Game::BoardState::HAND_WHITE_BISHOP,
+    Game::BoardState::HAND_WHITE_ROOK,
+    Game::BoardState::HAND_WHITE_KING
 };
 
 //
@@ -125,7 +125,7 @@ int     g_selY;
 int     g_movX;
 int     g_movY;
 
-INTERFACE::GameController   gc;
+Interface::GameController   gc;
 
 }   //  End of (Unnamed) namespace.
 
@@ -376,7 +376,7 @@ onPaint(
         ::DeleteObject(hbrBack);
     }
 
-    INTERFACE::ViewBuffer   vb;
+    Interface::ViewBuffer   vb;
     memset(&vb, 0, sizeof(vb));
     gc.writeToViewBuffer(vb);
 
