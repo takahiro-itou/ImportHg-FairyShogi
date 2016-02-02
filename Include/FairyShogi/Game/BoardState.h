@@ -20,10 +20,10 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
-#include    "FairyShogi/Interface/ViewBuffer.h"
+#include    "FairyShogi/Common/ViewBuffer.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  GAME  {
+namespace  Game  {
 
 //========================================================================
 //
@@ -261,7 +261,7 @@ public:
     **/
     ErrCode
     copyToViewBuffer(
-            INTERFACE::ViewBuffer  &bufView)  const;
+            Common::ViewBuffer  &bufView)  const;
 
     //----------------------------------------------------------------
     /**   現在の盤面を取得して、表示用バッファにコピーする。
@@ -275,8 +275,8 @@ public:
     **/
     static  ErrCode
     copyToViewBuffer(
-            const  InternState     &curStat,
-            INTERFACE::ViewBuffer  &bufView);
+            const  InternState  &curStat,
+            Common::ViewBuffer  &bufView);
 
 //========================================================================
 //
@@ -303,7 +303,7 @@ public:
     friend  class   BoardStateTest;
 };
 
-}   //  End of namespace  GAME
+}   //  End of namespace  Game
 FAIRYSHOGI_NAMESPACE_END
 
 #endif

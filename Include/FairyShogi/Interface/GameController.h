@@ -27,7 +27,7 @@
 #include    <vector>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  INTERFACE  {
+namespace  Interface  {
 
 //========================================================================
 //
@@ -142,7 +142,7 @@ public:
     **/
     ErrCode
     writeToViewBuffer(
-            ViewBuffer  &bufView)  const;
+            Common::ViewBuffer  &bufView)  const;
 
 //========================================================================
 //
@@ -166,7 +166,7 @@ public:
 private:
 
     /**   盤面の状態。  **/
-    GAME::BoardState    m_gcBoard;
+    Game::BoardState    m_gcBoard;
 
 //========================================================================
 //
@@ -179,7 +179,7 @@ public:
     friend  class   GameControllerTest;
 };
 
-}   //  End of namespace  INTERFACE
+}   //  End of namespace  Interface
 FAIRYSHOGI_NAMESPACE_END
 
 #endif

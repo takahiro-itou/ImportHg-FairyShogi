@@ -12,16 +12,16 @@
 /**
 **      An Interface of ViewBuffer class.
 **
-**      @file       Interface/ViewBuffer.h
+**      @file       Common/ViewBuffer.h
 **/
 
-#if !defined( FAIRYSHOGI_INTERFACE_INCLUDED_VIEW_BUFFER_H )
-#    define   FAIRYSHOGI_INTERFACE_INCLUDED_VIEW_BUFFER_H
+#if !defined( FAIRYSHOGI_COMMON_INCLUDED_VIEW_BUFFER_H )
+#    define   FAIRYSHOGI_COMMON_INCLUDED_VIEW_BUFFER_H
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  INTERFACE  {
+namespace  Common  {
 
 //========================================================================
 //
@@ -33,13 +33,13 @@ namespace  INTERFACE  {
 
 struct  ViewBuffer
 {
-    /**   プレーヤーの人数。    **/
+    /**   プレーヤの人数。  **/
     PlayerIndex     numPlayers;
 
-    /**   盤面の行数。  **/
+    /**   盤面の行数。      **/
     PosRow          numRows;
 
-    /**   盤面の列数。  **/
+    /**   盤面の列数。      **/
     PosCol          numCols;
 
     /**
@@ -49,14 +49,14 @@ struct  ViewBuffer
     **/
     PieceIndex      numHandTypes[FSSYSLIMIT::MAX_NUM_PLAYERS];
 
-    /**   盤上の状態。  **/
+    /**   盤上の状態。      **/
     PieceIndex      piBoard[FSSYSLIMIT::MAX_FIELD_SIZE];
 
-    /**   持ち駒の数。  **/
+    /**   持ち駒の数。      **/
     THandCount      nHands [FSSYSLIMIT::MAX_HAND_TYPES];
 };
 
-}   //  End of namespace  INTERFACE
+}   //  End of namespace  Common
 FAIRYSHOGI_NAMESPACE_END
 
 #endif

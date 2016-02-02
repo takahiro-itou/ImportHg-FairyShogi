@@ -18,7 +18,7 @@
 #include    "FairyShogi/Game/BoardState.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  GAME  {
+namespace  Game  {
 
 //========================================================================
 //
@@ -36,6 +36,7 @@ namespace  GAME  {
 //
 
 BoardState::BoardState()
+    : m_icState()
 {
 }
 
@@ -266,7 +267,7 @@ BoardState::resetGameBoard(
 
 ErrCode
 BoardState::copyToViewBuffer(
-        INTERFACE::ViewBuffer  &bufView)  const
+        Common::ViewBuffer  &bufView)  const
 {
     return ( copyToViewBuffer(this->m_icState, bufView) );
 }
@@ -277,8 +278,8 @@ BoardState::copyToViewBuffer(
 
 ErrCode
 BoardState::copyToViewBuffer(
-        const  InternState     &curStat,
-        INTERFACE::ViewBuffer  &bufView)
+        const  InternState  &curStat,
+        Common::ViewBuffer  &bufView)
 {
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {

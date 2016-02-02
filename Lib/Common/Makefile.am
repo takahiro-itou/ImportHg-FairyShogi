@@ -34,6 +34,7 @@ LIBNOINSTHEADERS        =  \
 INCLIBHEADERS           =  \
         $(INCLIBDIR)/FairyShogiSettings.h  \
         $(INCLIBDIR)/FairyShogiTypes.h     \
+        $(INCLIBDIR)/ViewBuffer.h          \
         $(EXTRALIBHEADERS)
 
 LIBNODISTHEADERS        =
