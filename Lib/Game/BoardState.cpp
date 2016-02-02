@@ -36,6 +36,7 @@ namespace  GAME  {
 //
 
 BoardState::BoardState()
+    : m_icState()
 {
 }
 

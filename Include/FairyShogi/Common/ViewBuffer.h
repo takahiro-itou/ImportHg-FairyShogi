@@ -57,6 +57,12 @@ struct  ViewBuffer
 };
 
 }   //  End of namespace  Common
+
+/**     @todo   暫定処理。後で消す。    **/
+namespace  INTERFACE  {
+typedef     Common::ViewBuffer      ViewBuffer;
+}
+
 FAIRYSHOGI_NAMESPACE_END
 
 #endif
