@@ -90,6 +90,29 @@ dnl
 AC_TYPE_UINT64_T
 
 dnl
+dnl   Check (Extra) Compiler Options.
+dnl
+
+m4_include([M4/CheckExtraFlags.m4])
+
+saved_CFLAGS=${CFLAGS}
+saved_CXXFLAGS=${CXXFLAGS}
+CFLAGS='-mwindows'
+CXXFLAGS='-mwindows'
+AC_TRY_COMPILE(
+    [],
+    [],
+    [myac__mwindows_enabled='TRUE'],
+    [myac__mwindows_enabled='FALSE'])
+if test "x${myac__mwindows_enabled}y" = "xTRUEy" ; then
+     CFLAGS="${saved_CFLAGS}      -mwindows"
+     CXXFLAGS="${saved_CXXFLAGS}  -mwindows"
+else
+    CFLAGS=${saved_CFLAGS}
+    CXXFLAGS=${saved_CFLAGS}
+fi
+
+dnl
 dnl   Project Name Space.
 dnl
 
@@ -108,9 +131,18 @@ AC_ARG_WITH(
     [myac_with_cppunit_val=${withval}],
     [myac_with_cppunit_val='yes'])
 
+case  "${myac_with_cppunit_val}"  in
+  yes)  myac_with_cppunit_path=''
+        myac_with_cppunit_enable=TRUE  ;;
+  no )  myac_with_cppunit_path=''
+        myac_with_cppunit_enable=FALSE ;;
+  *  )  myac_with_cppunit_path=${myac_with_cppunit_val}
+        myac_with_cppunit_enable=FALSE ;;
+esac
+
 AM_CONDITIONAL(
     [AMCNF_CPPUNIT_ENABLED],
-    [test  "X${myac_with_cppunit_val}Y" = "XyesY"])
+    [test  "x${myac_with_cppunit_enable}y" = "xTRUEy"])
 
 dnl----------------------------------------------------------------
 dnl
