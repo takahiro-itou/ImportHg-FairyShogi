@@ -95,22 +95,7 @@ dnl
 
 m4_include([M4/CheckExtraFlags.m4])
 
-saved_CFLAGS=${CFLAGS}
-saved_CXXFLAGS=${CXXFLAGS}
-CFLAGS='-mwindows'
-CXXFLAGS='-mwindows'
-AC_TRY_COMPILE(
-    [],
-    [],
-    [myac__mwindows_enabled='TRUE'],
-    [myac__mwindows_enabled='FALSE'])
-if test "x${myac__mwindows_enabled}y" = "xTRUEy" ; then
-     CFLAGS="${saved_CFLAGS}      -mwindows"
-     CXXFLAGS="${saved_CXXFLAGS}  -mwindows"
-else
-    CFLAGS=${saved_CFLAGS}
-    CXXFLAGS=${saved_CFLAGS}
-fi
+MYAC_CHECK_EXTRA_OPTION([-mwindows])
 
 dnl
 dnl   Project Name Space.
