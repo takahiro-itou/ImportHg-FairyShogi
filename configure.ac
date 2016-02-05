@@ -90,12 +90,14 @@ dnl
 AC_TYPE_UINT64_T
 
 dnl
-dnl   Check (Extra) Compiler Options.
+dnl   Check Extra Compiler/Linker Options.
 dnl
 
 m4_include([M4/CheckExtraFlags.m4])
 
-MYAC_CHECK_EXTRA_OPTION([-mwindows])
+MYAC_CHECK_EXTRA_COMPILER_OPTION([mwindows], [-mwindows])
+MYAC_CHECK_EXTRA_LINKER_OPTION([static-libstdcxx], [-static-libstdc++])
+MYAC_CHECK_EXTRA_LINKER_OPTION([static-libgcc],    [-static-libgcc])
 
 dnl
 dnl   Project Name Space.
