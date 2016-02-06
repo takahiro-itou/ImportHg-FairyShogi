@@ -23,6 +23,7 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
+        BitmapImage.cpp     \
         GameController.cpp  \
         $(EXTRALIBSOURCES)
 
@@ -33,6 +34,7 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
+        $(INCLIBDIR)/BitmapImage.h     \
         $(INCLIBDIR)/GameController.h  \
         $(EXTRALIBHEADERS)
 
