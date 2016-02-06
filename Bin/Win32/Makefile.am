@@ -35,7 +35,7 @@ LIBTOPDIR               =  $(BLDTOPDIR)/Lib
 AM_CPPFLAGS             =  -I$(INCTOPDIR)
 AM_CFLAGS               =
 AM_CXXFLAGS             =
-AM_LDFLAGS              =  -L$(LIBTOPDIR)  -static-libgcc  -static-libstdc++
+AM_LDFLAGS              =  -L$(LIBTOPDIR)
 
 AM_CPPFLAGS             += -DDSHOGI_WIN32=1
 

@@ -90,6 +90,16 @@ dnl
 AC_TYPE_UINT64_T
 
 dnl
+dnl   Check Extra Compiler/Linker Options.
+dnl
+
+m4_include([M4/CheckExtraFlags.m4])
+
+MYAC_CHECK_EXTRA_COMPILER_OPTION([mwindows], [-mwindows])
+MYAC_CHECK_EXTRA_LINKER_OPTION([static-libstdcxx], [-static-libstdc++])
+MYAC_CHECK_EXTRA_LINKER_OPTION([static-libgcc],    [-static-libgcc])
+
+dnl
 dnl   Project Name Space.
 dnl
 
@@ -98,19 +108,15 @@ AC_SUBST(FAIRYSHOGI_CNF_NAMESPACE)
 
 dnl----------------------------------------------------------------
 dnl
-dnl   外部パッケージの追加
 dnl   Additional Packages.
+dnl   外部パッケージの追加
 dnl
 
-AC_ARG_WITH(
-    [cppunit],
-    AC_HELP_STRING([--with-cppunit=PATH], [path to cppunit]),
-    [myac_with_cppunit_val=${withval}],
-    [myac_with_cppunit_val='yes'])
+m4_include([M4/WithExtLibs.m4])
 
-AM_CONDITIONAL(
-    [AMCNF_CPPUNIT_ENABLED],
-    [test  "X${myac_with_cppunit_val}Y" = "XyesY"])
+MYAC_WITH_EXT_LIB(
+    [CPPUNIT], [cppunit], [path to cppunit], [yes],
+    [AMCNF_CPPUNIT_ENABLED])
 
 dnl----------------------------------------------------------------
 dnl
