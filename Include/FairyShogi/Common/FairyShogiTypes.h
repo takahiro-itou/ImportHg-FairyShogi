@@ -20,6 +20,7 @@
 
 #include    "FairyShogiSettings.h"
 
+#include    <stddef.h>
 #include    <stdint.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -90,6 +91,28 @@ typedef     int     PieceIndex;
 **/
 
 typedef     int     THandCount;
+
+//----------------------------------------------------------------
+
+typedef     const   void  *     LpReadBuf;
+
+typedef     void  *             LpWriteBuf;
+
+typedef     size_t              FileLen;
+
+template  <typename  T>
+T  pointer_cast(
+        void  *  ptr)
+{
+    return ( static_cast<T>(ptr) );
+}
+
+template  <typename  T>
+T  pointer_cast(
+        const  void  *  ptr)
+{
+    return ( static_cast<T>(ptr) );
+}
 
 FAIRYSHOGI_NAMESPACE_END
 

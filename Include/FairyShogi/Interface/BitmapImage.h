@@ -20,6 +20,8 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    <string>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
 
@@ -73,6 +75,63 @@ public:
 //
 //    Public Member Functions (Virtual Functions).
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   ビットマップイメージを生成する。
+    **
+    **  @param [in] cxWidth     幅。
+    **  @param [in] cyHeight    高さ。
+    **  @param [in] bDepth      深さ。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    createBitmap(
+            const  int  cxWidth,
+            const  int  cyHeight,
+            const  int  bDepth);
+
+    //----------------------------------------------------------------
+    /**   ビットマップイメージを破棄する。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    destroyBitmap();
+
+    //----------------------------------------------------------------
+    /**   ビットマップファイルを開いて読み込む。
+    **
+    **  @param [in] fileName    ファイル名。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    openBitmapFile(
+            const  std::string  &fileName);
+
+    //----------------------------------------------------------------
+    /**   ビットマップイメージを読み込む。
+    **
+    **  @param [in] ptrBuf
+    **  @param [in] cbLen
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    readBitmap(
+            LpReadBuf   const   ptrBuf,
+            const  FileLen      cbLen);
 
 //========================================================================
 //
@@ -88,16 +147,93 @@ public:
 //
 //    For Internal Use Only.
 //
+private:
+
+    //----------------------------------------------------------------
+    /**   壱ピクセルに必要なバイト数を計算する。
+    **
+    **  @param [in] bDepth    深さ。
+    **  @return     壱ピクセルに必要なバイト数。
+    **/
+    static  inline  size_t
+    computeBytesPerPixel(
+            const  int  bDepth);
+
+    //----------------------------------------------------------------
+    /**   壱ラインに必要なバイト数を計算する。
+    **
+    **  @param [in] cxWidth   幅。
+    **  @param [in] bDepth    深さ。
+    **  @return     壱ラインに必要なバイト数。
+    **/
+    static  inline  size_t
+    computeBytesPerLine(
+            const  int  cxWidth,
+            const  int  bDepth);
+
+
+    enum  {
+        /**
+        **    ビットマップファイルヘッダのサイズ。
+        **/
+        SIZE_OF_BITMAP_FILE_HEADER  = 14,
+
+        /**
+        **    ビットマップファイルヘッダのサイズ（パディングを含む場合）。
+        **/
+
+        /**
+        **    ビットマップ情報ヘッダのサイズ。
+        **/
+        SIZE_OF_BITMAP_INFO_HEADER  = 40
+    };
 
 //========================================================================
 //
 //    Member Variables.
 //
+private:
+
+
+    struct      BitmapInfo;
+
+    typedef     uint8_t  *          LpBuffer;
+    typedef     BitmapInfo  *       LpBitmapInfo;
+    typedef     void  *             LpBitArray;
+
+    typedef     size_t              Offset;
+
+private:
+
+    int             m_xWidth;
+    int             m_yHeight;
+    int             m_nDepth;
+
+    LpBuffer        m_ptrBuf;
+    LpBitmapInfo    m_ptrInfo;
+    LpBitArray      m_ptrBits;
+
+
+    /**   壱ピクセルあたりのバイト数。  **/
+    Offset          m_nPixelBytes;
+
+    /**   壱ラインあたりのバイト数。    **/
+    Offset          m_nLineBytes;
 
 //========================================================================
 //
 //    Other Features.
 //
+private:
+
+    struct      BitmapInfoHeader;
+    struct      RgbQuad;
+
+    typedef     uint8_t         BYTE;
+    typedef     int32_t         LONG;
+    typedef     uint16_t        WORD;
+    typedef     uint32_t        DWORD;
+
 private:
     typedef     BitmapImage     This;
     BitmapImage         (const  This  &);
