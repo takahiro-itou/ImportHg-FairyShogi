@@ -17,6 +17,7 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Interface/BitmapImage.h"
 #include    "FairyShogi/Interface/GameController.h"
 
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
@@ -126,6 +127,9 @@ int     g_movX;
 int     g_movY;
 
 Interface::GameController   gc;
+
+Interface::BitmapImage      g_imgScreen;
+Interface::BitmapImage      g_imgPiece;
 
 }   //  End of (Unnamed) namespace.
 
@@ -556,6 +560,22 @@ WinMain(
 
     if ( hWnd == 0 ) {
         return ( 0 );
+    }
+
+    //  この瞬間に画像を準備する。      //
+    if ( g_imgPiece.openBitmapFile("Pieces.bmp") != ERR_SUCCESS )
+    {
+        ::MessageBox(hWnd,  "Graphic File [Pieces.bmp] Not Found!",
+                     NULL,  MB_OK);
+    }
+    {
+        HDC hDC = ::GetDC(hWnd);
+        if ( g_imgScreen.createBitmap(320, 320, hDC) != ERR_SUCCESS )
+        {
+            ::MessageBox(hWnd,  "Not Enough Memory!",
+                         NULL,  MB_OK);
+        }
+        ::ReleaseDC(hWnd, hDC);
     }
 
     //  グローバル変数を初期化する。    //
