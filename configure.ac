@@ -73,11 +73,16 @@ AC_CHECK_HEADER(
 AM_CONDITIONAL(
     FAIRYSHOGI_AMCNF_ENABLE_WINDOWS_H,
     test  "x${fsgcnf_have_windows_h}" = 'xTRUE')
+
 if  test  "x${fsgcnf_have_windows_h}" = 'xTRUE' ; then
   AC_DEFINE(
       [HAVE_WINDOWS_H], [1],
       [Define to 1 if you have the <windows.h> header file.])
+  FAIRYSHOGI_CNF_WIN32_API=1
+else
+  FAIRYSHOGI_CNF_WIN32_API=0
 fi
+AC_SUBST(FAIRYSHOGI_CNF_WIN32_API)
 
 dnl
 dnl   Check Libraries.
