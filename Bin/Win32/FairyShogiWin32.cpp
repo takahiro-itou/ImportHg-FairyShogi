@@ -129,6 +129,7 @@ int     g_movY;
 Interface::GameController   gc;
 
 Interface::BitmapImage      g_imgScreen;
+Interface::BitmapImage      g_imgBack;
 Interface::BitmapImage      g_imgPiece;
 
 }   //  End of (Unnamed) namespace.
@@ -324,6 +325,11 @@ onPaint(
 {
     int     sx, sy, dx, dy;
 
+    //  背景をコピーする。      //
+    g_imgScreen.copyRectangle(
+            0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
+            g_imgBack, 0,  0);
+
     //  盤面のマスを描画する。  //
     for ( int y = 0; y <= POS_NUM_ROWS; ++ y ) {
         sx  = ((BOARD_LEFT_OFFSET) * SQUARE_WIDTH) + LEFT_MARGIN;
@@ -391,32 +397,40 @@ onPaint(
         const  THandCount   numHand = vb.nHands[c];
         if ( numHand <= 0 ) { continue; }
 
-        sx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
-        sy  = TOP_MARGIN;
-        if ( (g_selY != 0)
-                || (g_selX != tx + BOARD_LEFT_OFFSET) )
-        {
-            ::Rectangle(hDC, sx, sy, sx + SQUARE_WIDTH, sy + SQUARE_HEIGHT);
-        }
-        sx  += (SQUARE_WIDTH  / 4);
-        sy  += (SQUARE_HEIGHT / 2);
-        const  char  *  pn  = s_tblHandName[c];
-        ::TextOut(hDC, sx, sy, pn, strlen(pn));
+        dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
+        dy  = TOP_MARGIN;
+        // if ( (g_selY != 0)
+        //         || (g_selX != tx + BOARD_LEFT_OFFSET) )
+        // {
+        //     ::Rectangle(hDC, dx, dy, dx + SQUARE_WIDTH, dy + SQUARE_HEIGHT);
+        // }
+        // sx  += (SQUARE_WIDTH  / 4);
+        // sy  += (SQUARE_HEIGHT / 2);
+        // const  char  *  pn  = s_tblHandName[c];
+        // ::TextOut(hDC, sx, sy, pn, strlen(pn));
+        sx  = (c - HANDS_WHITE_PAWN) * SQUARE_WIDTH;
+        sy  = (1) * SQUARE_HEIGHT;
+        g_imgScreen.copyRectangle(
+                dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT, g_imgPiece, sx, sy);
     }
 
     //  盤上にある駒を表示する。    //
     for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
         for ( int x = 0; x < POS_NUM_COLS; ++ x ) {
-            sx  = (x * SQUARE_WIDTH) + LEFT_MARGIN;
-            sy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
-            dx  = sx + (SQUARE_WIDTH  / 4);
-            dy  = sy + (SQUARE_HEIGHT / 2);
+            dx  = (x * SQUARE_WIDTH) + LEFT_MARGIN;
+            dy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
+            // dx  = sx + (SQUARE_WIDTH  / 4);
+            // dy  = sy + (SQUARE_HEIGHT / 2);
             const  int          pi  = (y * POS_NUM_COLS) + x;
             const  PieceIndex   dp  = vb.piBoard[pi];
             if ( dp == 0 ) { continue; }
 
-            const  char  *      pn  = s_tblPieceName[dp];
-            ::TextOut(hDC, dx, dy, pn, strlen(pn));
+            // const  char  *      pn  = s_tblPieceName[dp];
+            // ::TextOut(hDC, dx, dy, pn, strlen(pn));
+            sx  = ((dp - 1) % 10) * SQUARE_WIDTH;
+            sy  = ((dp - 1) / 10) * SQUARE_HEIGHT;
+            g_imgScreen.copyRectangle(
+                    dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT, g_imgPiece, sx, sy);
         }
     }
 
@@ -427,18 +441,25 @@ onPaint(
         const  THandCount   numHand = vb.nHands[c];
         if ( numHand <= 0 ) { continue; }
 
-        sx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
-        sy  = (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT + TOP_MARGIN;
-        if ( (g_selY != POS_NUM_ROWS + BOARD_TOP_OFFSET)
-                || (g_selX != tx + BOARD_LEFT_OFFSET) )
-        {
-            ::Rectangle(hDC, sx, sy, sx + SQUARE_WIDTH, sy + SQUARE_HEIGHT);
-        }
-        sx  += (SQUARE_WIDTH  / 4);
-        sy  += (SQUARE_HEIGHT / 2);
-        const  char  *  pn  = s_tblHandName[c];
-        ::TextOut(hDC, sx, sy, pn, strlen(pn));
+        dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
+        dy  = (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT + TOP_MARGIN;
+        // if ( (g_selY != POS_NUM_ROWS + BOARD_TOP_OFFSET)
+        //         || (g_selX != tx + BOARD_LEFT_OFFSET) )
+        // {
+        //     ::Rectangle(hDC, sx, sy, sx + SQUARE_WIDTH, sy + SQUARE_HEIGHT);
+        // }
+        // sx  += (SQUARE_WIDTH  / 4);
+        // sy  += (SQUARE_HEIGHT / 2);
+        // const  char  *  pn  = s_tblHandName[c];
+        // ::TextOut(hDC, sx, sy, pn, strlen(pn));
+        sx  = (c - HANDS_BLACK_PAWN) * SQUARE_WIDTH;
+        sy  = (0) * SQUARE_HEIGHT;
+        g_imgScreen.copyRectangle(
+                dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT, g_imgPiece, sx, sy);
     }
+
+    //  描画した内容を画面に表示する。  //
+    g_imgScreen.drawBitmap(hDC, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     return ( 0 );
 }
@@ -568,15 +589,21 @@ WinMain(
         ::MessageBox(hWnd,  "Graphic File [Pieces.bmp] Not Found!",
                      NULL,  MB_OK);
     }
+
+    if ( g_imgBack.openBitmapFile("Back.bmp") != ERR_SUCCESS )
     {
-        HDC hDC = ::GetDC(hWnd);
-        if ( g_imgScreen.createBitmap(320, 320, hDC) != ERR_SUCCESS )
-        {
-            ::MessageBox(hWnd,  "Not Enough Memory!",
-                         NULL,  MB_OK);
-        }
-        ::ReleaseDC(hWnd, hDC);
+        ::MessageBox(hWnd,  "Graphic File [Back.bmp] Not Found!",
+                     NULL,  MB_OK);
     }
+
+    HDC hDC = ::GetDC(hWnd);
+    if ( g_imgScreen.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, hDC)
+            != ERR_SUCCESS )
+    {
+        ::MessageBox(hWnd,  "Not Enough Memory!",
+                     NULL,  MB_OK);
+    }
+    ::ReleaseDC(hWnd, hDC);
 
     //  グローバル変数を初期化する。    //
     gc.resetGame();
