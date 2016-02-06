@@ -22,6 +22,20 @@
 
 #include    <string>
 
+#if defined( FAIRYSHOGI_WIN32_API )
+#    if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
+#        define     STRICT
+#        define     WIN32_LEAN_AND_MEAN
+#        include    <windows.h>
+#        define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H
+#    endif
+
+#    if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINGDI_H )
+#        include    <Wingdi.h>
+#        define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINGDI_H
+#    endif
+#endif
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
 
@@ -94,6 +108,27 @@ public:
             const  int  cyHeight,
             const  int  bDepth);
 
+#if  defined( FAIRYSHOGI_WIN32_API )
+
+    //----------------------------------------------------------------
+    /**   ビットマップイメージを生成する。
+    **
+    **  @param [in] cxWidth     幅。
+    **  @param [in] cyHeight    高さ。
+    **  @param [in] hDC         デバイスコンテキスト。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    createBitmap(
+            const  int  cxWidth,
+            const  int  cyHeight,
+            const  HDC  hDC);
+
+#endif  //  defined( FAIRYSHOGI_WIN32_API )
+
     //----------------------------------------------------------------
     /**   ビットマップイメージを破棄する。
     **
@@ -104,6 +139,35 @@ public:
     **/
     virtual  ErrCode
     destroyBitmap();
+
+#if  defined( FAIRYSHOGI_WIN32_API )
+
+    //----------------------------------------------------------------
+    /**   ビットマップを描画する。
+    **
+    **  @param [in] hDC   描画先のデバイスコンテキスト。
+    **  @param [in] dx    描画先の座標。
+    **  @param [in] dy    描画先の座標。
+    **  @param [in] w     描画する幅。
+    **  @param [in] h     描画する高さ。
+    **  @param [in] ox    部分的に描画する場合、その左端座標。
+    **  @param [in] oy    部分的に描画する場合、その上端座標。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    drawBitmap(
+            const  HDC  hDC,
+            const  int  dx,
+            const  int  dy,
+            const  int  w,
+            const  int  h,
+            const  int  ox  = 0,
+            const  int  oy  = 0);
+
+#endif  //  defined( FAIRYSHOGI_WIN32_API )
 
     //----------------------------------------------------------------
     /**   ビットマップファイルを開いて読み込む。
@@ -194,11 +258,23 @@ private:
 //
 private:
 
+#if defined( FAIRYSHOGI_WIN32_API )
+    typedef     BITMAPINFO          TBitmapInfo;
+    typedef     BITMAPINFOHEADER    TBitmapInfoHeader;
+    typedef     RGBQUAD             TRgbQuad;
+#else
+    struct      TBitmapInfo;
+    struct      TBitmapInfoHeader;
+    struct      TRgbQuad;
 
-    struct      BitmapInfo;
+    typedef     uint8_t             BYTE;
+    typedef     int32_t             LONG;
+    typedef     uint16_t            WORD;
+    typedef     uint32_t            DWORD;
+#endif
 
     typedef     uint8_t  *          LpBuffer;
-    typedef     BitmapInfo  *       LpBitmapInfo;
+    typedef     TBitmapInfo  *      LpBitmapInfo;
     typedef     void  *             LpBitArray;
 
     typedef     size_t              Offset;
@@ -213,6 +289,9 @@ private:
     LpBitmapInfo    m_ptrInfo;
     LpBitArray      m_ptrBits;
 
+#if  defined( FAIRYSHOGI_WIN32_API )
+    HBITMAP         m_hBitmap;
+#endif  //  defined( FAIRYSHOGI_WIN32_API )
 
     /**   壱ピクセルあたりのバイト数。  **/
     Offset          m_nPixelBytes;
@@ -224,16 +303,6 @@ private:
 //
 //    Other Features.
 //
-private:
-
-    struct      BitmapInfoHeader;
-    struct      RgbQuad;
-
-    typedef     uint8_t         BYTE;
-    typedef     int32_t         LONG;
-    typedef     uint16_t        WORD;
-    typedef     uint32_t        DWORD;
-
 private:
     typedef     BitmapImage     This;
     BitmapImage         (const  This  &);

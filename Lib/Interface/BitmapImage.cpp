@@ -24,12 +24,14 @@
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
 
+#if  !defined( FAIRYSHOGI_WIN32_API )
+
 //========================================================================
 //
-//    BitmapImage::BitmapInfoHeader  struct.
+//    BitmapImage::TBitmapInfoHeader  struct.
 //
 
-struct  BitmapImage::BitmapInfoHeader
+struct  BitmapImage::TBitmapInfoHeader
 {
     DWORD   biSize;
     LONG    biWidth;
@@ -44,7 +46,7 @@ struct  BitmapImage::BitmapInfoHeader
     DWORD   biClrImportant;
 };
 
-struct  BitmapImage::RgbQuad
+struct  BitmapImage::TRgbQuad
 {
     BYTE    rgbBlue;
     BYTE    rgbGreen;
@@ -52,11 +54,13 @@ struct  BitmapImage::RgbQuad
     BYTE    rgbReserved;
 };
 
-struct  BitmapImage::BitmapInfo
+struct  BitmapImage::TBitmapInfo
 {
     BitmapInfoHeader    bmiHeader;
     RgbQuad             bmiColors[1];
 };
+
+#endif  //  !defined( FAIRYSHOGI_WIN32_API )
 
 //========================================================================
 //
@@ -80,6 +84,9 @@ BitmapImage::BitmapImage()
       m_ptrBuf (nullptr),
       m_ptrInfo(nullptr),
       m_ptrBits(nullptr),
+#if  defined( FAIRYSHOGI_WIN32_API )
+      m_hBitmap(0),
+#endif
       m_nPixelBytes(0),
       m_nLineBytes (0)
 {
@@ -134,18 +141,18 @@ BitmapImage::createBitmap(
     this->m_nPixelBytes = computeBytesPerPixel(bDepth);
     this->m_nLineBytes  = computeBytesPerLine (cxWidth, bDepth);
 
-    size_t  cbBits  = (this->m_nLineBytes) * cyHeight;
-    size_t  cbHead  = sizeof(BitmapInfoHeader);
+    size_t  cbHead  = sizeof(TBitmapInfoHeader);
     if ( bDepth == 8 ) {
-        cbHead  += sizeof(RgbQuad) * 256;
+        cbHead  += sizeof(TRgbQuad) * 256;
     }
 
+    const  size_t   cbBits  = (this->m_nLineBytes) * cyHeight;
     LpBuffer        ptrBuf  = new  uint8_t [cbHead + cbBits];
     LpBitmapInfo    ptrInfo = pointer_cast<LpBitmapInfo>(ptrBuf);
     LpBitArray      ptrBits = (ptrBuf) + cbHead;
     this->m_ptrBuf  = (ptrBuf);
 
-    ptrInfo->bmiHeader.biSize           = sizeof(BITMAPINFOHEADER);
+    ptrInfo->bmiHeader.biSize           = sizeof(TBitmapInfoHeader);
     ptrInfo->bmiHeader.biWidth          = cxWidth;
     ptrInfo->bmiHeader.biHeight         = cyHeight;
     ptrInfo->bmiHeader.biBitCount       = bDepth;
@@ -163,6 +170,64 @@ BitmapImage::createBitmap(
     return ( ERR_SUCCESS );
 }
 
+#if  defined( FAIRYSHOGI_WIN32_API )
+
+//----------------------------------------------------------------
+//    ビットマップイメージを生成する。
+//
+
+ErrCode
+BitmapImage::createBitmap(
+        const  int  cxWidth,
+        const  int  cyHeight,
+        const  HDC  hDC)
+{
+    destroyBitmap();
+
+    const  int  bDepth  = 24;
+
+    this->m_xWidth  = cxWidth;
+    this->m_yHeight = cyHeight;
+    this->m_nDepth  = bDepth;
+
+    this->m_nPixelBytes = computeBytesPerPixel(bDepth);
+    this->m_nLineBytes  = computeBytesPerLine (cxWidth, bDepth);
+
+    size_t  cbHead  = sizeof(TBitmapInfoHeader);
+    if ( bDepth == 8 ) {
+        cbHead  += sizeof(TRgbQuad) * 256;
+    }
+
+    const  size_t   cbBits  = (this->m_nLineBytes) * cyHeight;
+    LpBuffer        ptrBuf  = new  uint8_t [cbHead];
+    LpBitmapInfo    ptrInfo = pointer_cast<LpBitmapInfo>(ptrBuf);
+    this->m_ptrBuf  = (ptrBuf);
+
+    ptrInfo->bmiHeader.biSize           = sizeof(TBitmapInfoHeader);
+    ptrInfo->bmiHeader.biWidth          = cxWidth;
+    ptrInfo->bmiHeader.biHeight         = cyHeight;
+    ptrInfo->bmiHeader.biBitCount       = bDepth;
+    ptrInfo->bmiHeader.biPlanes         = 1;
+    ptrInfo->bmiHeader.biXPelsPerMeter  = 0;
+    ptrInfo->bmiHeader.biYPelsPerMeter  = 0;
+    ptrInfo->bmiHeader.biClrUsed        = 0;
+    ptrInfo->bmiHeader.biClrImportant   = 0;
+    ptrInfo->bmiHeader.biCompression    = BI_RGB;
+    ptrInfo->bmiHeader.biSizeImage      = cbBits;
+
+    this->m_hBitmap = ::CreateDIBSection(
+                            hDC, ptrInfo, DIB_RGB_COLORS,
+                            &(this->m_ptrBits), NULL, 0);
+    if ( this->m_hBitmap == 0 ) {
+        return ( ERR_FAILURE );
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+#endif  //  defined( FAIRYSHOGI_WIN32_API )
+
+
 //----------------------------------------------------------------
 //    ビットマップイメージを破棄する。
 //
@@ -179,6 +244,34 @@ BitmapImage::destroyBitmap()
     return ( ERR_SUCCESS );
 }
 
+#if defined( FAIRYSHOGI_WIN32_API )
+
+//----------------------------------------------------------------
+//    ビットマップを描画する。
+//
+
+ErrCode
+BitmapImage::drawBitmap(
+        const  HDC  hDC,
+        const  int  dx,
+        const  int  dy,
+        const  int  w,
+        const  int  h,
+        const  int  ox,
+        const  int  oy)
+{
+    const  HDC      hMemDC  = ::CreateCompatibleDC(hDC);
+    const  HGDIOBJ  hOldBmp = ::SelectObject(hMemDC, this->m_hBitmap);
+    ::BitBlt(hDC, dx, dy, w, h, hMemDC, ox, oy, SRCCOPY);
+    ::GdiFlush();
+    ::SelectObject(hMemDC, hOldBmp);
+    ::DeleteDC(hMemDC);
+
+    return ( ERR_SUCCESS );
+}
+
+#endif  //  defined( FAIRYSHOGI_WIN32_API )
+
 //----------------------------------------------------------------
 //    ビットマップファイルを開いて読み込む。
 //
@@ -188,6 +281,10 @@ BitmapImage::openBitmapFile(
         const  std::string  &fileName)
 {
     FILE  *  fp = fopen(fileName.c_str(), "rb");
+    if ( fp == NULL ) {
+        return ( ERR_FILE_OPEN_ERROR );
+    }
+
     fseek(fp, 0, SEEK_END);
     const  FileLen  cbFile  = ftell(fp);
     LpBuffer    ptrBuf  = new  uint8_t [cbFile];
@@ -210,7 +307,7 @@ BitmapImage::readBitmap(
         const  FileLen      cbLen)
 {
     static_assert(
-            sizeof(BitmapInfoHeader) == SIZE_OF_BITMAP_INFO_HEADER,
+            sizeof(TBitmapInfoHeader) == SIZE_OF_BITMAP_INFO_HEADER,
             "Invalid Structure Size (BitmapInfoHeader)" );
 
     const   WORD    fhMagic = *(pointer_cast<const  WORD  *>(ptrBuf));
@@ -226,7 +323,7 @@ BitmapImage::readBitmap(
     this->m_ptrInfo = pointer_cast<LpBitmapInfo>(
                             (ptrBody) + SIZE_OF_BITMAP_FILE_HEADER);
 
-    const  BitmapInfoHeader  &  biHead  = (this->m_ptrInfo->bmiHeader);
+    const  TBitmapInfoHeader  & biHead  = (this->m_ptrInfo->bmiHeader);
 
     if ( (biHead.biSize < SIZE_OF_BITMAP_INFO_HEADER) )
     {
@@ -239,7 +336,7 @@ BitmapImage::readBitmap(
 
     Offset  ofsBits = SIZE_OF_BITMAP_FILE_HEADER + (biHead.biSize);
     if ( bDepth == 8 ) {
-        ofsBits += sizeof(RgbQuad) * 256;
+        ofsBits += sizeof(TRgbQuad) * 256;
     }
 
     this->m_xWidth  = xWidth;
