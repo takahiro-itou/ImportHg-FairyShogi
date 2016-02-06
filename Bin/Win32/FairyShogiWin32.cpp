@@ -330,25 +330,6 @@ onPaint(
             0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
             g_imgBack, 0,  0);
 
-    //  盤面のマスを描画する。  //
-    for ( int y = 0; y <= POS_NUM_ROWS; ++ y ) {
-        sx  = ((BOARD_LEFT_OFFSET) * SQUARE_WIDTH) + LEFT_MARGIN;
-        sy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
-        dx  = sx + (POS_NUM_COLS * SQUARE_WIDTH);
-        dy  = sy;
-        ::MoveToEx(hDC, sx, sy, NULL);
-        ::LineTo  (hDC, dx, dy);
-    }
-
-    for ( int x = 0; x <= POS_NUM_COLS; ++ x ) {
-        sx  = ((x + BOARD_LEFT_OFFSET) * SQUARE_WIDTH) + LEFT_MARGIN;
-        sy  = ((BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
-        dx  = sx;
-        dy  = sy + (POS_NUM_ROWS * SQUARE_HEIGHT);
-        ::MoveToEx(hDC, sx, sy, NULL);
-        ::LineTo  (hDC, dx, dy);
-    }
-
     //  何らかの理由で、マウスボタンが離された事実が、  //
     //  メインウィンドウに通知されなかった時の処理。    //
     //  例えば、マウスボタンを押して、AlT+Tab キーで    //
@@ -399,15 +380,6 @@ onPaint(
 
         dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
         dy  = TOP_MARGIN;
-        // if ( (g_selY != 0)
-        //         || (g_selX != tx + BOARD_LEFT_OFFSET) )
-        // {
-        //     ::Rectangle(hDC, dx, dy, dx + SQUARE_WIDTH, dy + SQUARE_HEIGHT);
-        // }
-        // sx  += (SQUARE_WIDTH  / 4);
-        // sy  += (SQUARE_HEIGHT / 2);
-        // const  char  *  pn  = s_tblHandName[c];
-        // ::TextOut(hDC, sx, sy, pn, strlen(pn));
         sx  = (c - HANDS_WHITE_PAWN) * SQUARE_WIDTH;
         sy  = (1) * SQUARE_HEIGHT;
         g_imgScreen.copyRectangle(
@@ -419,14 +391,10 @@ onPaint(
         for ( int x = 0; x < POS_NUM_COLS; ++ x ) {
             dx  = (x * SQUARE_WIDTH) + LEFT_MARGIN;
             dy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
-            // dx  = sx + (SQUARE_WIDTH  / 4);
-            // dy  = sy + (SQUARE_HEIGHT / 2);
             const  int          pi  = (y * POS_NUM_COLS) + x;
             const  PieceIndex   dp  = vb.piBoard[pi];
             if ( dp == 0 ) { continue; }
 
-            // const  char  *      pn  = s_tblPieceName[dp];
-            // ::TextOut(hDC, dx, dy, pn, strlen(pn));
             sx  = ((dp - 1) % 10) * SQUARE_WIDTH;
             sy  = ((dp - 1) / 10) * SQUARE_HEIGHT;
             g_imgScreen.copyRectangle(
@@ -443,15 +411,6 @@ onPaint(
 
         dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
         dy  = (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT + TOP_MARGIN;
-        // if ( (g_selY != POS_NUM_ROWS + BOARD_TOP_OFFSET)
-        //         || (g_selX != tx + BOARD_LEFT_OFFSET) )
-        // {
-        //     ::Rectangle(hDC, sx, sy, sx + SQUARE_WIDTH, sy + SQUARE_HEIGHT);
-        // }
-        // sx  += (SQUARE_WIDTH  / 4);
-        // sy  += (SQUARE_HEIGHT / 2);
-        // const  char  *  pn  = s_tblHandName[c];
-        // ::TextOut(hDC, sx, sy, pn, strlen(pn));
         sx  = (c - HANDS_BLACK_PAWN) * SQUARE_WIDTH;
         sy  = (0) * SQUARE_HEIGHT;
         g_imgScreen.copyRectangle(
