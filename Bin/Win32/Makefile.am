@@ -50,6 +50,10 @@ AM_CPPFLAGS             += -DDSHOGI_WIN32=1
 bin_PROGRAMS            =  \
         FairyShogiWin32
 
+bin_SCRIPTS             =  \
+        Back.bmp           \
+        Pieces.bmp
+
 ##
 ##    Build Programs.
 ##
