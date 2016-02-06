@@ -17,7 +17,7 @@ dnl
 
 AC_INIT(
     [FairyShogi],
-    [0.0.0],
+    [0.0.61],
     [BUG-REPORT-ADDRESS],
     [FairyShogi])
 
