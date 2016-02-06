@@ -321,7 +321,7 @@ BitmapImage::readBitmap(
     LpBuffer  const    ptrByte  = new  uint8_t [cbLen + 2];
     LpBuffer  const    ptrBody  = (ptrByte + 2);
 
-    ::memcpy( ptrByte, ptrBuf, cbLen );
+    ::memcpy( ptrBody, ptrBuf, cbLen );
 
     this->m_ptrInfo = pointer_cast<LpBitmapInfo>(
                             (ptrBody) + SIZE_OF_BITMAP_FILE_HEADER);
