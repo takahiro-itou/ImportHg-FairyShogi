@@ -149,7 +149,7 @@ BitmapImage::createBitmap(
     const  size_t   cbBits  = (this->m_nLineBytes) * cyHeight;
     LpBuffer        ptrBuf  = new  uint8_t [cbHead + cbBits];
     LpBitmapInfo    ptrInfo = pointer_cast<LpBitmapInfo>(ptrBuf);
-    LpBitArray      ptrBits = (ptrBuf) + cbHead;
+    PmPixelArray    ptrBits = (ptrBuf) + cbHead;
     this->m_ptrBuf  = (ptrBuf);
 
     ptrInfo->bmiHeader.biSize           = sizeof(TBitmapInfoHeader);
@@ -215,12 +215,15 @@ BitmapImage::createBitmap(
     ptrInfo->bmiHeader.biCompression    = BI_RGB;
     ptrInfo->bmiHeader.biSizeImage      = cbBits;
 
+    PmBitsBuffer    ptrBits = (NULL);
     this->m_hBitmap = ::CreateDIBSection(
                             hDC, ptrInfo, DIB_RGB_COLORS,
-                            &(this->m_ptrBits), NULL, 0);
+                            &(ptrBits), NULL, 0);
     if ( this->m_hBitmap == 0 ) {
         return ( ERR_FAILURE );
     }
+
+    this->m_ptrBits = static_cast<PmPixelArray>(ptrBits);
 
     return ( ERR_SUCCESS );
 }
@@ -357,6 +360,33 @@ BitmapImage::readBitmap(
 //    Public Member Functions.
 //
 
+//----------------------------------------------------------------
+//    別のビットマップの矩形をコピーする。
+//
+
+ErrCode
+BitmapImage::copyRectangle(
+        const  int          dx,
+        const  int          dy,
+        const  int          dw,
+        const  int          dh,
+        const  BitmapImage  &bmpSrc,
+        const  int          sx,
+        const  int          sy)
+{
+    for ( int y = 0; y < dh; ++ y ) {
+        PcPixelArray    ptrSrc  = bmpSrc.getPixels(sx, sy + y);
+        PmPixelArray    ptrDst  = this->getPixels(dx, dy + y);
+        for ( int x = 0; x < dw; ++ x ) {
+            *(ptrDst++) = *(ptrSrc++);      //  B
+            *(ptrDst++) = *(ptrSrc++);      //  G
+            *(ptrDst++) = *(ptrSrc++);      //  R
+        }
+    }
+
+    return ( ERR_SUCCESS );
+}
+
 //========================================================================
 //
 //    Accessors.
@@ -388,6 +418,64 @@ BitmapImage::computeBytesPerLine(
         const  int  bDepth)
 {
     return ( ((static_cast<Offset>(cxWidth) * bDepth + 31) / 32) * 4 );
+}
+
+//----------------------------------------------------------------
+//    ビットマップデータの先頭からのオフセットを計算する。
+//
+
+inline  const   BitmapImage::Offset
+BitmapImage::computeOffset(
+        const  int  x,
+        const  int  y)  const
+{
+    return ( (( (this->m_yHeight) - y - 1) * (this->m_nLineBytes))
+             + ((this->m_nPixelBytes) * x) );
+}
+
+//----------------------------------------------------------------
+//    ビットマップデータのアドレスを取得する。
+//
+
+inline  BitmapImage::PcPixelArray
+BitmapImage::getPixels()  const
+{
+    return ( this->m_ptrBits );
+}
+
+//----------------------------------------------------------------
+//    ビットマップデータのアドレスを取得する。
+//
+
+inline  BitmapImage::PmPixelArray
+BitmapImage::getPixels()
+{
+    return ( this->m_ptrBits );
+}
+
+//----------------------------------------------------------------
+//    ビットマップデータのアドレスを取得する。
+//
+
+inline  BitmapImage::PcPixelArray
+BitmapImage::getPixels(
+        const  int  x,
+        const  int  y)  const
+{
+    return ( (this->m_ptrBits) + computeOffset(x, y) );
+}
+
+
+//----------------------------------------------------------------
+//    ビットマップデータのアドレスを取得する。
+//
+
+inline  BitmapImage::PmPixelArray
+BitmapImage::getPixels(
+        const  int  x,
+        const  int  y)
+{
+    return ( (this->m_ptrBits) + computeOffset(x, y) );
 }
 
 }   //  End of namespace  Interface

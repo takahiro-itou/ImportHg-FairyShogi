@@ -201,16 +201,92 @@ public:
 //
 //    Public Member Functions.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   別のビットマップの矩形をコピーする。
+    **
+    **  @param [in] dx        コピー先の水平座標。
+    **  @param [in] dy        コピー先の垂直座標。
+    **  @param [in] dw        コピーする幅。
+    **  @param [in] dh        コピーする高さ。
+    **  @param [in] bmpSrc    コピー元のビットマップ。
+    **  @param [in] sx        コピー元の水平座標。
+    **  @param [in] sy        コピー元の垂直座標。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    copyRectangle(
+            const  int          dx,
+            const  int          dy,
+            const  int          dw,
+            const  int          dh,
+            const  BitmapImage  &bmpSrc,
+            const  int          sx,
+            const  int          sy);
 
 //========================================================================
 //
 //    Accessors.
 //
+public:
+
+    typedef     uint8_t                 PixelValue;
+    typedef     PixelValue  *           PmPixelArray;
+    typedef     const   PixelValue  *   PcPixelArray;
+
+public:
+
+    //----------------------------------------------------------------
+    /**   ビットマップデータのアドレスを取得する。
+    **
+    **  @return     ビットマップデータの先頭アドレス。
+    **/
+    inline  PcPixelArray
+    getPixels()  const;
+
+    //----------------------------------------------------------------
+    /**   ビットマップデータのアドレスを取得する。
+    **
+    **  @return     ビットマップデータの先頭アドレス。
+    **/
+    inline  PmPixelArray
+    getPixels();
+
+    //----------------------------------------------------------------
+    /**   ビットマップデータのアドレスを取得する。
+    **
+    **  @param [in] x   水平座標。
+    **  @param [in] y   垂直座標。
+    **  @return     指定した座標に対応するデータのアドレス。
+    **/
+    inline  PcPixelArray
+    getPixels(
+            const  int  x,
+            const  int  y)  const;
+
+    //----------------------------------------------------------------
+    /**   ビットマップデータのアドレスを取得する。
+    **
+    **  @param [in] x   水平座標。
+    **  @param [in] y   垂直座標。
+    **  @return     指定した座標に対応するデータのアドレス。
+    **/
+    inline  PmPixelArray
+    getPixels(
+            const  int  x,
+            const  int  y);
 
 //========================================================================
 //
 //    For Internal Use Only.
 //
+private:
+    typedef     size_t              Offset;
+
 private:
 
     //----------------------------------------------------------------
@@ -235,7 +311,22 @@ private:
             const  int  cxWidth,
             const  int  bDepth);
 
+    //----------------------------------------------------------------
+    /**   ビットマップデータの先頭からのオフセットを計算する。
+    **
+    **  @param [in] x   水平座標。
+    **  @param [in] y   垂直座標。
+    **  @return     指定した座標に対応するデータのオフセット。
+    **/
+    inline  const   Offset
+    computeOffset(
+            const  int  x,
+            const  int  y)  const;
 
+    //----------------------------------------------------------------
+    //
+    //    定数。
+    //
     enum  {
         /**
         **    ビットマップファイルヘッダのサイズ。
@@ -275,9 +366,7 @@ private:
 
     typedef     uint8_t  *          LpBuffer;
     typedef     TBitmapInfo  *      LpBitmapInfo;
-    typedef     void  *             LpBitArray;
-
-    typedef     size_t              Offset;
+    typedef     void  *             PmBitsBuffer;
 
 private:
 
@@ -287,7 +376,7 @@ private:
 
     LpBuffer        m_ptrBuf;
     LpBitmapInfo    m_ptrInfo;
-    LpBitArray      m_ptrBits;
+    PmPixelArray    m_ptrBits;
 
 #if  defined( FAIRYSHOGI_WIN32_API )
     HBITMAP         m_hBitmap;
