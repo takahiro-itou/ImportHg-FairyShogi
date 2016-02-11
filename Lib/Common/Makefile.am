@@ -32,6 +32,7 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
+        $(INCLIBDIR)/ActionView.h          \
         $(INCLIBDIR)/FairyShogiSettings.h  \
         $(INCLIBDIR)/FairyShogiTypes.h     \
         $(INCLIBDIR)/ViewBuffer.h          \
