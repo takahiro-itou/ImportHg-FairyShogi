@@ -46,8 +46,8 @@ namespace  Interface  {
 class  GameController
 {
 public:
-
-    typedef     std::vector<Common::ActionView>     ActionViewList;
+    typedef     Common::ActionView          ActionView;
+    typedef     std::vector<ActionView>     ActionViewList;
 
 //========================================================================
 //
@@ -138,6 +138,18 @@ public:
     **/
     virtual  ErrCode
     resetGame();
+
+    //----------------------------------------------------------------
+    /**   表示用棋譜データの内容をストリームに出力する。
+    **
+    **  @param [in] actView   棋譜表示用構造体。
+    **  @param[out] outStr    出力ストリーム。
+    **  @return     出力後のストリームの参照を返す。
+    **/
+    virtual  std::ostream  &
+    writeActionView(
+            const  ActionView   &actView,
+            std::ostream        &outStr);
 
     //----------------------------------------------------------------
     /**   棋譜データを表示用に変換する。

@@ -20,8 +20,27 @@
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/ViewBuffer.h"
 
+#include    <ostream>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
+
+namespace  {
+
+/**
+**    棋譜に表示する駒の名称。
+**/
+
+constexpr   const   char  *
+s_tblPieceName[]    = {
+    "",
+    "Pawn",  "Silver",  "Gold",  "Bishop",  "Rook",  "King",
+    "Tokin", "NariGin", "Uma",   "Ryu"
+    "Pawn",  "Silver",  "Gold",  "Bishop",  "Rook",  "King",
+    "Tokin", "NariGin", "Uma",   "Ryu"
+};
+
+}   //  End of (Unnamed) namespace.
 
 //========================================================================
 //
@@ -129,6 +148,31 @@ ErrCode
 GameController::resetGame()
 {
     return ( this->m_gcBoard.resetGameBoard() );
+}
+
+//----------------------------------------------------------------
+//    表示用棋譜データの内容をストリームに出力する。
+//
+
+std::ostream  &
+GameController::writeActionView(
+        const  ActionView   &actView,
+        std::ostream        &outStr)
+{
+    outStr  <<  (actView.xNewCol)
+            <<  (actView.yNewRow)
+            <<  s_tblPieceName[actView.fpAfter];
+    if ( (actView.putHand) != -1 ) {
+        outStr  <<  (actView.xOldCol)
+                <<  (actView.yOldRow);
+        if ( (actView.fpAfter) != (actView.fpMoved) ) {
+            outStr  <<  "(PROM)";
+        }
+    } else {
+        outStr  <<  "(PUT)";
+    }
+
+    return ( outStr );
 }
 
 //----------------------------------------------------------------
