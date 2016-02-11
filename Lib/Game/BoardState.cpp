@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Game/BoardState.h"
 
+#include    "FairyShogi/Common/ActionView.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
 
@@ -51,8 +53,49 @@ BoardState::~BoardState()
 
 //========================================================================
 //
+//    Public Member Functions (Implement Pure Virtual).
+//
+
+//========================================================================
+//
+//    Public Member Functions (Overrides).
+//
+
+//========================================================================
+//
+//    Public Member Functions (Pure Virtual Functions).
+//
+
+//========================================================================
+//
+//    Public Member Functions (Virtual Functions).
+//
+
+//========================================================================
+//
 //    Public Member Functions.
 //
+
+//----------------------------------------------------------------
+//    指し手の内部形式を表示用データに変換する。
+//
+
+ErrCode
+BoardState::decodeActionData(
+        const   ActionData   &  actData,
+        Common::ActionView  *   actView)
+{
+    actView->xNewCol    = actData.xNewCol;
+    actView->yNewRow    = actData.yNewRow;
+    actView->xOldCol    = actData.xOldCol;
+    actView->yOldRow    = actData.yOldRow;
+    actView->fpAfter    = actData.fpAfter;
+    actView->fpMoved    = actData.fpMoved;
+    actView->fpCatch    = actData.fpCatch;
+    actView->putHand    = actData.putHand;
+
+    return ( ERR_SUCCESS );
+}
 
 //----------------------------------------------------------------
 //    駒を移動する指し手を内部形式に変換する。

@@ -23,6 +23,12 @@
 #include    "FairyShogi/Common/ViewBuffer.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
+
+//  クラスの前方宣言。  //
+namespace  Common  {
+struct  ActionView;
+}   //  End of namespace  Common
+
 namespace  Game  {
 
 //========================================================================
@@ -137,9 +143,44 @@ public:
 
 //========================================================================
 //
+//    Public Member Functions (Implement Pure Virtual).
+//
+
+//========================================================================
+//
+//    Public Member Functions (Overrides).
+//
+
+//========================================================================
+//
+//    Public Member Functions (Pure Virtual Functions).
+//
+
+//========================================================================
+//
+//    Public Member Functions (Virtual Functions).
+//
+
+//========================================================================
+//
 //    Public Member Functions.
 //
 public:
+
+    //----------------------------------------------------------------
+    /**   指し手の内部形式を表示用データに変換する。
+    **
+    **  @param [in] actData   指し手データの内部形式。
+    **  @param[out] actView   表示用データを書き込む領域。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    decodeActionData(
+            const   ActionData   &  actData,
+            Common::ActionView  *   actView);
 
     //----------------------------------------------------------------
     /**   駒を移動する指し手を内部形式に変換する。
