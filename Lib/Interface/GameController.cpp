@@ -17,6 +17,7 @@
 
 #include    "FairyShogi/Interface/GameController.h"
 
+#include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/ViewBuffer.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -38,7 +39,8 @@ namespace  Interface  {
 //
 
 GameController::GameController()
-    : m_gcBoard()
+    : m_gcBoard(),
+      m_actList()
 {
 }
 
@@ -127,6 +129,31 @@ ErrCode
 GameController::resetGame()
 {
     return ( this->m_gcBoard.resetGameBoard() );
+}
+
+//----------------------------------------------------------------
+//    棋譜データを表示用に変換する。
+//
+
+ErrCode
+GameController::writeActionList(
+        ActionViewList  &actList)  const
+{
+    typedef     ActionList::const_iterator  ActIter;
+
+    const  ActionList  &obj = (this->m_actList);
+
+    actList.clear();
+    actList.resize(obj.size());
+
+    size_t          idx     = 0;
+    const  ActIter  itrEnd  = obj.end();
+    for ( ActIter itr = obj.begin(); itr != itrEnd; ++ itr, ++ idx )
+    {
+        this->m_gcBoard.decodeActionData( *itr, &actList[idx] );
+    }
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------

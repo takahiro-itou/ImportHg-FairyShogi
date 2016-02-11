@@ -27,6 +27,12 @@
 #include    <vector>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
+
+//  クラスの前方宣言。  //
+namespace  Common  {
+struct  ActionView;
+}   //  End of namespace  Common
+
 namespace  Interface  {
 
 //========================================================================
@@ -40,6 +46,8 @@ namespace  Interface  {
 class  GameController
 {
 public:
+
+    typedef     std::vector<Common::ActionView>     ActionViewList;
 
 //========================================================================
 //
@@ -130,6 +138,19 @@ public:
     **/
     virtual  ErrCode
     resetGame();
+
+    //----------------------------------------------------------------
+    /**   棋譜データを表示用に変換する。
+    **
+    **  @param[out] actList   棋譜表示用構造体の配列。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    writeActionList(
+            ActionViewList  &actList)  const;
 
     //----------------------------------------------------------------
     /**   現在の盤面を表示用バッファにコピーする。
