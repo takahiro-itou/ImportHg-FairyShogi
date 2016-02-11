@@ -85,12 +85,13 @@ BoardState::encodeMoveAction(
         const  PosRow       yNewRow,
         const  PieceIndex   flgProm)
 {
-    const  PieceIndex   tmp = curStat.m_bsField[yOldRow][xOldCol];
+    const  PieceIndex   tmp = curStat.m_bsField[
+            getMatrixPos(xOldCol, yOldRow) ];
 
     ActionData  act = {
         xNewCol,    yNewRow,
         xOldCol,    yOldRow,
-        curStat.m_bsField[yNewRow][xNewCol],
+        curStat.m_bsField[getMatrixPos(xNewCol, yNewRow)],
         tmp,
         tmp,
         FIELD_EMPTY_SQUARE
@@ -144,7 +145,7 @@ BoardState::encodePutAction(
     const   ActionData  act = {
         xPutCol,    yPutRow,
         -1,         -1,
-        curStat.m_bsField[yPutRow][xPutCol],
+        curStat.m_bsField[ getMatrixPos(xPutCol, yPutRow) ],
         FIELD_EMPTY_SQUARE,
         s_tblHandConv[pHand],
         pHand
@@ -191,11 +192,13 @@ BoardState::playForward(
 
     //  移動元のマスを空きマスにする。  //
     if ( (actFwd.fpMoved) != FIELD_EMPTY_SQUARE ) {
-        icSt.m_bsField[actFwd.yOldRow][actFwd.xOldCol]  = FIELD_EMPTY_SQUARE;
+        icSt.m_bsField[ getMatrixPos(actFwd.xOldCol, actFwd.yOldRow) ]
+                = FIELD_EMPTY_SQUARE;
     }
 
     //  移動先に指定した駒を書き込む。  //
-    icSt.m_bsField[actFwd.yNewRow][actFwd.xNewCol]  = actFwd.fpAfter;
+    icSt.m_bsField[ getMatrixPos(actFwd.xNewCol, actFwd.yNewRow) ]
+            = actFwd.fpAfter;
 
     //  取った相手の駒を持ち駒にする。  //
     if ( actFwd.fpCatch != FIELD_EMPTY_SQUARE ) {
@@ -229,25 +232,23 @@ ErrCode
 BoardState::resetGameBoard(
         InternState  *  pCurStat)
 {
-    for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
-        for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
-            pCurStat->m_bsField[yr][xc] = FIELD_EMPTY_SQUARE;
-        }
+    for ( int i = 0; i < POS_NUM_ROWS * POS_NUM_COLS; ++ i ) {
+        pCurStat->m_bsField[i]  = FIELD_EMPTY_SQUARE;
     }
 
-    pCurStat->m_bsField[0][0]   = FIELD_WHITE_ROOK;
-    pCurStat->m_bsField[0][1]   = FIELD_WHITE_BISHOP;
-    pCurStat->m_bsField[0][2]   = FIELD_WHITE_SILVER;
-    pCurStat->m_bsField[0][3]   = FIELD_WHITE_GOLD;
-    pCurStat->m_bsField[0][4]   = FIELD_WHITE_KING;
-    pCurStat->m_bsField[1][4]   = FIELD_WHITE_PAWN;
+    pCurStat->m_bsField[getMatrixPos(0, 0)] = FIELD_WHITE_ROOK;
+    pCurStat->m_bsField[getMatrixPos(1, 0)] = FIELD_WHITE_BISHOP;
+    pCurStat->m_bsField[getMatrixPos(2, 0)] = FIELD_WHITE_SILVER;
+    pCurStat->m_bsField[getMatrixPos(3, 0)] = FIELD_WHITE_GOLD;
+    pCurStat->m_bsField[getMatrixPos(4, 0)] = FIELD_WHITE_KING;
+    pCurStat->m_bsField[getMatrixPos(4, 1)] = FIELD_WHITE_PAWN;
 
-    pCurStat->m_bsField[3][0]   = FIELD_BLACK_PAWN;
-    pCurStat->m_bsField[4][0]   = FIELD_BLACK_KING;
-    pCurStat->m_bsField[4][1]   = FIELD_BLACK_GOLD;
-    pCurStat->m_bsField[4][2]   = FIELD_BLACK_SILVER;
-    pCurStat->m_bsField[4][3]   = FIELD_BLACK_BISHOP;
-    pCurStat->m_bsField[4][4]   = FIELD_BLACK_ROOK;
+    pCurStat->m_bsField[getMatrixPos(0, 3)] = FIELD_BLACK_PAWN;
+    pCurStat->m_bsField[getMatrixPos(0, 4)] = FIELD_BLACK_KING;
+    pCurStat->m_bsField[getMatrixPos(1, 4)] = FIELD_BLACK_GOLD;
+    pCurStat->m_bsField[getMatrixPos(2, 4)] = FIELD_BLACK_SILVER;
+    pCurStat->m_bsField[getMatrixPos(3, 4)] = FIELD_BLACK_BISHOP;
+    pCurStat->m_bsField[getMatrixPos(4, 4)] = FIELD_BLACK_ROOK;
 
     for ( int hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
         pCurStat->m_nHands[hp]  = 0;
@@ -284,7 +285,7 @@ BoardState::copyToViewBuffer(
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
             const  int  pi  = (yr * POS_NUM_COLS) + (xc);
-            bufView.piBoard[pi] = curStat.m_bsField[yr][xc];
+            bufView.piBoard[pi] = curStat.m_bsField[getMatrixPos(xc, yr)];
         }
     }
 
@@ -299,6 +300,18 @@ BoardState::copyToViewBuffer(
 //
 //    For Internal Use Only.
 //
+
+//----------------------------------------------------------------
+//    盤面の座標をインデックスに変換する。
+//
+
+inline  FieldIndex
+BoardState::getMatrixPos(
+        const   PosCol  xCol,
+        const   PosRow  yRow)
+{
+    return ( (xCol * POS_NUM_ROWS) + yRow );
+}
 
 }   //  End of namespace  GAME
 FAIRYSHOGI_NAMESPACE_END

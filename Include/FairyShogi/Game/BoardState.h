@@ -98,7 +98,7 @@ public:
     /**   盤面データの内部形式の型。    **/
     struct  InternState
     {
-        PieceIndex  m_bsField[POS_NUM_ROWS][POS_NUM_COLS];
+        PieceIndex  m_bsField[POS_NUM_ROWS * POS_NUM_COLS];
         THandCount  m_nHands [NUM_HAND_TYPES];
     };
 
@@ -282,6 +282,19 @@ public:
 //
 //    For Internal Use Only.
 //
+private:
+
+    //----------------------------------------------------------------
+    /**   盤面の座標をインデックスに変換する。
+    **
+    **  @param [in] xCol    横方向の座標。
+    **  @param [in] yRow    縦方向の座標。
+    **  @return     座標に対応するインデックスを返す。
+    **/
+    static  inline  FieldIndex
+    getMatrixPos(
+            const   PosCol  xCol,
+            const   PosRow  yRow);
 
 //========================================================================
 //

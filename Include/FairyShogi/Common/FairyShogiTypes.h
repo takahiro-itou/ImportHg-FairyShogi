@@ -69,7 +69,7 @@ typedef     int     PosRow;
 **    盤面の座標を表す型。
 **/
 
-typedef     int     PosMat;
+typedef     int     FieldIndex;
 
 //----------------------------------------------------------------
 /**
