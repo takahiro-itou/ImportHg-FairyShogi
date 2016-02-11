@@ -164,9 +164,15 @@ public:
 //    Member Variables.
 //
 private:
+    typedef     Game::BoardState::ActionData    ActionData;
+    typedef     std::vector<ActionData>         ActionList;
+private:
 
     /**   盤面の状態。  **/
     Game::BoardState    m_gcBoard;
+
+    /**   棋譜データ。  **/
+    ActionList          m_actList;
 
 //========================================================================
 //

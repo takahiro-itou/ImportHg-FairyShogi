@@ -89,6 +89,10 @@ GameController::playMoveAction(
 
     const  ErrCode  retErr  = this->m_gcBoard.playForward(act);
 
+    if ( retErr == ERR_SUCCESS ) {
+        this->m_actList.push_back(act);
+    }
+
     return ( retErr );
 }
 
@@ -107,6 +111,10 @@ GameController::playPutAction(
                     xPutCol, yPutRow, pHand);
 
     const  ErrCode  retErr  = this->m_gcBoard.playForward(act);
+
+    if ( retErr == ERR_SUCCESS ) {
+        this->m_actList.push_back(act);
+    }
 
     return ( retErr );
 }
