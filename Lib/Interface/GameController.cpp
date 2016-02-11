@@ -34,10 +34,10 @@ namespace  {
 constexpr   const   char  *
 s_tblPieceName[]    = {
     "",
-    "Pawn",  "Silver",  "Gold",  "Bishop",  "Rook",  "King",
-    "Tokin", "NariGin", "Uma",   "Ryu"
-    "Pawn",  "Silver",  "Gold",  "Bishop",  "Rook",  "King",
-    "Tokin", "NariGin", "Uma",   "Ryu"
+    "+Pawn",  "+Silver",  "+Gold",  "+Bishop",  "+Rook",  "+King",
+    "+Tokin", "+NariGin", "+Uma",   "+Ryu",
+    "-Pawn",  "-Silver",  "-Gold",  "-Bishop",  "-Rook",  "-King",
+    "-Tokin", "-NariGin", "-Uma",   "-Ryu"
 };
 
 }   //  End of (Unnamed) namespace.
@@ -159,17 +159,20 @@ GameController::writeActionView(
         const  ActionView   &actView,
         std::ostream        &outStr)
 {
-    outStr  <<  (actView.xNewCol)
-            <<  (actView.yNewRow)
+    outStr  <<  (5 - actView.xNewCol)
+            <<  (actView.yNewRow + 1)
+            <<  ' '
             <<  s_tblPieceName[actView.fpAfter];
-    if ( (actView.putHand) != -1 ) {
-        outStr  <<  (actView.xOldCol)
-                <<  (actView.yOldRow);
+    if ( (actView.putHand) == 0 ) {
+        outStr  <<  " ("
+                <<  (5 - actView.xOldCol)
+                <<  (actView.yOldRow + 1)
+                <<  ")";
         if ( (actView.fpAfter) != (actView.fpMoved) ) {
-            outStr  <<  "(PROM)";
+            outStr  <<  " (PROMOTE)";
         }
     } else {
-        outStr  <<  "(PUT)";
+        outStr  <<  " (PUT)";
     }
 
     return ( outStr );

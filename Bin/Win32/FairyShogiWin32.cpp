@@ -17,6 +17,7 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
 #include    "FairyShogi/Interface/GameController.h"
 
@@ -35,6 +36,8 @@
 #if !defined( UTL_HELP_UNUSED_ARGUMENT )
 #    define     UTL_HELP_UNUSED_ARGUMENT(var)   (void)(var)
 #endif
+
+#include    <fstream>
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
 
@@ -125,6 +128,8 @@ int     g_selX;
 int     g_selY;
 int     g_movX;
 int     g_movY;
+
+std::ofstream               ofsKifu;
 
 Interface::GameController   gc;
 
@@ -219,6 +224,8 @@ onLButtonUp(
         return ( 0 );
     }
 
+    Interface::GameController::ActionViewList   actList;
+
     const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
     const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
 
@@ -252,6 +259,14 @@ onLButtonUp(
                 mx - BOARD_LEFT_OFFSET,
                 my - BOARD_TOP_OFFSET,
                 0);
+    }
+
+    //  最後の指し手を棋譜ファイルに書き込む。  //
+    gc.writeActionList(actList);
+    if ( ofsKifu.good() && !(actList.empty()) ) {
+        gc.writeActionView(actList.back(), ofsKifu);
+        ofsKifu << std::endl;
+        ofsKifu.flush();
     }
 
 label_redaw_board:
@@ -555,6 +570,8 @@ WinMain(
                      NULL,  MB_OK);
     }
 
+    ofsKifu.open("Kifu.txt");
+
     HDC hDC = ::GetDC(hWnd);
     if ( g_imgScreen.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, hDC)
             != ERR_SUCCESS )
@@ -585,6 +602,8 @@ WinMain(
         ::TranslateMessage(&msg);
         ::DispatchMessage (&msg);
     }
+
+    ofsKifu.close();
 
     return ( msg.wParam );
 }

@@ -254,7 +254,7 @@ BoardState::playForward(
         --  icSt.m_nHands[actFwd.putHand];
     }
 
-    return ( ERR_FAILURE );
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
