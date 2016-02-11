@@ -33,6 +33,7 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
+        $(INCLIBDIR)/BitSet.h      \
         $(INCLIBDIR)/BoardState.h  \
         $(EXTRALIBHEADERS)
 
