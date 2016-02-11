@@ -24,12 +24,14 @@ EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
         BoardState.cpp      \
+        RuleTables.cpp      \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =
 LIBCXXINLINEFILES       =
 
 LIBNOINSTHEADERS        =  \
+        RuleTables.h           \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
