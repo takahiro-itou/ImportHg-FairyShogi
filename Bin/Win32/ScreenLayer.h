@@ -44,6 +44,19 @@ public:
     /**   座標を表すための型。  **/
     typedef     int     WindowCoord;
 
+    /**   イベントハンドラの戻り値型。  **/
+    enum  EventResult
+    {
+        /**   異常終了。    **/
+        EH_RESULT_FAILURE,
+
+        /**   正常終了。    **/
+        EH_RESULT_SUCCESS,
+
+        /**   正常終了。再描画が必要。  **/
+        EH_RESULT_REDRAW
+    };
+
 //========================================================================
 //
 //    Constructor(s) and Destructor.
