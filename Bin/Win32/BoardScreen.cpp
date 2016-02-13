@@ -17,8 +17,34 @@
 
 #include    "BoardScreen.h"
 
+#include    "FairyShogi/Common/ActionView.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
+
+namespace  {
+
+constexpr   PieceIndex
+s_tblHandEncBlack[] = {
+    Game::BoardState::HAND_BLACK_PAWN,
+    Game::BoardState::HAND_BLACK_SILVER,
+    Game::BoardState::HAND_BLACK_GOLD,
+    Game::BoardState::HAND_BLACK_BISHOP,
+    Game::BoardState::HAND_BLACK_ROOK,
+    Game::BoardState::HAND_BLACK_KING
+};
+
+constexpr   PieceIndex
+s_tblHandEncWhite[] = {
+    Game::BoardState::HAND_WHITE_PAWN,
+    Game::BoardState::HAND_WHITE_SILVER,
+    Game::BoardState::HAND_WHITE_GOLD,
+    Game::BoardState::HAND_WHITE_BISHOP,
+    Game::BoardState::HAND_WHITE_ROOK,
+    Game::BoardState::HAND_WHITE_KING
+};
+
+}   //  End of (Unnamed) namespace.
 
 //========================================================================
 //
@@ -37,7 +63,13 @@ namespace  Interface  {
 
 BoardScreen::BoardScreen()
     : Super(),
-      m_gcGameCtrl()
+      m_gcGameCtrl(),
+      m_scSelX(-1),
+      m_scSelY(-1),
+      m_scMovX(-1),
+      m_scMovY(-1),
+      m_ofsKifu("Kifu.txt"),
+      m_ddMode(DDM_CLICKS)
 {
 }
 
@@ -52,7 +84,13 @@ BoardScreen::BoardScreen(
         const  WindowCoord  wcWidth,
         const  WindowCoord  wcHeight)
     : Super(wcLeft, wcTop, wcWidth, wcHeight),
-      m_gcGameCtrl()
+      m_gcGameCtrl(),
+      m_scSelX(-1),
+      m_scSelY(-1),
+      m_scMovX(-1),
+      m_scMovY(-1),
+      m_ofsKifu("Kifu.txt"),
+      m_ddMode(DDM_CLICKS)
 {
 }
 
@@ -95,6 +133,192 @@ BoardScreen::drawScreenLayer(
 //
 //    Public Member Functions (Virtual Functions).
 //
+
+//----------------------------------------------------------------
+//    マウスの左ボタンを押した時のイベントハンドラ。
+//
+
+BoardScreen::EventResult
+BoardScreen::onLButtonDown(
+        const   DWORD   fwKeys,
+        const   UINT    xPos,
+        const   UINT    yPos)
+{
+    UTL_HELP_UNUSED_ARGUMENT(fwKeys);
+
+    if ( (xPos < LEFT_MARGIN) || (yPos < TOP_MARGIN) ) {
+        this->m_scSelX  = -1;
+        this->m_scSelY  = -1;
+        this->m_scMovX  = -1;
+        this->m_scMovY  = -1;
+        return ( EH_RESULT_REDRAW );
+    }
+
+    const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
+    const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
+
+    if ( (VIEW_NUM_ROWS <= my) ) {
+        this->m_scSelX  = -1;
+        this->m_scSelY  = -1;
+        this->m_scMovX  = -1;
+        this->m_scMovY  = -1;
+        return ( EH_RESULT_REDRAW );
+    }
+
+    if ( (my == 0) || (my == (POS_NUM_ROWS + BOARD_TOP_OFFSET)) ) {
+        if ( (HANDS_WHITE_KING - HANDS_WHITE_PAWN + 1) <= mx ) {
+            this->m_scSelX  = -1;
+            this->m_scSelY  = -1;
+            this->m_scMovX  = -1;
+            this->m_scMovY  = -1;
+            return ( EH_RESULT_REDRAW );
+        } else {
+            this->m_scSelX  = mx;
+            this->m_scSelY  = my;
+        }
+    } else if ( (VIEW_NUM_COLS) <= mx ) {
+        this->m_scSelX  = -1;
+        this->m_scSelY  = -1;
+    } else {
+        this->m_scSelX  = mx;
+        this->m_scSelY  = my;
+    }
+
+    this->m_scMovX  = -1;
+    this->m_scMovY  = -1;
+
+    return ( EH_RESULT_REDRAW );
+}
+
+//----------------------------------------------------------------
+//    マウスの左ボタンを離した時のイベントハンドラ。
+//
+
+BoardScreen::EventResult
+BoardScreen::onLButtonUp(
+        const   DWORD   fwKeys,
+        const   UINT    xPos,
+        const   UINT    yPos)
+{
+    UTL_HELP_UNUSED_ARGUMENT(fwKeys);
+
+    ::ReleaseCapture();
+
+    if ( (this->m_scSelX < 0) || (this->m_scSelY < 0) ) {
+        return ( EH_RESULT_SUCCESS );
+    }
+
+    Interface::GameController::ActionViewList   actList;
+
+    const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
+    const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
+
+    if ( (mx < BOARD_LEFT_OFFSET) || (my < BOARD_TOP_OFFSET)
+            || (POS_NUM_COLS + BOARD_LEFT_OFFSET <= mx)
+            || (POS_NUM_ROWS + BOARD_TOP_OFFSET  <= my) )
+    {
+        return ( EH_RESULT_REDRAW );
+    }
+    if ( (mx == this->m_scSelX) && (my == this->m_scSelY) ) {
+        //  移動をドラッグドロップモードから、  //
+        //  ダブルクリックモードに切り替える。  //
+        this->m_ddMode  = DDM_CLICKS;
+        return ( EH_RESULT_REDRAW );
+    }
+
+    if ( (this->m_scSelY) == 0 ) {
+        //  後手の持ち駒を打つ。    //
+        this->m_gcGameCtrl.playPutAction(
+                mx - BOARD_LEFT_OFFSET,
+                my - BOARD_TOP_OFFSET,
+                s_tblHandEncWhite[this->m_scSelX - BOARD_LEFT_OFFSET]);
+    } else if ( (this->m_scSelY) == POS_NUM_ROWS + BOARD_TOP_OFFSET ) {
+        //  先手の持ち駒を打つ。    //
+        this->m_gcGameCtrl.playPutAction(
+                mx - BOARD_LEFT_OFFSET,
+                my - BOARD_TOP_OFFSET,
+                s_tblHandEncBlack[this->m_scSelX - BOARD_LEFT_OFFSET]);
+    } else {
+        //  盤上の駒を移動させる。  //
+        this->m_gcGameCtrl.playMoveAction(
+                this->m_scSelX - BOARD_LEFT_OFFSET,
+                this->m_scSelY - BOARD_TOP_OFFSET,
+                mx - BOARD_LEFT_OFFSET,
+                my - BOARD_TOP_OFFSET,
+                0);
+    }
+
+    //  最後の指し手を棋譜ファイルに書き込む。  //
+    this->m_gcGameCtrl.writeActionList(actList);
+    if ( this->m_ofsKifu.good() && !(actList.empty()) ) {
+        this->m_gcGameCtrl.writeActionView(actList.back(), this->m_ofsKifu);
+        this->m_ofsKifu << std::endl;
+        this->m_ofsKifu.flush();
+    }
+
+    this->m_scSelX  = -1;
+    this->m_scSelY  = -1;
+    this->m_scMovX  = -1;
+    this->m_scMovY  = -1;
+
+    return ( EH_RESULT_REDRAW );
+}
+
+//----------------------------------------------------------------
+//    マウスを移動させた時のイベントハンドラ。
+//
+
+BoardScreen::EventResult
+BoardScreen::onMouseMove(
+        const   DWORD   fwKeys,
+        const   UINT    xPos,
+        const   UINT    yPos)
+{
+    UTL_HELP_UNUSED_ARGUMENT(fwKeys);
+
+    if ( (this->m_scSelX < 0) || (this->m_scSelY < 0) ) {
+        return ( EH_RESULT_SUCCESS );
+    }
+
+    const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
+    const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
+    int     mvX, mvY;
+
+    if ( (xPos < LEFT_MARGIN) || (yPos < TOP_MARGIN) ) {
+        this->m_scMovX  = -1;
+        this->m_scMovY  = -1;
+        return ( EH_RESULT_REDRAW );
+    }
+
+    if ( (mx < BOARD_LEFT_OFFSET) || (my < BOARD_TOP_OFFSET)
+            || (POS_NUM_COLS + BOARD_LEFT_OFFSET <= mx)
+            || (POS_NUM_ROWS + BOARD_TOP_OFFSET  <= my) )
+    {
+        mvX = -1;
+        mvY = -1;
+    } else {
+        mvX = mx;
+        mvY = my;
+    }
+
+    if ( (this->m_scMovX != mvX) || (this->m_scMovY != mvY) ) {
+        this->m_scMovX  = mvX;
+        this->m_scMovY  = mvY;
+        return ( EH_RESULT_REDRAW );
+    }
+
+    return ( EH_RESULT_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    盤面を初期状態に設定する。
+//
+
+ErrCode
+BoardScreen::resetGame()
+{
+    return ( this->m_gcGameCtrl.resetGame() );
+}
 
 //========================================================================
 //
