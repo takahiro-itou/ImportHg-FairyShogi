@@ -123,10 +123,10 @@ constexpr   int     SQUARE_HEIGHT       = 64;
 constexpr   int     VIEW_NUM_COLS       = (POS_NUM_COLS);
 constexpr   int     VIEW_NUM_ROWS       = (POS_NUM_ROWS) + 2;
 
-constexpr   int     VIEW_BOARD_LEFT     = 64;
-constexpr   int     VIEW_BOARD_TOP      = 64;
-constexpr   int     VIEW_BOARD_WIDTH    = 64 * 5;
-constexpr   int     VIEW_BOARD_HEIGHT   = 64 * (5 + 2);
+constexpr   int     VIEW_BOARD_LEFT     = 0;
+constexpr   int     VIEW_BOARD_TOP      = 0;
+constexpr   int     VIEW_BOARD_WIDTH    = (VIEW_NUM_COLS + 2) * SQUARE_WIDTH;
+constexpr   int     VIEW_BOARD_HEIGHT   = 640;
 
 constexpr   int     WINDOW_WIDTH        = 832;
 constexpr   int     WINDOW_HEIGHT       = 640;
@@ -168,7 +168,7 @@ onLButtonDown(
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
     const   Interface::ScreenLayer::EventResult
-        evtRet  = g_scrBoard.onLButtonUp(fwKeys, xPos, yPos);
+        evtRet  = g_scrBoard.onLButtonDown(fwKeys, xPos, yPos);
 
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //

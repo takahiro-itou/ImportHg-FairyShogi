@@ -222,8 +222,8 @@ private:
     static  constexpr   int     POS_NUM_ROWS        =  5;
 
     //  定数。  //
-    static  constexpr   int     LEFT_MARGIN         = 0;
-    static  constexpr   int     TOP_MARGIN          = 0;
+    static  constexpr   int     LEFT_MARGIN         = 64;
+    static  constexpr   int     TOP_MARGIN          = 64;
 
     static  constexpr   int     BOARD_TOP_OFFSET    = 1;
     static  constexpr   int     BOARD_LEFT_OFFSET   = 0;

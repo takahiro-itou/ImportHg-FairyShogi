@@ -126,8 +126,8 @@ BoardScreen::drawScreenLayer(
     //  背景をコピーする。      //
     bmpTrg->copyRectangle(
             0, 0,
-            VIEW_NUM_COLS * SQUARE_WIDTH,
-            VIEW_NUM_ROWS * SQUARE_HEIGHT,
+            this->m_biBack->getWidth(),
+            this->m_biBack->getHeight(),
             *(this->m_biBack),  0,  0);
 
     Common::ViewBuffer  vb;
