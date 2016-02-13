@@ -474,6 +474,8 @@ BoardScreen::setPromotionOption(
 {
     const  PieceIndex   pidSel  = (this->m_prmOptions)[idxSel];
 
+    this->m_bsState = BSLS_NOTHING;
+
     return ( playAction(
                      this->m_bcSrcX,  this->m_bcSrcY,
                      this->m_bcTrgX,  this->m_bcTrgY,  pidSel) );
@@ -523,10 +525,11 @@ BoardScreen::playAction(
                 iPrm);
     }
 
-    this->m_bcSrcX  = 0;
-    this->m_bcSrcY  = 0;
-    this->m_bcTrgX  = 0;
-    this->m_bcTrgY  = 0;
+    this->m_bcSrcX  = -1;
+    this->m_bcSrcY  = -1;
+    this->m_bcTrgX  = -1;
+    this->m_bcTrgY  = -1;
+    clearSelection();
 
     //  最後の指し手を棋譜ファイルに書き込む。  //
     Interface::GameController::ActionViewList   actList;
