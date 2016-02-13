@@ -121,7 +121,89 @@ ErrCode
 BoardScreen::drawScreenLayer(
         BitmapImage  *  bmpTrg)  const
 {
-    return ( ERR_FAILURE );
+    int     sx, sy, dx, dy;
+
+    //  背景をコピーする。      //
+    bmpTrg->copyRectangle(
+            0, 0,
+            VIEW_NUM_COLS * SQUARE_WIDTH,
+            VIEW_NUM_ROWS * SQUARE_HEIGHT,
+            *(this->m_biBack),  0,  0);
+
+    Common::ViewBuffer  vb;
+    memset(&vb, 0, sizeof(vb));
+    this->m_gcGameCtrl.writeToViewBuffer(vb);
+
+    //  後手の持ち駒を表示する。    //
+    int     tx  = 0;
+    for ( int c = HANDS_WHITE_PAWN; c <= HANDS_WHITE_KING; ++ c, ++ tx )
+    {
+        const  THandCount   numHand = vb.nHands[c];
+        if ( numHand <= 0 ) { continue; }
+
+        dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
+        dy  = TOP_MARGIN;
+        sx  = (c - HANDS_WHITE_PAWN) * SQUARE_WIDTH;
+        sy  = (1) * SQUARE_HEIGHT;
+        bmpTrg->copyRectangle(
+                dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
+                *(this->m_biPiece), sx, sy);
+    }
+
+    //  盤上にある駒を表示する。    //
+    for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
+        for ( int x = 0; x < POS_NUM_COLS; ++ x ) {
+            dx  = (x * SQUARE_WIDTH) + LEFT_MARGIN;
+            dy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
+            const  int          pi  = (y * POS_NUM_COLS) + x;
+            const  PieceIndex   dp  = vb.piBoard[pi];
+            if ( dp == 0 ) { continue; }
+
+            sx  = ((dp - 1) % 10) * SQUARE_WIDTH;
+            sy  = ((dp - 1) / 10) * SQUARE_HEIGHT;
+            bmpTrg->copyRectangle(
+                    dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
+                    *(this->m_biPiece), sx, sy);
+        }
+    }
+
+    //  先手の持ち駒を表示する。    //
+    tx  = 0;
+    for ( int c = HANDS_BLACK_PAWN; c <= HANDS_BLACK_KING; ++ c, ++ tx )
+    {
+        const  THandCount   numHand = vb.nHands[c];
+        if ( numHand <= 0 ) { continue; }
+
+        dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
+        dy  = (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT + TOP_MARGIN;
+        sx  = (c - HANDS_BLACK_PAWN) * SQUARE_WIDTH;
+        sy  = (0) * SQUARE_HEIGHT;
+        bmpTrg->copyRectangle(
+                dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
+                *(this->m_biPiece), sx, sy);
+    }
+
+    //  選択しているマスがあれば強調表示。  //
+    if ( (this->m_scSelX >= 0) && (this->m_scSelY >= 0) ) {
+        sx  = ((this->m_scSelX) * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = ((this->m_scSelY) * SQUARE_HEIGHT) + TOP_MARGIN;
+
+        bmpTrg->drawTransparentRectangle(
+                sx,  sy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
+                255, 255, 0, 192);
+    }
+
+    //  移動先として現在マウスが示しているマスを強調表示。  //
+    if ( (this->m_scMovX >= 0) && (this->m_scMovY >= 0) ) {
+        sx  = ((this->m_scMovX) * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = ((this->m_scMovY) * SQUARE_HEIGHT) + TOP_MARGIN;
+
+        bmpTrg->drawTransparentRectangle(
+                sx,  sy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
+                0, 0, 255, 192);
+    }
+
+    return ( ERR_SUCCESS );
 }
 
 //========================================================================

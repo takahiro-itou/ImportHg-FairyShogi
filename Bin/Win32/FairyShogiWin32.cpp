@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "BoardScreen.h"
+
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
 #include    "FairyShogi/Interface/GameController.h"
@@ -45,6 +47,11 @@ namespace  {
 
 constexpr   char
 g_szClassName[] = "FairyShogiWindow";
+
+Interface::BoardScreen  g_scrBoard;
+
+/**   マウスのキャプチャフラグ。    **/
+HWND                    g_hCapture;
 
 /**
 **    画面に表示する駒の名称。
@@ -116,6 +123,11 @@ constexpr   int     SQUARE_HEIGHT       = 64;
 constexpr   int     VIEW_NUM_COLS       = (POS_NUM_COLS);
 constexpr   int     VIEW_NUM_ROWS       = (POS_NUM_ROWS) + 2;
 
+constexpr   int     VIEW_BOARD_LEFT     = 64;
+constexpr   int     VIEW_BOARD_TOP      = 64;
+constexpr   int     VIEW_BOARD_WIDTH    = 64 * 5;
+constexpr   int     VIEW_BOARD_HEIGHT   = 64 * (5 + 2);
+
 constexpr   int     WINDOW_WIDTH        = 832;
 constexpr   int     WINDOW_HEIGHT       = 640;
 
@@ -124,18 +136,20 @@ constexpr   int     KIFU_VIEW_LEFT      = LEFT_MARGIN
 constexpr   int     KIFU_VIEW_WIDTH     = WINDOW_WIDTH - KIFU_VIEW_LEFT;
 constexpr   int     KIFU_FONT_HEIGHT    = 24;
 
-int     g_selX;
-int     g_selY;
-int     g_movX;
-int     g_movY;
+// int     g_selX;
+// int     g_selY;
+// int     g_movX;
+// int     g_movY;
 
-std::ofstream               ofsKifu;
+// std::ofstream               ofsKifu;
 
-Interface::GameController   gc;
+//Interface::GameController   gc;
 
 Interface::BitmapImage      g_imgScreen;
-Interface::BitmapImage      g_imgBack;
-Interface::BitmapImage      g_imgPiece;
+Interface::BitmapImage      g_imgBoard;
+
+// Interface::BitmapImage      g_imgBack;
+// Interface::BitmapImage      g_imgPiece;
 
 }   //  End of (Unnamed) namespace.
 
@@ -153,6 +167,18 @@ onLButtonDown(
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
+    const   Interface::ScreenLayer::EventResult
+        evtRet  = g_scrBoard.onLButtonUp(fwKeys, xPos, yPos);
+
+    if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
+        //  再描画を行う。  //
+        ::InvalidateRect(hWnd, NULL, FALSE);
+    }
+
+    ::SetCapture(hWnd);
+    g_hCapture  = hWnd;
+
+#if 0
     if ( (xPos < LEFT_MARGIN) || (yPos < TOP_MARGIN) ) {
         g_selX  = -1;
         g_selY  = -1;
@@ -200,6 +226,7 @@ onLButtonDown(
     if ( (g_selX >= 0) && (g_selY >= 0) ) {
         ::SetCapture(hWnd);
     }
+#endif
 
     return ( 0 );
 }
@@ -220,6 +247,15 @@ onLButtonUp(
 
     ::ReleaseCapture();
 
+    const   Interface::ScreenLayer::EventResult
+        evtRet  = g_scrBoard.onLButtonUp(fwKeys, xPos, yPos);
+
+    if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
+        //  再描画を行う。  //
+        ::InvalidateRect(hWnd, NULL, FALSE);
+    }
+
+#if 0
     if ( (g_selX < 0) || (g_selY < 0) ) {
         return ( 0 );
     }
@@ -275,6 +311,7 @@ label_redaw_board:
     g_movX  = -1;
     g_movY  = -1;
     ::InvalidateRect(hWnd, NULL, TRUE);
+#endif
 
     return ( 0 );
 }
@@ -292,6 +329,17 @@ onMouseMove(
         const   UINT    yPos)
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
+
+
+    const   Interface::ScreenLayer::EventResult
+        evtRet  = g_scrBoard.onMouseMove(fwKeys, xPos, yPos);
+
+    if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
+        //  再描画を行う。  //
+        ::InvalidateRect(hWnd, NULL, FALSE);
+    }
+
+#if 0
 
     if ( (g_selX < 0) || (g_selY < 0) ) {
         return ( 0 );
@@ -324,6 +372,7 @@ label_redraw_board:
         g_movY  = mvY;
         ::InvalidateRect(hWnd, NULL, TRUE);
     }
+#endif
 
     return ( 0 );
 }
@@ -338,26 +387,20 @@ onPaint(
         const   HWND    hWnd,
         const   HDC     hDC)
 {
-    int     sx, sy, dx, dy;
-
-    //  背景をコピーする。      //
-    g_imgScreen.copyRectangle(
-            0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
-            g_imgBack, 0,  0);
-
     //  何らかの理由で、マウスボタンが離された事実が、  //
     //  メインウィンドウに通知されなかった時の処理。    //
     //  例えば、マウスボタンを押して、AlT+Tab キーで    //
     //  別のウィンドウに切り替え、ボタンを離した等。    //
-    if ( (g_selX >= 0) && (g_selY >= 0) ) {
-        if ( ::GetCapture() != hWnd ) {
-            g_selX  = -1;
-            g_selY  = -1;
-            g_movX  = -1;
-            g_movY  = -1;
+    if ( (g_hCapture) == hWnd ) {
+        if ( ::GetCapture() != g_hCapture ) {
+            g_scrBoard.onMouseMove(0, 0, 0);
+            g_scrBoard.onLButtonUp(0, 0, 0);
         }
     }
 
+    g_scrBoard.drawScreenLayer( &g_imgBoard );
+
+#if 0
     Common::ViewBuffer  vb;
     memset(&vb, 0, sizeof(vb));
     gc.writeToViewBuffer(vb);
@@ -428,7 +471,17 @@ onPaint(
                 0, 0, 255, 192);
     }
 
+#endif
+
     //  描画した内容を画面に表示する。  //
+    g_imgScreen.copyRectangle(
+            g_scrBoard.getLeft(),
+            g_scrBoard.getTop(),
+            g_scrBoard.getWidth(),
+            g_scrBoard.getHeight(),
+            g_imgBoard,
+            0, 0);
+
     g_imgScreen.drawBitmap(hDC, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     return ( 0 );
@@ -554,19 +607,12 @@ WinMain(
     }
 
     //  この瞬間に画像を準備する。      //
-    if ( g_imgPiece.openBitmapFile("Pieces.bmp") != ERR_SUCCESS )
+    if ( g_scrBoard.setupBitmapImages("Back.bmp", "Pieces.bmp")
+            != ERR_SUCCESS )
     {
-        ::MessageBox(hWnd,  "Graphic File [Pieces.bmp] Not Found!",
-                     NULL,  MB_OK);
+        ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
+        return ( 0 );
     }
-
-    if ( g_imgBack.openBitmapFile("Back.bmp") != ERR_SUCCESS )
-    {
-        ::MessageBox(hWnd,  "Graphic File [Back.bmp] Not Found!",
-                     NULL,  MB_OK);
-    }
-
-    ofsKifu.open("Kifu.txt");
 
     HDC hDC = ::GetDC(hWnd);
     if ( g_imgScreen.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, hDC)
@@ -575,14 +621,27 @@ WinMain(
         ::MessageBox(hWnd,  "Not Enough Memory!",
                      NULL,  MB_OK);
     }
+    if ( g_imgBoard.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
+            != ERR_SUCCESS )
+    {
+        ::MessageBox(hWnd,  "Not Enough Memory!",
+                     NULL,  MB_OK);
+    }
     ::ReleaseDC(hWnd, hDC);
 
     //  グローバル変数を初期化する。    //
-    gc.resetGame();
-    g_selX  = -1;
-    g_selY  = -1;
-    g_movX  = -1;
-    g_movY  = -1;
+    g_scrBoard.setLeft  (VIEW_BOARD_LEFT);
+    g_scrBoard.setTop   (VIEW_BOARD_TOP);
+    g_scrBoard.setWidth (VIEW_BOARD_WIDTH);
+    g_scrBoard.setHeight(VIEW_BOARD_HEIGHT);
+
+    g_scrBoard.resetGame();
+    g_hCapture  = NULL;
+
+    // g_selX  = -1;
+    // g_selY  = -1;
+    // g_movX  = -1;
+    // g_movY  = -1;
 
     //  ウィンドウを表示する。  //
     ::ShowWindow(hWnd, nCmdShow);
@@ -598,8 +657,6 @@ WinMain(
         ::TranslateMessage(&msg);
         ::DispatchMessage (&msg);
     }
-
-    ofsKifu.close();
 
     return ( msg.wParam );
 }
