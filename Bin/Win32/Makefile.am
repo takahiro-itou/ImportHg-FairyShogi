@@ -58,6 +58,7 @@ dist_bin_SCRIPTS        =  \
 ##    Build Programs.
 ##
 
-FairyShogiWin32_SOURCES   =  FairyShogiWin32.cpp
+FairyShogiWin32_SOURCES   =  FairyShogiWin32.cpp  \
+        ScreenLayer.cpp  ScreenLayer.h
 FairyShogiWin32_LDADD     =  -lfsgInterface  -lGdi32
 
