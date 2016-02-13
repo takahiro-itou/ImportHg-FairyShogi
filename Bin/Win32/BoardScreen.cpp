@@ -259,16 +259,13 @@ BoardScreen::onLButtonDown(
     const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
     const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
 
-    if ( (this->m_ddMode) == DDM_NOT_START ) {
-        this->m_ddMode  = DDM_SELECT_SOURCE;
-    }
-
     if ( (VIEW_NUM_ROWS <= my) ) {
         clearSelection();
         return ( EH_RESULT_REDRAW );
     }
 
     if ( (my == 0) || (my == (POS_NUM_ROWS + BOARD_TOP_OFFSET)) ) {
+        //  持ち駒の表示エリアの場合。  //
         if ( (HANDS_WHITE_KING - HANDS_WHITE_PAWN + 1) <= mx ) {
             clearSelection();
             return ( EH_RESULT_REDRAW );
@@ -277,15 +274,31 @@ BoardScreen::onLButtonDown(
             this->m_bcSelY  = my;
         }
     } else if ( (VIEW_NUM_COLS) <= mx ) {
-        this->m_bcSelX  = -1;
-        this->m_bcSelY  = -1;
+        //  盤の外を選択しようとした場合。  //
+        clearSelection();
+        return ( EH_RESULT_REDRAW );
     } else {
         this->m_bcSelX  = mx;
         this->m_bcSelY  = my;
+
+        //  選択したマスの駒が、移動できない場合はキャンセル。  //
+        const  Game::BoardState  &
+            gbs = this->m_gcGameCtrl.getBoardState();
+        const  PieceIndex   piMove  = gbs.getFieldPiece(
+                mx - BOARD_LEFT_OFFSET,
+                my - BOARD_TOP_OFFSET);
+        if ( piMove == Game::BoardState::FIELD_EMPTY_SQUARE ) {
+            clearSelection();
+            return ( EH_RESULT_REDRAW );
+        }
     }
 
     this->m_bcMovX  = -1;
     this->m_bcMovY  = -1;
+
+    if ( (this->m_ddMode) == DDM_NOT_START ) {
+        this->m_ddMode  = DDM_SELECT_SOURCE;
+    }
 
     return ( EH_RESULT_REDRAW );
 }

@@ -224,6 +224,16 @@ GameController::writeToViewBuffer(
 //    Accessors.
 //
 
+//----------------------------------------------------------------
+//    現在の盤面の状態を取得する。
+//
+
+const   Game::BoardState  &
+GameController::getBoardState()  const
+{
+    return ( this->m_gcBoard );
+}
+
 //========================================================================
 //
 //    For Internal Use Only.
