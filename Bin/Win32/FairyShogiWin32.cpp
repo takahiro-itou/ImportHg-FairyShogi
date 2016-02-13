@@ -104,16 +104,20 @@ onLButtonDown(
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
-    const   Interface::ScreenLayer::EventResult
+    Interface::ScreenLayer::EventResult
+            evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
+
+    if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    {
+        //  成り駒選択中。  //
+    } else {
         evtRet  = g_scrBoard.onLButtonDown(fwKeys, xPos, yPos);
+    }
 
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
     }
-
-    ::SetCapture(hWnd);
-    g_hCapture  = hWnd;
 
     return ( 0 );
 }
@@ -135,9 +139,23 @@ onLButtonUp(
     g_hCapture  = (NULL);
     ::ReleaseCapture();
 
-    const   Interface::ScreenLayer::EventResult
-        evtRet  = g_scrBoard.onLButtonUp(fwKeys, xPos, yPos);
+    Interface::ScreenLayer::EventResult
+            evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
 
+    if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    {
+        //  成り駒選択中。  //
+        evtRet  = g_scrProm.onLButtonUp(fwKeys, xPos, yPos);
+        const  PieceIndex   pidSel  = g_scrProm.getUserSelect();
+        if ( pidSel >= 0 ) {
+            g_scrProm.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+            g_scrBoard.setPromotionOption(pidSel);
+        }
+        ::InvalidateRect(hWnd, NULL, FALSE);
+        return ( 0 );
+    }
+
+    evtRet  = g_scrBoard.onLButtonUp(fwKeys, xPos, yPos);
     const   Interface::BoardScreen::ScreenState
         bssCurStat  = g_scrBoard.getCurrentState();
 
@@ -171,10 +189,16 @@ onMouseMove(
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
+    Interface::ScreenLayer::EventResult
+            evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
 
-    const   Interface::ScreenLayer::EventResult
-        evtRet  = g_scrBoard.onMouseMove(fwKeys, xPos, yPos);
+    if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    {
+        //  成り駒選択中。  //
+        return ( 0 );
+    }
 
+    evtRet  = g_scrBoard.onMouseMove(fwKeys, xPos, yPos);
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
