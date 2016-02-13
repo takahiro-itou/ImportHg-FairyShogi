@@ -18,6 +18,7 @@
 #include    "BoardScreen.h"
 
 #include    "FairyShogi/Common/ActionView.h"
+#include    "FairyShogi/Interface/BitmapImage.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
@@ -68,6 +69,8 @@ BoardScreen::BoardScreen()
       m_scSelY(-1),
       m_scMovX(-1),
       m_scMovY(-1),
+      m_biBack (nullptr),
+      m_biPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
       m_ddMode(DDM_CLICKS)
 {
@@ -89,6 +92,8 @@ BoardScreen::BoardScreen(
       m_scSelY(-1),
       m_scMovX(-1),
       m_scMovY(-1),
+      m_biBack (nullptr),
+      m_biPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
       m_ddMode(DDM_CLICKS)
 {
@@ -318,6 +323,28 @@ ErrCode
 BoardScreen::resetGame()
 {
     return ( this->m_gcGameCtrl.resetGame() );
+}
+
+//----------------------------------------------------------------
+//    必要な画像データを準備する。
+//
+
+ErrCode
+BoardScreen::setupBitmapImages(
+        const  std::string  &imgBack,
+        const  std::string  &imgPiece)
+{
+    this->m_biBack  = new  BitmapImage;
+    if ( this->m_biBack->openBitmapFile(imgBack) != ERR_SUCCESS ) {
+        return ( ERR_FAILURE );
+    }
+
+    this->m_biPiece = new  BitmapImage;
+    if ( this->m_biPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
+        return ( ERR_FAILURE );
+    }
+
+    return ( ERR_SUCCESS );
 }
 
 //========================================================================

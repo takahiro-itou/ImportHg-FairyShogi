@@ -172,6 +172,21 @@ public:
     virtual  ErrCode
     resetGame();
 
+    //----------------------------------------------------------------
+    /**   必要な画像データを準備する。
+    **
+    **  @param [in] imgBack     盤の画像。
+    **  @param [in] imgPiece    駒の画像。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    setupBitmapImages(
+            const  std::string  &imgBack,
+            const  std::string  &imgPiece);
+
 //========================================================================
 //
 //    Public Member Functions.
@@ -258,6 +273,12 @@ private:
 
     /**   移動先のマスの座標（垂直方向）。  **/
     int                 m_scMovY;
+
+    /**   盤の画像イメージ。    **/
+    BitmapImage  *      m_biBack;
+
+    /**   駒の画像イメージ。    **/
+    BitmapImage  *      m_biPiece;
 
     /**   @todo     暫定処理。後で消す。    **/
     std::ofstream       m_ofsKifu;
