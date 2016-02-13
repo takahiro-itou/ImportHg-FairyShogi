@@ -319,6 +319,32 @@ public:
             const  InternState  &curStat,
             Common::ViewBuffer  &bufView);
 
+    //----------------------------------------------------------------
+    /**   指定した座標にある駒を取得する。
+    **
+    **  @param [in] xCol      横方向の座標。
+    **  @param [in] yRow      縦方向の座標。
+    **  @return     指定した座標の駒番号を返す。
+    **/
+    PieceIndex
+    getFieldPiece(
+            const  PosCol   xCol,
+            const  PosRow   yRow)  const;
+
+    //----------------------------------------------------------------
+    /**   指定した座標にある駒を取得する。
+    **
+    **  @param [in] curStat   現在の盤面データ。
+    **  @param [in] xCol      横方向の座標。
+    **  @param [in] yRow      縦方向の座標。
+    **  @return     指定した座標の駒番号を返す。
+    **/
+    static  PieceIndex
+    getFieldPiece(
+            const  InternState  &curStat,
+            const  PosCol       xCol,
+            const  PosRow       yRow);
+
 //========================================================================
 //
 //    For Internal Use Only.

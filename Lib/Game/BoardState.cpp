@@ -128,15 +128,15 @@ BoardState::encodeMoveAction(
         const  PosRow       yNewRow,
         const  PieceIndex   flgProm)
 {
-    const  PieceIndex   tmp = curStat.m_bsField[
+    const  PieceIndex   piPrev  = curStat.m_bsField[
             getMatrixPos(xOldCol, yOldRow) ];
 
     ActionData  act = {
         xNewCol,    yNewRow,
         xOldCol,    yOldRow,
         curStat.m_bsField[getMatrixPos(xNewCol, yNewRow)],
-        tmp,
-        tmp,
+        piPrev,
+        flgProm,
         FIELD_EMPTY_SQUARE
     };
 
@@ -337,6 +337,31 @@ BoardState::copyToViewBuffer(
     }
 
     return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    指定した座標にある駒を取得する。
+//
+
+PieceIndex
+BoardState::getFieldPiece(
+        const  PosCol   xCol,
+        const  PosRow   yRow)  const
+{
+    return ( getFieldPiece(this->m_icState, xCol, yRow) );
+}
+
+//----------------------------------------------------------------
+//    指定した座標にある駒を取得する。
+//
+
+PieceIndex
+BoardState::getFieldPiece(
+        const  InternState  &curStat,
+        const  PosCol       xCol,
+        const  PosRow       yRow)
+{
+    return ( curStat.m_bsField[ getMatrixPos(xCol, yRow) ] );
 }
 
 //========================================================================
