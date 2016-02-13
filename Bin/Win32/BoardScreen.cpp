@@ -499,6 +499,26 @@ BoardScreen::setPromotionOption(
 //    Accessors.
 //
 
+//----------------------------------------------------------------
+//    現在の状態を示すフラグを取得する。
+//
+
+BoardScreen::ScreenState
+BoardScreen::getCurrentState()  const
+{
+    return ( this->m_bsState );
+}
+
+//----------------------------------------------------------------
+//    成り駒の選択肢を取得する。
+//
+
+const   BoardScreen::OptionArray  &
+BoardScreen::getPromotionList()  const
+{
+    return ( this->m_prmOptions );
+}
+
 //========================================================================
 //
 //    For Internal Use Only.

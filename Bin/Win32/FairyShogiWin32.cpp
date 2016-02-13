@@ -86,6 +86,7 @@ constexpr   int     KIFU_FONT_HEIGHT    = 24;
 
 Interface::BitmapImage      g_imgScreen;
 Interface::BitmapImage      g_imgBoard;
+Interface::BitmapImage      g_imgPromote;
 
 }   //  End of (Unnamed) namespace.
 
@@ -137,17 +138,20 @@ onLButtonUp(
     const   Interface::ScreenLayer::EventResult
         evtRet  = g_scrBoard.onLButtonUp(fwKeys, xPos, yPos);
 
-    if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
-        //  再描画を行う。  //
-        ::InvalidateRect(hWnd, NULL, FALSE);
-    }
-
     const   Interface::BoardScreen::ScreenState
         bssCurStat  = g_scrBoard.getCurrentState();
 
     if ( bssCurStat == Interface::BoardScreen::BSLS_SHOW_PROMOTION )
     {
-        g_scrBoard.setPromotionOption(0);
+        const   Interface::BoardScreen::OptionArray
+            &vOpts  = g_scrBoard.getPromotionList();
+        g_scrProm.setSelectionList(vOpts);
+        g_scrProm.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
+    }
+
+    if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
+        //  再描画を行う。  //
+        ::InvalidateRect(hWnd, NULL, FALSE);
     }
 
     return ( 0 );
@@ -199,10 +203,8 @@ onPaint(
         }
     }
 
+    //  メイン画面を描画する。  //
     g_scrBoard.drawScreenLayer( &g_imgBoard );
-
-
-    //  描画した内容を画面に表示する。  //
     g_imgScreen.copyRectangle(
             g_scrBoard.getLeft(),
             g_scrBoard.getTop(),
@@ -211,6 +213,20 @@ onPaint(
             g_imgBoard,
             0, 0);
 
+    //  成り駒選択画面を表示する。      //
+    if ( g_scrProm.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
+    {
+        g_scrProm.drawScreenLayer( &g_imgPromote );
+    }
+    g_imgScreen.copyRectangle(
+            g_scrProm.getLeft(),
+            g_scrProm.getTop(),
+            g_scrProm.getWidth(),
+            g_scrProm.getHeight(),
+            g_imgPromote,
+            0, 0);
+
+    //  描画した内容を画面に表示する。  //
     g_imgScreen.drawBitmap(hDC, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     return ( 0 );
@@ -335,7 +351,7 @@ WinMain(
         return ( 0 );
     }
 
-    //  この瞬間に画像を準備する。      //
+    //  この瞬間に画像を準備する。  //
     if ( g_scrBoard.setupBitmapImages("Back.bmp", "Pieces.bmp")
             != ERR_SUCCESS )
     {
@@ -343,18 +359,28 @@ WinMain(
         return ( 0 );
     }
 
+    if ( g_scrProm.setupBitmapImages("Pieces.bmp") != ERR_SUCCESS )
+    {
+        ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
+        return ( 0 );
+    }
+
+    //  バックバッファも準備する。  //
     HDC hDC = ::GetDC(hWnd);
     if ( g_imgScreen.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, hDC)
             != ERR_SUCCESS )
     {
-        ::MessageBox(hWnd,  "Not Enough Memory!",
-                     NULL,  MB_OK);
+        ::MessageBox(hWnd,  "Not Enough Memory!",   NULL,  MB_OK);
     }
     if ( g_imgBoard.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
             != ERR_SUCCESS )
     {
-        ::MessageBox(hWnd,  "Not Enough Memory!",
-                     NULL,  MB_OK);
+        ::MessageBox(hWnd,  "Not Enough Memory!",   NULL,  MB_OK);
+    }
+    if ( g_imgPromote.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
+            != ERR_SUCCESS )
+    {
+        ::MessageBox(hWnd,  "Not Enough Memory!",   NULL,  MB_OK);
     }
     ::ReleaseDC(hWnd, hDC);
 
