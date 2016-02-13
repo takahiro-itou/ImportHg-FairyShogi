@@ -27,6 +27,16 @@
 #    define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H
 #endif
 
+#if !defined( FAIRYSHOGI_STDC_INCLUDED_STL_STRING )
+#    include    <string>
+#    define     FAIRYSHOGI_STDC_INCLUDED_STL_STRING
+#endif
+
+#if !defined( FAIRYSHOGI_STDC_INCLUDED_STL_VECTOR )
+#    include    <vector>
+#    define     FAIRYSHOGI_STDC_INCLUDED_STL_VECTOR
+#endif
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
 
@@ -44,6 +54,11 @@ private:
 
     /**   スーパークラス。  **/
     typedef     ScreenLayer     Super;
+
+public:
+
+    /**   ユーザーに示す選択肢の型。    **/
+    typedef     std::vector<PieceIndex>     OptionArray;
 
 //========================================================================
 //
@@ -151,11 +166,37 @@ public:
 //
 //    Accessors.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   ユーザーが選択したインデックスを取得する。
+    **
+    **  @return     ユーザーの選択した番号を返す。
+    **/
+    PieceIndex
+    getUserSelect()  const;
+
+    //----------------------------------------------------------------
+    /**   ユーザーに示す選択肢を設定する。
+    **
+    **  @param [in] vSelect   選択肢のリスト。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    setSelectionList(
+            const  OptionArray  &vSelect);
 
 //========================================================================
 //
 //    For Internal Use Only.
 //
+private:
+
+    static  constexpr   int     SQUARE_WIDTH        = 64;
+    static  constexpr   int     SQUARE_HEIGHT       = 64;
 
 //========================================================================
 //
@@ -163,8 +204,14 @@ public:
 //
 private:
 
-    /**   選択した駒の種類。    **/
-    PieceIndex      m_psSelectedPiece;
+    /**   ユーザーに示す選択肢。    **/
+    OptionArray     m_prmOptions;
+
+    /**   選択肢の表示に使う画像。  **/
+    BitmapImage  *  m_biPiece;
+
+    /**   ユーザーの選択した番号。  **/
+    PieceIndex      m_psSelected;
 
 //========================================================================
 //
