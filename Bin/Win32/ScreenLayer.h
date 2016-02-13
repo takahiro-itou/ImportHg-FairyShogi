@@ -44,6 +44,14 @@ public:
     /**   座標を表すための型。  **/
     typedef     int     WindowCoord;
 
+    /**   レイヤーの表示状態。  **/
+    enum  LayerVisible
+    {
+        LV_HIDDEN,          /**<  非表示。          **/
+        LV_DISABLED,        /**<  表示するが無効。  **/
+        LV_ENABLED          /**<  有効状態で表示。  **/
+    };
+
     /**   イベントハンドラの戻り値型。  **/
     enum  EventResult
     {
@@ -192,6 +200,24 @@ public:
             const  WindowCoord  wcVal);
 
     //----------------------------------------------------------------
+    /**   レイヤーの表示状態を取得する。
+    **
+    **  @return     表示状態を表すフラグを返す。
+    **/
+    LayerVisible
+    getVisibleFlag()  const;
+
+    //----------------------------------------------------------------
+    /**   レイヤーの表示状態を設定する。
+    **
+    **  @param [in] slVal   設定する値。
+    **  @return     設定した値を返す。
+    **/
+    LayerVisible
+    setVisibleFlag(
+            const  LayerVisible  slVal);
+
+    //----------------------------------------------------------------
     /**   ウィンドウ内に表示する時の幅を取得する。
     **
     **  @return     幅を返す。
@@ -219,6 +245,9 @@ public:
 //    Member Variables.
 //
 private:
+
+    /**   表示状態。            **/
+    LayerVisible    m_sVisible;
 
     /**   表示位置。左端座標。  **/
     WindowCoord     m_cLeft;

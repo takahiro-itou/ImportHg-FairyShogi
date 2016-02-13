@@ -36,7 +36,8 @@ namespace  Interface  {
 //
 
 ScreenLayer::ScreenLayer()
-    : m_cLeft  (0),
+    : m_sVisible(LV_HIDDEN),
+      m_cLeft  (0),
       m_cTop   (0),
       m_cWidth (0),
       m_cHeight(0)
@@ -53,7 +54,8 @@ ScreenLayer::ScreenLayer(
         const  WindowCoord  wcTop,
         const  WindowCoord  wcWidth,
         const  WindowCoord  wcHeight)
-    : m_cLeft  (wcLeft),
+    : m_sVisible(LV_HIDDEN),
+      m_cLeft  (wcLeft),
       m_cTop   (wcTop),
       m_cWidth (wcWidth),
       m_cHeight(wcHeight)
@@ -160,6 +162,27 @@ ScreenLayer::setTop(
         const  WindowCoord  wcVal)
 {
     return ( (this->m_cTop) = wcVal );
+}
+
+//----------------------------------------------------------------
+//    レイヤーの表示状態を取得する。
+//
+
+ScreenLayer::LayerVisible
+ScreenLayer::getVisibleFlag()  const
+{
+    return ( this->m_sVisible );
+}
+
+//----------------------------------------------------------------
+//    レイヤーの表示状態を設定する。
+//
+
+ScreenLayer::LayerVisible
+ScreenLayer::setVisibleFlag(
+        const  LayerVisible  slVal)
+{
+    return ( (this->m_sVisible) = slVal );
 }
 
 //----------------------------------------------------------------
