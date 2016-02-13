@@ -129,6 +129,7 @@ onLButtonUp(
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
+    g_hCapture  = (NULL);
     ::ReleaseCapture();
 
     const   Interface::ScreenLayer::EventResult
@@ -184,8 +185,7 @@ onPaint(
     //  別のウィンドウに切り替え、ボタンを離した等。    //
     if ( (g_hCapture) == hWnd ) {
         if ( ::GetCapture() != g_hCapture ) {
-            g_scrBoard.onMouseMove(0, 0, 0);
-            g_scrBoard.onLButtonUp(0, 0, 0);
+            g_scrBoard.clearSelection();
         }
     }
 
