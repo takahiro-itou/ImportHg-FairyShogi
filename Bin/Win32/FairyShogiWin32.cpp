@@ -358,30 +358,6 @@ onPaint(
         }
     }
 
-    //  選択しているマスがあれば強調表示。  //
-    if ( (g_selX >= 0) && (g_selY >= 0) ) {
-        HBRUSH  hbrBack = ::CreateSolidBrush( RGB(255, 255, 0) );
-        sx  = ((g_selX) * SQUARE_WIDTH) + LEFT_MARGIN;
-        sy  = ((g_selY) * SQUARE_HEIGHT) + TOP_MARGIN;
-
-        HBRUSH  hbrOld  = (HBRUSH)::SelectObject(hDC, hbrBack);
-        ::Rectangle(hDC, sx, sy, sx + SQUARE_WIDTH, sy + SQUARE_HEIGHT);
-        ::SelectObject(hDC, hbrOld);
-        ::DeleteObject(hbrBack);
-    }
-
-    //  移動先として現在マウスが示しているマスを強調表示。  //
-    if ( (g_movX >= 0) && (g_movY >= 0) ) {
-        HBRUSH  hbrBack = ::CreateSolidBrush( RGB(0, 0, 255) );
-        sx  = ((g_movX) * SQUARE_WIDTH) + LEFT_MARGIN;
-        sy  = ((g_movY) * SQUARE_HEIGHT) + TOP_MARGIN;
-
-        HBRUSH  hbrOld  = (HBRUSH)::SelectObject(hDC, hbrBack);
-        ::Rectangle(hDC, sx, sy, sx + SQUARE_WIDTH, sy + SQUARE_HEIGHT);
-        ::SelectObject(hDC, hbrOld);
-        ::DeleteObject(hbrBack);
-    }
-
     Common::ViewBuffer  vb;
     memset(&vb, 0, sizeof(vb));
     gc.writeToViewBuffer(vb);
@@ -430,6 +406,26 @@ onPaint(
         sy  = (0) * SQUARE_HEIGHT;
         g_imgScreen.copyRectangle(
                 dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT, g_imgPiece, sx, sy);
+    }
+
+    //  選択しているマスがあれば強調表示。  //
+    if ( (g_selX >= 0) && (g_selY >= 0) ) {
+        sx  = ((g_selX) * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = ((g_selY) * SQUARE_HEIGHT) + TOP_MARGIN;
+
+        g_imgScreen.drawTransparentRectangle(
+                sx,  sy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
+                255, 255, 0, 192);
+    }
+
+    //  移動先として現在マウスが示しているマスを強調表示。  //
+    if ( (g_movX >= 0) && (g_movY >= 0) ) {
+        sx  = ((g_movX) * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = ((g_movY) * SQUARE_HEIGHT) + TOP_MARGIN;
+
+        g_imgScreen.drawTransparentRectangle(
+                sx,  sy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
+                0, 0, 255, 192);
     }
 
     //  描画した内容を画面に表示する。  //
