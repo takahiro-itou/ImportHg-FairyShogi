@@ -65,10 +65,16 @@ s_tblHandEncWhite[] = {
 BoardScreen::BoardScreen()
     : Super(),
       m_gcGameCtrl(),
-      m_scSelX(-1),
-      m_scSelY(-1),
-      m_scMovX(-1),
-      m_scMovY(-1),
+      m_bsState(BSLS_NOTHING),
+      m_bcSelX(-1),
+      m_bcSelY(-1),
+      m_bcMovX(-1),
+      m_bcMovY(-1),
+      m_bcSrcX(-1),
+      m_bcSrcY(-1),
+      m_bcTrgX(-1),
+      m_bcTrgY(-1),
+      m_prmOptions(),
       m_biBack (nullptr),
       m_biPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
@@ -88,10 +94,16 @@ BoardScreen::BoardScreen(
         const  WindowCoord  wcHeight)
     : Super(wcLeft, wcTop, wcWidth, wcHeight),
       m_gcGameCtrl(),
-      m_scSelX(-1),
-      m_scSelY(-1),
-      m_scMovX(-1),
-      m_scMovY(-1),
+      m_bsState(BSLS_NOTHING),
+      m_bcSelX(-1),
+      m_bcSelY(-1),
+      m_bcMovX(-1),
+      m_bcMovY(-1),
+      m_bcSrcX(-1),
+      m_bcSrcY(-1),
+      m_bcTrgX(-1),
+      m_bcTrgY(-1),
+      m_prmOptions(),
       m_biBack (nullptr),
       m_biPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
@@ -184,9 +196,9 @@ BoardScreen::drawScreenLayer(
     }
 
     //  選択しているマスがあれば強調表示。  //
-    if ( (this->m_scSelX >= 0) && (this->m_scSelY >= 0) ) {
-        sx  = ((this->m_scSelX) * SQUARE_WIDTH) + LEFT_MARGIN;
-        sy  = ((this->m_scSelY) * SQUARE_HEIGHT) + TOP_MARGIN;
+    if ( (this->m_bcSelX >= 0) && (this->m_bcSelY >= 0) ) {
+        sx  = ((this->m_bcSelX) * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = ((this->m_bcSelY) * SQUARE_HEIGHT) + TOP_MARGIN;
 
         bmpTrg->drawTransparentRectangle(
                 sx,  sy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
@@ -194,9 +206,9 @@ BoardScreen::drawScreenLayer(
     }
 
     //  移動先として現在マウスが示しているマスを強調表示。  //
-    if ( (this->m_scMovX >= 0) && (this->m_scMovY >= 0) ) {
-        sx  = ((this->m_scMovX) * SQUARE_WIDTH) + LEFT_MARGIN;
-        sy  = ((this->m_scMovY) * SQUARE_HEIGHT) + TOP_MARGIN;
+    if ( (this->m_bcMovX >= 0) && (this->m_bcMovY >= 0) ) {
+        sx  = ((this->m_bcMovX) * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = ((this->m_bcMovY) * SQUARE_HEIGHT) + TOP_MARGIN;
 
         bmpTrg->drawTransparentRectangle(
                 sx,  sy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
@@ -261,19 +273,19 @@ BoardScreen::onLButtonDown(
             clearSelection();
             return ( EH_RESULT_REDRAW );
         } else {
-            this->m_scSelX  = mx;
-            this->m_scSelY  = my;
+            this->m_bcSelX  = mx;
+            this->m_bcSelY  = my;
         }
     } else if ( (VIEW_NUM_COLS) <= mx ) {
-        this->m_scSelX  = -1;
-        this->m_scSelY  = -1;
+        this->m_bcSelX  = -1;
+        this->m_bcSelY  = -1;
     } else {
-        this->m_scSelX  = mx;
-        this->m_scSelY  = my;
+        this->m_bcSelX  = mx;
+        this->m_bcSelY  = my;
     }
 
-    this->m_scMovX  = -1;
-    this->m_scMovY  = -1;
+    this->m_bcMovX  = -1;
+    this->m_bcMovY  = -1;
 
     return ( EH_RESULT_REDRAW );
 }
@@ -292,12 +304,12 @@ BoardScreen::onLButtonUp(
 
     ::ReleaseCapture();
 
-    if ( (this->m_scSelX < 0) || (this->m_scSelY < 0) ) {
+    if ( (this->m_bcSelX < 0) || (this->m_bcSelY < 0) ) {
         return ( EH_RESULT_SUCCESS );
     }
 
-    const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
-    const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
+    const  BoardCoord   mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
+    const  BoardCoord   my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
 
     //  画面の範囲外でマウスボタンを離した場合は、キャンセルする。  //
     if ( (mx < BOARD_LEFT_OFFSET) || (my < BOARD_TOP_OFFSET)
@@ -310,28 +322,28 @@ BoardScreen::onLButtonUp(
 
     //  クリックモードになっている場合は、移動先を指定する。    //
     if ( (this->m_ddMode) == DDM_CLICKS ) {
-        if ( (this->m_scMovX == mx) && (this->m_scMovY == my) ) {
+        if ( (this->m_bcMovX == mx) && (this->m_bcMovY == my) ) {
             //  同じ場所を二回クリックしたので処理を確定する。  //
-            playAction(this->m_scSelX, this->m_scSelY, mx, my);
+            setActionInput(this->m_bcSelX, this->m_bcSelY, mx, my);
             clearSelection();
         } else {
             //  違う場所をクリックしたので、その場所を強調。    //
-            this->m_scMovX  = mx;
-            this->m_scMovY  = my;
+            this->m_bcMovX  = mx;
+            this->m_bcMovY  = my;
         }
         return ( EH_RESULT_REDRAW );
     }
 
     if ( (this->m_ddMode) == DDM_SELECT_SOURCE ) {
         //  ダブルクリックモードに切り替える。  //
-        this->m_scMovX  = -1;
-        this->m_scMovY  = -1;
+        this->m_bcMovX  = -1;
+        this->m_bcMovY  = -1;
         this->m_ddMode  = DDM_CLICKS;
         return ( EH_RESULT_REDRAW );
     }
 
     if ( (this->m_ddMode) == DDM_DRAG_AND_DROP ) {
-        playAction(this->m_scSelX, this->m_scSelY, mx, my);
+        setActionInput(this->m_bcSelX, this->m_bcSelY, mx, my);
         clearSelection();
     }
 
@@ -358,23 +370,23 @@ BoardScreen::onMouseMove(
         return ( EH_RESULT_SUCCESS );
     }
 
-    if ( (this->m_scSelX < 0) || (this->m_scSelY < 0) ) {
+    if ( (this->m_bcSelX < 0) || (this->m_bcSelY < 0) ) {
         return ( EH_RESULT_SUCCESS );
     }
 
-    const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
-    const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
-    int     mvX, mvY;
+    const  BoardCoord   mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
+    const  BoardCoord   my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
+    BoardCoord  mvX,  mvY;
 
     //  最初に選択したマスから外れた場合は、    //
     //  ドラッグドロップモードに完全移行する。  //
-    if ( ((this->m_scSelX) != mx) || ((this->m_scSelY) != my) ) {
+    if ( ((this->m_bcSelX) != mx) || ((this->m_bcSelY) != my) ) {
         this->m_ddMode  = DDM_DRAG_AND_DROP;
     }
 
     if ( (xPos < LEFT_MARGIN) || (yPos < TOP_MARGIN) ) {
-        this->m_scMovX  = -1;
-        this->m_scMovY  = -1;
+        this->m_bcMovX  = -1;
+        this->m_bcMovY  = -1;
         return ( EH_RESULT_REDRAW );
     }
 
@@ -389,9 +401,9 @@ BoardScreen::onMouseMove(
         mvY = my;
     }
 
-    if ( (this->m_scMovX != mvX) || (this->m_scMovY != mvY) ) {
-        this->m_scMovX  = mvX;
-        this->m_scMovY  = mvY;
+    if ( (this->m_bcMovX != mvX) || (this->m_bcMovY != mvY) ) {
+        this->m_bcMovX  = mvX;
+        this->m_bcMovY  = mvY;
         return ( EH_RESULT_REDRAW );
     }
 
@@ -436,6 +448,37 @@ BoardScreen::setupBitmapImages(
 //    Public Member Functions.
 //
 
+//----------------------------------------------------------------
+//    マスの選択をクリアする。
+//
+
+ErrCode
+BoardScreen::clearSelection()
+{
+    this->m_bcSelX  = -1;
+    this->m_bcSelY  = -1;
+    this->m_bcMovX  = -1;
+    this->m_bcMovY  = -1;
+    this->m_ddMode  = DDM_NOT_START;
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    ユーザーが選択した成り駒を指定する。
+//
+
+ErrCode
+BoardScreen::setPromotionOption(
+        const  PieceIndex   idxSel)
+{
+    const  PieceIndex   pidSel  = (this->m_prmOptions)[idxSel];
+
+    return ( playAction(
+                     this->m_bcSrcX,  this->m_bcSrcY,
+                     this->m_bcTrgX,  this->m_bcTrgY,  pidSel) );
+}
+
 //========================================================================
 //
 //    Accessors.
@@ -447,31 +490,16 @@ BoardScreen::setupBitmapImages(
 //
 
 //----------------------------------------------------------------
-//    マスの選択をクリアする。
-//
-
-ErrCode
-BoardScreen::clearSelection()
-{
-    this->m_scSelX  = -1;
-    this->m_scSelY  = -1;
-    this->m_scMovX  = -1;
-    this->m_scMovY  = -1;
-    this->m_ddMode  = DDM_NOT_START;
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
 //    指定したマスに対してプレイを行う。
 //
 
 ErrCode
 BoardScreen::playAction(
-        const  int  srcX,
-        const  int  srcY,
-        const  int  trgX,
-        const  int  trgY)
+        const  BoardCoord   srcX,
+        const  BoardCoord   srcY,
+        const  BoardCoord   trgX,
+        const  BoardCoord   trgY,
+        const  PieceIndex   iPrm)
 {
     if ( (srcY) == 0 ) {
         //  後手の持ち駒を打つ。    //
@@ -492,8 +520,13 @@ BoardScreen::playAction(
                 srcY - BOARD_TOP_OFFSET,
                 trgX - BOARD_LEFT_OFFSET,
                 trgY - BOARD_TOP_OFFSET,
-                0);
+                iPrm);
     }
+
+    this->m_bcSrcX  = 0;
+    this->m_bcSrcY  = 0;
+    this->m_bcTrgX  = 0;
+    this->m_bcTrgY  = 0;
 
     //  最後の指し手を棋譜ファイルに書き込む。  //
     Interface::GameController::ActionViewList   actList;
@@ -505,6 +538,44 @@ BoardScreen::playAction(
         this->m_ofsKifu.flush();
     }
 
+    return ( ERR_SUCCESS );
+}
+
+
+//----------------------------------------------------------------
+//    移動先を指定して、移動可能性と成り駒選択肢を検査する。
+//
+
+ErrCode
+BoardScreen::setActionInput(
+        const  BoardCoord   srcX,
+        const  BoardCoord   srcY,
+        const  BoardCoord   trgX,
+        const  BoardCoord   trgY)
+{
+    this->m_bcSrcX  = srcX;
+    this->m_bcSrcY  = srcY;
+    this->m_bcTrgX  = trgX;
+    this->m_bcTrgY  = trgY;
+
+    /**     @todo   暫定処理。後で直す。    **/
+    this->m_prmOptions.clear();
+    for ( PieceIndex i = Game::BoardState::FIELD_BLACK_PAWN;
+            i <= Game::BoardState::FIELD_WHITE_DRAGON; ++ i )
+    {
+        this->m_prmOptions.push_back(i);
+    }
+
+    this->m_bsState = BSLS_NOTHING;
+    const  size_t   numOpt  = this->m_prmOptions.size();
+    if ( numOpt == 0 ) {
+        return ( ERR_FAILURE );
+    }
+    if ( numOpt == 1 ) {
+        return ( playAction(srcX, srcY, trgX, trgY, this->m_prmOptions[0]) );
+    }
+
+    this->m_bsState = BSLS_SHOW_PROMOTION;
     return ( ERR_SUCCESS );
 }
 

@@ -44,10 +44,28 @@ namespace  Interface  {
 
 class  BoardScreen : public  ScreenLayer
 {
-private:
 
-    /**   スーパークラス。  **/
-    typedef     ScreenLayer     Super;
+//========================================================================
+//
+//    Internal Type Definitions.
+//
+public:
+
+    /**
+    **    現在の状態を管理する列挙型。
+    **/
+    enum  ScreenState
+    {
+        BSLS_NOTHING,
+
+        /**
+        **    成り選択画面の表示を要求。
+        **/
+        BSLS_SHOW_PROMOTION,
+    };
+
+    /**   ユーザーに示す成り駒選択肢の型。  **/
+    typedef     std::vector<PieceIndex>     OptionArray;
 
 //========================================================================
 //
@@ -204,15 +222,40 @@ public:
     ErrCode
     clearSelection();
 
+    //----------------------------------------------------------------
+    /**   ユーザーが選択した成り駒を指定する。
+    **
+    **  @param [in] idxSel    ユーザーが選んだ選択肢の番号。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setPromotionOption(
+            const  PieceIndex   idxSel);
+
 //========================================================================
 //
 //    Accessors.
 //
+public:
+
+    //----------------------------------------------------------------
+    ScreenState
+    getCurrentState()  const
+    {
+        return ( this->m_bsState );
+    }
 
 //========================================================================
 //
 //    For Internal Use Only.
 //
+private:
+    /**   盤上のマスの座標を表す型。    **/
+    typedef     int     BoardCoord;
+
 private:
 
     static  constexpr   int
@@ -285,6 +328,7 @@ private:
     **  @param [in] srcY    移動先の垂直座標。
     **  @param [in] trgX    移動先の水平座標。
     **  @param [in] trgY    移動先の垂直座標。
+    **  @param [in] iPrm    成り駒の選択。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -292,10 +336,30 @@ private:
     **/
     ErrCode
     playAction(
-            const  int  srcX,
-            const  int  srcY,
-            const  int  trgX,
-            const  int  trgY);
+            const  BoardCoord   srcX,
+            const  BoardCoord   srcY,
+            const  BoardCoord   trgX,
+            const  BoardCoord   trgY,
+            const  PieceIndex   iPrm);
+
+    //----------------------------------------------------------------
+    /**   移動先を指定して、移動可能性と成り駒選択肢を検査する。
+    **
+    **  @param [in] srcX    移動元の水平座標。
+    **  @param [in] srcY    移動先の垂直座標。
+    **  @param [in] trgX    移動先の水平座標。
+    **  @param [in] trgY    移動先の垂直座標。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setActionInput(
+            const  BoardCoord   srcX,
+            const  BoardCoord   srcY,
+            const  BoardCoord   trgX,
+            const  BoardCoord   trgY);
 
 //========================================================================
 //
@@ -306,17 +370,61 @@ private:
     /**   ゲームコントローラ。  **/
     GameController      m_gcGameCtrl;
 
+    /**   現在のステータス。    **/
+    ScreenState         m_bsState;
+
     /**   選択したマスの座標（水平方向）。  **/
-    int                 m_scSelX;
+    BoardCoord          m_bcSelX;
 
     /**   選択したマスの座標（垂直方向）。  **/
-    int                 m_scSelY;
+    BoardCoord          m_bcSelY;
 
-    /**   移動先のマスの座標（水平方向）。  **/
-    int                 m_scMovX;
+    /**
+    **    移動先として選択しているマスの座標（水平方向）。
+    **  この値はマウスドラッグ時に、描画用に使う。
+    **/
+    BoardCoord          m_bcMovX;
 
-    /**   移動先のマスの座標（垂直方向）。  **/
-    int                 m_scMovY;
+    /**
+    **    移動先として選択しているマスの座標（垂直方向）。
+    **  この値はマウスドラッグ時に、描画用に使う。
+    **/
+    BoardCoord          m_bcMovY;
+
+    /**
+    **    移動元の座標（水平方向）。
+    **
+    **    成り駒をユーザーが選択している間、
+    **  各種座標を保管しておくための変数。
+    **/
+    BoardCoord          m_bcSrcX;
+
+    /**
+    **    移動元の座標（垂直方向）。
+    **
+    **    成り駒をユーザーが選択している間、
+    **  各種座標を保管しておくための変数。
+    **/
+    BoardCoord          m_bcSrcY;
+
+    /**
+    **    移動先の座標（水平方向）。
+    **
+    **    成り駒をユーザーが選択している間、
+    **  各種座標を保管しておくための変数。
+    **/
+    BoardCoord          m_bcTrgX;
+
+    /**
+    **    移動先の座標（垂直方向）。
+    **
+    **    成り駒をユーザーが選択している間、
+    **  各種座標を保管しておくための変数。
+    **/
+    BoardCoord          m_bcTrgY;
+
+    /**   成り駒の選択肢。      **/
+    OptionArray         m_prmOptions;
 
     /**   盤の画像イメージ。    **/
     BitmapImage  *      m_biBack;
@@ -334,6 +442,10 @@ private:
 //
 //    Other Features.
 //
+private:
+    /**   スーパークラス。  **/
+    typedef     ScreenLayer     Super;
+
 private:
     typedef     BoardScreen     This;
     BoardScreen         (const  This  &);

@@ -18,6 +18,7 @@
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
 #include    "BoardScreen.h"
+#include    "PromotionScreen.h"
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
@@ -48,7 +49,8 @@ namespace  {
 constexpr   char
 g_szClassName[] = "FairyShogiWindow";
 
-Interface::BoardScreen  g_scrBoard;
+Interface::BoardScreen      g_scrBoard;
+Interface::PromotionScreen  g_scrProm;
 
 /**   マウスのキャプチャフラグ。    **/
 HWND                    g_hCapture;
@@ -138,6 +140,14 @@ onLButtonUp(
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
+    }
+
+    const   Interface::BoardScreen::ScreenState
+        bssCurStat  = g_scrBoard.getCurrentState();
+
+    if ( bssCurStat == Interface::BoardScreen::BSLS_SHOW_PROMOTION )
+    {
+        g_scrBoard.setPromotionOption(0);
     }
 
     return ( 0 );
@@ -356,6 +366,11 @@ WinMain(
 
     g_scrBoard.resetGame();
     g_hCapture  = NULL;
+
+    g_scrProm.setLeft  (0);
+    g_scrProm.setTop   (VIEW_BOARD_TOP);
+    g_scrProm.setWidth (SQUARE_WIDTH * 10);
+    g_scrProm.setHeight(SQUARE_HEIGHT * 2);
 
     //  ウィンドウを表示する。  //
     ::ShowWindow(hWnd, nCmdShow);
