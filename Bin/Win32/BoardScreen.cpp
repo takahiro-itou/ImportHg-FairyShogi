@@ -304,6 +304,7 @@ BoardScreen::onLButtonUp(
             || (POS_NUM_COLS + BOARD_LEFT_OFFSET <= mx)
             || (POS_NUM_ROWS + BOARD_TOP_OFFSET  <= my) )
     {
+        clearSelection();
         return ( EH_RESULT_REDRAW );
     }
 
