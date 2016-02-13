@@ -217,14 +217,14 @@ onPaint(
     if ( g_scrProm.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
     {
         g_scrProm.drawScreenLayer( &g_imgPromote );
+        g_imgScreen.copyRectangle(
+                g_scrProm.getLeft(),
+                g_scrProm.getTop(),
+                g_scrProm.getWidth(),
+                g_scrProm.getHeight(),
+                g_imgPromote,
+                0, 0);
     }
-    g_imgScreen.copyRectangle(
-            g_scrProm.getLeft(),
-            g_scrProm.getTop(),
-            g_scrProm.getWidth(),
-            g_scrProm.getHeight(),
-            g_imgPromote,
-            0, 0);
 
     //  描画した内容を画面に表示する。  //
     g_imgScreen.drawBitmap(hDC, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
