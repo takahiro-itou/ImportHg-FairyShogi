@@ -72,7 +72,7 @@ BoardScreen::BoardScreen()
       m_biBack (nullptr),
       m_biPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
-      m_ddMode(DDM_CLICKS)
+      m_ddMode(DDM_NOT_START)
 {
 }
 
@@ -95,7 +95,7 @@ BoardScreen::BoardScreen(
       m_biBack (nullptr),
       m_biPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
-      m_ddMode(DDM_CLICKS)
+      m_ddMode(DDM_NOT_START)
 {
 }
 
@@ -233,31 +233,32 @@ BoardScreen::onLButtonDown(
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
+    if ( (this->m_ddMode) == DDM_CLICKS ) {
+        //  クリックモードになっている時は何もしない。  //
+        return ( EH_RESULT_SUCCESS );
+    }
+
     if ( (xPos < LEFT_MARGIN) || (yPos < TOP_MARGIN) ) {
-        this->m_scSelX  = -1;
-        this->m_scSelY  = -1;
-        this->m_scMovX  = -1;
-        this->m_scMovY  = -1;
+        //  範囲外の場合。  //
+        clearSelection();
         return ( EH_RESULT_REDRAW );
     }
 
     const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
     const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
 
+    if ( (this->m_ddMode) == DDM_NOT_START ) {
+        this->m_ddMode  = DDM_SELECT_SOURCE;
+    }
+
     if ( (VIEW_NUM_ROWS <= my) ) {
-        this->m_scSelX  = -1;
-        this->m_scSelY  = -1;
-        this->m_scMovX  = -1;
-        this->m_scMovY  = -1;
+        clearSelection();
         return ( EH_RESULT_REDRAW );
     }
 
     if ( (my == 0) || (my == (POS_NUM_ROWS + BOARD_TOP_OFFSET)) ) {
         if ( (HANDS_WHITE_KING - HANDS_WHITE_PAWN + 1) <= mx ) {
-            this->m_scSelX  = -1;
-            this->m_scSelY  = -1;
-            this->m_scMovX  = -1;
-            this->m_scMovY  = -1;
+            clearSelection();
             return ( EH_RESULT_REDRAW );
         } else {
             this->m_scSelX  = mx;
@@ -295,58 +296,44 @@ BoardScreen::onLButtonUp(
         return ( EH_RESULT_SUCCESS );
     }
 
-    Interface::GameController::ActionViewList   actList;
-
     const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
     const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
 
+    //  画面の範囲外でマウスボタンを離した場合は、キャンセルする。  //
     if ( (mx < BOARD_LEFT_OFFSET) || (my < BOARD_TOP_OFFSET)
             || (POS_NUM_COLS + BOARD_LEFT_OFFSET <= mx)
             || (POS_NUM_ROWS + BOARD_TOP_OFFSET  <= my) )
     {
+        clearSelection();
         return ( EH_RESULT_REDRAW );
     }
-    if ( (mx == this->m_scSelX) && (my == this->m_scSelY) ) {
-        //  移動をドラッグドロップモードから、  //
+
+    //  クリックモードになっている場合は、移動先を指定する。    //
+    if ( (this->m_ddMode) == DDM_CLICKS ) {
+        if ( (this->m_scMovX == mx) && (this->m_scMovY == my) ) {
+            //  同じ場所を二回クリックしたので処理を確定する。  //
+            playAction(this->m_scSelX, this->m_scSelY, mx, my);
+            clearSelection();
+        } else {
+            //  違う場所をクリックしたので、その場所を強調。    //
+            this->m_scMovX  = mx;
+            this->m_scMovY  = my;
+        }
+        return ( EH_RESULT_REDRAW );
+    }
+
+    if ( (this->m_ddMode) == DDM_SELECT_SOURCE ) {
         //  ダブルクリックモードに切り替える。  //
+        this->m_scMovX  = -1;
+        this->m_scMovY  = -1;
         this->m_ddMode  = DDM_CLICKS;
         return ( EH_RESULT_REDRAW );
     }
 
-    if ( (this->m_scSelY) == 0 ) {
-        //  後手の持ち駒を打つ。    //
-        this->m_gcGameCtrl.playPutAction(
-                mx - BOARD_LEFT_OFFSET,
-                my - BOARD_TOP_OFFSET,
-                s_tblHandEncWhite[this->m_scSelX - BOARD_LEFT_OFFSET]);
-    } else if ( (this->m_scSelY) == POS_NUM_ROWS + BOARD_TOP_OFFSET ) {
-        //  先手の持ち駒を打つ。    //
-        this->m_gcGameCtrl.playPutAction(
-                mx - BOARD_LEFT_OFFSET,
-                my - BOARD_TOP_OFFSET,
-                s_tblHandEncBlack[this->m_scSelX - BOARD_LEFT_OFFSET]);
-    } else {
-        //  盤上の駒を移動させる。  //
-        this->m_gcGameCtrl.playMoveAction(
-                this->m_scSelX - BOARD_LEFT_OFFSET,
-                this->m_scSelY - BOARD_TOP_OFFSET,
-                mx - BOARD_LEFT_OFFSET,
-                my - BOARD_TOP_OFFSET,
-                0);
+    if ( (this->m_ddMode) == DDM_DRAG_AND_DROP ) {
+        playAction(this->m_scSelX, this->m_scSelY, mx, my);
+        clearSelection();
     }
-
-    //  最後の指し手を棋譜ファイルに書き込む。  //
-    this->m_gcGameCtrl.writeActionList(actList);
-    if ( this->m_ofsKifu.good() && !(actList.empty()) ) {
-        this->m_gcGameCtrl.writeActionView(actList.back(), this->m_ofsKifu);
-        this->m_ofsKifu << std::endl;
-        this->m_ofsKifu.flush();
-    }
-
-    this->m_scSelX  = -1;
-    this->m_scSelY  = -1;
-    this->m_scMovX  = -1;
-    this->m_scMovY  = -1;
 
     return ( EH_RESULT_REDRAW );
 }
@@ -363,6 +350,14 @@ BoardScreen::onMouseMove(
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
+    if ( ((this->m_ddMode) == DDM_NOT_START)
+            || ((this->m_ddMode) == DDM_CLICKS) )
+    {
+        //  クリックモードになっている時は何もしない。  //
+        //  また、操作を開始していない時も何もしない。  //
+        return ( EH_RESULT_SUCCESS );
+    }
+
     if ( (this->m_scSelX < 0) || (this->m_scSelY < 0) ) {
         return ( EH_RESULT_SUCCESS );
     }
@@ -370,6 +365,12 @@ BoardScreen::onMouseMove(
     const  int  mx  = ((int)(xPos) - LEFT_MARGIN) / SQUARE_WIDTH;
     const  int  my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
     int     mvX, mvY;
+
+    //  最初に選択したマスから外れた場合は、    //
+    //  ドラッグドロップモードに完全移行する。  //
+    if ( ((this->m_scSelX) != mx) || ((this->m_scSelY) != my) ) {
+        this->m_ddMode  = DDM_DRAG_AND_DROP;
+    }
 
     if ( (xPos < LEFT_MARGIN) || (yPos < TOP_MARGIN) ) {
         this->m_scMovX  = -1;
@@ -404,6 +405,7 @@ BoardScreen::onMouseMove(
 ErrCode
 BoardScreen::resetGame()
 {
+    clearSelection();
     return ( this->m_gcGameCtrl.resetGame() );
 }
 
@@ -443,6 +445,68 @@ BoardScreen::setupBitmapImages(
 //
 //    For Internal Use Only.
 //
+
+//----------------------------------------------------------------
+//    マスの選択をクリアする。
+//
+
+ErrCode
+BoardScreen::clearSelection()
+{
+    this->m_scSelX  = -1;
+    this->m_scSelY  = -1;
+    this->m_scMovX  = -1;
+    this->m_scMovY  = -1;
+    this->m_ddMode  = DDM_NOT_START;
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    指定したマスに対してプレイを行う。
+//
+
+ErrCode
+BoardScreen::playAction(
+        const  int  srcX,
+        const  int  srcY,
+        const  int  trgX,
+        const  int  trgY)
+{
+    if ( (srcY) == 0 ) {
+        //  後手の持ち駒を打つ。    //
+        this->m_gcGameCtrl.playPutAction(
+                trgX - BOARD_LEFT_OFFSET,
+                trgY - BOARD_TOP_OFFSET,
+                s_tblHandEncWhite[srcX - BOARD_LEFT_OFFSET]);
+    } else if ( (srcY) == POS_NUM_ROWS + BOARD_TOP_OFFSET ) {
+        //  先手の持ち駒を打つ。    //
+        this->m_gcGameCtrl.playPutAction(
+                trgX - BOARD_LEFT_OFFSET,
+                trgY - BOARD_TOP_OFFSET,
+                s_tblHandEncBlack[srcX - BOARD_LEFT_OFFSET]);
+    } else {
+        //  盤上の駒を移動させる。  //
+        this->m_gcGameCtrl.playMoveAction(
+                srcX - BOARD_LEFT_OFFSET,
+                srcY - BOARD_TOP_OFFSET,
+                trgX - BOARD_LEFT_OFFSET,
+                trgY - BOARD_TOP_OFFSET,
+                0);
+    }
+
+    //  最後の指し手を棋譜ファイルに書き込む。  //
+    Interface::GameController::ActionViewList   actList;
+
+    this->m_gcGameCtrl.writeActionList(actList);
+    if ( this->m_ofsKifu.good() && !(actList.empty()) ) {
+        this->m_gcGameCtrl.writeActionView(actList.back(), this->m_ofsKifu);
+        this->m_ofsKifu << std::endl;
+        this->m_ofsKifu.flush();
+    }
+
+    return ( ERR_SUCCESS );
+}
 
 }   //  End of namespace  Interface
 FAIRYSHOGI_NAMESPACE_END
