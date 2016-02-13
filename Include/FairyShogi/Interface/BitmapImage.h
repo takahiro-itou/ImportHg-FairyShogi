@@ -52,6 +52,15 @@ class  BitmapImage
 
 //========================================================================
 //
+//    Internal Type Definitions.
+//
+public:
+
+    /**   ピクセルの輝度値型。  **/
+    typedef     uint8_t                 PixelValue;
+
+//========================================================================
+//
 //    Constructor(s) and Destructor.
 //
 public:
@@ -228,13 +237,39 @@ public:
             const  int          sx,
             const  int          sy);
 
+    //----------------------------------------------------------------
+    /**   半透明の矩形を描画する。
+    **
+    **  @param [in] dx      描画先の水平座標。
+    **  @param [in] dy      描画先の垂直座標。
+    **  @param [in] dw      描画する幅。
+    **  @param [in] dh      描画する高さ。
+    **  @param [in] colR    描画する色（赤）。
+    **  @param [in] colG    描画する色（緑）。
+    **  @param [in] colB    描画する色（青）。
+    **  @param [in] vTr     透過率。0 .. 256 で指定。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    drawTransparentRectangle(
+            const  int          dx,
+            const  int          dy,
+            const  int          dw,
+            const  int          dh,
+            const  PixelValue   colR,
+            const  PixelValue   colG,
+            const  PixelValue   colB,
+            const  int          vTr);
+
 //========================================================================
 //
 //    Accessors.
 //
 public:
 
-    typedef     uint8_t                 PixelValue;
     typedef     PixelValue  *           PmPixelArray;
     typedef     const   PixelValue  *   PcPixelArray;
 

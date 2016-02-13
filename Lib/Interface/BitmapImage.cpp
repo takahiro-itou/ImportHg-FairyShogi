@@ -387,6 +387,41 @@ BitmapImage::copyRectangle(
     return ( ERR_SUCCESS );
 }
 
+//----------------------------------------------------------------
+//    半透明の矩形を描画する。
+//
+
+ErrCode
+BitmapImage::drawTransparentRectangle(
+        const  int          dx,
+        const  int          dy,
+        const  int          dw,
+        const  int          dh,
+        const  PixelValue   colR,
+        const  PixelValue   colG,
+        const  PixelValue   colB,
+        const  int          vTr)
+{
+    const  int  dx2 = std::min((this->m_xWidth),  dx + dw);
+    const  int  dy2 = std::min((this->m_yHeight), dy + dh);
+
+    for ( int y = dy; y < dy2; ++ y ) {
+        PmPixelArray    ptrDst  = this->getPixels(dx, y);
+        for ( int x = dx; x < dx2; ++ x ) {
+            const  int  cB  = *(ptrDst);
+            *(ptrDst++) = ( (colB * (1 - vTr)) + (cB * vTr) ) >> 8;
+
+            const  int  cG  = *(ptrDst);
+            *(ptrDst++) = ( (colG * (1 - vTr)) + (cG * vTr) ) >> 8;
+
+            const  int  cR  = *(ptrDst);
+            *(ptrDst++) = ( (colR * (1 - vTr)) + (cR * vTr) ) >> 8;
+        }
+    }
+
+    return ( ERR_SUCCESS );
+}
+
 //========================================================================
 //
 //    Accessors.
