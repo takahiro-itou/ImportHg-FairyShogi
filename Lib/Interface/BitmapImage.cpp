@@ -128,9 +128,9 @@ BitmapImage::~BitmapImage()
 
 ErrCode
 BitmapImage::createBitmap(
-        const  int  cxWidth,
-        const  int  cyHeight,
-        const  int  bDepth)
+        const  BitmapCoord  cxWidth,
+        const  BitmapCoord  cyHeight,
+        const  BitmapDepth  bDepth)
 {
     destroyBitmap();
 
@@ -178,13 +178,13 @@ BitmapImage::createBitmap(
 
 ErrCode
 BitmapImage::createBitmap(
-        const  int  cxWidth,
-        const  int  cyHeight,
-        const  HDC  hDC)
+        const  BitmapCoord  cxWidth,
+        const  BitmapCoord  cyHeight,
+        const  HDC          hDC)
 {
     destroyBitmap();
 
-    const  int  bDepth  = 24;
+    const  BitmapDepth  bDepth  = 24;
 
     this->m_xWidth  = cxWidth;
     this->m_yHeight = cyHeight;
@@ -255,13 +255,13 @@ BitmapImage::destroyBitmap()
 
 ErrCode
 BitmapImage::drawBitmap(
-        const  HDC  hDC,
-        const  int  dx,
-        const  int  dy,
-        const  int  w,
-        const  int  h,
-        const  int  ox,
-        const  int  oy)
+        const  HDC          hDC,
+        const  BitmapCoord  dx,
+        const  BitmapCoord  dy,
+        const  BitmapCoord  w,
+        const  BitmapCoord  h,
+        const  BitmapCoord  ox,
+        const  BitmapCoord  oy)
 {
     const  HDC      hMemDC  = ::CreateCompatibleDC(hDC);
     const  HGDIOBJ  hOldBmp = ::SelectObject(hMemDC, this->m_hBitmap);
@@ -333,9 +333,9 @@ BitmapImage::readBitmap(
         return ( ERR_FAILURE );
     }
 
-    const  int  xWidth  = biHead.biWidth;
-    const  int  yHeight = biHead.biHeight;
-    const  int  bDepth  = biHead.biBitCount;
+    const  BitmapCoord  xWidth  = biHead.biWidth;
+    const  BitmapCoord  yHeight = biHead.biHeight;
+    const  BitmapDepth  bDepth  = biHead.biBitCount;
 
     Offset  ofsBits = SIZE_OF_BITMAP_FILE_HEADER + (biHead.biSize);
     if ( bDepth == 8 ) {
@@ -366,18 +366,18 @@ BitmapImage::readBitmap(
 
 ErrCode
 BitmapImage::copyRectangle(
-        const  int          dx,
-        const  int          dy,
-        const  int          dw,
-        const  int          dh,
+        const  BitmapCoord  dx,
+        const  BitmapCoord  dy,
+        const  BitmapCoord  dw,
+        const  BitmapCoord  dh,
         const  BitmapImage  &bmpSrc,
-        const  int          sx,
-        const  int          sy)
+        const  BitmapCoord  sx,
+        const  BitmapCoord  sy)
 {
-    for ( int y = 0; y < dh; ++ y ) {
+    for ( BitmapCoord y = 0; y < dh; ++ y ) {
         PcPixelArray    ptrSrc  = bmpSrc.getPixels(sx, sy + y);
         PmPixelArray    ptrDst  = this->getPixels(dx, dy + y);
-        for ( int x = 0; x < dw; ++ x ) {
+        for ( BitmapCoord x = 0; x < dw; ++ x ) {
             *(ptrDst++) = *(ptrSrc++);      //  B
             *(ptrDst++) = *(ptrSrc++);      //  G
             *(ptrDst++) = *(ptrSrc++);      //  R
@@ -393,21 +393,21 @@ BitmapImage::copyRectangle(
 
 ErrCode
 BitmapImage::drawTransparentRectangle(
-        const  int          dx,
-        const  int          dy,
-        const  int          dw,
-        const  int          dh,
+        const  BitmapCoord  dx,
+        const  BitmapCoord  dy,
+        const  BitmapCoord  dw,
+        const  BitmapCoord  dh,
         const  PixelValue   colR,
         const  PixelValue   colG,
         const  PixelValue   colB,
         const  int          vTr)
 {
-    const  int  dx2 = std::min((this->m_xWidth),  dx + dw);
-    const  int  dy2 = std::min((this->m_yHeight), dy + dh);
+    const  BitmapCoord  dx2 = std::min((this->m_xWidth),  dx + dw);
+    const  BitmapCoord  dy2 = std::min((this->m_yHeight), dy + dh);
 
-    for ( int y = dy; y < dy2; ++ y ) {
+    for ( BitmapCoord y = dy; y < dy2; ++ y ) {
         PmPixelArray    ptrDst  = this->getPixels(dx, y);
-        for ( int x = dx; x < dx2; ++ x ) {
+        for ( BitmapCoord x = dx; x < dx2; ++ x ) {
             const  int  cB  = *(ptrDst);
             *(ptrDst++) = ( (colB * (1 - vTr)) + (cB * vTr) ) >> 8;
 
@@ -427,6 +427,70 @@ BitmapImage::drawTransparentRectangle(
 //    Accessors.
 //
 
+//----------------------------------------------------------------
+//    ビットマップの高さを取得する。
+//
+
+BitmapImage::BitmapCoord
+BitmapImage::getHeight()  const
+{
+    return ( this->m_yHeight );
+}
+
+//----------------------------------------------------------------
+//    ビットマップデータのアドレスを取得する。
+//
+
+BitmapImage::PcPixelArray
+BitmapImage::getPixels()  const
+{
+    return ( this->m_ptrBits );
+}
+
+//----------------------------------------------------------------
+//    ビットマップデータのアドレスを取得する。
+//
+
+BitmapImage::PmPixelArray
+BitmapImage::getPixels()
+{
+    return ( this->m_ptrBits );
+}
+
+//----------------------------------------------------------------
+//    ビットマップデータのアドレスを取得する。
+//
+
+BitmapImage::PcPixelArray
+BitmapImage::getPixels(
+        const  int  x,
+        const  int  y)  const
+{
+    return ( (this->m_ptrBits) + computeOffset(x, y) );
+}
+
+//----------------------------------------------------------------
+//    ビットマップデータのアドレスを取得する。
+//
+
+BitmapImage::PmPixelArray
+BitmapImage::getPixels(
+        const  int  x,
+        const  int  y)
+{
+    return ( (this->m_ptrBits) + computeOffset(x, y) );
+}
+
+//----------------------------------------------------------------
+//    ビットマップの幅を取得する。
+//
+
+BitmapImage::BitmapCoord
+BitmapImage::getWidth()  const
+{
+    return ( this->m_xWidth );
+}
+
 //========================================================================
 //
 //    For Internal Use Only.
@@ -436,9 +500,9 @@ BitmapImage::drawTransparentRectangle(
 //    壱ピクセルに必要なバイト数を計算する。
 //
 
-inline  size_t
+inline  BitmapImage::Offset
 BitmapImage::computeBytesPerPixel(
-        const  int  bDepth)
+        const  BitmapDepth  bDepth)
 {
     return ( static_cast<Offset>((bDepth + 7) / 8) );
 }
@@ -447,7 +511,7 @@ BitmapImage::computeBytesPerPixel(
 //    壱ラインに必要なバイト数を計算する。
 //
 
-inline  size_t
+inline  BitmapImage::Offset
 BitmapImage::computeBytesPerLine(
         const  int  cxWidth,
         const  int  bDepth)
@@ -459,58 +523,13 @@ BitmapImage::computeBytesPerLine(
 //    ビットマップデータの先頭からのオフセットを計算する。
 //
 
-inline  const   BitmapImage::Offset
+inline  BitmapImage::Offset
 BitmapImage::computeOffset(
         const  int  x,
         const  int  y)  const
 {
     return ( (( (this->m_yHeight) - y - 1) * (this->m_nLineBytes))
              + ((this->m_nPixelBytes) * x) );
-}
-
-//----------------------------------------------------------------
-//    ビットマップデータのアドレスを取得する。
-//
-
-inline  BitmapImage::PcPixelArray
-BitmapImage::getPixels()  const
-{
-    return ( this->m_ptrBits );
-}
-
-//----------------------------------------------------------------
-//    ビットマップデータのアドレスを取得する。
-//
-
-inline  BitmapImage::PmPixelArray
-BitmapImage::getPixels()
-{
-    return ( this->m_ptrBits );
-}
-
-//----------------------------------------------------------------
-//    ビットマップデータのアドレスを取得する。
-//
-
-inline  BitmapImage::PcPixelArray
-BitmapImage::getPixels(
-        const  int  x,
-        const  int  y)  const
-{
-    return ( (this->m_ptrBits) + computeOffset(x, y) );
-}
-
-
-//----------------------------------------------------------------
-//    ビットマップデータのアドレスを取得する。
-//
-
-inline  BitmapImage::PmPixelArray
-BitmapImage::getPixels(
-        const  int  x,
-        const  int  y)
-{
-    return ( (this->m_ptrBits) + computeOffset(x, y) );
 }
 
 }   //  End of namespace  Interface

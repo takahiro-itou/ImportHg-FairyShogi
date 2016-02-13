@@ -57,7 +57,13 @@ class  BitmapImage
 public:
 
     /**   ピクセルの輝度値型。  **/
-    typedef     uint8_t                 PixelValue;
+    typedef     uint8_t     PixelValue;
+
+    /**   ピクセルの座標を指定する型。  **/
+    typedef     int         BitmapCoord;
+
+    /**   ピクセルの深さを指定する型。  **/
+    typedef     int         BitmapDepth;
 
 //========================================================================
 //
@@ -113,9 +119,9 @@ public:
     **/
     virtual  ErrCode
     createBitmap(
-            const  int  cxWidth,
-            const  int  cyHeight,
-            const  int  bDepth);
+            const  BitmapCoord  cxWidth,
+            const  BitmapCoord  cyHeight,
+            const  BitmapDepth  bDepth);
 
 #if  defined( FAIRYSHOGI_WIN32_API )
 
@@ -132,9 +138,9 @@ public:
     **/
     virtual  ErrCode
     createBitmap(
-            const  int  cxWidth,
-            const  int  cyHeight,
-            const  HDC  hDC);
+            const  BitmapCoord  cxWidth,
+            const  BitmapCoord  cyHeight,
+            const  HDC          hDC);
 
 #endif  //  defined( FAIRYSHOGI_WIN32_API )
 
@@ -168,13 +174,13 @@ public:
     **/
     virtual  ErrCode
     drawBitmap(
-            const  HDC  hDC,
-            const  int  dx,
-            const  int  dy,
-            const  int  w,
-            const  int  h,
-            const  int  ox  = 0,
-            const  int  oy  = 0);
+            const  HDC          hDC,
+            const  BitmapCoord  dx,
+            const  BitmapCoord  dy,
+            const  BitmapCoord  w,
+            const  BitmapCoord  h,
+            const  BitmapCoord  ox  = 0,
+            const  BitmapCoord  oy  = 0);
 
 #endif  //  defined( FAIRYSHOGI_WIN32_API )
 
@@ -229,13 +235,13 @@ public:
     **/
     ErrCode
     copyRectangle(
-            const  int          dx,
-            const  int          dy,
-            const  int          dw,
-            const  int          dh,
+            const  BitmapCoord  dx,
+            const  BitmapCoord  dy,
+            const  BitmapCoord  dw,
+            const  BitmapCoord  dh,
             const  BitmapImage  &bmpSrc,
-            const  int          sx,
-            const  int          sy);
+            const  BitmapCoord  sx,
+            const  BitmapCoord  sy);
 
     //----------------------------------------------------------------
     /**   半透明の矩形を描画する。
@@ -255,10 +261,10 @@ public:
     **/
     ErrCode
     drawTransparentRectangle(
-            const  int          dx,
-            const  int          dy,
-            const  int          dw,
-            const  int          dh,
+            const  BitmapCoord  dx,
+            const  BitmapCoord  dy,
+            const  BitmapCoord  dw,
+            const  BitmapCoord  dh,
             const  PixelValue   colR,
             const  PixelValue   colG,
             const  PixelValue   colB,
@@ -276,11 +282,19 @@ public:
 public:
 
     //----------------------------------------------------------------
+    /**   ビットマップの高さを取得する。
+    **
+    **  @return     ビットマップの高さを返す。
+    **/
+    BitmapCoord
+    getHeight()  const;
+
+    //----------------------------------------------------------------
     /**   ビットマップデータのアドレスを取得する。
     **
     **  @return     ビットマップデータの先頭アドレス。
     **/
-    inline  PcPixelArray
+    PcPixelArray
     getPixels()  const;
 
     //----------------------------------------------------------------
@@ -288,7 +302,7 @@ public:
     **
     **  @return     ビットマップデータの先頭アドレス。
     **/
-    inline  PmPixelArray
+    PmPixelArray
     getPixels();
 
     //----------------------------------------------------------------
@@ -298,7 +312,7 @@ public:
     **  @param [in] y   垂直座標。
     **  @return     指定した座標に対応するデータのアドレス。
     **/
-    inline  PcPixelArray
+    PcPixelArray
     getPixels(
             const  int  x,
             const  int  y)  const;
@@ -310,10 +324,18 @@ public:
     **  @param [in] y   垂直座標。
     **  @return     指定した座標に対応するデータのアドレス。
     **/
-    inline  PmPixelArray
+    PmPixelArray
     getPixels(
             const  int  x,
             const  int  y);
+
+    //----------------------------------------------------------------
+    /**   ビットマップの幅を取得する。
+    **
+    **  @return     ビットマップの幅を返す。
+    **/
+    BitmapCoord
+    getWidth()  const;
 
 //========================================================================
 //
@@ -330,9 +352,9 @@ private:
     **  @param [in] bDepth    深さ。
     **  @return     壱ピクセルに必要なバイト数。
     **/
-    static  inline  size_t
+    static  inline  Offset
     computeBytesPerPixel(
-            const  int  bDepth);
+            const  BitmapDepth  bDepth);
 
     //----------------------------------------------------------------
     /**   壱ラインに必要なバイト数を計算する。
@@ -341,10 +363,10 @@ private:
     **  @param [in] bDepth    深さ。
     **  @return     壱ラインに必要なバイト数。
     **/
-    static  inline  size_t
+    static  inline  Offset
     computeBytesPerLine(
-            const  int  cxWidth,
-            const  int  bDepth);
+            const  BitmapCoord  cxWidth,
+            const  BitmapDepth  bDepth);
 
     //----------------------------------------------------------------
     /**   ビットマップデータの先頭からのオフセットを計算する。
@@ -353,10 +375,10 @@ private:
     **  @param [in] y   垂直座標。
     **  @return     指定した座標に対応するデータのオフセット。
     **/
-    inline  const   Offset
+    inline  Offset
     computeOffset(
-            const  int  x,
-            const  int  y)  const;
+            const  BitmapCoord  x,
+            const  BitmapCoord  y)  const;
 
     //----------------------------------------------------------------
     //
@@ -405,9 +427,9 @@ private:
 
 private:
 
-    int             m_xWidth;
-    int             m_yHeight;
-    int             m_nDepth;
+    BitmapCoord     m_xWidth;
+    BitmapCoord     m_yHeight;
+    BitmapDepth     m_nDepth;
 
     LpBuffer        m_ptrBuf;
     LpBitmapInfo    m_ptrInfo;
