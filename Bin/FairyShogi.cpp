@@ -23,7 +23,17 @@ using   namespace   FAIRYSHOGI_NAMESPACE;
 
 int  main(int argc, char * argv[])
 {
-    std::cout   <<  "Fairy Shogi Version 0.0"
+    std::cerr   <<  "Fairy Shogi Version 0.0"
                 <<  std::endl;
+
+    std::string     strBuf;
+    std::istream   & inStr  = (std::cin);
+
+    std::getline(inStr, strBuf);
+    std::cerr   <<  strBuf  <<  std::endl;
+
+    std::cout   <<  "ECHO :"
+                <<  strBuf  <<  std::endl;
+
     return ( 0 );
 }
