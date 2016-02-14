@@ -20,6 +20,35 @@ LIBTOPDIR               =  $(BLDTOPDIR)/Lib
 ##    List of Source and Header Files.
 ##
 
+EXTRALIBSOURCES         =
+EXTRANOINSTHEADERS      =
+EXTRALIBHEADERS         =
+
+LIBCXXSOURCEFILES       =  \
+        BoardScreen.cpp      \
+        PromotionScreen.cpp  \
+        Resources.cpp        \
+        ScreenLayer.cpp      \
+        $(EXTRALIBSOURCES)
+
+LIBINSTANTIATIONS       =
+LIBCXXINLINEFILES       =
+
+LIBNOINSTHEADERS        =  \
+        BoardScreen.h        \
+        PromotionScreen.h    \
+        Resources.h          \
+        ScreenLayer.h        \
+        $(EXTRANOINSTHEADERS)
+
+INCLIBHEADERS           =  \
+        $(EXTRALIBHEADERS)
+
+LIBNODISTHEADERS        =
+
+LIBINSTALLSOURCES       =
+LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+
 ##
 ##    List of Libraries.
 ##
@@ -59,9 +88,7 @@ dist_bin_SCRIPTS        =  \
 ##
 
 FairyShogiWin32_SOURCES   =  FairyShogiWin32.cpp  \
-        ScreenLayer.cpp       ScreenLayer.h       \
-        PromotionScreen.cpp  PromotionScreen.h    \
-        BoardScreen.cpp       BoardScreen.h
+        $(LIBCOMPILESOURCES)
 
 FairyShogiWin32_LDADD     =  -lfsgInterface  -lGdi32
 
