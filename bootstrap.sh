@@ -1,11 +1,12 @@
 #! /bin/bash  -x
 
+mkdir  -p  .Config
+
 chmod  u+x  setuplinks.sh
 ./setuplinks.sh
 
-mkdir  -p  .Config  \
-  &&  aclocal  -I  .Config  \
-  &&  autoheader  \
+aclocal  -I  .Config  \
+  &&  autoheader      \
   &&  automake  --add-missing  --copy  --foreign  \
   &&  autoconf
 

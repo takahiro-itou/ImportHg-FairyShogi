@@ -28,12 +28,14 @@ dnl
 AC_CONFIG_AUX_DIR([.Config])
 
 dnl
-dnl   プロジェクトの基本設定。
+dnl   適当なバージョンの automake を設定
 dnl
 
-AM_INIT_AUTOMAKE(
-    [serial-tests]
-)
+m4_include([M4/InitAutomake.m4])
+
+dnl
+dnl   プロジェクトの基本設定。
+dnl
 
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADER([Include/.FairyShogi.Config.h:Include/FairyShogi/.Config/Config.h.in])
