@@ -102,9 +102,13 @@ dnl
 
 m4_include([M4/CheckExtraFlags.m4])
 
-MYAC_CHECK_EXTRA_COMPILER_OPTION([mwindows], [-mwindows])
-MYAC_CHECK_EXTRA_LINKER_OPTION([static-libstdcxx], [-static-libstdc++])
-MYAC_CHECK_EXTRA_LINKER_OPTION([static-libgcc],    [-static-libgcc])
+MYAC_CHECK_EXTRA_COMPILER_OPTION(
+    [FAIRYSHOGI_CNF_CFLAGS_MWINDOWS], [mwindows], [-mwindows])
+MYAC_CHECK_EXTRA_LINKER_OPTION(
+    [LDFLAGS], [static-libstdcxx], [-static-libstdc++])
+MYAC_CHECK_EXTRA_LINKER_OPTION(
+    [LDFLAGS], [static-libgcc],    [-static-libgcc])
+AC_SUBST(FAIRYSHOGI_CNF_CFLAGS_MWINDOWS)
 
 dnl
 dnl   Project Name Space.

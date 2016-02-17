@@ -62,11 +62,11 @@ LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
 ##
 
 AM_CPPFLAGS             =  -I$(INCTOPDIR)
-AM_CFLAGS               =
-AM_CXXFLAGS             =
+AM_CFLAGS               =  $(FAIRYSHOGI_CNF_CFLAGS_MWINDOWS)
+AM_CXXFLAGS             =  $(FAIRYSHOGI_CNF_CFLAGS_MWINDOWS)
 AM_LDFLAGS              =  -L$(LIBTOPDIR)
 
-AM_CPPFLAGS             += -DDSHOGI_WIN32=1
+AM_CPPFLAGS             += -DFAIRYSHOGI_WIN32=1
 
 ##
 ##    Include Common Settings.
