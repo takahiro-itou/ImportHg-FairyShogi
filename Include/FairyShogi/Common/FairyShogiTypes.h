@@ -94,7 +94,7 @@ typedef     int     THandCount;
 
 //----------------------------------------------------------------
 
-typedef     const   void  *     LpReadBuf;
+typedef     const   void  *     LpcReadBuf;
 
 typedef     void  *             LpWriteBuf;
 
