@@ -50,14 +50,17 @@ public:
     **  （デフォルトコンストラクタ）。
     **
     **/
-    BitSet();
+    BitSet()
+        : m_bsBlock(0)
+    { }
 
     //----------------------------------------------------------------
     /**   インスタンスを破棄する
     **  （デストラクタ）。
     **
     **/
-    ~BitSet();
+    ~BitSet()
+    { }
 
 //========================================================================
 //
@@ -91,18 +94,31 @@ public:
 public:
 
     //----------------------------------------------------------------
-    /**   指定したインデックスの値を取得する。
+    /**   インデックスで指定した場所の値を取得する。
     **
+    **  @param [in] fiPos   インデックス。
+    **  @return     指定した場所のビットを返す。
     **/
     ReturnType
     getBitValue(
             const  FieldIndex   fiPos);
 
     //----------------------------------------------------------------
+    /**   ブロックの値をまとめて取得する。
+    **
+    **  @return     指定したブロックの値を返す。
+    **/
+    TBlockElem
+    getValueBlock()  const;
+
+    //----------------------------------------------------------------
     /**   指定したインデックスの値を零にリセットする。
     **
     **  @param [in] fiPos   インデックス。
-    **  @return     void.
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
     **/
     ErrCode
     resetBitValue(
@@ -112,7 +128,10 @@ public:
     /**   指定したインデックスの値を壱にセットする。
     **
     **  @param [in] fiPos   インデックス。
-    **  @retval     書き込んだ値を返す。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
     **/
     ErrCode
     setBitValue(
@@ -150,10 +169,10 @@ public:
 //
 
 //----------------------------------------------------------------
-//    指定したインデックスの値を取得する。
+//    インデックスで指定した場所の値を取得する。
 //
 
-ReturnType
+inline  BitSet::ReturnType
 BitSet::getBitValue(
         const  FieldIndex   fiPos)
 {
@@ -161,10 +180,20 @@ BitSet::getBitValue(
 }
 
 //----------------------------------------------------------------
+//    ブロックの値をまとめて取得する。
+//
+
+inline  BitSet::TBlockElem
+BitSet::getValueBlock()  const
+{
+    return ( (this->m_bsBlock) );
+}
+
+//----------------------------------------------------------------
 //    指定したインデックスの値を零にリセットする。
 //
 
-ErrCode
+inline  ErrCode
 BitSet::resetBitValue(
         const  FieldIndex   fiPos)
 {
@@ -177,7 +206,7 @@ BitSet::resetBitValue(
 //    指定したインデックスの値を壱にセットする。
 //
 
-ErrCode
+inline  ErrCode
 BitSet::setBitValue(
         const  FieldIndex   fiPos)
 {
@@ -185,7 +214,6 @@ BitSet::setBitValue(
     this->m_bsBlock |= (bWrite);
     return ( ERR_SUCCESS );
 }
-
 
 }   //  End of namespace  Game
 FAIRYSHOGI_NAMESPACE_END
