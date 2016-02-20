@@ -145,9 +145,14 @@ EngineProcess::createProcess(
     ::memcpy( &(bufCmd[0]), strCmd.c_str(), lenCmd );
     bufCmd[lenCmd]  = '\0';
 
+    if ( ::GetStdHandle(STD_ERROR_HANDLE) == (NULL) ) {
+        ::AllocConsole();
+    }
+
     STARTUPINFO     si;
     ::memset( &si, 0, sizeof(si) );
     si.cb           = sizeof(si);
+    si.dwFlags      = STARTF_USESTDHANDLES;
     si.hStdInput    = getStdHandle(this->m_hConsoleIn,  STD_INPUT_HANDLE);
     si.hStdOutput   = getStdHandle(this->m_hConsoleOut, STD_OUTPUT_HANDLE);
     si.hStdError    = getStdHandle(this->m_hConsoleErr, STD_ERROR_HANDLE);
@@ -231,7 +236,10 @@ EngineProcess::writeConsoleInput(
         const   LpcReadBuf  ptrBuf,
         const   FileLen     cbSize)  const
 {
-    return ( ERR_FAILURE );
+    DWORD   dwWrite = 0;
+    ::WriteFile(this->m_hStdInWrite, ptrBuf, cbSize, &dwWrite, NULL);
+
+    return ( ERR_SUCCESS );
 }
 
 //========================================================================
