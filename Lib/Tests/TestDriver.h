@@ -32,7 +32,41 @@ executeCppUnitTests(
         char *  argv[]);
 
 #if ( HAVE_CPPUNIT )
+
 #    include    <cppunit/extensions/HelperMacros.h>
+
+using   namespace   CPPUNIT_NS;
+
+#else   //  if ! ( HAVE_CPPUNIT )
+
+class   TestFixture
+{
+public:
+    TestFixture();
+    virtual  ~TestFixture();
+
+    virtual  void   setUp();
+    virtual  void   tearDown();
+};
+
+#define     CPPUNIT_TEST_SUITE(classname)       \
+public:                                         \
+    classname() {                               \
+        executeTests();                         \
+   }                                            \
+protected:                                      \
+    void  executeTests()  {
+
+#define     CPPUNIT_TEST(funcname)              \
+    funcname()
+
+#define     CPPUNIT_TEST_SUITE_END()            \
+    }                                           \
+    static  void  run()
+
+#define     CPPUNIT_TEST_SUITE_REGISTRATION(classname)  \
+    classname   g_ ## classname ## _Instance;
+
 #endif
 
 #endif

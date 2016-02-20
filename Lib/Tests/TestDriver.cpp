@@ -15,6 +15,8 @@
 **      @file       Tests/TestDriver.cpp
 **/
 
+#include    "TestDriver.h"
+
 #if ( HAVE_CPPUNIT )
 #    include    <cppunit/BriefTestProgressListener.h>
 #    include    <cppunit/CompilerOutputter.h>
@@ -70,6 +72,24 @@ executeCppUnitTests(
     (void)(argv);
 
     return ( 0 );
+}
+
+//----------------------------------------------------------------
+
+TestFixture::TestFixture()
+{
+}
+
+TestFixture::~TestFixture()
+{
+}
+
+void  TestFixture::setUp()
+{
+}
+
+void  TestFixture::tearDown()
+{
 }
 
 #endif  //  ! ( HAVE_CPPUNIT )

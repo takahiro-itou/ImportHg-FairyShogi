@@ -26,8 +26,10 @@ TESTDRIVERS             =
 LIBNOINSTHEADERS        =
 EXTRADRIVERS            =
 LDTESTDRIVERS           =
+
 TESTCPPFLAGS            =
 TESTLDFLAGS             =
+TESTLIBTESTEE           =
 
 ##
 ##    Test Configurations.
@@ -51,24 +53,31 @@ LDTESTDRIVERS           +=  $(DRIVER_LIBDIR)/libTestDriver.a
 if  AMCNF_CPPUNIT_ENABLED
 TESTXUNITCPPFLAGS       =  -DHAVE_CPPUNIT=1
 TESTXUNITLDFLAGS        =
+TESTXUNITLINKLDADD      =  -lcppunit
 else
 TESTXUNITCPPFLAGS       =  -DHAVE_CPPUNIT=0
 TESTXUNITLDFLAGS        =
+TESTXUNITLINKLDADD      =
 endif
 
 AM_CPPFLAGS             =  \
         -I$(TESTEE_SRCDIR)  \
         -I$(INCTOPDIR)      \
+        -I$(SRCTOPDIR)/Lib  \
         -I$(DRIVER_SRCDIR)  \
         $(TEST_CPPFLAGS)
 
 AM_CFLAGS               =  $(TESTXUNITCPPFLAGS)
 AM_CXXFLAGS             =  $(TESTXUNITCPPFLAGS)
 AM_LDFLAGS              =  \
-        $(LDTESTDRIVERS)     \
+        -L$(LIBTOPDIR)       \
         $(TESTLDFLAGS)       \
-        $(TESTXUNITLDFLAGS)  \
-        -L$(LIBTOPDIR)
+        $(TESTXUNITLDFLAGS)
+
+LDADD                   =  \
+        $(TESTLIBTESTEE)       \
+        $(LDTESTDRIVERS)       \
+        $(TESTXUNITLINKLDADD)
 
 ##
 ##    List of Installs.
