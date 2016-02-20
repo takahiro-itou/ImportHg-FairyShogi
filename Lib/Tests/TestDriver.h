@@ -39,6 +39,9 @@ using   namespace   CPPUNIT_NS;
 
 #else   //  if ! ( HAVE_CPPUNIT )
 
+#include    <iostream>
+#include    <stdlib.h>
+
 class   TestFixture
 {
 public:
@@ -66,6 +69,26 @@ protected:                                      \
 
 #define     CPPUNIT_TEST_SUITE_REGISTRATION(classname)  \
     classname   g_ ## classname ## _Instance;
+
+template  <typename  T>
+void  assertEqual(
+        const  T  &     vExp,
+        const  T  &     vAct,
+        const  char  *  szFile,
+        const  int      nLine)
+{
+    if ( vExp != vAct ) {
+        std::cerr   <<  "\nEquality Assertion Failed."
+                    <<  "\n  Expected : "   <<  vExp
+                    <<  "\n  Actual   : "   <<  vAct
+                    <<  std::endl;
+        exit ( 1 );
+    }
+    return;
+}
+
+#define     CPPUNIT_ASSERT_EQUAL(exp, act)      \
+    assertEqual(exp,  act,  __FILE__,  __LINE__)
 
 #endif
 
