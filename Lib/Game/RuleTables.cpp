@@ -20,6 +20,105 @@
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
 
+namespace  {
+
+/**
+**    方向を示す定数。
+**/
+
+enum  Direction
+{
+    NW = +6, N = -1, NE = -8,
+    W  = +7,         E  = -7,
+    SW = +8, S = +1, SE = -6
+};
+
+/**
+**    座標データを番兵付きの座標に変換するためのテーブル。
+**/
+
+CONSTEXPR_VAR   int     g_tblConvPos[25] = {
+    8,  9,  10, 11, 12,
+    15, 16, 17, 18, 19,
+    22, 23, 24, 25, 26,
+    29, 30, 31, 32, 33,
+    36, 37, 38, 39, 40
+};
+
+/**
+**    番兵付きの座標から、元の座標に変換するためのテーブル。
+**/
+
+CONSTEXPR_VAR   int     t_tblInvPos[49] = {
+    -1, -1, -1, -1, -1, -1, -1,
+    -1,  0,  1,  2,  3,  4, -1,
+    -1,  5,  6,  7,  8,  9, -1,
+    -1, 10, 11, 12, 13, 14, -1,
+    -1, 15, 16, 17, 18, 19, -1,
+    -1, 20, 21, 22, 23, 24, -1,
+    -1, -1, -1, -1, -1, -1, -1
+};
+
+/**
+**    隣接移動テーブル。
+**/
+
+CONSTEXPR_VAR   int     g_tblWalkDir[20][9] = {
+    { N , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Pawn.
+    { SW, NW, N , SE, NE, 0 , 0 , 0 , 0 },      //  Black Silver.
+    { W , NW, S , N , E , NE, 0 , 0 , 0 },      //  Black Gold.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Bishop.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Rook.
+    { SW, W , NW, S , N , SE, E , NE, 0 },      //  Black King.
+    { W , NW, S , N , E , NE, 0 , 0 , 0 },      //  Black Pr.Pawn.
+    { W , NW, S , N , E , NE, 0 , 0 , 0 },      //  Black Pr.Silver.
+    { W , S , N,  E , 0 , 0 , 0 , 0 , 0 },      //  Black Pr.Bishop.
+    { SW, NW, SE, NE, 0 , 0 , 0 , 0 , 0 },      //  Black Pr.Rook.
+
+    { S , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  White Pawn.
+    { SW, NW, S , SE, NE, 0 , 0 , 0 , 0 },      //  White Silver.
+    { SW, W , S , N , SE, E , 0 , 0 , 0 },      //  White Gold.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  White Bishop.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  White Rook.
+    { SW, W , NW, S , N , SE, E , NE, 0 },      //  White King.
+    { SW, W , S , N , SE, E , 0 , 0 , 0 },      //  White Pr.Pawn.
+    { SW, W , S , N , SE, E , 0 , 0 , 0 },      //  White Pr.Silver.
+    { W , S , N,  E , 0 , 0 , 0 , 0 , 0 },      //  White Pr.Bishop.
+    { SW, NW, SE, NE, 0 , 0 , 0 , 0 , 0 }       //  White Pr.Rook.
+};
+
+/**
+**      飛行移動テーブル。
+**/
+
+CONSTEXPR_VAR   int     g_tblJumpDir[20][9] = {
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Pawn.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Silver.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Gold.
+    { SW, NW, SE, NE, 0 , 0 , 0 , 0 , 0 },      //  Black Bishop.
+    { W , S , N,  E , 0 , 0 , 0 , 0 , 0 },      //  Black Rook.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black King.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Pr.Pawn.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Pr.Silver.
+    { SW, NW, SE, NE, 0 , 0 , 0 , 0 , 0 },      //  Black Pr.Bishop.
+    { W , S , N,  E , 0 , 0 , 0 , 0 , 0 },      //  Black Pr.Rook.
+
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  White Pawn.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  White Silver.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  White Gold.
+    { SW, NW, SE, NE, 0 , 0 , 0 , 0 , 0 },      //  White Bishop.
+    { W , S , N,  E , 0 , 0 , 0 , 0 , 0 },      //  White Rook.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  White King.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  White Pr.Pawn.
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  White Pr.Silver.
+    { SW, NW, SE, NE, 0 , 0 , 0 , 0 , 0 },      //  White Pr.Bishop.
+    { W , S , N,  E , 0 , 0 , 0 , 0 , 0 }       //  White Pr.Rook.
+};
+
+
+}   //  End of (Unnamed) namespace.
+
+
 //========================================================================
 //
 //    RuleTables  class.
@@ -92,6 +191,19 @@ RuleTables::setupRuleTables()
 //
 //    For Internal Use Only.
 //
+
+//----------------------------------------------------------------
+//    ルールテーブルを展開する。
+//
+
+ErrCode
+RuleTables::expandDirTable(
+        const  int  (& tblWalkDir)[9],
+        const  int  (& tblJumpDir)[9],
+        uint32_t    (& tblPos)[25])
+{
+    return ( ERR_FAILURE );
+}
 
 }   //  End of namespace  Game
 FAIRYSHOGI_NAMESPACE_END

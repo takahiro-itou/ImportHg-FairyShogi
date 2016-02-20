@@ -100,11 +100,34 @@ public:
 //
 //    For Internal Use Only.
 //
+private:
+
+    //----------------------------------------------------------------
+    /**   ルールテーブルを展開する。
+    **
+    **  @param [in] tblWalk   移動可能な方向のテーブル。
+    **  @param [in] tblJump   移動可能な方向のテーブル。
+    **  @param[out] tblPos    展開したデータを書き込む変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    expandDirTable(
+            const  int  (& tblWalkDir)[9],
+            const  int  (& tblJumpDir)[9],
+            uint32_t    (& tblPos)[25]);
 
 //========================================================================
 //
 //    Member Variables.
 //
+private:
+
+    static  uint32_t    s_tblMoveTo[25][20];
+
+    static  uint32_t    s_tblMoveFrom[25][20];
 
 //========================================================================
 //

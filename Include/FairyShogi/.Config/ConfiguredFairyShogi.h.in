@@ -43,4 +43,13 @@
 #    undef      FAIRYSHOGI_WIN32_API
 #endif
 
+//========================================================================
+//
+//    Compile Features.
+//
+
+#define     CONSTEXPR_VAR       constexpr
+#define     CONSTEXPR_FUNC      constexpr
+#define     OVERRIDE            override
+
 #endif
