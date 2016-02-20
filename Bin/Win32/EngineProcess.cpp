@@ -145,7 +145,25 @@ EngineProcess::createProcess(
     ::memcpy( &(bufCmd[0]), strCmd.c_str(), lenCmd );
     bufCmd[lenCmd]  = '\0';
 
-    return ( NULL );
+    STARTUPINFO     si;
+    ::memset( &si, 0, sizeof(si) );
+    si.cb           = sizeof(si);
+    si.hStdInput    = getStdHandle(this->m_hConsoleIn,  STD_INPUT_HANDLE);
+    si.hStdOutput   = getStdHandle(this->m_hConsoleOut, STD_OUTPUT_HANDLE);
+    si.hStdError    = getStdHandle(this->m_hConsoleErr, STD_ERROR_HANDLE);
+
+    if ( ! ::CreateProcess(
+                    NULL,   &(bufCmd[0]),
+                    NULL,   NULL,
+                    TRUE,
+                    CREATE_NEW_PROCESS_GROUP,
+                    NULL,   NULL,
+                    &si,    &(this->m_infProc)) )
+    {
+        return ( NULL );
+    }
+
+    return ( (this->m_infProc.hProcess) );
 }
 
 //----------------------------------------------------------------
@@ -263,7 +281,32 @@ HANDLE
 EngineProcess::createReadPipe(
         HANDLE   *  hParentWrite)
 {
-    return ( NULL );
+    HANDLE  hTempPipe,  hReadPipe,  hWritePipe;
+
+    //  パイプを作成する。  //
+    const  HANDLE   hInstance   = ::GetCurrentProcess();
+    if ( ! ::CreatePipe(&hTempPipe, &hWritePipe, NULL, 0) ) {
+        return ( NULL );
+    }
+
+    //  作成したパイプの内、読み込み側を複製。  //
+    //  子プロセスへの継承可能な権限を与える。  //
+    if ( ! ::DuplicateHandle(
+                    hInstance,  hTempPipe,
+                    hInstance,  &hReadPipe,
+                    0,  TRUE,   DUPLICATE_SAME_ACCESS) )
+    {
+        closePipeHandles(hWritePipe, hTempPipe);
+        return ( NULL );
+    }
+
+    //  複製元のハンドルは使わないので閉じる。  //
+    if ( ! ::CloseHandle(hTempPipe) ) {
+        return ( NULL );
+    }
+
+    *(hParentWrite) = hWritePipe;
+    return ( hReadPipe );
 }
 
 //----------------------------------------------------------------
@@ -274,7 +317,47 @@ HANDLE
 EngineProcess::createWritePipe(
         HANDLE   *  hParentRead)
 {
-    return ( NULL );
+    HANDLE  hTempPipe,  hReadPipe,  hWritePipe;
+
+    //  パイプを作成する。  //
+    const  HANDLE   hInstance   = ::GetCurrentProcess();
+    if ( ! ::CreatePipe(&hReadPipe, &hTempPipe, NULL, 0) ) {
+        return ( NULL );
+    }
+
+    //  作成したパイプの内、読み込み側を複製。  //
+    //  子プロセスへの継承可能な権限を与える。  //
+    if ( ! ::DuplicateHandle(
+                    hInstance,  hTempPipe,
+                    hInstance,  &hWritePipe,
+                    0,  TRUE,   DUPLICATE_SAME_ACCESS) )
+    {
+        closePipeHandles(hReadPipe, hTempPipe);
+        return ( NULL );
+    }
+
+    //  複製元のハンドルは使わないので閉じる。  //
+    if ( ! ::CloseHandle(hTempPipe) ) {
+        return ( NULL );
+    }
+
+    *(hParentRead)  = hReadPipe;
+    return ( hWritePipe );
+}
+
+//----------------------------------------------------------------
+//    コンソール入出力用のハンドルを取得する。
+//
+
+HANDLE
+EngineProcess::getStdHandle(
+        const  HANDLE   hConsIO,
+        const  DWORD    nStdIO)
+{
+    if ( (hConsIO != NULL) && (hConsIO != INVALID_HANDLE_VALUE) ) {
+        return ( hConsIO );
+    }
+    return ( ::GetStdHandle(nStdIO) );
 }
 
 }   //  End of namespace  Interface

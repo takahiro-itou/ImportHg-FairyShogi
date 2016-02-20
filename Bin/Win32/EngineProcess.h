@@ -210,7 +210,7 @@ private:
     **          エラーの種類を示す非ゼロ値を返す。
     **      -   正常終了の場合は、ゼロを返す。
     **/
-    ErrCode
+    static  ErrCode
     closePipeHandles(
             HANDLE   &  hParent,
             HANDLE   &  hChild);
@@ -236,6 +236,23 @@ private:
     static  HANDLE
     createWritePipe(
             HANDLE   *  hParentRead);
+
+    //----------------------------------------------------------------
+    /**   コンソール入出力用のハンドルを取得する。
+    **
+    **  @param [in] hConsIO   コンソール用ハンドル。
+    **  @param [in] nStdIO    ハンドルを取得するデバイス：
+    **      -   STD_INPUT_HANDLE  : 標準入力。
+    **      -   STD_OUTPUT_HANDLE : 標準出力。
+    **      -   STD_ERROR_HANDLE  : 標準エラー。
+    **  @return     引数 hConsIO  で指定したハンドルを返す。
+    **      ただし、そのハンドルが無効なハンドルだった時は、
+    **      指定したデバイスのハンドルを取得しなおして返す。
+    **/
+    static  HANDLE
+    getStdHandle(
+            const  HANDLE   hConsIO,
+            const  DWORD    nStdIO);
 
 //========================================================================
 //
