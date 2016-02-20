@@ -209,7 +209,7 @@ public:
     **/
     virtual  ErrCode
     readBitmap(
-            LpReadBuf   const   ptrBuf,
+            LpcReadBuf  const   ptrBuf,
             const  FileLen      cbLen);
 
 //========================================================================

@@ -306,7 +306,7 @@ BitmapImage::openBitmapFile(
 
 ErrCode
 BitmapImage::readBitmap(
-        LpReadBuf   const   ptrBuf,
+        LpcReadBuf  const   ptrBuf,
         const  FileLen      cbLen)
 {
     static_assert(
