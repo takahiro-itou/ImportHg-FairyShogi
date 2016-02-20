@@ -17,6 +17,8 @@
 
 #include    "RuleTables.h"
 
+#include    "FairyShogi/Game/BitSet.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
 
@@ -203,7 +205,8 @@ RuleTables::expandDirTable(
         uint32_t    (& tblPos)[25])
 {
     for ( int posSrc = 0; posSrc < 25; ++ posSrc ) {
-        uint32_t        bstWork = 0;
+        BitSet  bstWork;
+
         const  int      tmpSrc  = g_tblConvPos[posSrc];
         const  int  *   ptrDir  = (nullptr);
         for ( ptrDir = tblWalk; (* ptrDir); ++ ptrDir ) {
@@ -212,7 +215,7 @@ RuleTables::expandDirTable(
             if ( posTrg < 0 ) {
                 continue;       //  盤外にはみ出した。  //
             }
-            bstWork |= (1 << posTrg);
+            bstWork.setBitValue(posTrg);
         }
 
         for ( ptrDir = tblJump; (* ptrDir); ++ ptrDir ) {
@@ -223,11 +226,11 @@ RuleTables::expandDirTable(
                 if ( posTrg < 0 ) {
                     break;      //  盤外にはみだした。  //
                 }
-                bstWork |= (1 << posTrg);
+                bstWork.setBitValue(posTrg);
             }
         }
 
-        tblPos[posSrc]  = bstWork;
+        tblPos[posSrc]  = bstWork.getValueBlock();
     }
 
     return ( ERR_SUCCESS );
