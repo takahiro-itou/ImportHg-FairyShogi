@@ -49,7 +49,7 @@ CONSTEXPR_VAR   int     g_tblConvPos[25] = {
 **    番兵付きの座標から、元の座標に変換するためのテーブル。
 **/
 
-CONSTEXPR_VAR   int     t_tblInvPos[49] = {
+CONSTEXPR_VAR   int     g_tblInvPos[49] = {
     -1, -1, -1, -1, -1, -1, -1,
     -1,  0,  1,  2,  3,  4, -1,
     -1,  5,  6,  7,  8,  9, -1,
@@ -198,11 +198,39 @@ RuleTables::setupRuleTables()
 
 ErrCode
 RuleTables::expandDirTable(
-        const  int  (& tblWalkDir)[9],
-        const  int  (& tblJumpDir)[9],
+        const  int  (& tblWalk)[9],
+        const  int  (& tblJump)[9],
         uint32_t    (& tblPos)[25])
 {
-    return ( ERR_FAILURE );
+    for ( int posSrc = 0; posSrc < 25; ++ posSrc ) {
+        uint32_t        bstWork = 0;
+        const  int      tmpSrc  = g_tblConvPos[posSrc];
+        const  int  *   ptrDir  = (nullptr);
+        for ( ptrDir = tblWalk; (* ptrDir); ++ ptrDir ) {
+            const  int  tmpTrg  = tmpSrc + (* ptrDir);
+            const  int  posTrg  = g_tblInvPos[tmpTrg];
+            if ( posTrg < 0 ) {
+                continue;       //  盤外にはみ出した。  //
+            }
+            bstWork |= (1 << posTrg);
+        }
+
+        for ( ptrDir = tblJump; (* ptrDir); ++ ptrDir ) {
+            const  int  jmpDir  = (* ptrDir);
+            int         tmpTrg  = tmpSrc + jmpDir;
+            for ( ;; tmpTrg += jmpDir) {
+                const  int  posTrg  = g_tblInvPos[tmpTrg];
+                if ( posTrg < 0 ) {
+                    break;      //  盤外にはみだした。  //
+                }
+                bstWork |= (1 << posTrg);
+            }
+        }
+
+        tblPos[posSrc]  = bstWork;
+    }
+
+    return ( ERR_SUCCESS );
 }
 
 }   //  End of namespace  Game
