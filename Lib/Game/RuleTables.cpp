@@ -202,7 +202,8 @@ ErrCode
 RuleTables::expandDirTable(
         const  TDirsTable  &tblWalk,
         const  TDirsTable  &tblJump,
-        TMoveTable         &tblMove);
+        TMoveTable         &tblMove,
+        TPinsTable         &tblPins)
 {
     for ( int posSrc = 0; posSrc < 25; ++ posSrc ) {
         BitSet  bstWork;

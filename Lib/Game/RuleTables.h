@@ -113,7 +113,8 @@ private:
     **
     **  @param [in] tblWalk   移動可能な方向のテーブル。
     **  @param [in] tblJump   移動可能な方向のテーブル。
-    **  @param[out] tblMove   展開したデータを書き込む変数。
+    **  @param[out] tblMove   展開した移動テーブル。
+    **  @param[out] tblPins   展開したピンテーブル。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -123,8 +124,8 @@ private:
     expandDirTable(
             const  TDirsTable  &tblWalk,
             const  TDirsTable  &tblJump,
-            TMoveTable         &tblMove);
-
+            TMoveTable         &tblMove,
+            TPinsTable         &tblPins);
 
 //========================================================================
 //

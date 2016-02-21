@@ -190,70 +190,84 @@ const  uint32_t     g_tblPos11[25]  = {
 void  RuleTablesTest::testExpandDirTable01()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir01, g_tblDir00, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir01, g_tblDir00, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos01,  tblOut) );
 }
 
 void  RuleTablesTest::testExpandDirTable02()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir02, g_tblDir00, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir02, g_tblDir00, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos02,  tblOut) );
 }
 
 void  RuleTablesTest::testExpandDirTable03()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir03, g_tblDir00, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir03, g_tblDir00, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos03,  tblOut) );
 }
 
 void  RuleTablesTest::testExpandDirTable04()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir04, g_tblDir00, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir04, g_tblDir00, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos04,  tblOut) );
 }
 
 void  RuleTablesTest::testExpandDirTable05()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir05, g_tblDir00, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir05, g_tblDir00, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos05,  tblOut) );
 }
 
 void  RuleTablesTest::testExpandDirTable06()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir06, g_tblDir00, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir06, g_tblDir00, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos06,  tblOut) );
 }
 
 void  RuleTablesTest::testExpandDirTable07()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir07, g_tblDir00, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir07, g_tblDir00, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos07,  tblOut) );
 }
 
@@ -261,40 +275,48 @@ void  RuleTablesTest::testExpandDirTable07()
 void  RuleTablesTest::testExpandDirTable08()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir00, g_tblDir08, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir00, g_tblDir08, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos08,  tblOut) );
 }
 
 void  RuleTablesTest::testExpandDirTable09()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir00, g_tblDir09, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir00, g_tblDir09, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos09,  tblOut) );
 }
 
 void  RuleTablesTest::testExpandDirTable10()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir09, g_tblDir08, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir09, g_tblDir08, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos10,  tblOut) );
 }
 
 void  RuleTablesTest::testExpandDirTable11()
 {
     uint32_t    tblOut[25];
+    uint32_t    tblPin[25][25];
 
     CPPUNIT_ASSERT_EQUAL(
             ERR_SUCCESS,
-            RuleTables::expandDirTable(g_tblDir08, g_tblDir09, tblOut));
+            RuleTables::expandDirTable(
+                    g_tblDir08, g_tblDir09, tblOut, tblPin));
     CPPUNIT_ASSERT_EQUAL( 0,  checkExpandResult(g_tblPos11,  tblOut) );
 }
 
