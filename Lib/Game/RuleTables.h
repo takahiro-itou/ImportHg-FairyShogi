@@ -102,12 +102,18 @@ public:
 //
 private:
 
+    typedef     int         TDirsTable[9];
+    typedef     uint32_t    TMoveTable[25];
+    typedef     uint32_t    TPinsTable[25][25];
+
+private:
+
     //----------------------------------------------------------------
     /**   ルールテーブルを展開する。
     **
     **  @param [in] tblWalk   移動可能な方向のテーブル。
     **  @param [in] tblJump   移動可能な方向のテーブル。
-    **  @param[out] tblPos    展開したデータを書き込む変数。
+    **  @param[out] tblMove   展開したデータを書き込む変数。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -115,9 +121,10 @@ private:
     **/
     static  ErrCode
     expandDirTable(
-            const  int  (& tblWalkDir)[9],
-            const  int  (& tblJumpDir)[9],
-            uint32_t    (& tblPos)[25]);
+            const  TDirsTable  &tblWalk,
+            const  TDirsTable  &tblJump,
+            TMoveTable         &tblMove);
+
 
 //========================================================================
 //

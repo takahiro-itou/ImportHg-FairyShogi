@@ -200,9 +200,9 @@ RuleTables::setupRuleTables()
 
 ErrCode
 RuleTables::expandDirTable(
-        const  int  (& tblWalk)[9],
-        const  int  (& tblJump)[9],
-        uint32_t    (& tblPos)[25])
+        const  TDirsTable  &tblWalk,
+        const  TDirsTable  &tblJump,
+        TMoveTable         &tblMove);
 {
     for ( int posSrc = 0; posSrc < 25; ++ posSrc ) {
         BitSet  bstWork;
@@ -230,7 +230,7 @@ RuleTables::expandDirTable(
             }
         }
 
-        tblPos[posSrc]  = bstWork.getValueBlock();
+        tblMove[posSrc] = bstWork.getValueBlock();
     }
 
     return ( ERR_SUCCESS );
