@@ -378,7 +378,7 @@ BoardState::getMatrixPos(
         const   PosCol  xCol,
         const   PosRow  yRow)
 {
-    return ( (xCol * POS_NUM_ROWS) + yRow );
+    return ( ((POS_NUM_COLS - xCol - 1) * POS_NUM_ROWS) + yRow );
 }
 
 }   //  End of namespace  GAME

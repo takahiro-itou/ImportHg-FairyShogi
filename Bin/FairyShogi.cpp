@@ -87,23 +87,26 @@ parseText(
     chBuf[lenText]  = '\0';
 
     char  *     ptrTkn  = (nullptr);
-    char  *     ptrSave = (nullptr);
+    ////char  *     ptrSave = (nullptr);
 
-    ptrTkn  = strtok_r(ptrBuf,  vSeps,  &ptrSave);
+    ////ptrTkn  = strtok_r(ptrBuf,  vSeps,  &ptrSave);
+    ptrTkn  = strtok(ptrBuf,  vSeps);
     if ( ptrTkn == (nullptr) ) {
         return ( 0 );
     }
     vTokens.push_back(ptrTkn);
 
     for ( int i = 1; i < nMaxSep; ++ i ) {
-        ptrTkn  = strtok_r(nullptr,  vSeps,  &ptrSave);
+        ////ptrTkn  = strtok_r(nullptr,  vSeps,  &ptrSave);
+        ptrTkn  = strtok(nullptr,  vSeps);
         if ( ptrTkn == (nullptr) ) {
             break;
         }
         vTokens.push_back(ptrTkn);
     }
 
-    ptrTkn  = strtok_r(nullptr,  "\n",  &ptrSave);
+    ////ptrTkn  = strtok_r(nullptr,  "\n",  &ptrSave);
+    ptrTkn  = strtok(nullptr,  "\n");
     if ( ptrTkn != (nullptr) ) {
         vTokens.push_back(ptrTkn);
     }
@@ -165,11 +168,19 @@ playForward(
         const  std::string         &strPlay,
         Interface::GameController  &itfGame)
 {
-    int     ox, oy;
+    int     nx, ny, ox, oy;
     int     pr  = 0;
 
-    const  int  nx  =  strPlay[2] - '1';
-    const  int  ny  =  strPlay[3] - '1';
+    nx  =  strPlay[2] - '0';
+    ny  =  strPlay[3] - '0';
+
+    if ( (nx < 1) || (5 < nx) || (ny < 1) || (5 < ny) ) {
+        std::cerr   <<  "Out of Range (Target)"
+                    <<  std::endl;
+        return ( 0 );
+    }
+    nx  = 5 - nx;
+    --  ny;
 
     if ( strPlay[1] == '*' ) {
         //  持ち駒を打つ。  //
@@ -188,8 +199,15 @@ playForward(
         itfGame.playPutAction(nx, ny, h);
 
     } else {
-        ox  =  strPlay[0] - '1';
-        oy  =  strPlay[1] - '1';
+        ox  =  strPlay[0] - '0';
+        oy  =  strPlay[1] - '0';
+        if ( (ox < 1) || (5 < ox) || (oy < 1) || (5 < oy) ) {
+            std::cerr   <<  "Out of Range (Source)"
+                        <<  std::endl;
+            return ( 0 );
+        }
+        ox  =  5 - ox;
+        --  oy;
         const  int  trg = itfGame.getBoardState().getFieldPiece(ox, oy);
         if ( (strPlay.length() >= 5) && (strPlay[4] == '+') ) {
             pr  = g_tblPromotion[trg];
