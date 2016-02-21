@@ -93,6 +93,17 @@ GameController::~GameController()
 //
 
 //----------------------------------------------------------------
+//    現在の局面の合法手を列挙する。
+//
+
+ErrCode
+GameController::makeLegalActionList(
+        ActionList  &actList)
+{
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
 //    駒を移動する指し手を入力して盤面を進める。
 //
 
@@ -148,6 +159,17 @@ ErrCode
 GameController::resetGame()
 {
     return ( this->m_gcBoard.resetGameBoard() );
+}
+
+//----------------------------------------------------------------
+//    合法手の制約を指定する。
+//
+
+ErrCode
+GameController::setConstraint(
+        const  int  vCons)
+{
+    return ( ERR_FAILURE );
 }
 
 //----------------------------------------------------------------

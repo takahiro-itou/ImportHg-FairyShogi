@@ -46,8 +46,11 @@ namespace  Interface  {
 class  GameController
 {
 public:
-    typedef     Common::ActionView          ActionView;
-    typedef     std::vector<ActionView>     ActionViewList;
+    typedef     Game::BoardState::ActionData    ActionData;
+    typedef     std::vector<ActionData>         ActionList;
+
+    typedef     Common::ActionView              ActionView;
+    typedef     std::vector<ActionView>         ActionViewList;
 
 //========================================================================
 //
@@ -89,6 +92,19 @@ public:
 //    Public Member Functions (Virtual Functions).
 //
 public:
+
+    //----------------------------------------------------------------
+    /**   現在の局面の合法手を列挙する。
+    **
+    **  @param[out] actList   合法手のリストを受け取る変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    makeLegalActionList(
+            ActionList  &actList);
 
     //----------------------------------------------------------------
     /**   駒を移動する指し手を入力して盤面を進める。
@@ -138,6 +154,19 @@ public:
     **/
     virtual  ErrCode
     resetGame();
+
+    //----------------------------------------------------------------
+    /**   合法手の制約を指定する。
+    **
+    **  @param [in] vCons   制約条件。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    setConstraint(
+            const  int  vCons);
 
     //----------------------------------------------------------------
     /**   表示用棋譜データの内容をストリームに出力する。
@@ -205,9 +234,6 @@ public:
 //
 //    Member Variables.
 //
-private:
-    typedef     Game::BoardState::ActionData    ActionData;
-    typedef     std::vector<ActionData>         ActionList;
 private:
 
     /**   盤面の状態。  **/
