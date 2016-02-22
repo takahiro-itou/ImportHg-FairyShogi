@@ -22,6 +22,11 @@
 
 #include    "FairyShogi/Common/ViewBuffer.h"
 
+#if !defined( FAIRYSHOGI_SYS_INCLUDED_STL_VECTOR )
+#    include    <vector>
+#    define     FAIRYSHOGI_SYS_INCLUDED_STL_VECTOR
+#endif
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 
 //  クラスの前方宣言。  //
@@ -120,6 +125,8 @@ public:
         PieceIndex  fpAfter;        /**<  移動後成り。  **/
         PieceIndex  putHand;        /**<  打った駒。    **/
     };
+
+    typedef     std::vector<ActionData>         ActionList;
 
 //========================================================================
 //
@@ -249,6 +256,34 @@ public:
             const  PosCol       xPutCol,
             const  PosRow       yPutRow,
             const  PieceIndex   pHand);
+
+    //----------------------------------------------------------------
+    /**   合法手を列挙する。
+    **
+    **  @param[out] actList   合法手のリストを受け取る変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    makeLegalActionList(
+            ActionList  &actList)  const;
+
+    //----------------------------------------------------------------
+    /**   合法手を列挙する。
+    **
+    **  @param [in] curStat   現在の盤面データ。
+    **  @param[out] actList   合法手のリストを受け取る変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    makeLegalActionList(
+            const  InternState  &curStat,
+            ActionList          &actList);
 
     //----------------------------------------------------------------
     /**   指定した指し手で盤面を進める。

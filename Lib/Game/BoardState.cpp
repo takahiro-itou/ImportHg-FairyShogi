@@ -198,6 +198,29 @@ BoardState::encodePutAction(
 }
 
 //----------------------------------------------------------------
+//    合法手を列挙する。
+//
+
+ErrCode
+BoardState::makeLegalActionList(
+        ActionList  &actList)  const
+{
+    return ( makeLegalActionList(this->m_icState, actList) );
+}
+
+//----------------------------------------------------------------
+//    合法手を列挙する。
+//
+
+ErrCode
+BoardState::makeLegalActionList(
+        const  InternState  &curStat,
+        ActionList          &actList)
+{
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
 //    指定した指し手で盤面を進める。
 //
 
