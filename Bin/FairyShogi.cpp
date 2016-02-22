@@ -39,6 +39,24 @@ g_tblPieceName[]    = {
 };
 
 CONSTEXPR_VAR   const   char  *
+g_tblPieceName2[]   = {
+    "W",
+    "P",  "S",  "G",  "B",  "R",  "K",
+    "+P", "+S", "+B", "+R",
+    "p",  "s",  "g",  "b",  "r",  "k",
+    "+p", "+s", "+b", "+r"
+};
+
+CONSTEXPR_VAR   const   char  *
+g_tblSfenName[]     = {
+    "1",
+    "P",   "S",   "G",   "B",   "R",   "K",
+    "+P",  "+S",  "+B",  "+R",
+    "p",   "s",   "g",   "b",   "r",   "k",
+    "+p",  "+s",  "+b",  "+r"
+};
+
+CONSTEXPR_VAR   const   char  *
 g_tblHandName[]     = {
     "WALL",
     "P", "S", "G", "B", "R", "K",
@@ -138,6 +156,51 @@ setPosition(
 }
 
 int
+displaySfen(
+        const  Interface::GameController  & itfGame,
+        std::ostream                      & outStr)
+{
+    Common::ViewBuffer  vb;
+    ::memset( &vb, 0, sizeof(vb) );
+    itfGame.writeToViewBuffer(vb);
+
+    //  盤面を表示する。    //
+    for ( int y = 0; y < 5; ++ y ) {
+        if ( y > 0 ) {
+            outStr  <<  "/";
+        }
+        for ( int x = 0; x < 5; ++ x ) {
+            const  int          pi  = (y * 5) + x;
+            const  PieceIndex   dp  = vb.piBoard[pi];
+            outStr  <<  g_tblSfenName[dp];
+        }
+
+    }
+
+    /**     @todo   暫定処理。後で直す。    **/
+    outStr  <<  " b ";
+
+    //  持ち駒を表示する。  //
+    int     flg = 0;
+    for ( int c = 1; c < 12; ++ c ) {
+        const  THandCount   numHand = vb.nHands[c];
+        if ( numHand <= 0 ) { continue; }
+        flg = 1;
+        if ( numHand > 1 ) {
+            outStr  <<  (numHand);
+        }
+        outStr  <<  g_tblHandName[c];
+    }
+    if ( flg == 0 ) {
+        outStr  <<  "-";
+    }
+
+    outStr  <<  " 1\n";
+    return ( 0 );
+
+}
+
+int
 displayBoard(
         const  Interface::GameController  & itfGame,
         std::ostream                      & outStr)
@@ -157,6 +220,21 @@ displayBoard(
         }
         outStr  <<  "|"  <<  (y+1)  <<  "\n";
         outStr  <<  "----------------\n";
+    }
+
+    //  持ち駒を表示する。  //
+    for ( int c = 1; c < 12; ++ c ) {
+        if ( c == 1 ) {
+            outStr  <<  "\nBLACK:";
+        } else if ( c == 7 ) {
+            outStr  <<  "\nWHITE:";
+        }
+
+        const  THandCount   numHand = vb.nHands[c];
+        if ( numHand <= 0 ) { continue; }
+        outStr  <<  g_tblHandName[c]
+                <<  numHand
+                <<  ", ";
     }
 
     outStr  <<  std::endl;
@@ -229,6 +307,45 @@ playForward(
 }
 
 int
+executeDiceCommand(
+        const  std::string  &strArgs)
+{
+    return ( 0 );
+}
+
+int
+executeListCommand(
+        const  Interface::GameController  & itfGame,
+        std::ostream                      & outStr)
+{
+    typedef     Interface::GameController::ActionList   ActionList;
+    typedef     ActionList::const_iterator              ActIter;
+
+    ActionList  vActs;
+    itfGame.makeLegalActionList(vActs);
+
+    const  ActIter  itrEnd  = vActs.end();
+    for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr )
+    {
+        if ( itr->putHand == Game::BoardState::HAND_EMPTY_PIECE ) {
+            outStr  <<  (itr->xOldCol + 1)  <<  (itr->yOldRow + 1)
+                    <<  (itr->xNewCol + 1)  <<  (itr->yNewRow + 1)
+                    <<  (g_tblPieceName2[itr->fpMoved]);
+            if ( (itr->fpAfter) != (itr->fpMoved) ) {
+                outStr  <<  '+';
+            }
+        } else {
+            outStr  <<  (g_tblHandName[itr->putHand])
+                    <<  '*'
+                    <<  (itr->xNewCol + 1)  <<  (itr->yNewRow + 1);
+        }
+    }
+
+    outStr  <<  (vActs.size())  <<  "  Legal Actions."  <<  std::endl;
+    return ( 0 );
+}
+
+int
 parseConsoleInput(
         const  std::string  &strLine)
 {
@@ -239,18 +356,29 @@ parseConsoleInput(
 
     parseText(
             strLine,  " \t",  1,  vTokens);
-    if ( vTokens[0] == "position" ) {
+
+    if ( vTokens[0] == "go" ) {
+    } else if ( vTokens[0] == "dice" ) {
+        if ( vTokens.size() == 1 ) {
+            std::cerr   <<  "Require Arguments."    <<  std::endl;
+            return ( 0 );
+        }
+        return ( executeDiceCommand(vTokens[1]) );
+    } else if ( vTokens[0] == "position" ) {
         if ( vTokens.size() == 1 ) {
             std::cerr   <<  "Require Arguments."    <<  std::endl;
             return ( 0 );
         }
         return  ( setPosition(vTokens[1], g_gcGameCtrl) );
-    } else if ( vTokens[0] == "display" ) {
-        return ( displayBoard(g_gcGameCtrl, std::cout) );
-    } else if ( vTokens[0] == "dice" ) {
-    } else if ( vTokens[0] == "list" ) {
+
     } else if ( vTokens[0] == "fwd" ) {
         return ( playForward(vTokens[1], g_gcGameCtrl) );
+    } else if ( vTokens[0] == "sfen" ) {
+        return ( displaySfen(g_gcGameCtrl, std::cout) );
+    } else if ( vTokens[0] == "show" ) {
+        return ( displayBoard(g_gcGameCtrl, std::cout) );
+    } else if ( vTokens[0] == "list" ) {
+        return ( executeListCommand(g_gcGameCtrl, std::cout) );
     }
 
     std::cerr   <<  "Invalid Command."  << std::endl;
