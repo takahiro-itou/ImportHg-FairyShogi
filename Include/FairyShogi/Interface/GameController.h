@@ -24,7 +24,11 @@
 
 #include    <iosfwd>
 #include    <string>
-#include    <vector>
+
+#if !defined( FAIRYSHOGI_SYS_INCLUDED_STL_VECTOR )
+#    include    <vector>
+#    define     FAIRYSHOGI_SYS_INCLUDED_STL_VECTOR
+#endif
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 
@@ -104,7 +108,7 @@ public:
     **/
     virtual  ErrCode
     makeLegalActionList(
-            ActionList  &actList);
+            ActionList  &actList)  const;
 
     //----------------------------------------------------------------
     /**   駒を移動する指し手を入力して盤面を進める。

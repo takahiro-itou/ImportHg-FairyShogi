@@ -98,9 +98,9 @@ GameController::~GameController()
 
 ErrCode
 GameController::makeLegalActionList(
-        ActionList  &actList)
+        ActionList  &actList)  const
 {
-    return ( ERR_FAILURE );
+    return ( this->m_gcBoard.makeLegalActionList(actList) );
 }
 
 //----------------------------------------------------------------
