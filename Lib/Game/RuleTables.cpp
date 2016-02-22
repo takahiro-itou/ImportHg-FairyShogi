@@ -120,11 +120,19 @@ CONSTEXPR_VAR   int     g_tblJumpDir[20][9] = {
 
 }   //  End of (Unnamed) namespace.
 
-
 //========================================================================
 //
 //    RuleTables  class.
 //
+
+//========================================================================
+//
+//    Static Member Variables.
+//
+
+uint32_t    RuleTables::s_tblMoveTo[FIELD_SIZE][NUM_PIECE_TYPES];
+
+uint32_t    RuleTables::s_tblMoveFrom[FIELD_SIZE][NUM_PIECE_TYPES];
 
 //========================================================================
 //

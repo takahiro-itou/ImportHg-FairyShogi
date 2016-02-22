@@ -20,6 +20,8 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Game/BoardState.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
 
@@ -102,9 +104,18 @@ public:
 //
 private:
 
-    typedef     int         TDirsTable[9];
-    typedef     uint32_t    TMoveTable[25];
-    typedef     uint32_t    TPinsTable[25][25];
+    enum  {
+        POS_NUM_ROWS    =  BoardState::POS_NUM_ROWS,
+        POS_NUM_COLS    =  BoardState::POS_NUM_COLS,
+        FIELD_SIZE      =  POS_NUM_ROWS * POS_NUM_COLS,
+        NUM_PIECE_TYPES =  BoardState::NUM_FIELD_PIECE_TYPES,
+        NUM_HAND_TYPES  =  BoardState::NUM_HAND_TYPES,
+        MAX_DIRECTIONS  =  9
+    };
+
+    typedef     int         TDirsTable[MAX_DIRECTIONS];
+    typedef     uint32_t    TMoveTable[FIELD_SIZE];
+    typedef     uint32_t    TPinsTable[FIELD_SIZE][FIELD_SIZE];
 
 private:
 
@@ -133,9 +144,9 @@ private:
 //
 private:
 
-    static  uint32_t    s_tblMoveTo[25][20];
+    static  uint32_t    s_tblMoveTo[FIELD_SIZE][NUM_PIECE_TYPES];
 
-    static  uint32_t    s_tblMoveFrom[25][20];
+    static  uint32_t    s_tblMoveFrom[FIELD_SIZE][NUM_PIECE_TYPES];
 
 //========================================================================
 //
