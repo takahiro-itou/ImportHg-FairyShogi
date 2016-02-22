@@ -142,7 +142,7 @@ private:
 //
 //    Member Variables.
 //
-private:
+public:
 
     static  uint32_t    s_tblMoveTo[FIELD_SIZE][NUM_PIECE_TYPES];
 

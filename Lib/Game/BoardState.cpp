@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Game/BoardState.h"
 
+#include    "RuleTables.h"
+
 #include    "FairyShogi/Common/ActionView.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN

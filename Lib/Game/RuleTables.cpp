@@ -19,6 +19,8 @@
 
 #include    "FairyShogi/Game/BitSet.h"
 
+#include    <memory.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
 
@@ -65,7 +67,10 @@ CONSTEXPR_VAR   int     g_tblInvPos[49] = {
 **    隣接移動テーブル。
 **/
 
-CONSTEXPR_VAR   int     g_tblWalkDir[20][9] = {
+CONSTEXPR_VAR   int
+g_tblWalkDir[BoardState::NUM_FIELD_PIECE_TYPES][9] = {
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Empty.
+
     { N , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Pawn.
     { SW, NW, N , SE, NE, 0 , 0 , 0 , 0 },      //  Black Silver.
     { W , NW, S , N , E , NE, 0 , 0 , 0 },      //  Black Gold.
@@ -93,7 +98,10 @@ CONSTEXPR_VAR   int     g_tblWalkDir[20][9] = {
 **      飛行移動テーブル。
 **/
 
-CONSTEXPR_VAR   int     g_tblJumpDir[20][9] = {
+CONSTEXPR_VAR   int
+g_tblJumpDir[BoardState::NUM_FIELD_PIECE_TYPES][9] = {
+    { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Empty.
+
     { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Pawn.
     { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Silver.
     { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Gold.
@@ -116,7 +124,6 @@ CONSTEXPR_VAR   int     g_tblJumpDir[20][9] = {
     { SW, NW, SE, NE, 0 , 0 , 0 , 0 , 0 },      //  White Pr.Bishop.
     { W , S , N,  E , 0 , 0 , 0 , 0 , 0 }       //  White Pr.Rook.
 };
-
 
 }   //  End of (Unnamed) namespace.
 
@@ -146,6 +153,7 @@ uint32_t    RuleTables::s_tblMoveFrom[FIELD_SIZE][NUM_PIECE_TYPES];
 
 RuleTables::RuleTables()
 {
+    setupRuleTables();
 }
 
 //----------------------------------------------------------------
@@ -189,6 +197,25 @@ RuleTables::~RuleTables()
 ErrCode
 RuleTables::setupRuleTables()
 {
+    TDirsTable  tblWalk;
+    TDirsTable  tblJump;
+    TMoveTable  tblMove;
+    TPinsTable  tblPins;
+
+    ::memset( s_tblMoveFrom, 0, sizeof(s_tblMoveFrom) );
+
+    for ( int i = 0; i < NUM_PIECE_TYPES; ++ i ) {
+        for ( int j = 0; j < MAX_DIRECTIONS; ++ j ) {
+            tblWalk[j]  = - g_tblWalkDir[i][j];
+            tblJump[j]  = - g_tblJumpDir[i][j];
+        }
+        expandDirTable(
+                tblWalk, tblJump, tblMove, tblPins);
+        for ( int k = 0; k < FIELD_SIZE; ++ k ) {
+            s_tblMoveFrom[k][i] = tblMove[k];
+        }
+    }
+
     return ( ERR_FAILURE );
 }
 
