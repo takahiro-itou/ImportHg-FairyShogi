@@ -137,9 +137,14 @@ g_tblJumpDir[BoardState::NUM_FIELD_PIECE_TYPES][9] = {
 //    Static Member Variables.
 //
 
-uint32_t    RuleTables::s_tblMoveTo[FIELD_SIZE][NUM_PIECE_TYPES];
+RuleTables::BitBoardVal
+RuleTables::s_tblMoveTo[FIELD_SIZE][NUM_PIECE_TYPES];
 
-uint32_t    RuleTables::s_tblMoveFrom[FIELD_SIZE][NUM_PIECE_TYPES];
+RuleTables::BitBoardVal
+RuleTables::s_tblMoveFrom[FIELD_SIZE][NUM_PIECE_TYPES];
+
+RuleTables::BitBoardVal
+RuleTables::s_tblPin[NUM_PIECE_TYPES][FIELD_SIZE][FIELD_SIZE];
 
 //========================================================================
 //
@@ -200,7 +205,6 @@ RuleTables::setupRuleTables()
     TDirsTable  tblWalk;
     TDirsTable  tblJump;
     TMoveTable  tblMove;
-    TPinsTable  tblPins;
 
     ::memset( s_tblMoveFrom, 0, sizeof(s_tblMoveFrom) );
 
@@ -210,7 +214,7 @@ RuleTables::setupRuleTables()
             tblJump[j]  = - g_tblJumpDir[i][j];
         }
         expandDirTable(
-                tblWalk, tblJump, tblMove, tblPins);
+                tblWalk, tblJump, tblMove, s_tblPin[i]);
         for ( int k = 0; k < FIELD_SIZE; ++ k ) {
             s_tblMoveFrom[k][i] = tblMove[k];
         }
@@ -223,6 +227,19 @@ RuleTables::setupRuleTables()
 //
 //    Accessors.
 //
+
+//----------------------------------------------------------------
+//    ピンマスクを取得する。
+//
+
+RuleTables::BitBoardVal
+RuleTables::getPinMask(
+        const  PieceIndex   piMove,
+        const  FieldIndex   fiTrg,
+        const  FieldIndex   fiSrc)
+{
+    return ( s_tblPin[piMove][fiTrg][fiSrc] );
+}
 
 //========================================================================
 //
@@ -257,12 +274,16 @@ RuleTables::expandDirTable(
         for ( ptrDir = tblJump; (* ptrDir); ++ ptrDir ) {
             const  int  jmpDir  = (* ptrDir);
             int         tmpTrg  = tmpSrc + jmpDir;
+            BitSet      bstPin;
+
             for ( ;; tmpTrg += jmpDir) {
                 const  int  posTrg  = g_tblInvPos[tmpTrg];
                 if ( posTrg < 0 ) {
                     break;      //  盤外にはみだした。  //
                 }
                 bstWork.setBitValue(posTrg);
+                tblPins[posTrg][posSrc] = bstPin.getValueBlock();
+                bstPin.setBitValue(posTrg);
             }
         }
 

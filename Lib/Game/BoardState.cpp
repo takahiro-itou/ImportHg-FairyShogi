@@ -247,7 +247,6 @@ BoardState::makeLegalActionList(
         1, 1, 1, 1, 1, 1,   1, 1, 1, 1
     };
 
-    PieceIndex  ppiTrg;
     ActionData  actData;
 
     for ( FieldIndex posTrg = 0; posTrg < FIELD_SIZE; ++ posTrg ) {
@@ -264,6 +263,16 @@ BoardState::makeLegalActionList(
                 if ( ((tvMask >> posSrc) & 1) == 0 )    { continue; }
                 if ( tblOwner[p] == tblOwner[cpiTrg] )  { continue; }
 
+    const  RuleTables::BitBoardVal  pinMask = RuleTables::getPinMask(p, posTrg, posSrc);
+    int     bPinOK  = 1;
+    for ( int c = 0; c < FIELD_SIZE; ++ c ) {
+        if ( ((pinMask >> c) & 1) == 0 ) { continue; }
+        if ( curStat.m_bsField[c] != FIELD_EMPTY_SQUARE ) {
+            bPinOK  = 0;
+            break;
+        }
+    }
+                if ( bPinOK == 0 ) { continue; }
                 ::memset( &actData, 0, sizeof(actData) );
                 actData.xNewCol = (posTrg / POS_NUM_ROWS);
                 actData.yNewRow = (posTrg % POS_NUM_ROWS);

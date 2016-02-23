@@ -35,6 +35,12 @@ namespace  Game  {
 
 class  RuleTables
 {
+public:
+
+    /**
+    **    ビットボード用の型。
+    **/
+    typedef     uint32_t        BitBoardVal;
 
 //========================================================================
 //
@@ -97,6 +103,20 @@ public:
 //
 //    Accessors.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   ピンマスクを取得する。
+    **
+    **  @param [in] piMove    移動させる駒の種類。
+    **  @param [in] fiTrg     移動先。
+    **  @param [in] fiSrc     移動元。
+    **/
+    static  BitBoardVal
+    getPinMask(
+            const  PieceIndex   piMove,
+            const  FieldIndex   fiTrg,
+            const  FieldIndex   fiSrc);
 
 //========================================================================
 //
@@ -113,9 +133,9 @@ private:
         MAX_DIRECTIONS  =  9
     };
 
-    typedef     int         TDirsTable[MAX_DIRECTIONS];
-    typedef     uint32_t    TMoveTable[FIELD_SIZE];
-    typedef     uint32_t    TPinsTable[FIELD_SIZE][FIELD_SIZE];
+    typedef     int             TDirsTable[MAX_DIRECTIONS];
+    typedef     BitBoardVal     TMoveTable[FIELD_SIZE];
+    typedef     BitBoardVal     TPinsTable[FIELD_SIZE][FIELD_SIZE];
 
 private:
 
@@ -144,9 +164,14 @@ private:
 //
 public:
 
-    static  uint32_t    s_tblMoveTo[FIELD_SIZE][NUM_PIECE_TYPES];
+    static  BitBoardVal
+    s_tblMoveTo[FIELD_SIZE][NUM_PIECE_TYPES];
 
-    static  uint32_t    s_tblMoveFrom[FIELD_SIZE][NUM_PIECE_TYPES];
+    static  BitBoardVal
+    s_tblMoveFrom[FIELD_SIZE][NUM_PIECE_TYPES];
+
+    static  BitBoardVal
+    s_tblPin[NUM_PIECE_TYPES][FIELD_SIZE][FIELD_SIZE];
 
 //========================================================================
 //
