@@ -54,8 +54,9 @@ class  BoardState
 public:
 
     enum  {
-        POS_NUM_ROWS    = 5,
-        POS_NUM_COLS    = 5
+        POS_NUM_ROWS    =  5,
+        POS_NUM_COLS    =  5,
+        FIELD_SIZE      =  POS_NUM_ROWS * POS_NUM_COLS
     };
 
     enum  {

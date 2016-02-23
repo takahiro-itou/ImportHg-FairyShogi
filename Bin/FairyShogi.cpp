@@ -325,6 +325,7 @@ executeListCommand(
     itfGame.makeLegalActionList(vActs);
 
     const  ActIter  itrEnd  = vActs.end();
+    int             cntDisp = 0;
     for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr )
     {
         if ( itr->putHand == Game::BoardState::HAND_EMPTY_PIECE ) {
@@ -333,11 +334,20 @@ executeListCommand(
                     <<  (g_tblPieceName2[itr->fpMoved]);
             if ( (itr->fpAfter) != (itr->fpMoved) ) {
                 outStr  <<  '+';
+            } else {
+                outStr  <<  ' ';
             }
         } else {
             outStr  <<  (g_tblHandName[itr->putHand])
                     <<  '*'
-                    <<  (itr->xNewCol + 1)  <<  (itr->yNewRow + 1);
+                    <<  (itr->xNewCol + 1)  <<  (itr->yNewRow + 1)
+                    <<  ' ';
+        }
+        outStr  <<  ", ";
+        ++  cntDisp;
+        if ( cntDisp >= 8 ) {
+            outStr  <<  std::endl;
+            cntDisp -=  8;
         }
     }
 

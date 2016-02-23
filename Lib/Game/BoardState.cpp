@@ -21,8 +21,18 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 
+#include    <memory.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
+
+/**
+**    ダミーのグローバル変数。
+**
+**    インスタンスを壱個だけ生成して、
+**  コンストラクタで表を構築させる。
+**/
+RuleTables  g_objRules;
 
 //========================================================================
 //
@@ -219,7 +229,99 @@ BoardState::makeLegalActionList(
         const  InternState  &curStat,
         ActionList          &actList)
 {
-    return ( ERR_FAILURE );
+    typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
+
+    const   PieceIndex  tblPromNew[NUM_FIELD_PIECE_TYPES]   = {
+        -1,
+        FIELD_BLACK_PR_PAWN,    FIELD_BLACK_PR_SILVER,  -1,
+        FIELD_BLACK_HORSE,      FIELD_BLACK_DRAGON,     -1,
+        -1,  -1,  -1,  -1,
+        FIELD_WHITE_PR_PAWN,    FIELD_WHITE_PR_SILVER,  -1,
+        FIELD_WHITE_HORSE,      FIELD_WHITE_DRAGON,     -1,
+        -1,  -1,  -1,  -1,
+    };
+
+    const  int  tblOwner[NUM_FIELD_PIECE_TYPES] = {
+        -1,
+        0, 0, 0, 0, 0, 0,   0, 0, 0, 0,
+        1, 1, 1, 1, 1, 1,   1, 1, 1, 1
+    };
+
+    PieceIndex  ppiTrg;
+    ActionData  actData;
+
+    for ( FieldIndex posTrg = 0; posTrg < FIELD_SIZE; ++ posTrg ) {
+        //  盤上の駒を動かす。  //
+        const  PieceIndex   cpiTrg  = curStat.m_bsField[posTrg];
+
+        const  TablePiece  & tblFr  = RuleTables::s_tblMoveFrom[posTrg];
+        for ( PieceIndex p = FIELD_BLACK_PAWN; p < FIELD_WHITE_DRAGON; ++ p )
+        {
+            const  uint32_t  tvMask = tblFr[p];
+            for ( FieldIndex posSrc = 0; posSrc < FIELD_SIZE; ++ posSrc )
+            {
+                if ( curStat.m_bsField[posSrc] != p )   { continue; }
+                if ( ((tvMask >> posSrc) & 1) == 0 )    { continue; }
+                if ( tblOwner[p] == tblOwner[cpiTrg] )  { continue; }
+
+                ::memset( &actData, 0, sizeof(actData) );
+                actData.xNewCol = (posTrg / POS_NUM_ROWS);
+                actData.yNewRow = (posTrg % POS_NUM_ROWS);
+                actData.xOldCol = (posSrc / POS_NUM_ROWS);
+                actData.yOldRow = (posSrc % POS_NUM_ROWS);
+                actData.putHand = HAND_EMPTY_PIECE;
+                actData.fpMoved = p;
+                actData.fpAfter = actData.fpMoved;
+
+                int cntProm = 0;
+                PieceIndex  vProm[2] = { p, -1 };
+                if ( tblOwner[p] == 0 ) {
+                    if ( (actData.yNewRow) == 0 ) {
+                        if ( p != FIELD_BLACK_PAWN ) {
+                            vProm[cntProm ++]   = p;
+                        }
+                        vProm[cntProm]  = tblPromNew[p];
+                    }
+                } else {
+                    if ( (actData.yNewRow) == POS_NUM_ROWS - 1 ) {
+                        if ( p != FIELD_WHITE_PAWN ) {
+                            vProm[cntProm ++]   = p;
+                        }
+                        vProm[cntProm]  = tblPromNew[p];
+                    }
+                }
+
+                actData.fpAfter = vProm[0];
+                actList.push_back(actData);
+
+                if ( vProm[1] == -1 ) { continue; }
+                actData.fpAfter = vProm[1];
+                actList.push_back(actData);
+            }   //  Next  posSrc
+        }   //  Next  p
+
+        //  持ち駒を打つ。  //
+        if ( cpiTrg != FIELD_EMPTY_SQUARE ) { continue; }
+        actData.xNewCol = (posTrg / POS_NUM_ROWS);
+        actData.yNewRow = (posTrg % POS_NUM_ROWS);
+        actData.xOldCol = -1;
+        actData.yOldRow = -1;
+        for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
+            if ( curStat.m_nHands[k] <= 0 ) { continue; }
+            if ( (k == HAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
+                continue;
+            }
+            if ( (k == HAND_WHITE_PAWN)
+                    && ((actData.yNewRow) == POS_NUM_ROWS - 1) )
+            {
+                continue;
+            }
+            actData.putHand = k;
+            actList.push_back(actData);
+        }   //  Next  k
+    }   //  Next  posTrg
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
