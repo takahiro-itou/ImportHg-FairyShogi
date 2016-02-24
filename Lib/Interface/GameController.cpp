@@ -103,7 +103,7 @@ ErrCode
 GameController::makeLegalActionList(
         ActionList  &actList)  const
 {
-    return ( this->m_gcBoard.makeLegalActionList(actList) );
+    return ( this->m_gcBoard.makeLegalActionList(this->m_curTurn, actList) );
 }
 
 //----------------------------------------------------------------

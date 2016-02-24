@@ -215,9 +215,10 @@ BoardState::encodePutAction(
 
 ErrCode
 BoardState::makeLegalActionList(
-        ActionList  &actList)  const
+        const  PlayerIndex  cPlayer,
+        ActionList          &actList)  const
 {
-    return ( makeLegalActionList(this->m_icState, actList) );
+    return ( makeLegalActionList(this->m_icState, cPlayer, actList) );
 }
 
 //----------------------------------------------------------------
@@ -227,6 +228,7 @@ BoardState::makeLegalActionList(
 ErrCode
 BoardState::makeLegalActionList(
         const  InternState  &curStat,
+        const  PlayerIndex  cPlayer,
         ActionList          &actList)
 {
     typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
@@ -247,6 +249,10 @@ BoardState::makeLegalActionList(
         1, 1, 1, 1, 1, 1,   1, 1, 1, 1
     };
 
+    const  int  tblHandOwner[NUM_HAND_TYPES]    = {
+        -1,     0, 0, 0, 0, 0, 0,   1, 1, 1, 1, 1, 1
+    };
+
     ActionData  actData;
 
     for ( FieldIndex posTrg = 0; posTrg < FIELD_SIZE; ++ posTrg ) {
@@ -256,12 +262,13 @@ BoardState::makeLegalActionList(
         const  TablePiece  & tblFr  = RuleTables::s_tblMoveFrom[posTrg];
         for ( PieceIndex p = FIELD_BLACK_PAWN; p < FIELD_WHITE_DRAGON; ++ p )
         {
+            if ( tblOwner[p] != cPlayer ) { continue; }
             const  uint32_t  tvMask = tblFr[p];
             for ( FieldIndex posSrc = 0; posSrc < FIELD_SIZE; ++ posSrc )
             {
                 if ( curStat.m_bsField[posSrc] != p )   { continue; }
                 if ( ((tvMask >> posSrc) & 1) == 0 )    { continue; }
-                if ( tblOwner[p] == tblOwner[cpiTrg] )  { continue; }
+                if ( tblOwner[cpiTrg] == cPlayer )      { continue; }
 
     const  RuleTables::BitBoardVal  pinMask = RuleTables::getPinMask(p, posTrg, posSrc);
     int     bPinOK  = 1;
@@ -316,7 +323,8 @@ BoardState::makeLegalActionList(
         actData.xOldCol = -1;
         actData.yOldRow = -1;
         for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
-            if ( curStat.m_nHands[k] <= 0 ) { continue; }
+            if ( tblHandOwner[k] != cPlayer )   { continue; }
+            if ( curStat.m_nHands[k] <= 0 )     { continue; }
             if ( (k == HAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
                 continue;
             }
