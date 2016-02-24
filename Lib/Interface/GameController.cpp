@@ -307,6 +307,28 @@ GameController::getBoardState()  const
     return ( this->m_gcBoard );
 }
 
+//----------------------------------------------------------------
+//    現在の手番を持つプレーヤーを取得する。
+//
+
+PlayerIndex
+GameController::getCurrentPlayer()  const
+{
+    return ( this->m_curTurn );
+}
+
+//----------------------------------------------------------------
+//    現在の手番を持つプレーヤーを設定する。
+//
+
+ErrCode
+GameController::setCurrentPlayer(
+        const  PlayerIndex  cPlayer)
+{
+    this->m_curTurn = cPlayer;
+    return ( ERR_SUCCESS );
+}
+
 //========================================================================
 //
 //    For Internal Use Only.
