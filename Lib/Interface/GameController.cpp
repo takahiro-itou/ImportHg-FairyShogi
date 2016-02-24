@@ -21,6 +21,7 @@
 #include    "FairyShogi/Common/ViewBuffer.h"
 
 #include    <ostream>
+#include    <stdlib.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
@@ -59,7 +60,9 @@ s_tblPieceName[]    = {
 
 GameController::GameController()
     : m_gcBoard(),
-      m_actList()
+      m_actList(),
+      m_curTurn(0),
+      m_curDice(0)
 {
 }
 
@@ -169,8 +172,56 @@ ErrCode
 GameController::setConstraint(
         const  int  vCons)
 {
-    return ( ERR_FAILURE );
+    this->m_curDice = vCons;
+    return ( ERR_SUCCESS );
 }
+
+//----------------------------------------------------------------
+//    コンピュータの思考を開始する。
+//
+
+ErrCode
+GameController::startThinking(
+        ActionData  &actRet)
+{
+    typedef     ActionList::const_iterator      ActIter;
+
+    ActionList  actList;
+
+    makeLegalActionList(actList);
+
+    const  ActIter  itrEnd  = actList.end();
+    ActIter         itrHead = actList.begin();
+    for ( ; itrHead != itrEnd; ++ itrHead ) {
+        if ( (itrHead->xNewCol) == (this->m_curDice) ) {
+            break;
+        }
+    }
+
+    ActIter         itrTail = itrHead;
+    for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
+        if ( (itr->xNewCol) != (this->m_curDice) ) {
+            itrTail = itr;
+            break;
+        }
+    }
+
+    if ( itrHead == itrTail ) {
+        //  指定したダイスの目で合法手が無い場合。  //
+        //  ダイスの目が六の場合もここを通過する。  //
+        itrHead = actList.begin();
+        itrTail = itrEnd;
+    }
+    const  int  numAct  = (itrTail - itrHead);
+    if ( numAct == 0 ) {
+        return ( ERR_ILLEGAL_ACTION );
+    }
+
+    int  r  =  rand() % numAct;
+    actRet  =  *(itrHead + r);
+    return ( ERR_SUCCESS );
+}
+
 
 //----------------------------------------------------------------
 //    表示用棋譜データの内容をストリームに出力する。
