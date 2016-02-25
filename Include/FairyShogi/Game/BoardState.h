@@ -329,6 +329,11 @@ public:
     playForward(
             const  ActionData   &actFwd);
 
+    static  ErrCode
+    playForward(
+            const  ActionData   &actFwd,
+            InternState         &curStat);
+
     //----------------------------------------------------------------
     /**   盤面を初期状態に設定する。
     **

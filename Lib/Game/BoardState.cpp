@@ -285,7 +285,7 @@ BoardState::makeLegalActionList(
         const  PlayerIndex  cPlayer,
         ActionList          &actList)
 {
-    typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
+////    typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
     typedef     TBitBoard::const_iterator   BB_Iter;
 
 
@@ -301,6 +301,10 @@ BoardState::makeLegalActionList(
     };
 
     ActionData  actData;
+
+    ActionData  actTemp;
+    InternState tmpStat;
+    TBitBoard   bbCheck;
 
     for ( FieldIndex posTrg = 0; posTrg < FIELD_SIZE; ++ posTrg ) {
         //  盤上の駒を動かす。  //
@@ -367,6 +371,18 @@ BoardState::makeLegalActionList(
                 }
             }
 
+            //  動かしてみて、自殺だったらスキップ。    //
+            /** @todo   内部の座標のトラブルのため変換。    **/
+            ::memcpy( &actTemp, &actData, sizeof(actTemp) );
+            actTemp.xNewCol = 4 - (actData.xNewCol);
+            actTemp.xOldCol = 4 - (actData.xOldCol);
+            tmpStat = curStat;
+            playForward(actTemp, tmpStat);
+
+            if ( isCheckState(tmpStat, cPlayer, bbCheck) > 0 ) {
+                continue;
+            }
+
             actData.fpAfter = vProm[0];
             actList.push_back(actData);
 
@@ -393,6 +409,19 @@ BoardState::makeLegalActionList(
             {
                 continue;
             }
+
+            //  動かしてみて、自殺だったらスキップ。    //
+            /** @todo   内部の座標のトラブルのため変換。    **/
+            ::memcpy( &actTemp, &actData, sizeof(actTemp) );
+            actTemp.xNewCol = 4 - (actData.xNewCol);
+            actTemp.xOldCol = 4 - (actData.xOldCol);
+            tmpStat = curStat;
+            playForward(actTemp, tmpStat);
+
+            if ( isCheckState(tmpStat, cPlayer, bbCheck) > 0 ) {
+                continue;
+            }
+
             actData.putHand = k;
             actList.push_back(actData);
         }   //  Next  k
@@ -456,6 +485,61 @@ BoardState::playForward(
     //  駒を打つ場合は持ち駒を減らす。  //
     if ( actFwd.putHand != HAND_EMPTY_PIECE ) {
         --  icSt.m_nHands[actFwd.putHand];
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+ErrCode
+BoardState::playForward(
+        const  ActionData   &actFwd,
+        InternState         &curStat)
+{
+    constexpr   PieceIndex  piCatchTable[]  = {
+        HAND_EMPTY_PIECE,
+
+        HAND_WHITE_PAWN,
+        HAND_WHITE_SILVER,
+        HAND_WHITE_GOLD,
+        HAND_WHITE_BISHOP,
+        HAND_WHITE_ROOK,
+        HAND_WHITE_KING,
+        HAND_WHITE_PAWN,
+        HAND_WHITE_SILVER,
+        HAND_WHITE_BISHOP,
+        HAND_WHITE_ROOK,
+
+        HAND_BLACK_PAWN,
+        HAND_BLACK_SILVER,
+        HAND_BLACK_GOLD,
+        HAND_BLACK_BISHOP,
+        HAND_BLACK_ROOK,
+        HAND_BLACK_KING,
+        HAND_BLACK_PAWN,
+        HAND_BLACK_SILVER,
+        HAND_BLACK_BISHOP,
+        HAND_BLACK_ROOK
+    };
+
+    //  移動元のマスを空きマスにする。  //
+    if ( (actFwd.fpMoved) != FIELD_EMPTY_SQUARE ) {
+        curStat.m_bsField[ getMatrixPos(actFwd.xOldCol, actFwd.yOldRow) ]
+                = FIELD_EMPTY_SQUARE;
+    }
+
+    //  移動先に指定した駒を書き込む。  //
+    curStat.m_bsField[ getMatrixPos(actFwd.xNewCol, actFwd.yNewRow) ]
+            = actFwd.fpAfter;
+
+    //  取った相手の駒を持ち駒にする。  //
+    if ( actFwd.fpCatch != FIELD_EMPTY_SQUARE ) {
+        const  PieceIndex   piHand  = piCatchTable[actFwd.fpCatch];
+        ++  curStat.m_nHands[piHand];
+    }
+
+    //  駒を打つ場合は持ち駒を減らす。  //
+    if ( actFwd.putHand != HAND_EMPTY_PIECE ) {
+        --  curStat.m_nHands[actFwd.putHand];
     }
 
     return ( ERR_SUCCESS );
