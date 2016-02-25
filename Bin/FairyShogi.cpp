@@ -23,6 +23,7 @@
 #include    <limits>
 #include    <cstdlib>
 #include    <cstring>
+#include    <time.h>
 #include    <vector>
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
