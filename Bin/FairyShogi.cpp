@@ -407,6 +407,21 @@ executeDiceCommand(
         const  std::string  &strArgs,
         GameController      &itfGame)
 {
+    std::vector<FieldIndex>     bbFrom;
+
+    const  Game::BoardState  &bsCur = itfGame.getBoardState();
+    const  size_t
+        numChk  = bsCur.isCheckState(itfGame.getCurrentPlayer(), bbFrom);
+    if ( numChk == 1 ) {
+        std::cerr   <<  "* CHECK!"  <<  std::endl;
+        itfGame.setConstraint(6);
+        return ( 0 );
+    } else if ( numChk >= 2 ) {
+        std::cerr   <<  "** DOUBLE CHECK!"  <<  std::endl;
+        itfGame.setConstraint(6);
+        return ( 0 );
+    }
+
     if ( strArgs[0] == 'g' ) {
         std::cout   <<  "Current Constraint. Dice = "
                     <<  itfGame.getConstraint() + 1
