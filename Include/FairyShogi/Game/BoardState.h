@@ -390,6 +390,16 @@ public:
 //    For Internal Use Only.
 //
 private:
+    typedef     std::vector<FieldIndex>     TBitBoard;
+
+private:
+
+    static  ErrCode
+    getAttackFromList(
+            const  InternState  &curStat,
+            const  FieldIndex   posTrg,
+            const  PlayerIndex  offPlayer,
+            TBitBoard           &bbFrom);
 
     //----------------------------------------------------------------
     /**   盤面の座標をインデックスに変換する。

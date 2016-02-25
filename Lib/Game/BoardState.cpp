@@ -34,6 +34,18 @@ namespace  Game  {
 **/
 RuleTables  g_objRules;
 
+CONSTEXPR_VAR   int
+s_tblOwner[BoardState::NUM_FIELD_PIECE_TYPES] = {
+    -1,
+    0, 0, 0, 0, 0, 0,   0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1,   1, 1, 1, 1
+};
+
+CONSTEXPR_VAR   int
+s_tblHandOwner[BoardState::NUM_HAND_TYPES]    = {
+    -1,     0, 0, 0, 0, 0, 0,   1, 1, 1, 1, 1, 1
+};
+
 //========================================================================
 //
 //    BoardState  class.
@@ -232,8 +244,11 @@ BoardState::makeLegalActionList(
         ActionList          &actList)
 {
     typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
+    typedef     TBitBoard::const_iterator   BB_Iter;
 
-    const   PieceIndex  tblPromNew[NUM_FIELD_PIECE_TYPES]   = {
+
+    CONSTEXPR_VAR   PieceIndex
+            s_tblPromNew[BoardState::NUM_FIELD_PIECE_TYPES]   = {
         -1,
         FIELD_BLACK_PR_PAWN,    FIELD_BLACK_PR_SILVER,  -1,
         FIELD_BLACK_HORSE,      FIELD_BLACK_DRAGON,     -1,
@@ -243,32 +258,27 @@ BoardState::makeLegalActionList(
         -1,  -1,  -1,  -1,
     };
 
-    const  int  tblOwner[NUM_FIELD_PIECE_TYPES] = {
-        -1,
-        0, 0, 0, 0, 0, 0,   0, 0, 0, 0,
-        1, 1, 1, 1, 1, 1,   1, 1, 1, 1
-    };
-
-    const  int  tblHandOwner[NUM_HAND_TYPES]    = {
-        -1,     0, 0, 0, 0, 0, 0,   1, 1, 1, 1, 1, 1
-    };
-
     ActionData  actData;
 
     for ( FieldIndex posTrg = 0; posTrg < FIELD_SIZE; ++ posTrg ) {
         //  盤上の駒を動かす。  //
         const  PieceIndex   cpiTrg  = curStat.m_bsField[posTrg];
 
+        //  対象の座標に自分の駒がある場合は移動不可。  //
+        //  その場所には、持ち駒を打つこともできない。  //
+        if ( s_tblOwner[cpiTrg] == cPlayer )    { continue; }
+
+#if 0
         const  TablePiece  & tblFr  = RuleTables::s_tblMoveFrom[posTrg];
         for ( PieceIndex p = FIELD_BLACK_PAWN; p < FIELD_WHITE_DRAGON; ++ p )
         {
-            if ( tblOwner[p] != cPlayer ) { continue; }
+            if ( s_tblOwner[p] != cPlayer ) { continue; }
             const  uint32_t  tvMask = tblFr[p];
             for ( FieldIndex posSrc = 0; posSrc < FIELD_SIZE; ++ posSrc )
             {
                 if ( curStat.m_bsField[posSrc] != p )   { continue; }
                 if ( ((tvMask >> posSrc) & 1) == 0 )    { continue; }
-                if ( tblOwner[cpiTrg] == cPlayer )      { continue; }
+
 
     const  RuleTables::BitBoardVal  pinMask = RuleTables::getPinMask(p, posTrg, posSrc);
     int     bPinOK  = 1;
@@ -280,41 +290,49 @@ BoardState::makeLegalActionList(
         }
     }
                 if ( bPinOK == 0 ) { continue; }
-                ::memset( &actData, 0, sizeof(actData) );
-                actData.xNewCol = (posTrg / POS_NUM_ROWS);
-                actData.yNewRow = (posTrg % POS_NUM_ROWS);
-                actData.xOldCol = (posSrc / POS_NUM_ROWS);
-                actData.yOldRow = (posSrc % POS_NUM_ROWS);
-                actData.putHand = HAND_EMPTY_PIECE;
-                actData.fpMoved = p;
-                actData.fpAfter = actData.fpMoved;
+#endif
+        TBitBoard    bbFrom;
+        getAttackFromList(curStat, posTrg, cPlayer, bbFrom);
+        const  BB_Iter  itrEndB = bbFrom.end();
+        for ( BB_Iter itrB = bbFrom.begin(); itrB != itrEndB; ++ itrB ) {
+            const  FieldIndex   posSrc  = (* itrB);
+            const  PieceIndex   p       = (curStat.m_bsField[posSrc]);
 
-                int cntProm = 0;
-                PieceIndex  vProm[2] = { p, -1 };
-                if ( tblOwner[p] == 0 ) {
-                    if ( (actData.yNewRow) == 0 ) {
-                        if ( p != FIELD_BLACK_PAWN ) {
-                            vProm[cntProm ++]   = p;
-                        }
-                        vProm[cntProm]  = tblPromNew[p];
+            ::memset( &actData, 0, sizeof(actData) );
+            actData.xNewCol = (posTrg / POS_NUM_ROWS);
+            actData.yNewRow = (posTrg % POS_NUM_ROWS);
+            actData.xOldCol = (posSrc / POS_NUM_ROWS);
+            actData.yOldRow = (posSrc % POS_NUM_ROWS);
+            actData.putHand = HAND_EMPTY_PIECE;
+            actData.fpMoved = p;
+            actData.fpAfter = actData.fpMoved;
+
+            int cntProm = 0;
+            PieceIndex  vProm[2] = { p, -1 };
+            if ( s_tblOwner[p] == 0 ) {
+                if ( (actData.yNewRow) == 0 ) {
+                    if ( p != FIELD_BLACK_PAWN ) {
+                        vProm[cntProm ++]   = p;
                     }
-                } else {
-                    if ( (actData.yNewRow) == POS_NUM_ROWS - 1 ) {
-                        if ( p != FIELD_WHITE_PAWN ) {
-                            vProm[cntProm ++]   = p;
-                        }
-                        vProm[cntProm]  = tblPromNew[p];
-                    }
+                    vProm[cntProm]  = s_tblPromNew[p];
                 }
+            } else {
+                if ( (actData.yNewRow) == POS_NUM_ROWS - 1 ) {
+                    if ( p != FIELD_WHITE_PAWN ) {
+                        vProm[cntProm ++]   = p;
+                    }
+                    vProm[cntProm]  = s_tblPromNew[p];
+                }
+            }
 
-                actData.fpAfter = vProm[0];
-                actList.push_back(actData);
+            actData.fpAfter = vProm[0];
+            actList.push_back(actData);
 
-                if ( vProm[1] == -1 ) { continue; }
-                actData.fpAfter = vProm[1];
-                actList.push_back(actData);
-            }   //  Next  posSrc
-        }   //  Next  p
+            if ( vProm[1] == -1 ) { continue; }
+            actData.fpAfter = vProm[1];
+            actList.push_back(actData);
+///            }   //  Next  posSrc
+        }   //  Next  itrB
 
         //  持ち駒を打つ。  //
         if ( cpiTrg != FIELD_EMPTY_SQUARE ) { continue; }
@@ -323,7 +341,7 @@ BoardState::makeLegalActionList(
         actData.xOldCol = -1;
         actData.yOldRow = -1;
         for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
-            if ( tblHandOwner[k] != cPlayer )   { continue; }
+            if ( s_tblHandOwner[k] != cPlayer )   { continue; }
             if ( curStat.m_nHands[k] <= 0 )     { continue; }
             if ( (k == HAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
                 continue;
@@ -512,6 +530,52 @@ BoardState::getFieldPiece(
 //
 //    For Internal Use Only.
 //
+
+ErrCode
+BoardState::getAttackFromList(
+        const  InternState  &curStat,
+        const  FieldIndex   posTrg,
+        const  PlayerIndex  oPlayer,
+        TBitBoard           &bbFrom)
+{
+    typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
+
+    const  TablePiece  & tblFr  = RuleTables::s_tblMoveFrom[posTrg];
+    for ( PieceIndex p = FIELD_BLACK_PAWN; p < FIELD_WHITE_DRAGON; ++ p )
+    {
+        //  指定されたプレーヤーの駒以外はスキップ。    //
+        if ( s_tblOwner[p] != oPlayer ) { continue; }
+
+        //  可能性のある移動元を順に調べる。    //
+        const  uint32_t  tvMask = tblFr[p];
+        for ( FieldIndex posSrc = 0; posSrc < FIELD_SIZE; ++ posSrc )
+        {
+            //  対象の座標に目的の駒がない場合。    //
+            if ( curStat.m_bsField[posSrc] != p )   { continue; }
+
+            //  対象座標から指定座標に来られない。  //
+            if ( ((tvMask >> posSrc) & 1) == 0 )    { continue; }
+
+            //  飛び駒のブロック判定を行う。        //
+            const  RuleTables::BitBoardVal
+                pinMask = RuleTables::getPinMask(p, posTrg, posSrc);
+            int     bPinOK  = 1;
+            for ( int c = 0; c < FIELD_SIZE; ++ c ) {
+                if ( ((pinMask >> c) & 1) == 0 ) { continue; }
+                if ( curStat.m_bsField[c] != FIELD_EMPTY_SQUARE ) {
+                    bPinOK  = 0;
+                    break;
+                }
+            }   //  Next  c
+
+            if ( bPinOK == 0 ) { continue; }
+
+            bbFrom.push_back(posSrc);
+        }   //  Next  posSrc
+    }   //  Next  p
+
+    return ( ERR_SUCCESS );
+}
 
 //----------------------------------------------------------------
 //    盤面の座標をインデックスに変換する。
