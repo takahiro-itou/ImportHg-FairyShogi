@@ -165,6 +165,16 @@ GameController::resetGame()
 }
 
 //----------------------------------------------------------------
+//    合法手の制約を取得する。
+//
+
+int
+GameController::getConstraint()  const
+{
+    return ( this->m_curDice );
+}
+
+//----------------------------------------------------------------
 //    合法手の制約を指定する。
 //
 
@@ -198,7 +208,7 @@ GameController::startThinking(
         }
     }
 
-    ActIter         itrTail = itrHead;
+    ActIter         itrTail = itrEnd;
     for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
         if ( (itr->xNewCol) != (this->m_curDice) ) {
             itrTail = itr;
