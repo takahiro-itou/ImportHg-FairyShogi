@@ -29,6 +29,10 @@
 using   namespace   FAIRYSHOGI_NAMESPACE;
 
 typedef     Interface::GameController       GameController;
+
+typedef     GameController::ActionList      ActionList;
+typedef     ActionList::const_iterator      ActIter;
+
 typedef     GameController::ActionData      ActionData;
 
 GameController      g_gcGameCtrl;
@@ -322,6 +326,11 @@ playForward(
     nx  = 5 - nx;
     --  ny;
 
+    ActionList      actList;
+    itfGame.makeLegalActionList(actList);
+    const  ActIter  itrEnd  = actList.end();
+
+    int             flgLeg  = 0;
     if ( strPlay[1] == '*' ) {
         //  持ち駒を打つ。  //
         int  h  = -1;
@@ -336,6 +345,20 @@ playForward(
                         <<  std::endl;
             return ( 0 );
         }
+
+        for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
+            if ( (itr->putHand) != h )  { continue; }
+            if ( (itr->xNewCol) != 4 - nx ) { continue; }
+            if ( (itr->yNewRow) != ny ) { continue; }
+            flgLeg  = 1;
+        }
+        if ( (flgLeg == 0) ) {
+            std::cerr   <<  "Not Legal Put."    <<  std::endl;
+            if ( strPlay[4] != '!' ) {
+                return ( 0 );
+            }
+        }
+
         itfGame.playPutAction(nx, ny, h);
 
     } else {
@@ -354,14 +377,22 @@ playForward(
         } else {
             pr  = trg;
         }
-#if 0
-        std::cerr   <<  "  NX = "   <<  nx
-                    <<  ", NY = "   <<  ny
-                    <<  ", OX = "   <<  ox
-                    <<  ", OY = "   <<  oy
-                    <<  ", PR = "   <<  pr
-                    <<  std::endl;
-#endif
+
+        for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
+            if ( (itr->xNewCol) != 4 - nx ) { continue; }
+            if ( (itr->yNewRow) != ny ) { continue; }
+            if ( (itr->xOldCol) != 4 - ox ) { continue; }
+            if ( (itr->yOldRow) != oy ) { continue; }
+//            if ( (itr->fpAfter) != pr ) { continue; }
+            flgLeg  = 1;
+        }
+        if ( (flgLeg == 0) ) {
+            std::cerr   <<  "Not Legal Move."   <<  std::endl;
+            if ( strPlay[strPlay.length() - 1] != '!' ) {
+                return ( 0 );
+            }
+        }
+
         itfGame.playMoveAction(ox, oy, nx, ny, pr);
     }
 
@@ -376,6 +407,13 @@ executeDiceCommand(
         const  std::string  &strArgs,
         GameController      &itfGame)
 {
+    if ( strArgs[0] == 'g' ) {
+        std::cout   <<  "Current Constraint. Dice = "
+                    <<  itfGame.getConstraint() + 1
+                    <<  std::endl;
+        return ( 0 );
+    }
+
     if ( strArgs[0] == 'r' ) {
         const  int  rn  =  ((std::rand() >> 8) % 6);
         std::cout   <<  (rn+1)  <<  std::endl;
@@ -400,9 +438,6 @@ executeListCommand(
         const  GameController  &itfGame,
         std::ostream           &outStr)
 {
-    typedef     Interface::GameController::ActionList   ActionList;
-    typedef     ActionList::const_iterator              ActIter;
-
     int     dc  =  itfGame.getConstraint();
     if ( strArgs == "all" ) {
         dc  =  6;
