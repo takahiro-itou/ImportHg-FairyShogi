@@ -21,13 +21,17 @@
 
 #include    <iostream>
 #include    <limits>
-#include    <stdlib.h>
+#include    <cstdlib>
 #include    <cstring>
+#include    <time.h>
 #include    <vector>
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
 
-Interface::GameController   g_gcGameCtrl;
+typedef     Interface::GameController       GameController;
+typedef     GameController::ActionData      ActionData;
+
+GameController      g_gcGameCtrl;
 
 CONSTEXPR_VAR   const   char  *
 g_tblPieceName[]    = {
@@ -134,8 +138,8 @@ parseText(
 
 int
 setPosition(
-        const  std::string         &strData,
-        Interface::GameController  &itfGame)
+        const  std::string  &strData,
+        GameController      &itfGame)
 {
     std::vector<std::string>    vTokens;
 
@@ -157,8 +161,8 @@ setPosition(
 
 int
 displaySfen(
-        const  Interface::GameController  & itfGame,
-        std::ostream                      & outStr)
+        const  GameController  &itfGame,
+        std::ostream           &outStr)
 {
     Common::ViewBuffer  vb;
     ::memset( &vb, 0, sizeof(vb) );
@@ -202,8 +206,8 @@ displaySfen(
 
 int
 displayBoard(
-        const  Interface::GameController  & itfGame,
-        std::ostream                      & outStr)
+        const  GameController  &itfGame,
+        std::ostream           &outStr)
 {
     Common::ViewBuffer  vb;
     ::memset( &vb, 0, sizeof(vb) );
@@ -241,10 +245,68 @@ displayBoard(
     return ( 0 );
 }
 
+std::ostream  &
+displayActionData(
+        const  ActionData   &actData,
+        const  int          flgName,
+        std::ostream        &outStr)
+{
+    if ( actData.putHand == Game::BoardState::HAND_EMPTY_PIECE ) {
+        outStr  <<  (actData.xOldCol + 1)   <<  (actData.yOldRow + 1)
+                <<  (actData.xNewCol + 1)   <<  (actData.yNewRow + 1);
+        if ( flgName ) {
+            outStr  <<  (g_tblPieceName2[actData.fpMoved]);
+        }
+        if ( (actData.fpAfter) != (actData.fpMoved) ) {
+            outStr  <<  '+';
+        } else {
+            outStr  <<  ' ';
+        }
+    } else {
+        outStr  <<  (g_tblHandName[actData.putHand])
+                <<  '*'
+                <<  (actData.xNewCol + 1)   <<  (actData.yNewRow + 1)
+                <<  ' ';
+    }
+
+    return ( outStr );
+}
+
+int
+executePlayerCommand(
+        const  std::string  &strArgs,
+        GameController      &itfGame)
+{
+    CONSTEXPR_VAR   char    chName[2] = { 'b', 'w' };
+
+    if ( strArgs == "next" ) {
+        const  PlayerIndex  pi  =  itfGame.getCurrentPlayer();
+        itfGame.setCurrentPlayer(pi ^ 1);
+        std::cerr   <<  chName[itfGame.getCurrentPlayer()]  <<  std::endl;
+        return ( 0 );
+    }
+    if ( strArgs == "get" ) {
+        std::cout   <<  chName[itfGame.getCurrentPlayer()]  <<  std::endl;
+        return ( 0 );
+    }
+
+    if ( (strArgs[0] == '0') || (strArgs[0] == 'b') ) {
+        itfGame.setCurrentPlayer(0);
+        return ( 0 );
+    }
+    if ( (strArgs[0] == '1') || (strArgs[0] == 'w') ) {
+        itfGame.setCurrentPlayer(1);
+        return ( 0 );
+    }
+
+    std::cerr   <<  "Invalid Arguments."    <<  std::endl;
+    return ( 0 );
+}
+
 int
 playForward(
-        const  std::string         &strPlay,
-        Interface::GameController  &itfGame)
+        const  std::string  &strPlay,
+        GameController      &itfGame)
 {
     int     nx, ny, ox, oy;
     int     pr  = 0;
@@ -303,46 +365,79 @@ playForward(
         itfGame.playMoveAction(ox, oy, nx, ny, pr);
     }
 
+    executePlayerCommand("next", itfGame);
+    itfGame.setConstraint(6);
+
     return ( 0 );
 }
 
 int
 executeDiceCommand(
-        const  std::string  &strArgs)
+        const  std::string  &strArgs,
+        GameController      &itfGame)
 {
+    if ( strArgs[0] == 'r' ) {
+        const  int  rn  =  ((std::rand() >> 8) % 6);
+        std::cout   <<  (rn+1)  <<  std::endl;
+        itfGame.setConstraint(rn);
+        return ( 0 );
+    }
+
+    const  int  dr  =  strArgs[0] - '1';
+    if ( (dr < 0) || (5 < dr) ) {
+        std::cerr   <<  "Invalid Arguments."    <<  std::endl;
+        return ( 0 );
+    }
+
+    itfGame.setConstraint(dr);
+
     return ( 0 );
 }
 
 int
 executeListCommand(
-        const  Interface::GameController  & itfGame,
-        std::ostream                      & outStr)
+        const  std::string     &strArgs,
+        const  GameController  &itfGame,
+        std::ostream           &outStr)
 {
     typedef     Interface::GameController::ActionList   ActionList;
     typedef     ActionList::const_iterator              ActIter;
 
-    ActionList  vActs;
+    int     dc  =  itfGame.getConstraint();
+    if ( strArgs == "all" ) {
+        dc  =  6;
+    } else if ( ('0' <= strArgs[0]) && (strArgs[0] <= '6') ) {
+        dc  =  strArgs[0] - '1';
+    }
+    std::cerr   <<  "List For Dice = "  <<  (dc+1)  <<  std::endl;
+
+    ActionList      vActs;
     itfGame.makeLegalActionList(vActs);
 
     const  ActIter  itrEnd  = vActs.end();
-    int             cntDisp = 0;
-    for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr )
-    {
-        if ( itr->putHand == Game::BoardState::HAND_EMPTY_PIECE ) {
-            outStr  <<  (itr->xOldCol + 1)  <<  (itr->yOldRow + 1)
-                    <<  (itr->xNewCol + 1)  <<  (itr->yNewRow + 1)
-                    <<  (g_tblPieceName2[itr->fpMoved]);
-            if ( (itr->fpAfter) != (itr->fpMoved) ) {
-                outStr  <<  '+';
-            } else {
-                outStr  <<  ' ';
-            }
-        } else {
-            outStr  <<  (g_tblHandName[itr->putHand])
-                    <<  '*'
-                    <<  (itr->xNewCol + 1)  <<  (itr->yNewRow + 1)
-                    <<  ' ';
+    ActIter         itrHead = vActs.begin();
+    for ( ; itrHead != itrEnd; ++ itrHead ) {
+        if ( (itrHead->xNewCol) >= dc ) {
+            break;
         }
+    }
+
+    ActIter         itrTail = itrEnd;
+    for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
+        if ( (itr->xNewCol) != dc ) {
+            itrTail = itr;
+            break;
+        }
+    }
+    if ( itrHead == itrTail ) {
+        itrHead = vActs.begin();
+        itrTail = itrEnd;
+    }
+
+    int             cntDisp = 0;
+    for ( ActIter itr = itrHead; itr != itrTail; ++ itr )
+    {
+        displayActionData( (* itr), 1, outStr );
         outStr  <<  ", ";
         ++  cntDisp;
         if ( cntDisp >= 8 ) {
@@ -351,7 +446,25 @@ executeListCommand(
         }
     }
 
-    outStr  <<  (vActs.size())  <<  "  Legal Actions."  <<  std::endl;
+    outStr  <<  std::endl
+            <<  (itrTail - itrHead)
+            <<  "  Legal Actions."  <<  std::endl;
+    return ( 0 );
+}
+
+int
+executeGoCommand(
+        GameController  &itfGame)
+{
+    ActionData  actData;
+
+    if ( itfGame.startThinking(actData) != ERR_SUCCESS ) {
+        std::cerr   <<  "No Legal Actions"  <<  std::endl;
+        return ( 0 );
+    }
+
+    std::cout   <<  "bestmove ";
+    displayActionData(actData,  0,  std::cout)  <<  std::endl;
     return ( 0 );
 }
 
@@ -368,12 +481,13 @@ parseConsoleInput(
             strLine,  " \t",  1,  vTokens);
 
     if ( vTokens[0] == "go" ) {
+        return ( executeGoCommand(g_gcGameCtrl) );
     } else if ( vTokens[0] == "dice" ) {
         if ( vTokens.size() == 1 ) {
             std::cerr   <<  "Require Arguments."    <<  std::endl;
             return ( 0 );
         }
-        return ( executeDiceCommand(vTokens[1]) );
+        return ( executeDiceCommand(vTokens[1], g_gcGameCtrl) );
     } else if ( vTokens[0] == "position" ) {
         if ( vTokens.size() == 1 ) {
             std::cerr   <<  "Require Arguments."    <<  std::endl;
@@ -388,7 +502,11 @@ parseConsoleInput(
     } else if ( vTokens[0] == "show" ) {
         return ( displayBoard(g_gcGameCtrl, std::cout) );
     } else if ( vTokens[0] == "list" ) {
-        return ( executeListCommand(g_gcGameCtrl, std::cout) );
+        vTokens.push_back("cur");
+        return ( executeListCommand(vTokens[1], g_gcGameCtrl, std::cout) );
+    } else if ( vTokens[0] == "player") {
+        vTokens.push_back("next");
+        return ( executePlayerCommand(vTokens[1], g_gcGameCtrl) );
     }
 
     std::cerr   <<  "Invalid Command."  << std::endl;
@@ -399,6 +517,8 @@ int  main(int argc, char * argv[])
 {
     std::cerr   <<  "Fairy Shogi Version 0.0"
                 <<  std::endl;
+
+    std::srand( ::time(NULL) );
 
     std::string     strBuf;
     std::istream   & inStr  = (std::cin);

@@ -261,6 +261,7 @@ public:
     //----------------------------------------------------------------
     /**   合法手を列挙する。
     **
+    **  @param [in] cPlayer   現在の手番のプレーヤーの番号。
     **  @param[out] actList   合法手のリストを受け取る変数。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
@@ -269,12 +270,14 @@ public:
     **/
     ErrCode
     makeLegalActionList(
-            ActionList  &actList)  const;
+            const  PlayerIndex  cPlayer,
+            ActionList          &actList)  const;
 
     //----------------------------------------------------------------
     /**   合法手を列挙する。
     **
     **  @param [in] curStat   現在の盤面データ。
+    **  @param [in] cPlayer   現在の手番のプレーヤーの番号。
     **  @param[out] actList   合法手のリストを受け取る変数。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
@@ -284,6 +287,7 @@ public:
     static  ErrCode
     makeLegalActionList(
             const  InternState  &curStat,
+            const  PlayerIndex  cPlayer,
             ActionList          &actList);
 
     //----------------------------------------------------------------
