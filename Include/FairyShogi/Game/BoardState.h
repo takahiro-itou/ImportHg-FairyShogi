@@ -129,6 +129,8 @@ public:
 
     typedef     std::vector<ActionData>         ActionList;
 
+    typedef     std::vector<FieldIndex>         TBitBoard;
+
 //========================================================================
 //
 //    Constructor(s) and Destructor.
@@ -257,6 +259,32 @@ public:
             const  PosCol       xPutCol,
             const  PosRow       yPutRow,
             const  PieceIndex   pHand);
+
+    //----------------------------------------------------------------
+    /**   王手が掛かっているかどうかを判定する。
+    **
+    **  @param [in] dPlayer   判定を行うプレーヤー。
+    **  @param[out] bbFrom    王手を掛けている攻撃側の駒の場所。
+    **  @return     王手を掛けている攻撃側の駒の枚数を返す。
+    **/
+    size_t
+    isCheckState(
+            const  PlayerIndex  dPlayer,
+            TBitBoard           &bbFrom)  const;
+
+    //----------------------------------------------------------------
+    /**   王手が掛かっているかどうかを判定する。
+    **
+    **  @param [in] curStat   現在の盤面データ。
+    **  @param [in] dPlayer   判定を行うプレーヤー。
+    **  @param[out] bbFrom    王手を掛けている攻撃側の駒の場所。
+    **  @return     王手を掛けている攻撃側の駒の枚数を返す。
+    **/
+    static  size_t
+    isCheckState(
+            const  InternState  &curStat,
+            const  PlayerIndex  dPlayer,
+            TBitBoard           &bbFrom);
 
     //----------------------------------------------------------------
     /**   合法手を列挙する。
@@ -389,9 +417,6 @@ public:
 //
 //    For Internal Use Only.
 //
-private:
-    typedef     std::vector<FieldIndex>     TBitBoard;
-
 private:
 
     static  ErrCode

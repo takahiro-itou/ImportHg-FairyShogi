@@ -21,6 +21,7 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 
+#include    <iostream>
 #include    <memory.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -219,6 +220,47 @@ BoardState::encodePutAction(
     };
 
     return ( act );
+}
+
+//----------------------------------------------------------------
+//    王手が掛かっているかどうかを判定する。
+//
+
+size_t
+BoardState::isCheckState(
+        const  PlayerIndex  dPlayer,
+        TBitBoard           &bbFrom)  const
+{
+    return ( isCheckState(this->m_icState, dPlayer, bbFrom) );
+}
+
+//----------------------------------------------------------------
+//    王手が掛かっているかどうかを判定する。
+//
+
+size_t
+BoardState::isCheckState(
+        const  InternState  &curStat,
+        const  PlayerIndex  dPlayer,
+        TBitBoard           &bbFrom)
+{
+    //  守備側の玉の座標を計算する。    //
+    const  PieceIndex
+        piKing  = (dPlayer == 0 ? FIELD_BLACK_KING : FIELD_WHITE_KING);
+    FieldIndex  posTrg  = 0;
+    for ( ; posTrg < FIELD_SIZE; ++ posTrg ) {
+        if ( (curStat.m_bsField[posTrg]) == piKing ) {
+            break;
+        }
+    }
+    if ( posTrg == FIELD_SIZE ) {
+        //  致命的エラー。玉がどこにもいない。  //
+        std::cerr   <<  "# FATAL ERROR : No King."  <<  std::endl;
+        return ( 0 );
+    }
+
+    getAttackFromList(curStat, posTrg, dPlayer ^ 1, bbFrom);
+    return ( bbFrom.size() );
 }
 
 //----------------------------------------------------------------
