@@ -76,6 +76,8 @@ public:
     typedef     Game::BoardState::ActionData    ActionData;
     typedef     std::vector<ActionData>         ActionDataList;
 
+    typedef     std::vector<PieceIndex>         PromoteList;
+
 //========================================================================
 //
 //    Constructor(s) and Destructor.
@@ -138,6 +140,7 @@ public:
     **      ゼロを指定すると合法手のみ列挙する。
     **  @param [in] vCons     制約条件を指定する。
     **      負の数を指定すると現在の条件を使う。
+    **      ゼロを指定すると制約条件無しで扱う。
     **  @param[out] actList   合法手のリストを受け取る変数。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
@@ -146,24 +149,9 @@ public:
     **/
     virtual  ErrCode
     makeLegalActionList(
-            const   ActionFlag  fLegals,
-            const   int         vCons,
+            const  ActionFlag   fLegals,
+            const  TConstraint  vCons,
             ActionViewList      &actList)  const;
-
-    //----------------------------------------------------------------
-    /**   指定した入力文字列を、指し手データに変換する。
-    **
-    **  @param [in] strPlay   指し手入力文字列。
-    **  @param[out] ptrAct    変換した結果を受け取る変数。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    parseActionText(
-            const  std::string  &strPlay,
-            ActionView  *       ptrAct)  const;
 
     //----------------------------------------------------------------
     /**   指定した指し手で盤面を進める。
@@ -226,25 +214,52 @@ public:
     resetGame();
 
     //----------------------------------------------------------------
-    /**   合法手の制約を取得する。
+    /**   指定したマウス入力を、指し手データに変換する。
     **
-    **  @return     制約条件を返す。
-    **/
-    virtual  int
-    getConstraint()  const;
-
-    //----------------------------------------------------------------
-    /**   合法手の制約を指定する。
-    **
-    **  @param [in] vCons   制約条件。
+    **  @note   この時点では成り不成りが未定でも良い。
+    **      移動先で成れる駒のリストが引数に返される。
+    **  @param [in] xOldCol   移動元の座標（横方向）。
+    **  @param [in] yOldRow   移動元の座標（縦方向）。
+    **  @param [in] xNewCol   移動先の座標（横方向）。
+    **  @param [in] yNewRow   移動先の座標（縦方向）。
+    **  @param[out] vProms    移動先で成れる駒のリスト。
+    **  @param[out] ptrAct    変換した結果を受け取る変数。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
     **      -   正常終了の場合は、ゼロを返す。
     **/
     virtual  ErrCode
-    setConstraint(
-            const  int  vCons);
+    setupMoveActionFromMouse(
+            const  PosCol       xOldCol,
+            const  PosRow       yOldRow,
+            const  PosCol       xNewCol,
+            const  PosRow       yNewRow,
+            PromoteList  *      vProms,
+            ActionView   *      ptrAct)  const;
+
+    //----------------------------------------------------------------
+    /**   指定したマウス入力を、指し手データに変換する。
+    **
+    **  @param [in] xPutCol   駒を打つ座標（横方向）。
+    **  @param [in] yPutRow   駒を打つ座標（縦方向）。
+    **  @param [in] pHand     打つ駒の種類。
+    **  @param[out] vProms    移動先で成れる駒のリスト。
+    **      駒を打つ場合は、成った状態では打てないが、
+    **      変則ルールに対応するために、念のため準備。
+    **  @param[out] ptrAct    変換した結果を受け取る変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    setupPutActionFromMouse(
+            const  PosCol       xPutCol,
+            const  PosRow       yPutRow,
+            const  PieceIndex   pHand,
+            PromoteList  *      vProms,
+            ActionView   *      ptrAct)  const;
 
     //----------------------------------------------------------------
     /**   コンピュータの思考を開始する。
@@ -293,7 +308,7 @@ public:
     **          エラーの種類を示す非ゼロ値を返す。
     **      -   正常終了の場合は、ゼロを返す。
     **/
-    ErrCode
+    virtual  ErrCode
     writeToViewBuffer(
             Common::ViewBuffer  &bufView)  const;
 
@@ -328,6 +343,27 @@ public:
     **/
     const   Game::BoardState  &
     getBoardState()  const;
+
+    //----------------------------------------------------------------
+    /**   合法手の制約を取得する。
+    **
+    **  @return     制約条件を返す。
+    **/
+    TConstraint
+    getConstraint()  const;
+
+    //----------------------------------------------------------------
+    /**   合法手の制約を指定する。
+    **
+    **  @param [in] vCons   制約条件。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setConstraint(
+            const  TConstraint  vCons);
 
     //----------------------------------------------------------------
     /**   現在の手番を持つプレーヤーを取得する。
@@ -376,24 +412,6 @@ public:
 //    For Internal Use Only.
 //
 private:
-
-    //----------------------------------------------------------------
-    /**   入力した座標を内部処理用に変換する。
-    **
-    **  @param [in]     flgShow   現在の表示フラグ。
-    **      この値に基づいて反転や回転の影響を除去する。
-    **  @param [in,out] ptrCol    座標（横方向）。
-    **  @param [in,out] ptrRow    座標（縦方向）。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    static  ErrCode
-    convertCoordsFromConsole(
-            const   ShowCoordFlags  flgShow,
-            PosCol  *   const       ptrCol,
-            PosRow  *   const       ptrRow);
 
     //----------------------------------------------------------------
     /**   入力したダイスの出目を、内部処理用に変換する。

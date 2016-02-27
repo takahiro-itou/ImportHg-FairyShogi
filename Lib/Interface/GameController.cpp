@@ -236,77 +236,6 @@ GameController::makeLegalActionList(
 }
 
 //----------------------------------------------------------------
-//    指定した入力文字列を、指し手データに変換する。
-//
-
-ErrCode
-GameController::parseActionText(
-        const  std::string  &strPlay,
-        ActionView  *       ptrAct)  const
-{
-    PieceIndex  pifSrc  =  Game::BoardState::FIELD_EMPTY_SQUARE;
-    PieceIndex  pifTrg  =  Game::BoardState::FIELD_EMPTY_SQUARE;
-
-    {
-        PosCol  xNewCol = strPlay[2] - '0';
-        PosRow  yNewRow = strPlay[3] - '0';
-        if (       (xNewCol < 1) || (5 < xNewCol)
-                || (yNewRow < 1) || (5 < yNewRow) )
-        {
-            return ( ERR_FAILURE );
-        }
-        convertCoordsFromConsole(this->m_flgShow, &xNewCol, &yNewRow);
-        ptrAct->xNewCol = xNewCol;
-        ptrAct->yNewRow = yNewRow;
-        pifTrg  = getBoardState().getFieldPiece(xNewCol - 1, yNewRow - 1);
-    }
-
-    //  移動先にある駒を捕獲する。  //
-    ptrAct->fpCatch = pifTrg;
-
-    if ( strPlay[1] == '*' ) {
-        //  持ち駒を打つ。  //
-        ptrAct->xOldCol = 0;
-        ptrAct->yOldRow = 0;
-        ptrAct->fpAfter = Game::BoardState::FIELD_EMPTY_SQUARE;
-        ptrAct->fpMoved = Game::BoardState::FIELD_EMPTY_SQUARE;
-        ptrAct->putHand = Game::BoardState::HAND_EMPTY_PIECE;
-
-        for ( int i = 0; i < Game::BoardState::NUM_HAND_TYPES; ++ i ) {
-            if ( strPlay[0] == s_tblHandName[i] ) {
-                ptrAct->putHand = i;
-                pifSrc  = s_tblHandConv[i];
-                break;
-            }
-        }
-    } else {
-        PosCol  xOldCol = strPlay[0] - '0';
-        PosRow  yOldRow = strPlay[1] - '0';
-        if (       (xOldCol < 1) || (5 < xOldCol)
-                || (yOldRow < 1) || (5 < yOldRow) )
-        {
-            return ( ERR_FAILURE );
-        }
-
-        convertCoordsFromConsole(this->m_flgShow, &xOldCol, &yOldRow);
-        ptrAct->xOldCol = xOldCol;
-        ptrAct->yOldRow = yOldRow;
-        pifSrc  = getBoardState().getFieldPiece(xOldCol - 1, yOldRow - 1);
-        ptrAct->fpMoved = pifSrc;
-    }
-
-    size_t  posRead = 4;
-    if ( (strPlay.length() > posRead) && (strPlay[posRead] == '+') ) {
-        ptrAct->fpAfter = s_tblPromotion[pifSrc];
-    } else {
-        ptrAct->fpAfter = pifSrc;
-    }
-    ptrAct->fLegals = Common::ALF_LEGAL_ACTION;
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
 //    指定した指し手で盤面を進める。
 //
 
@@ -384,25 +313,34 @@ GameController::resetGame()
 }
 
 //----------------------------------------------------------------
-//    合法手の制約を取得する。
-//
-
-int
-GameController::getConstraint()  const
-{
-    return ( this->m_curDice );
-}
-
-//----------------------------------------------------------------
-//    合法手の制約を指定する。
+//    指定したマウス入力を、指し手データに変換する。
 //
 
 ErrCode
-GameController::setConstraint(
-        const  int  vCons)
+GameController::setupMoveActionFromMouse(
+        const  PosCol       xOldCol,
+        const  PosRow       yOldRow,
+        const  PosCol       xNewCol,
+        const  PosRow       yNewRow,
+        PromoteList  *      vProms,
+        ActionView   *      ptrAct)  const
 {
-    this->m_curDice = vCons;
-    return ( ERR_SUCCESS );
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    指定したマウス入力を、指し手データに変換する。
+//
+
+ErrCode
+GameController::setupPutActionFromMouse(
+        const  PosCol       xPutCol,
+        const  PosRow       yPutRow,
+        const  PieceIndex   pHand,
+        PromoteList  *      vProms,
+        ActionView   *      ptrAct)  const
+{
+    return ( ERR_FAILURE );
 }
 
 //----------------------------------------------------------------
@@ -537,6 +475,29 @@ GameController::getBoardState()  const
 }
 
 //----------------------------------------------------------------
+//    合法手の制約を取得する。
+//
+
+GameController::TConstraint
+GameController::getConstraint()  const
+{
+    return ( this->m_curDice );
+}
+
+//----------------------------------------------------------------
+//    合法手の制約を指定する。
+//
+
+ErrCode
+GameController::setConstraint(
+        const  TConstraint  vCons)
+{
+    this->m_curDice = vCons;
+    return ( ERR_SUCCESS );
+}
+
+
+//----------------------------------------------------------------
 //    現在の手番を持つプレーヤーを取得する。
 //
 
@@ -587,31 +548,6 @@ GameController::setShowFlag(
 //
 
 //----------------------------------------------------------------
-//    入力した座標を内部処理用に変換する。
-//
-
-ErrCode
-GameController::convertCoordsFromConsole(
-        const   ShowCoordFlags  flgShow,
-        PosCol  *   const       ptrCol,
-        PosRow  *   const       ptrRow)
-{
-    PosCol  xColTmp = (* ptrCol);
-    PosRow  yRowTmp = (* ptrRow);
-
-    if ( (flgShow) & SCF_FLIP_COLUMNS ) {
-        //  水平方向の座標を反転させる。        //
-        //  入力が 1..5 で出力が 5..1 である。  //
-        xColTmp = (6 - xColTmp);
-    }
-
-    (* ptrCol)  = xColTmp;
-    (* ptrRow)  = yRowTmp;
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
 //    入力したダイスの出目を、内部処理用に変換する。
 //
 
@@ -629,6 +565,7 @@ GameController::convertConstraintCoord(
     //  水平方向の座標をそのまま使う。      //
     return ( vCons );
 }
+
 
 //----------------------------------------------------------------
 //    指し手の内部形式を表示用データに変換する。
