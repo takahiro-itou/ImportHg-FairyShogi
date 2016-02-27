@@ -154,21 +154,6 @@ public:
             ActionViewList      &actList)  const;
 
     //----------------------------------------------------------------
-    /**   指定した入力文字列を、指し手データに変換する。
-    **
-    **  @param [in] strPlay   指し手入力文字列。
-    **  @param[out] ptrAct    変換した結果を受け取る変数。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    parseActionText(
-            const  std::string  &strPlay,
-            ActionView  *       ptrAct)  const;
-
-    //----------------------------------------------------------------
     /**   指定した指し手で盤面を進める。
     **
     **  @param [in] actFwd    指し手データの表示用形式。
@@ -427,42 +412,6 @@ public:
 //    For Internal Use Only.
 //
 private:
-
-    //----------------------------------------------------------------
-    /**   入力した座標を内部処理用に変換する。
-    **
-    **  @param [in]     flgShow   現在の表示フラグ。
-    **      この値に基づいて反転や回転の影響を除去する。
-    **  @param [in,out] ptrCol    座標（横方向）。
-    **  @param [in,out] ptrRow    座標（縦方向）。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    static  ErrCode
-    convertCoordsFromConsole(
-            const   ShowCoordFlags  flgShow,
-            PosCol  *   const       ptrCol,
-            PosRow  *   const       ptrRow);
-
-    //----------------------------------------------------------------
-    /**   入力した座標を内部処理用に変換する。
-    **
-    **  @param [in]     flgShow   現在の表示フラグ。
-    **      この値に基づいて反転や回転の影響を除去する。
-    **  @param [in,out] ptrCol    座標（横方向）。
-    **  @param [in,out] ptrRow    座標（縦方向）。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    static  ErrCode
-    convertCoordsFromMouse(
-            const   ShowCoordFlags  flgShow,
-            PosCol  *   const       ptrCol,
-            PosRow  *   const       ptrRow);
 
     //----------------------------------------------------------------
     /**   入力したダイスの出目を、内部処理用に変換する。
