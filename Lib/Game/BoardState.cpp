@@ -24,6 +24,8 @@
 #include    <iostream>
 #include    <memory.h>
 
+#include    <assert.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
 
@@ -473,6 +475,7 @@ BoardState::makeLegalActionList(
                 actData.fLegals |= Common::ALF_IGNORE_CHECK;
             }
 
+            assert( actData.fpAfter >= 0 );
             actList.push_back(actData);
         }   //  Next  k
     }   //  Next  posTrg
