@@ -303,18 +303,14 @@ GameController::playForward(
         const  ActionView   &actFwd)
 {
     ErrCode     retErr  = ERR_SUCCESS;
+    ActionData  actData;
 
-    if ( (actFwd.putHand) != 0 ) {
-        retErr  = playPutAction(
-                        actFwd.xNewCol, actFwd.yNewRow, actFwd.putHand);
-    } else {
-        retErr  = playMoveAction(
-                        actFwd.xOldCol,  actFwd.yOldRow,
-                        actFwd.xNewCol,  actFwd.yNewRow,
-                        actFwd.fpAfter);
+    retErr  =  BoardState::encodeActionData(actFwd, &actData);
+    if ( retErr != ERR_SUCCESS ) {
+        return ( retErr );
     }
 
-    return ( retErr );
+    return ( this->m_gcBoard.playForward(actData) );
 }
 
 //----------------------------------------------------------------

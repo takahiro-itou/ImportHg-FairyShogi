@@ -132,15 +132,37 @@ BoardState::decodeActionData(
         const   ActionData   &  actData,
         Common::ActionView  *   actView)
 {
-    actView->xNewCol    = (actData.xNewCol + 1);
-    actView->yNewRow    = (actData.yNewRow + 1);
-    actView->xOldCol    = (actData.xOldCol + 1);
-    actView->yOldRow    = (actData.yOldRow + 1);
-    actView->fpAfter    = actData.fpAfter;
-    actView->fpMoved    = actData.fpMoved;
-    actView->fpCatch    = actData.fpCatch;
-    actView->putHand    = actData.putHand;
-    actView->fLegals    = (actData.fLegals);
+    actView->xNewCol    =  (actData.xNewCol + 1);
+    actView->yNewRow    =  (actData.yNewRow + 1);
+    actView->xOldCol    =  (actData.xOldCol + 1);
+    actView->yOldRow    =  (actData.yOldRow + 1);
+    actView->fpAfter    =  (actData.fpAfter);
+    actView->fpMoved    =  (actData.fpMoved);
+    actView->fpCatch    =  (actData.fpCatch);
+    actView->putHand    =  (actData.putHand);
+    actView->fLegals    =  (actData.fLegals);
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    指し手の表示用形式を内部形式に変換する。
+//
+
+ErrCode
+BoardState::encodeActionData(
+        const   ActionView   &  actView,
+        ActionData  *  const    actData)
+{
+    actData->xNewCol    =  (actView.xNewCol - 1);
+    actData->yNewRow    =  (actView.yNewRow - 1);
+    actData->xOldCol    =  (actView.xOldCol - 1);
+    actData->yOldRow    =  (actView.yOldRow - 1);
+    actData->fpCatch    =  (actView.fpCatch);
+    actData->fpMoved    =  (actView.fpMoved);
+    actData->fpAfter    =  (actView.fpAfter);
+    actData->putHand    =  (actView.putHand);
+    actData->fLegals    =  (actView.fLegals);
 
     return ( ERR_SUCCESS );
 }
@@ -583,19 +605,19 @@ BoardState::resetGameBoard(
         pCurStat->m_bsField[i]  = FIELD_EMPTY_SQUARE;
     }
 
-    pCurStat->m_bsField[getMatrixPos(0, 0)] = FIELD_WHITE_ROOK;
-    pCurStat->m_bsField[getMatrixPos(1, 0)] = FIELD_WHITE_BISHOP;
+    pCurStat->m_bsField[getMatrixPos(4, 0)] = FIELD_WHITE_ROOK;
+    pCurStat->m_bsField[getMatrixPos(3, 0)] = FIELD_WHITE_BISHOP;
     pCurStat->m_bsField[getMatrixPos(2, 0)] = FIELD_WHITE_SILVER;
-    pCurStat->m_bsField[getMatrixPos(3, 0)] = FIELD_WHITE_GOLD;
-    pCurStat->m_bsField[getMatrixPos(4, 0)] = FIELD_WHITE_KING;
-    pCurStat->m_bsField[getMatrixPos(4, 1)] = FIELD_WHITE_PAWN;
+    pCurStat->m_bsField[getMatrixPos(1, 0)] = FIELD_WHITE_GOLD;
+    pCurStat->m_bsField[getMatrixPos(0, 0)] = FIELD_WHITE_KING;
+    pCurStat->m_bsField[getMatrixPos(0, 1)] = FIELD_WHITE_PAWN;
 
     pCurStat->m_bsField[getMatrixPos(0, 3)] = FIELD_BLACK_PAWN;
-    pCurStat->m_bsField[getMatrixPos(0, 4)] = FIELD_BLACK_KING;
-    pCurStat->m_bsField[getMatrixPos(1, 4)] = FIELD_BLACK_GOLD;
+    pCurStat->m_bsField[getMatrixPos(4, 4)] = FIELD_BLACK_KING;
+    pCurStat->m_bsField[getMatrixPos(3, 4)] = FIELD_BLACK_GOLD;
     pCurStat->m_bsField[getMatrixPos(2, 4)] = FIELD_BLACK_SILVER;
-    pCurStat->m_bsField[getMatrixPos(3, 4)] = FIELD_BLACK_BISHOP;
-    pCurStat->m_bsField[getMatrixPos(4, 4)] = FIELD_BLACK_ROOK;
+    pCurStat->m_bsField[getMatrixPos(1, 4)] = FIELD_BLACK_BISHOP;
+    pCurStat->m_bsField[getMatrixPos(0, 4)] = FIELD_BLACK_ROOK;
 
     for ( int hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
         pCurStat->m_nHands[hp]  = 0;
@@ -728,7 +750,7 @@ BoardState::getMatrixPos(
         const   PosCol  xCol,
         const   PosRow  yRow)
 {
-    return ( ((POS_NUM_COLS - xCol - 1) * POS_NUM_ROWS) + yRow );
+    return ( (xCol * POS_NUM_ROWS) + yRow );
 }
 
 }   //  End of namespace  GAME

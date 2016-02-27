@@ -129,8 +129,9 @@ public:
     };
 
     typedef     std::vector<ActionData>         ActionList;
-
     typedef     std::vector<FieldIndex>         TBitBoard;
+
+    typedef     Common::ActionView              ActionView;
 
 //========================================================================
 //
@@ -191,7 +192,22 @@ public:
     static  ErrCode
     decodeActionData(
             const   ActionData   &  actData,
-            Common::ActionView  *   actView);
+            ActionView  *  const    actView);
+
+    //----------------------------------------------------------------
+    /**   指し手の表示用形式を内部形式に変換する。
+    **
+    **  @param [in] actView   指し手データの表示用形式。
+    **  @param[out] actData   内部形式のデータを書き込む領域。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    encodeActionData(
+            const   ActionView   &  actView,
+            ActionData  *  const    actData);
 
     //----------------------------------------------------------------
     /**   駒を移動する指し手を内部形式に変換する。
@@ -330,7 +346,7 @@ public:
     //----------------------------------------------------------------
     /**   指定した指し手で盤面を進める。
     **
-    **  @param [in] actFws    指し手データの内部形式。
+    **  @param [in] actFwd    指し手データの内部形式。
     **  @retval     ERR_SUCCESS           合法手。
     **  @retval     ERR_ILLEGAL_ACTION    非合法。
     **/
@@ -338,6 +354,14 @@ public:
     playForward(
             const  ActionData   &actFwd);
 
+    //----------------------------------------------------------------
+    /**   指定した指し手で盤面を進める。
+    **
+    **  @param [in]     actFwd    指し手データの内部形式。
+    **  @param [in,out] curStat   現在の盤面データ。
+    **  @retval     ERR_SUCCESS           合法手。
+    **  @retval     ERR_ILLEGAL_ACTION    非合法。
+    **/
     static  ErrCode
     playForward(
             const  ActionData   &actFwd,
