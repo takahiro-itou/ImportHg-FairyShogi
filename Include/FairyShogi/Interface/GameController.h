@@ -55,8 +55,12 @@ class  GameController
 //    Internal Type Definitions.
 //
 public:
+
     typedef     Common::ActionView              ActionView;
     typedef     std::vector<ActionView>         ActionViewList;
+
+    /**   制約条件（ダイスの目）を表す型。  **/
+    typedef     int     TConstraint;
 
     /**   座標の表示関係のフラグ。  **/
     enum  ShowCoordFlags
@@ -123,6 +127,26 @@ public:
     virtual  ErrCode
     makeLegalActionList(
             ActionDataList  &actList)  const;
+
+    //----------------------------------------------------------------
+    /**   現在の局面の合法手を列挙する。
+    **
+    **  @param [in] fLegals   合法判定フラグ。
+    **      このフラグで指定した非合法手も列挙する。
+    **      ゼロを指定すると合法手のみ列挙する。
+    **  @param [in] vCons     制約条件を指定する。
+    **      負の数を指定すると現在の条件を使う。
+    **  @param[out] actList   合法手のリストを受け取る変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    makeLegalActionList(
+            const   ActionFlag  fLegals,
+            const   int         vCons,
+            ActionViewList      &actList)  const;
 
     //----------------------------------------------------------------
     /**   指定した入力文字列を、指し手データに変換する。
@@ -345,6 +369,37 @@ private:
             PosCol  *   const       ptrCol,
             PosRow  *   const       ptrRow);
 
+    //----------------------------------------------------------------
+    /**   入力したダイスの出目を、内部処理用に変換する。
+    **
+    **  @param [in] flgShow   現在の表示フラグ。
+    **      この値に基づいて反転や回転の影響を除去する。
+    **  @param [in] vCons   制約条件。
+    **  @return     変換した値を返す。
+    **/
+    static  TConstraint
+    convertConstraintCoord(
+            const   ShowCoordFlags  flgShow,
+            const   TConstraint     vCons);
+
+    //----------------------------------------------------------------
+    /**   指し手の内部形式を表示用データに変換する。
+    **
+    **  @param [in]     flgShow   現在の表示フラグ。
+    **      この値に基づいて反転や回転も処理する。
+    **  @param [in] actData   指し手データの内部形式。
+    **  @param[out] pvAct     表示用データを書き込む領域。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    decodeActionData(
+            const   ShowCoordFlags  flgShow,
+            const   ActionData   &  actData,
+            ActionView  *  const    pvAct);
+
 //========================================================================
 //
 //    Member Variables.
@@ -364,7 +419,7 @@ private:
     PlayerIndex         m_curTurn;
 
     /**   現在の出目。  **/
-    int                 m_curDice;
+    TConstraint         m_curDice;
 
 //========================================================================
 //
