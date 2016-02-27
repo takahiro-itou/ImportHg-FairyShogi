@@ -281,6 +281,7 @@ BoardScreen::onLButtonDown(
         this->m_bcSelX  = mx;
         this->m_bcSelY  = my;
 
+#if 0
         //  選択したマスの駒が、移動できない場合はキャンセル。  //
         const  Game::BoardState  &
             gbs = this->m_gcGameCtrl.getBoardState();
@@ -291,6 +292,7 @@ BoardScreen::onLButtonDown(
             clearSelection();
             return ( EH_RESULT_REDRAW );
         }
+#endif
     }
 
     this->m_bcMovX  = -1;
