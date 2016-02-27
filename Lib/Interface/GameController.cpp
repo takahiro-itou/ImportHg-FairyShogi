@@ -240,7 +240,7 @@ GameController::parseActionText(
         PosCol  xNewCol = strPlay[2] - '0';
         PosRow  yNewRow = strPlay[3] - '0';
         if (       (xNewCol < 1) || (5 < xNewCol)
-                || (yNewRow < 1) || (5 > yNewRow) )
+                || (yNewRow < 1) || (5 < yNewRow) )
         {
             return ( ERR_FAILURE );
         }
@@ -272,7 +272,7 @@ GameController::parseActionText(
         PosCol  xOldCol = strPlay[0] - '0';
         PosRow  yOldRow = strPlay[1] - '0';
         if (       (xOldCol < 1) || (5 < xOldCol)
-                || (yOldRow < 1) || (5 > yOldRow) )
+                || (yOldRow < 1) || (5 < yOldRow) )
         {
             return ( ERR_FAILURE );
         }
@@ -292,6 +292,29 @@ GameController::parseActionText(
     ptrAct->fLegals = Common::ALF_LEGAL_ACTION;
 
     return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    指定した指し手で盤面を進める。
+//
+
+ErrCode
+GameController::playForward(
+        const  ActionView   &actFwd)
+{
+    ErrCode     retErr  = ERR_SUCCESS;
+
+    if ( (actFwd.putHand) != 0 ) {
+        retErr  = playPutAction(
+                        actFwd.xNewCol, actFwd.yNewRow, actFwd.putHand);
+    } else {
+        retErr  = playMoveAction(
+                        actFwd.xOldCol,  actFwd.yOldRow,
+                        actFwd.xNewCol,  actFwd.yNewRow,
+                        actFwd.fpAfter);
+    }
+
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
@@ -489,6 +512,30 @@ GameController::writeToViewBuffer(
 //
 //    Public Member Functions.
 //
+
+//----------------------------------------------------------------
+//    指し手の表示用形式を比較して、等しいかどうかを返す。
+//
+
+bool
+GameController::isEquals(
+        const  ActionView  &avLhs,
+        const  ActionView  &avRhs)
+{
+    if (       ( (avLhs.xNewCol) != (avRhs.xNewCol) )
+            || ( (avLhs.yNewRow) != (avRhs.yNewRow) )
+            || ( (avLhs.xOldCol) != (avRhs.xOldCol) )
+            || ( (avLhs.yOldRow) != (avRhs.yOldRow) )
+            || ( (avLhs.fpMoved) != (avRhs.fpMoved) )
+            || ( (avLhs.fpAfter) != (avRhs.fpAfter) )
+            || ( (avLhs.putHand) != (avRhs.putHand) )
+            || ( (avLhs.fpCatch) != (avRhs.fpCatch) )
+    )
+    {
+        return ( false );
+    }
+    return ( true );
+}
 
 //========================================================================
 //

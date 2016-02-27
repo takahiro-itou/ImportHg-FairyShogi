@@ -164,6 +164,17 @@ public:
             ActionView  *       ptrAct)  const;
 
     //----------------------------------------------------------------
+    /**   指定した指し手で盤面を進める。
+    **
+    **  @param [in] actFwd    指し手データの表示用形式。
+    **  @retval     ERR_SUCCESS           合法手。
+    **  @retval     ERR_ILLEGAL_ACTION    非合法。
+    **/
+    virtual  ErrCode
+    playForward(
+            const  ActionView   &actFwd);
+
+    //----------------------------------------------------------------
     /**   駒を移動する指し手を入力して盤面を進める。
     **
     **  @param [in] xOldCol   移動元の座標（横方向）。
@@ -288,6 +299,19 @@ public:
 //
 //    Public Member Functions.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   指し手の表示用形式を比較して、等しいかどうかを返す。
+    **
+    **  @param [in] avLhs   左辺。
+    **  @param [in] avRhs   右辺。
+    **  @return     二つの指し手が同じものなら真を返す。
+    **/
+    static  bool
+    isEquals(
+            const  ActionView  &avLhs,
+            const  ActionView  &avRhs);
 
 //========================================================================
 //

@@ -341,6 +341,18 @@ playForward(
         const  std::string  &strPlay,
         GameController      &itfGame)
 {
+    ActionView  actView;
+
+    if ( itfGame.parseActionText(strPlay, &actView) != ERR_SUCCESS )
+    {
+        std::cerr   <<  "Invalid Arguments."
+                    <<  std::endl;
+        return ( 0 );
+    }
+
+    displayActionView(actView, 1, std::cerr);
+
+#if 0
     int     nx, ny, ox, oy;
     int     pr  = 0;
 
@@ -354,12 +366,29 @@ playForward(
     }
     nx  = 5 - nx;
     --  ny;
+#endif
 
     ActionList      actList;
     itfGame.makeLegalActionList(0, -1, actList);
     const  ActIter  itrEnd  = actList.end();
 
-    int             flgLeg  = 0;
+    ActionFlag      flgLeg  =  Common::ALF_LEGAL_ACTION;
+    for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
+        if ( GameController::isEquals(* itr, actView) ) {
+            flgLeg  = (itr->fLegals);
+            break;
+        }
+    }
+
+    if ( flgLeg != Common::ALF_LEGAL_ACTION ) {
+        std::cerr   <<  "Not Legal Move."   <<  std::endl;
+        if ( strPlay[strPlay.length() - 1] != '!' ) {
+            return ( 0 );
+        }
+    }
+    itfGame.playForward(actView);
+
+#if 0
     if ( strPlay[1] == '*' ) {
         //  持ち駒を打つ。  //
         int  h  = -1;
@@ -424,6 +453,7 @@ playForward(
 
         itfGame.playMoveAction(ox, oy, nx, ny, pr);
     }
+#endif
 
     executePlayerCommand("next", itfGame);
     itfGame.setConstraint(6);
