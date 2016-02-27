@@ -383,11 +383,8 @@ BoardState::makeLegalActionList(
             actData.fpAfter = vProm[0];
 
             //  動かしてみて、自殺だったらスキップ。    //
-            /** @todo   内部の座標のトラブルのため変換。    **/
             ::memcpy( &tmpStat, &curStat, sizeof(tmpStat) );
             ::memcpy( &actTemp, &actData, sizeof(actTemp) );
-            actTemp.xNewCol = 4 - (actData.xNewCol);
-            actTemp.xOldCol = 4 - (actData.xOldCol);
             playForward(actTemp, tmpStat);
 
             actData.fLegals = Common::ALF_LEGAL_ACTION;
@@ -446,11 +443,8 @@ BoardState::makeLegalActionList(
             actData.putHand = k;
 
             //  動かしてみて、自殺だったらスキップ。    //
-            /** @todo   内部の座標のトラブルのため変換。    **/
             ::memcpy( &tmpStat, &curStat, sizeof(tmpStat) );
             ::memcpy( &actTemp, &actData, sizeof(actTemp) );
-            actTemp.xNewCol = 4 - (actData.xNewCol);
-            actTemp.xOldCol = 4 - (actData.xOldCol);
             actTemp.fpAfter = s_tblHandConv[k];
             playForward(actTemp, tmpStat);
 
