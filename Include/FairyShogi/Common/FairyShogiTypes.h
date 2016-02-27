@@ -47,7 +47,10 @@ enum  ErrCode
     ERR_FILE_OPEN_ERROR     = 2,
 
     /**   合法では無い指し手入力。  **/
-    ERR_ILLEGAL_ACTION      = 3
+    ERR_ILLEGAL_ACTION      = 3,
+
+    /**   無効なコマンド、または引数。  **/
+    ERR_INVALID_COMMAND     = 4
 };
 
 //----------------------------------------------------------------
