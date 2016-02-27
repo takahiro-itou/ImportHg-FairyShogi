@@ -22,7 +22,6 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
-#include    "FairyShogi/Interface/GameController.h"
 
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
 #    define     STRICT

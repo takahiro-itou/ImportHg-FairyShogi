@@ -20,7 +20,7 @@
 
 #include    "ScreenLayer.h"
 
-#include    "FairyShogi/Interface/GameController.h"
+#include    "FairyShogi/Interface/GraphicalInterface.h"
 
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
 #    define     STRICT
@@ -375,9 +375,12 @@ private:
 //    Member Variables.
 //
 private:
+    typedef     Interface::GraphicalInterface   GameInterface;
+
+private:
 
     /**   ゲームコントローラ。  **/
-    GameController      m_gcGameCtrl;
+    GameInterface       m_gcGameCtrl;
 
     /**   現在のステータス。    **/
     ScreenState         m_bsState;
