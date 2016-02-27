@@ -594,6 +594,8 @@ parseConsoleInput(
     } else if ( vTokens[0] == "flip" ) {
         vTokens.push_back("change");
         return ( executeFlipCommand(vTokens[1], objGame) );
+    } else if ( vTokens[0] == "srand" ) {
+        std::srand( ::time(NULL) );
     }
 
     std::cerr   <<  "Invalid Command."  << std::endl;
@@ -604,8 +606,6 @@ int  main(int argc, char * argv[])
 {
     std::cerr   <<  "Fairy Shogi Version 0.0"
                 <<  std::endl;
-
-    std::srand( ::time(NULL) );
 
     std::string     strBuf;
     std::istream   & inStr  = (std::cin);

@@ -24,6 +24,8 @@
 #include    <iostream>
 #include    <memory.h>
 
+#include    <assert.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
 
@@ -122,6 +124,19 @@ BoardState::~BoardState()
 //
 //    Public Member Functions.
 //
+
+//----------------------------------------------------------------
+//    指定した局面のクローンを作成する。
+//
+
+ErrCode
+BoardState::cloneFrom(
+        const  BoardState  &objSrc)
+{
+    ::memcpy( &(this->m_icState),  &(objSrc.m_icState),
+              sizeof(this->m_icState) );
+    return ( ERR_SUCCESS );
+}
 
 //----------------------------------------------------------------
 //    指し手の内部形式を表示用データに変換する。
@@ -358,8 +373,9 @@ BoardState::makeLegalActionList(
             actData.yNewRow = (posTrg % POS_NUM_ROWS);
             actData.xOldCol = (posSrc / POS_NUM_ROWS);
             actData.yOldRow = (posSrc % POS_NUM_ROWS);
+            actData.fpCatch = FIELD_EMPTY_SQUARE;
             actData.fpMoved = p;
-            actData.fpAfter = actData.fpMoved;
+            actData.fpAfter = p;
             actData.putHand = HAND_EMPTY_PIECE;
             actData.fLegals = Common::ALF_LEGAL_ACTION;
 
@@ -410,6 +426,8 @@ BoardState::makeLegalActionList(
         actData.yOldRow = -1;
         actData.fpCatch = FIELD_EMPTY_SQUARE;
         actData.fpMoved = FIELD_EMPTY_SQUARE;
+        actData.fpAfter = FIELD_EMPTY_SQUARE;
+        actData.putHand = HAND_EMPTY_PIECE;
         actData.fLegals = Common::ALF_LEGAL_ACTION;
 
         for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
@@ -428,7 +446,9 @@ BoardState::makeLegalActionList(
             int     flgDps  = 0;
             if ( (k == HAND_BLACK_PAWN) || (k == HAND_WHITE_PAWN) ) {
                 for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
-                    if ( curStat.m_bsField[actData.xNewCol * POS_NUM_ROWS + y] == k ) {
+                    if ( curStat.m_bsField[actData.xNewCol * POS_NUM_ROWS + y]
+                            == k )
+                    {
                         flgDps  = 1;
                     }
                 }
@@ -441,11 +461,11 @@ BoardState::makeLegalActionList(
             }
 
             actData.putHand = k;
+            actData.fpAfter = s_tblHandConv[k];
 
             //  動かしてみて、自殺だったらスキップ。    //
             ::memcpy( &tmpStat, &curStat, sizeof(tmpStat) );
             ::memcpy( &actTemp, &actData, sizeof(actTemp) );
-            actTemp.fpAfter = s_tblHandConv[k];
             playForward(actTemp, tmpStat);
 
             if ( isCheckState(tmpStat, cPlayer, bbCheck) > 0 ) {
@@ -455,6 +475,7 @@ BoardState::makeLegalActionList(
                 actData.fLegals |= Common::ALF_IGNORE_CHECK;
             }
 
+            assert( actData.fpAfter >= 0 );
             actList.push_back(actData);
         }   //  Next  k
     }   //  Next  posTrg
