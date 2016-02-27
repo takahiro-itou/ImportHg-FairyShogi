@@ -536,27 +536,14 @@ BoardScreen::playAction(
         const  BoardCoord   trgY,
         const  PieceIndex   iPrm)
 {
-    if ( (srcY) == 0 ) {
-        //  後手の持ち駒を打つ。    //
-        this->m_gcGameCtrl.playPutAction(
-                trgX - BOARD_LEFT_OFFSET,
-                trgY - BOARD_TOP_OFFSET,
-                s_tblHandEncWhite[srcX - BOARD_LEFT_OFFSET]);
-    } else if ( (srcY) == POS_NUM_ROWS + BOARD_TOP_OFFSET ) {
-        //  先手の持ち駒を打つ。    //
-        this->m_gcGameCtrl.playPutAction(
-                trgX - BOARD_LEFT_OFFSET,
-                trgY - BOARD_TOP_OFFSET,
-                s_tblHandEncBlack[srcX - BOARD_LEFT_OFFSET]);
-    } else {
-        //  盤上の駒を移動させる。  //
-        this->m_gcGameCtrl.playMoveAction(
-                srcX - BOARD_LEFT_OFFSET,
-                srcY - BOARD_TOP_OFFSET,
-                trgX - BOARD_LEFT_OFFSET,
-                trgY - BOARD_TOP_OFFSET,
-                iPrm);
-    }
+    ActionView  actView;
+    PromoteList plDummy;
+
+    setupActionView(
+            this->m_gcGameCtrl,  srcX,  srcY,  trgX,  trgY,
+            &plDummy,   &actView );
+    actView.fpAfter = iPrm;
+    this->m_gcGameCtrl.playForward(actView);
 
     this->m_bcSrcX  = -1;
     this->m_bcSrcY  = -1;
@@ -594,13 +581,10 @@ BoardScreen::setActionInput(
     this->m_bcTrgX  = trgX;
     this->m_bcTrgY  = trgY;
 
-    /**     @todo   暫定処理。後で直す。    **/
     this->m_prmOptions.clear();
-    for ( PieceIndex i = Game::BoardState::FIELD_BLACK_PAWN;
-            i <= Game::BoardState::FIELD_WHITE_DRAGON; ++ i )
-    {
-        this->m_prmOptions.push_back(i);
-    }
+    setupActionView(
+            this->m_gcGameCtrl,     srcX,  srcY,  trgX,  trgY,
+            &(this->m_prmOptions),  nullptr );
 
     this->m_bsState = BSLS_NOTHING;
     const  size_t   numOpt  = this->m_prmOptions.size();
@@ -612,6 +596,46 @@ BoardScreen::setActionInput(
     }
 
     this->m_bsState = BSLS_SHOW_PROMOTION;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    移動元と移動先から、指し手データを構築する。
+//
+
+ErrCode
+BoardScreen::setupActionView(
+        const  GameInterface  & giCtrl,
+        const  BoardCoord       srcX,
+        const  BoardCoord       srcY,
+        const  BoardCoord       trgX,
+        const  BoardCoord       trgY,
+        PromoteList  *  const   vProms,
+        ActionView   *  const   ptrAct)
+{
+    if ( (srcY) == 0 ) {
+        giCtrl.setupPutActionFromMouse(
+                trgX - BOARD_LEFT_OFFSET,
+                trgY - BOARD_TOP_OFFSET,
+                s_tblHandEncWhite[srcX - BOARD_LEFT_OFFSET],
+                vProms,  ptrAct );
+    } else if ( (srcY) == POS_NUM_ROWS + BOARD_TOP_OFFSET ) {
+        //  先手の持ち駒を打つ。    //
+        giCtrl.setupPutActionFromMouse(
+                trgX - BOARD_LEFT_OFFSET,
+                trgY - BOARD_TOP_OFFSET,
+                s_tblHandEncBlack[srcX - BOARD_LEFT_OFFSET],
+                vProms,  ptrAct );
+    } else {
+        //  盤上の駒を移動させる。  //
+        giCtrl.setupMoveActionFromMouse(
+                srcX - BOARD_LEFT_OFFSET,
+                srcY - BOARD_TOP_OFFSET,
+                trgX - BOARD_LEFT_OFFSET,
+                trgY - BOARD_TOP_OFFSET,
+                vProms,  ptrAct );
+    }
+
     return ( ERR_SUCCESS );
 }
 

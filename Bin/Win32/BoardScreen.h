@@ -262,6 +262,13 @@ public:
 //    For Internal Use Only.
 //
 private:
+
+    typedef     Common::ActionView                  ActionView;
+
+    typedef     Interface::GraphicalInterface       GameInterface;
+    typedef     GameInterface::PromoteList          PromoteList;
+
+
     /**   盤上のマスの座標を表す型。    **/
     typedef     int     BoardCoord;
 
@@ -370,13 +377,37 @@ private:
             const  BoardCoord   trgX,
             const  BoardCoord   trgY);
 
+    //----------------------------------------------------------------
+    /**   移動元と移動先から、指し手データを構築する。
+    **
+    **  @note   引数の座標はいずれも升目座標のままで良い。
+    **      マウスの座標を幅や高さで割った値。
+    **      この関数内部で自動的に内部座標に変換する。
+    **  @param [in] giCtrl    ゲームコントローラ。
+    **  @param [in] srcX      移動元の水平座標。
+    **  @param [in] srcY      移動先の垂直座標。
+    **  @param [in] trgX      移動先の水平座標。
+    **  @param [in] trgY      移動先の垂直座標。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    setupActionView(
+            const  GameInterface  & giCtrl,
+            const  BoardCoord       srcX,
+            const  BoardCoord       srcY,
+            const  BoardCoord       trgX,
+            const  BoardCoord       trgY,
+            PromoteList  *  const   vProms,
+            ActionView   *  const   ptrAct);
+
 //========================================================================
 //
 //    Member Variables.
 //
-private:
-    typedef     Interface::GraphicalInterface   GameInterface;
-
 private:
 
     /**   ゲームコントローラ。  **/

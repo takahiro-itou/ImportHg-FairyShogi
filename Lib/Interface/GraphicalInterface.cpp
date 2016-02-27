@@ -138,6 +138,11 @@ GraphicalInterface::setupMoveActionFromMouse(
     const  ShowCoordFlags      flgShow  =  getShowFlag();
     const  Game::BoardState  & curStat  =  getBoardState();
 
+    ActionView  actTmp;
+    if ( ptrAct == (nullptr) ) {
+        ptrAct  =  &(actTmp);
+    }
+
     convertCoordsFromMouse(
             flgShow,  xNewCol,  yNewRow,
             &(ptrAct->xNewCol), &(ptrAct->yNewRow) );
