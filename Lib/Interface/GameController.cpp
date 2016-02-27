@@ -468,6 +468,29 @@ GameController::setCurrentPlayer(
     return ( ERR_SUCCESS );
 }
 
+//----------------------------------------------------------------
+//    現在の盤面の表示フラグを取得する。
+//
+
+GameController::ShowCoordFlags
+GameController::getShowFlag()  const
+{
+    return ( this->m_flgShow );
+}
+
+//----------------------------------------------------------------
+//    盤面の表示フラグを設定する。
+//
+
+ErrCode
+GameController::setShowFlag(
+        const   ShowCoordFlags  scFlag)
+
+{
+    this->m_flgShow = scFlag;
+    return ( ERR_SUCCESS );
+}
+
 //========================================================================
 //
 //    For Internal Use Only.
