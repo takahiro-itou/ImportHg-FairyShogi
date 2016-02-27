@@ -615,6 +615,8 @@ BoardScreen::setupActionView(
         PromoteList  *  const   vProms,
         ActionView   *  const   ptrAct)
 {
+    vProms->clear();
+
     if ( (srcY) == 0 ) {
         giCtrl.setupPutActionFromMouse(
                 trgX - BOARD_LEFT_OFFSET,

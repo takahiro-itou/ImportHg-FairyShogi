@@ -19,6 +19,9 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 
+#include    <sstream>
+#include    <windows.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
 
@@ -47,17 +50,18 @@ s_tblHandConv[BoardState::NUM_HAND_TYPES]   = {
 
 CONSTEXPR_VAR   const   int
 s_tblPromotion[]    = {
-    0,
+    BoardState::FIELD_EMPTY_SQUARE,
+
     BoardState::FIELD_BLACK_PR_PAWN,
     BoardState::FIELD_BLACK_PR_SILVER,
     BoardState::FIELD_BLACK_GOLD,
     BoardState::FIELD_BLACK_HORSE,
     BoardState::FIELD_BLACK_DRAGON,
     BoardState::FIELD_BLACK_KING,
-    BoardState::FIELD_BLACK_PR_PAWN,
-    BoardState::FIELD_BLACK_PR_SILVER,
-    BoardState::FIELD_BLACK_HORSE,
-    BoardState::FIELD_BLACK_DRAGON,
+    BoardState::FIELD_EMPTY_SQUARE,
+    BoardState::FIELD_EMPTY_SQUARE,
+    BoardState::FIELD_EMPTY_SQUARE,
+    BoardState::FIELD_EMPTY_SQUARE,
 
     BoardState::FIELD_WHITE_PR_PAWN,
     BoardState::FIELD_WHITE_PR_SILVER,
@@ -65,10 +69,10 @@ s_tblPromotion[]    = {
     BoardState::FIELD_WHITE_HORSE,
     BoardState::FIELD_WHITE_DRAGON,
     BoardState::FIELD_WHITE_KING,
-    BoardState::FIELD_WHITE_PR_PAWN,
-    BoardState::FIELD_WHITE_PR_SILVER,
-    BoardState::FIELD_WHITE_HORSE,
-    BoardState::FIELD_WHITE_DRAGON,
+    BoardState::FIELD_EMPTY_SQUARE,
+    BoardState::FIELD_EMPTY_SQUARE,
+    BoardState::FIELD_EMPTY_SQUARE,
+    BoardState::FIELD_EMPTY_SQUARE
 };
 
 }   //  End of (Unnamed) namespace.
@@ -150,15 +154,24 @@ GraphicalInterface::setupMoveActionFromMouse(
             flgShow,  xOldCol,  yOldRow,
             &(ptrAct->xOldCol), &(ptrAct->yOldRow) );
 
-    ptrAct->fpCatch = curStat.getFieldPiece(xNewCol - 1, yNewRow - 1);
-    ptrAct->fpMoved = curStat.getFieldPiece(xOldCol - 1, yOldRow - 1);
+    ptrAct->fpCatch = curStat.getFieldPiece(
+                            ptrAct->xNewCol - 1,  ptrAct->yNewRow - 1);
+    ptrAct->fpMoved = curStat.getFieldPiece(
+                            ptrAct->xOldCol - 1,  ptrAct->yOldRow - 1);
     ptrAct->fpAfter = (ptrAct->fpMoved);
     ptrAct->putHand = Game::BoardState::HAND_EMPTY_PIECE;
     ptrAct->fLegals = Common::ALF_LEGAL_ACTION;
 
     vProms->clear();
+    if ( (ptrAct->fpMoved) == Game::BoardState::FIELD_EMPTY_SQUARE ) {
+        return ( ERR_FAILURE );
+    }
+
     vProms->push_back(ptrAct->fpMoved);
-    vProms->push_back(s_tblPromotion[ptrAct->fpMoved]);
+    const  PieceIndex   piProm  =  s_tblPromotion[ptrAct->fpMoved];
+    if ( piProm != Game::BoardState::FIELD_EMPTY_SQUARE ) {
+        vProms->push_back(piProm);
+    };
 
     return ( ERR_FAILURE );
 }
@@ -184,7 +197,8 @@ GraphicalInterface::setupPutActionFromMouse(
 
     ptrAct->xOldCol = 0;
     ptrAct->yOldRow = 0;
-    ptrAct->fpCatch = curStat.getFieldPiece(xPutCol - 1, yPutRow - 1);
+    ptrAct->fpCatch = curStat.getFieldPiece(
+                            ptrAct->xNewCol - 1,  ptrAct->yNewRow - 1);
     ptrAct->fpMoved = Game::BoardState::FIELD_EMPTY_SQUARE;
     ptrAct->fpAfter = s_tblHandConv[pHand];
     ptrAct->putHand = pHand;
