@@ -145,7 +145,7 @@ parseText(
 int
 setPosition(
         const  std::string  &strData,
-        GameController      &itfGame)
+        GameController      &objGame)
 {
     std::vector<std::string>    vTokens;
 
@@ -156,7 +156,7 @@ setPosition(
             strData, " \t", 3, // std::numeric_limits<int>::max(),
             vTokens);
     if ( vTokens[0] == "startpos" ) {
-        itfGame.resetGame();
+        objGame.resetGame();
         return ( 0 );
     }
 
@@ -167,12 +167,12 @@ setPosition(
 
 int
 displaySfen(
-        const  GameController  &itfGame,
+        const  GameController  &objGame,
         std::ostream           &outStr)
 {
     Common::ViewBuffer  vb;
     ::memset( &vb, 0, sizeof(vb) );
-    itfGame.writeToViewBuffer(vb);
+    objGame.writeToViewBuffer(vb);
 
     //  盤面を表示する。    //
     for ( int y = 0; y < 5; ++ y ) {
@@ -212,12 +212,12 @@ displaySfen(
 
 int
 displayBoard(
-        const  GameController  &itfGame,
+        const  GameController  &objGame,
         std::ostream           &outStr)
 {
     Common::ViewBuffer  vb;
     ::memset( &vb, 0, sizeof(vb) );
-    itfGame.writeToViewBuffer(vb);
+    objGame.writeToViewBuffer(vb);
 
     //  盤面を表示する。    //
     outStr  <<  "| 5| 4| 3| 2| 1|\n";
@@ -308,27 +308,27 @@ displayActionView(
 int
 executePlayerCommand(
         const  std::string  &strArgs,
-        GameController      &itfGame)
+        GameController      &objGame)
 {
     CONSTEXPR_VAR   char    chName[2] = { 'b', 'w' };
 
     if ( strArgs == "next" ) {
-        const  PlayerIndex  pi  =  itfGame.getCurrentPlayer();
-        itfGame.setCurrentPlayer(pi ^ 1);
-        std::cerr   <<  chName[itfGame.getCurrentPlayer()]  <<  std::endl;
+        const  PlayerIndex  pi  =  objGame.getCurrentPlayer();
+        objGame.setCurrentPlayer(pi ^ 1);
+        std::cerr   <<  chName[objGame.getCurrentPlayer()]  <<  std::endl;
         return ( 0 );
     }
     if ( strArgs == "get" ) {
-        std::cout   <<  chName[itfGame.getCurrentPlayer()]  <<  std::endl;
+        std::cout   <<  chName[objGame.getCurrentPlayer()]  <<  std::endl;
         return ( 0 );
     }
 
     if ( (strArgs[0] == '0') || (strArgs[0] == 'b') ) {
-        itfGame.setCurrentPlayer(0);
+        objGame.setCurrentPlayer(0);
         return ( 0 );
     }
     if ( (strArgs[0] == '1') || (strArgs[0] == 'w') ) {
-        itfGame.setCurrentPlayer(1);
+        objGame.setCurrentPlayer(1);
         return ( 0 );
     }
 
@@ -339,11 +339,11 @@ executePlayerCommand(
 int
 playForward(
         const  std::string  &strPlay,
-        GameController      &itfGame)
+        GameController      &objGame)
 {
     ActionView  actView;
 
-    if ( itfGame.parseActionText(strPlay, &actView) != ERR_SUCCESS )
+    if ( objGame.parseActionText(strPlay, &actView) != ERR_SUCCESS )
     {
         std::cerr   <<  "Invalid Arguments."
                     <<  std::endl;
@@ -369,7 +369,7 @@ playForward(
 #endif
 
     ActionList      actList;
-    itfGame.makeLegalActionList(0, -1, actList);
+    objGame.makeLegalActionList(0, -1, actList);
     const  ActIter  itrEnd  = actList.end();
 
     ActionFlag      flgLeg  =  Common::ALF_LEGAL_ACTION;
@@ -386,7 +386,7 @@ playForward(
             return ( 0 );
         }
     }
-    itfGame.playForward(actView);
+    objGame.playForward(actView);
 
 #if 0
     if ( strPlay[1] == '*' ) {
@@ -417,7 +417,7 @@ playForward(
             }
         }
 
-        itfGame.playPutAction(nx, ny, h);
+        objGame.playPutAction(nx, ny, h);
 
     } else {
         ox  =  strPlay[0] - '0';
@@ -429,7 +429,7 @@ playForward(
         }
         ox  =  5 - ox;
         --  oy;
-        const  int  trg = itfGame.getBoardState().getFieldPiece(ox, oy);
+        const  int  trg = objGame.getBoardState().getFieldPiece(ox, oy);
         if ( (strPlay.length() >= 5) && (strPlay[4] == '+') ) {
             pr  = g_tblPromotion[trg];
         } else {
@@ -451,12 +451,12 @@ playForward(
             }
         }
 
-        itfGame.playMoveAction(ox, oy, nx, ny, pr);
+        objGame.playMoveAction(ox, oy, nx, ny, pr);
     }
 #endif
 
-    executePlayerCommand("next", itfGame);
-    itfGame.setConstraint(6);
+    executePlayerCommand("next", objGame);
+    objGame.setConstraint(6);
 
     return ( 0 );
 }
@@ -464,26 +464,26 @@ playForward(
 int
 executeDiceCommand(
         const  std::string  &strArgs,
-        GameController      &itfGame)
+        GameController      &objGame)
 {
     std::vector<FieldIndex>     bbFrom;
 
-    const  Game::BoardState  &bsCur = itfGame.getBoardState();
+    const  Game::BoardState  &bsCur = objGame.getBoardState();
     const  size_t
-        numChk  = bsCur.isCheckState(itfGame.getCurrentPlayer(), bbFrom);
+        numChk  = bsCur.isCheckState(objGame.getCurrentPlayer(), bbFrom);
     if ( numChk == 1 ) {
         std::cerr   <<  "* CHECK!"  <<  std::endl;
-        itfGame.setConstraint(6);
+        objGame.setConstraint(6);
         return ( 0 );
     } else if ( numChk >= 2 ) {
         std::cerr   <<  "** DOUBLE CHECK!"  <<  std::endl;
-        itfGame.setConstraint(6);
+        objGame.setConstraint(6);
         return ( 0 );
     }
 
     if ( strArgs[0] == 'g' ) {
         std::cout   <<  "Current Constraint. Dice = "
-                    <<  itfGame.getConstraint()
+                    <<  objGame.getConstraint()
                     <<  std::endl;
         return ( 0 );
     }
@@ -491,7 +491,7 @@ executeDiceCommand(
     if ( strArgs[0] == 'r' ) {
         const  int  rn  =  ((std::rand() >> 8) % 6) + 1;
         std::cout   <<  rn  <<  std::endl;
-        itfGame.setConstraint(rn);
+        objGame.setConstraint(rn);
         return ( 0 );
     }
 
@@ -500,7 +500,7 @@ executeDiceCommand(
         std::cerr   <<  "Invalid Arguments."    <<  std::endl;
         return ( 0 );
     }
-    itfGame.setConstraint(dr);
+    objGame.setConstraint(dr);
 
     return ( 0 );
 }
@@ -508,10 +508,10 @@ executeDiceCommand(
 int
 executeListCommand(
         const  std::string     &strArgs,
-        const  GameController  &itfGame,
+        const  GameController  &objGame,
         std::ostream           &outStr)
 {
-    int     dc  =  itfGame.getConstraint();
+    int     dc  =  objGame.getConstraint();
     if ( strArgs[0] == 'a' ) {
         dc  =  6;
     } else if ( ('0' <= strArgs[0]) && (strArgs[0] <= '6') ) {
@@ -524,7 +524,7 @@ executeListCommand(
     std::cerr   <<  "List For Dice = "  <<  dc  <<  std::endl;
 
     ActionList      vActs;
-    itfGame.makeLegalActionList(fLegal, dc, vActs);
+    objGame.makeLegalActionList(fLegal, dc, vActs);
     const  ActIter  itrEnd  =  vActs.end();
 
     int     cntDisp = 0;
@@ -566,11 +566,11 @@ executeListCommand(
 
 int
 executeGoCommand(
-        GameController  &itfGame)
+        GameController  &objGame)
 {
     ActionView  actData;
 
-    if ( itfGame.startThinking(actData) != ERR_SUCCESS ) {
+    if ( objGame.startThinking(actData) != ERR_SUCCESS ) {
         std::cerr   <<  "No Legal Actions"  <<  std::endl;
         return ( 0 );
     }
