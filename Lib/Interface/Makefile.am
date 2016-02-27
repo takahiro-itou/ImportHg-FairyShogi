@@ -23,9 +23,10 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
-        BitmapImage.cpp       \
-        ConsoleInterface.cpp  \
-        GameController.cpp    \
+        BitmapImage.cpp         \
+        ConsoleInterface.cpp    \
+        GameController.cpp      \
+        GraphicalInterface.cpp  \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =
@@ -35,9 +36,10 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
-        $(INCLIBDIR)/BitmapImage.h       \
-        $(INCLIBDIR)/ConsoleInterface.h  \
-        $(INCLIBDIR)/GameController.h    \
+        $(INCLIBDIR)/BitmapImage.h         \
+        $(INCLIBDIR)/ConsoleInterface.h    \
+        $(INCLIBDIR)/GameController.h      \
+        $(INCLIBDIR)/GraphicalInterface.h  \
         $(EXTRALIBHEADERS)
 
 LIBNODISTHEADERS        =
