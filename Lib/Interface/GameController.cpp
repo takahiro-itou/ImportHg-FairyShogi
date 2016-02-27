@@ -384,25 +384,34 @@ GameController::resetGame()
 }
 
 //----------------------------------------------------------------
-//    合法手の制約を取得する。
-//
-
-int
-GameController::getConstraint()  const
-{
-    return ( this->m_curDice );
-}
-
-//----------------------------------------------------------------
-//    合法手の制約を指定する。
+//    指定したマウス入力を、指し手データに変換する。
 //
 
 ErrCode
-GameController::setConstraint(
-        const  int  vCons)
+GameController::setupMoveActionFromMouse(
+        const  PosCol       xOldCol,
+        const  PosRow       yOldRow,
+        const  PosCol       xNewCol,
+        const  PosRow       yNewRow,
+        PromoteList  *      vProms,
+        ActionView   *      ptrAct)  const
 {
-    this->m_curDice = vCons;
-    return ( ERR_SUCCESS );
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    指定したマウス入力を、指し手データに変換する。
+//
+
+ErrCode
+GameController::setupPutActionFromMouse(
+        const  PosCol       xPutCol,
+        const  PosRow       yPutRow,
+        const  PieceIndex   pHand,
+        PromoteList  *      vProms,
+        ActionView   *      ptrAct)  const
+{
+    return ( ERR_FAILURE );
 }
 
 //----------------------------------------------------------------
@@ -537,6 +546,29 @@ GameController::getBoardState()  const
 }
 
 //----------------------------------------------------------------
+//    合法手の制約を取得する。
+//
+
+GameController::TConstraint
+GameController::getConstraint()  const
+{
+    return ( this->m_curDice );
+}
+
+//----------------------------------------------------------------
+//    合法手の制約を指定する。
+//
+
+ErrCode
+GameController::setConstraint(
+        const  TConstraint  vCons)
+{
+    this->m_curDice = vCons;
+    return ( ERR_SUCCESS );
+}
+
+
+//----------------------------------------------------------------
 //    現在の手番を持つプレーヤーを取得する。
 //
 
@@ -628,6 +660,18 @@ GameController::convertConstraintCoord(
 
     //  水平方向の座標をそのまま使う。      //
     return ( vCons );
+}
+
+//----------------------------------------------------------------
+//    入力した座標を内部処理用に変換する。
+//
+
+ErrCode
+GameController::convertCoordsFromMouse(
+        const   ShowCoordFlags  flgShow,
+        PosCol  *   const       ptrCol,
+        PosRow  *   const       ptrRow)
+{
 }
 
 //----------------------------------------------------------------
