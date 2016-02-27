@@ -162,7 +162,66 @@ ErrCode
 GameController::makeLegalActionList(
         ActionDataList  &actList)  const
 {
-    return ( this->m_gcBoard.makeLegalActionList(this->m_curTurn, actList) );
+    return ( this->m_gcBoard.makeLegalActionList(
+                     this->m_curTurn, 0, actList) );
+}
+
+//----------------------------------------------------------------
+//    現在の局面の合法手を列挙する。
+//
+
+ErrCode
+GameController::makeLegalActionList(
+        const   ActionFlag  fLegals,
+        const   int         vCons,
+        ActionViewList      &actList)  const
+{
+    typedef     ActionDataList::const_iterator      ActIter;
+    ActionDataList  vActs;
+    const  ErrCode
+        retErr  = this->m_gcBoard.makeLegalActionList(
+                        this->m_curTurn,  fLegals,  vActs);
+
+    actList.clear();
+    actList.reserve( vActs.size() );
+
+    if ( retErr != ERR_SUCCESS ) {
+        return ( retErr );
+    }
+
+    const  ActIter  itrEnd  = vActs.end();
+    ActIter         itrHead = vActs.begin();
+    ActIter         itrTail = itrEnd;
+
+    ActionView      actView;
+    TConstraint     curDice = (vCons < 0 ? (this->m_curDice) : vCons);
+
+    for ( ; itrHead != itrEnd; ++ itrHead ) {
+        decodeActionData( this->m_flgShow, (* itrHead), &actView);
+        if ( (actView.xNewCol) >= curDice ) {
+            break;
+        }
+    }
+
+    for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
+        decodeActionData( this->m_flgShow, (* itr), &actView);
+        if ( (actView.xNewCol) != curDice ) {
+            itrTail = itr;
+            break;
+        }
+        actList.push_back(actView);
+    }
+    if ( itrHead != itrTail ) {
+        return ( ERR_SUCCESS );
+    }
+
+    //  指定した条件で合法手がない時は、何でもできる。  //
+    for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr ) {
+        decodeActionData( this->m_flgShow, (* itr), &actView);
+        actList.push_back(actView);
+    }
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
@@ -181,14 +240,14 @@ GameController::parseActionText(
         PosCol  xNewCol = strPlay[2] - '0';
         PosRow  yNewRow = strPlay[3] - '0';
         if (       (xNewCol < 1) || (5 < xNewCol)
-                || (yNewRow < 1) || (5 > yNewRow) )
+                || (yNewRow < 1) || (5 < yNewRow) )
         {
             return ( ERR_FAILURE );
         }
         convertCoordsFromConsole(this->m_flgShow, &xNewCol, &yNewRow);
         ptrAct->xNewCol = xNewCol;
         ptrAct->yNewRow = yNewRow;
-        pifTrg  = getBoardState().getFieldPiece(xNewCol, yNewRow);
+        pifTrg  = getBoardState().getFieldPiece(xNewCol - 1, yNewRow - 1);
     }
 
     //  移動先にある駒を捕獲する。  //
@@ -213,7 +272,7 @@ GameController::parseActionText(
         PosCol  xOldCol = strPlay[0] - '0';
         PosRow  yOldRow = strPlay[1] - '0';
         if (       (xOldCol < 1) || (5 < xOldCol)
-                || (yOldRow < 1) || (5 > yOldRow) )
+                || (yOldRow < 1) || (5 < yOldRow) )
         {
             return ( ERR_FAILURE );
         }
@@ -221,7 +280,8 @@ GameController::parseActionText(
         convertCoordsFromConsole(this->m_flgShow, &xOldCol, &yOldRow);
         ptrAct->xOldCol = xOldCol;
         ptrAct->yOldRow = yOldRow;
-        pifSrc  = getBoardState().getFieldPiece(xOldCol, yOldRow);
+        pifSrc  = getBoardState().getFieldPiece(xOldCol - 1, yOldRow - 1);
+        ptrAct->fpMoved = pifSrc;
     }
 
     size_t  posRead = 4;
@@ -233,6 +293,25 @@ GameController::parseActionText(
     ptrAct->fLegals = Common::ALF_LEGAL_ACTION;
 
     return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    指定した指し手で盤面を進める。
+//
+
+ErrCode
+GameController::playForward(
+        const  ActionView   &actFwd)
+{
+    ErrCode     retErr  = ERR_SUCCESS;
+    ActionData  actData;
+
+    retErr  =  BoardState::encodeActionData(actFwd, &actData);
+    if ( retErr != ERR_SUCCESS ) {
+        return ( retErr );
+    }
+
+    return ( this->m_gcBoard.playForward(actData) );
 }
 
 //----------------------------------------------------------------
@@ -321,43 +400,19 @@ GameController::setConstraint(
 
 ErrCode
 GameController::startThinking(
-        ActionData  &actRet)
+        ActionView  &actRet)
 {
-    typedef     ActionDataList::const_iterator      ActIter;
+    ActionViewList  actList;
 
-    ActionDataList  actList;
-
-    makeLegalActionList(actList);
-
-    const  ActIter  itrEnd  = actList.end();
-    ActIter         itrHead = actList.begin();
-    for ( ; itrHead != itrEnd; ++ itrHead ) {
-        if ( (itrHead->xNewCol) == (this->m_curDice) ) {
-            break;
-        }
-    }
-
-    ActIter         itrTail = itrEnd;
-    for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
-        if ( (itr->xNewCol) != (this->m_curDice) ) {
-            itrTail = itr;
-            break;
-        }
-    }
-
-    if ( itrHead == itrTail ) {
-        //  指定したダイスの目で合法手が無い場合。  //
-        //  ダイスの目が六の場合もここを通過する。  //
-        itrHead = actList.begin();
-        itrTail = itrEnd;
-    }
-    const  int  numAct  = (itrTail - itrHead);
+    makeLegalActionList(0,  this->m_curDice,  actList);
+    const  int  numAct  = actList.size();
     if ( numAct == 0 ) {
         return ( ERR_ILLEGAL_ACTION );
     }
 
     int  r  =  rand() % numAct;
-    actRet  =  *(itrHead + r);
+    actRet  =  actList[r];
+
     return ( ERR_SUCCESS );
 }
 
@@ -431,6 +486,30 @@ GameController::writeToViewBuffer(
 //    Public Member Functions.
 //
 
+//----------------------------------------------------------------
+//    指し手の表示用形式を比較して、等しいかどうかを返す。
+//
+
+bool
+GameController::isEquals(
+        const  ActionView  &avLhs,
+        const  ActionView  &avRhs)
+{
+    if (       ( (avLhs.xNewCol) != (avRhs.xNewCol) )
+            || ( (avLhs.yNewRow) != (avRhs.yNewRow) )
+            || ( (avLhs.xOldCol) != (avRhs.xOldCol) )
+            || ( (avLhs.yOldRow) != (avRhs.yOldRow) )
+            || ( (avLhs.fpMoved) != (avRhs.fpMoved) )
+            || ( (avLhs.fpAfter) != (avRhs.fpAfter) )
+            || ( (avLhs.putHand) != (avRhs.putHand) )
+            || ( (avLhs.fpCatch) != (avRhs.fpCatch) )
+    )
+    {
+        return ( false );
+    }
+    return ( true );
+}
+
 //========================================================================
 //
 //    Accessors.
@@ -468,6 +547,29 @@ GameController::setCurrentPlayer(
     return ( ERR_SUCCESS );
 }
 
+//----------------------------------------------------------------
+//    現在の盤面の表示フラグを取得する。
+//
+
+GameController::ShowCoordFlags
+GameController::getShowFlag()  const
+{
+    return ( this->m_flgShow );
+}
+
+//----------------------------------------------------------------
+//    盤面の表示フラグを設定する。
+//
+
+ErrCode
+GameController::setShowFlag(
+        const   ShowCoordFlags  scFlag)
+
+{
+    this->m_flgShow = scFlag;
+    return ( ERR_SUCCESS );
+}
+
 //========================================================================
 //
 //    For Internal Use Only.
@@ -488,23 +590,61 @@ GameController::convertCoordsFromConsole(
 
     if ( (flgShow) & SCF_FLIP_COLUMNS ) {
         //  水平方向の座標を反転させる。        //
-        //  入力が 1..5 で出力が 4..0 である。  //
-        xColTmp = (5 - xColTmp);
-    } else {
-        //  水平方向の反転は行わないが、        //
-        //  入力が 1..5 で出力が 0..4 である。  //
-        --  xColTmp;
+        //  入力が 1..5 で出力が 5..1 である。  //
+        xColTmp = (6 - xColTmp);
     }
-
-    //  垂直方向は何もしないが、    //
-    //  入力が 1..5 で出力が 0..4 である。  //
-    --  yRowTmp;
 
     (* ptrCol)  = xColTmp;
     (* ptrRow)  = yRowTmp;
+
     return ( ERR_SUCCESS );
 }
 
+//----------------------------------------------------------------
+//    入力したダイスの出目を、内部処理用に変換する。
+//
+
+GameController::TConstraint
+GameController::convertConstraintCoord(
+        const   ShowCoordFlags  flgShow,
+        const   TConstraint     vCons)
+{
+    if ( (flgShow) & SCF_FLIP_COLUMNS ) {
+        //  水平方向の座標を反転させる。ただし六を除く。    //
+        //  つまり、123456 -> 543216 となるように変換する。 //
+        return ( vCons < 6 ? (6 - vCons) : 6 );
+    }
+
+    //  水平方向の座標をそのまま使う。      //
+    return ( vCons );
+}
+
+//----------------------------------------------------------------
+//    指し手の内部形式を表示用データに変換する。
+//
+
+ErrCode
+GameController::decodeActionData(
+        const   ShowCoordFlags  flgShow,
+        const   ActionData   &  actData,
+        ActionView  *  const    pvAct)
+{
+    //  指し手の内部形式を表示用データに変換。  //
+    const  ErrCode
+        retErr  = Game::BoardState::decodeActionData( actData, pvAct );
+    if ( retErr != ERR_SUCCESS ) {
+        return ( retErr );
+    }
+
+    //  表示フラグを確認して座標の調整を行う。  //
+    if ( (flgShow) & SCF_FLIP_COLUMNS ) {
+        //  水平方向の座標を反転させる。    //
+        pvAct->xNewCol  = (4 - (pvAct->xNewCol));
+        pvAct->xOldCol  = (4 - (pvAct->xOldCol));
+    };
+
+    return ( ERR_SUCCESS );
+}
 
 }   //  End of namespace  Interface
 FAIRYSHOGI_NAMESPACE_END

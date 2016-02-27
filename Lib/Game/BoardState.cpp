@@ -132,14 +132,37 @@ BoardState::decodeActionData(
         const   ActionData   &  actData,
         Common::ActionView  *   actView)
 {
-    actView->xNewCol    = actData.xNewCol;
-    actView->yNewRow    = actData.yNewRow;
-    actView->xOldCol    = actData.xOldCol;
-    actView->yOldRow    = actData.yOldRow;
-    actView->fpAfter    = actData.fpAfter;
-    actView->fpMoved    = actData.fpMoved;
-    actView->fpCatch    = actData.fpCatch;
-    actView->putHand    = actData.putHand;
+    actView->xNewCol    =  (actData.xNewCol + 1);
+    actView->yNewRow    =  (actData.yNewRow + 1);
+    actView->xOldCol    =  (actData.xOldCol + 1);
+    actView->yOldRow    =  (actData.yOldRow + 1);
+    actView->fpAfter    =  (actData.fpAfter);
+    actView->fpMoved    =  (actData.fpMoved);
+    actView->fpCatch    =  (actData.fpCatch);
+    actView->putHand    =  (actData.putHand);
+    actView->fLegals    =  (actData.fLegals);
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    指し手の表示用形式を内部形式に変換する。
+//
+
+ErrCode
+BoardState::encodeActionData(
+        const   ActionView   &  actView,
+        ActionData  *  const    actData)
+{
+    actData->xNewCol    =  (actView.xNewCol - 1);
+    actData->yNewRow    =  (actView.yNewRow - 1);
+    actData->xOldCol    =  (actView.xOldCol - 1);
+    actData->yOldRow    =  (actView.yOldRow - 1);
+    actData->fpCatch    =  (actView.fpCatch);
+    actData->fpMoved    =  (actView.fpMoved);
+    actData->fpAfter    =  (actView.fpAfter);
+    actData->putHand    =  (actView.putHand);
+    actData->fLegals    =  (actView.fLegals);
 
     return ( ERR_SUCCESS );
 }
@@ -276,9 +299,11 @@ BoardState::isCheckState(
 ErrCode
 BoardState::makeLegalActionList(
         const  PlayerIndex  cPlayer,
+        const  ActionFlag   fLegals,
         ActionList          &actList)  const
 {
-    return ( makeLegalActionList(this->m_icState, cPlayer, actList) );
+    return ( makeLegalActionList(
+                     this->m_icState, cPlayer, fLegals, actList) );
 }
 
 //----------------------------------------------------------------
@@ -289,6 +314,7 @@ ErrCode
 BoardState::makeLegalActionList(
         const  InternState  &curStat,
         const  PlayerIndex  cPlayer,
+        const  ActionFlag   fLegals,
         ActionList          &actList)
 {
 ////    typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
@@ -335,6 +361,7 @@ BoardState::makeLegalActionList(
             actData.fpMoved = p;
             actData.fpAfter = actData.fpMoved;
             actData.putHand = HAND_EMPTY_PIECE;
+            actData.fLegals = Common::ALF_LEGAL_ACTION;
 
             int cntProm = 0;
             PieceIndex  vProm[2] = { p, -1 };
@@ -356,15 +383,16 @@ BoardState::makeLegalActionList(
             actData.fpAfter = vProm[0];
 
             //  動かしてみて、自殺だったらスキップ。    //
-            /** @todo   内部の座標のトラブルのため変換。    **/
             ::memcpy( &tmpStat, &curStat, sizeof(tmpStat) );
             ::memcpy( &actTemp, &actData, sizeof(actTemp) );
-            actTemp.xNewCol = 4 - (actData.xNewCol);
-            actTemp.xOldCol = 4 - (actData.xOldCol);
             playForward(actTemp, tmpStat);
 
+            actData.fLegals = Common::ALF_LEGAL_ACTION;
             if ( isCheckState(tmpStat, cPlayer, bbCheck) > 0 ) {
-                continue;
+                if ( !(fLegals & Common::ALF_IGNORE_CHECK) ) {
+                    continue;
+                }
+                actData.fLegals |= Common::ALF_IGNORE_CHECK;
             }
 
             actList.push_back(actData);
@@ -382,9 +410,12 @@ BoardState::makeLegalActionList(
         actData.yOldRow = -1;
         actData.fpCatch = FIELD_EMPTY_SQUARE;
         actData.fpMoved = FIELD_EMPTY_SQUARE;
+        actData.fLegals = Common::ALF_LEGAL_ACTION;
+
         for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
-            if ( s_tblHandOwner[k] != cPlayer )   { continue; }
+            if ( s_tblHandOwner[k] != cPlayer ) { continue; }
             if ( curStat.m_nHands[k] <= 0 )     { continue; }
+
             if ( (k == HAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
                 continue;
             }
@@ -394,19 +425,34 @@ BoardState::makeLegalActionList(
                 continue;
             }
 
+            int     flgDps  = 0;
+            if ( (k == HAND_BLACK_PAWN) || (k == HAND_WHITE_PAWN) ) {
+                for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
+                    if ( curStat.m_bsField[actData.xNewCol * POS_NUM_ROWS + y] == k ) {
+                        flgDps  = 1;
+                    }
+                }
+            }
+            if ( flgDps ) {
+                if ( !(fLegals & Common::ALF_DOUBLE_PAWNS) ) {
+                    continue;
+                }
+                actData.fLegals |= Common::ALF_DOUBLE_PAWNS;
+            }
+
             actData.putHand = k;
 
             //  動かしてみて、自殺だったらスキップ。    //
-            /** @todo   内部の座標のトラブルのため変換。    **/
             ::memcpy( &tmpStat, &curStat, sizeof(tmpStat) );
             ::memcpy( &actTemp, &actData, sizeof(actTemp) );
-            actTemp.xNewCol = 4 - (actData.xNewCol);
-            actTemp.xOldCol = 4 - (actData.xOldCol);
             actTemp.fpAfter = s_tblHandConv[k];
             playForward(actTemp, tmpStat);
 
             if ( isCheckState(tmpStat, cPlayer, bbCheck) > 0 ) {
-                continue;
+                if ( !(fLegals & Common::ALF_IGNORE_CHECK) ) {
+                    continue;
+                }
+                actData.fLegals |= Common::ALF_IGNORE_CHECK;
             }
 
             actList.push_back(actData);
@@ -553,19 +599,19 @@ BoardState::resetGameBoard(
         pCurStat->m_bsField[i]  = FIELD_EMPTY_SQUARE;
     }
 
-    pCurStat->m_bsField[getMatrixPos(0, 0)] = FIELD_WHITE_ROOK;
-    pCurStat->m_bsField[getMatrixPos(1, 0)] = FIELD_WHITE_BISHOP;
+    pCurStat->m_bsField[getMatrixPos(4, 0)] = FIELD_WHITE_ROOK;
+    pCurStat->m_bsField[getMatrixPos(3, 0)] = FIELD_WHITE_BISHOP;
     pCurStat->m_bsField[getMatrixPos(2, 0)] = FIELD_WHITE_SILVER;
-    pCurStat->m_bsField[getMatrixPos(3, 0)] = FIELD_WHITE_GOLD;
-    pCurStat->m_bsField[getMatrixPos(4, 0)] = FIELD_WHITE_KING;
-    pCurStat->m_bsField[getMatrixPos(4, 1)] = FIELD_WHITE_PAWN;
+    pCurStat->m_bsField[getMatrixPos(1, 0)] = FIELD_WHITE_GOLD;
+    pCurStat->m_bsField[getMatrixPos(0, 0)] = FIELD_WHITE_KING;
+    pCurStat->m_bsField[getMatrixPos(0, 1)] = FIELD_WHITE_PAWN;
 
-    pCurStat->m_bsField[getMatrixPos(0, 3)] = FIELD_BLACK_PAWN;
-    pCurStat->m_bsField[getMatrixPos(0, 4)] = FIELD_BLACK_KING;
-    pCurStat->m_bsField[getMatrixPos(1, 4)] = FIELD_BLACK_GOLD;
+    pCurStat->m_bsField[getMatrixPos(4, 3)] = FIELD_BLACK_PAWN;
+    pCurStat->m_bsField[getMatrixPos(4, 4)] = FIELD_BLACK_KING;
+    pCurStat->m_bsField[getMatrixPos(3, 4)] = FIELD_BLACK_GOLD;
     pCurStat->m_bsField[getMatrixPos(2, 4)] = FIELD_BLACK_SILVER;
-    pCurStat->m_bsField[getMatrixPos(3, 4)] = FIELD_BLACK_BISHOP;
-    pCurStat->m_bsField[getMatrixPos(4, 4)] = FIELD_BLACK_ROOK;
+    pCurStat->m_bsField[getMatrixPos(1, 4)] = FIELD_BLACK_BISHOP;
+    pCurStat->m_bsField[getMatrixPos(0, 4)] = FIELD_BLACK_ROOK;
 
     for ( int hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
         pCurStat->m_nHands[hp]  = 0;
@@ -601,7 +647,7 @@ BoardState::copyToViewBuffer(
 {
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
-            const  int  pi  = (yr * POS_NUM_COLS) + (xc);
+            const  int  pi  = (yr * POS_NUM_COLS) + (POS_NUM_COLS - 1 - xc);
             bufView.piBoard[pi] = curStat.m_bsField[getMatrixPos(xc, yr)];
         }
     }
@@ -698,7 +744,7 @@ BoardState::getMatrixPos(
         const   PosCol  xCol,
         const   PosRow  yRow)
 {
-    return ( ((POS_NUM_COLS - xCol - 1) * POS_NUM_ROWS) + yRow );
+    return ( (xCol * POS_NUM_ROWS) + yRow );
 }
 
 }   //  End of namespace  GAME

@@ -6,6 +6,7 @@ Makefile$
 Makefile\.in$
 \.h\.in$
 ^\.Config/
+^Projects/
 ^Referenes$
 ^aclocal\.m4$
 ^autom4te\.cache\/
