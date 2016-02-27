@@ -142,10 +142,12 @@ private:
     //----------------------------------------------------------------
     /**   入力した座標を内部処理用に変換する。
     **
-    **  @param [in]     flgShow   現在の表示フラグ。
+    **  @param [in] flgShow   現在の表示フラグ。
     **      この値に基づいて反転や回転の影響を除去する。
-    **  @param [in,out] ptrCol    座標（横方向）。
-    **  @param [in,out] ptrRow    座標（縦方向）。
+    **  @param [in] xInCol    座標（横方向）。ゼロベース。
+    **  @param [in] yInRow    座標（縦方向）。ゼロベース。
+    **  @param[out] ptrCol    座標（横方向）。
+    **  @param[out] ptrRow    座標（縦方向）。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -154,6 +156,8 @@ private:
     static  ErrCode
     convertCoordsFromMouse(
             const   ShowCoordFlags  flgShow,
+            const   PosCol          xInCol,
+            const   PosRow          yInRow,
             PosCol  *   const       ptrCol,
             PosRow  *   const       ptrRow);
 
