@@ -612,7 +612,7 @@ BoardState::resetGameBoard(
     pCurStat->m_bsField[getMatrixPos(0, 0)] = FIELD_WHITE_KING;
     pCurStat->m_bsField[getMatrixPos(0, 1)] = FIELD_WHITE_PAWN;
 
-    pCurStat->m_bsField[getMatrixPos(0, 3)] = FIELD_BLACK_PAWN;
+    pCurStat->m_bsField[getMatrixPos(4, 3)] = FIELD_BLACK_PAWN;
     pCurStat->m_bsField[getMatrixPos(4, 4)] = FIELD_BLACK_KING;
     pCurStat->m_bsField[getMatrixPos(3, 4)] = FIELD_BLACK_GOLD;
     pCurStat->m_bsField[getMatrixPos(2, 4)] = FIELD_BLACK_SILVER;
@@ -653,7 +653,7 @@ BoardState::copyToViewBuffer(
 {
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
-            const  int  pi  = (yr * POS_NUM_COLS) + (xc);
+            const  int  pi  = (yr * POS_NUM_COLS) + (POS_NUM_COLS - 1 - xc);
             bufView.piBoard[pi] = curStat.m_bsField[getMatrixPos(xc, yr)];
         }
     }

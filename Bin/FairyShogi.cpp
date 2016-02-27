@@ -643,7 +643,7 @@ int  main(int argc, char * argv[])
         }
         std::cerr   <<  ">";
         std::getline(inStr, strBuf);
-        if ( strBuf == "exit" ) {
+        if ( strBuf == "quit" ) {
             break;
         }
 
