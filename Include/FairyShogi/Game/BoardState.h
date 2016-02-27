@@ -125,7 +125,7 @@ public:
         PieceIndex  fpMoved;        /**<  移動した駒。  **/
         PieceIndex  fpAfter;        /**<  移動後成り。  **/
         PieceIndex  putHand;        /**<  打った駒。    **/
-        ActionFlag  flgBads;        /**<  合法手判定。  **/
+        ActionFlag  fLegals;        /**<  合法手判定。  **/
     };
 
     typedef     std::vector<ActionData>         ActionList;
@@ -291,6 +291,9 @@ public:
     /**   合法手を列挙する。
     **
     **  @param [in] cPlayer   現在の手番のプレーヤーの番号。
+    **  @param [in] fLegals   合法判定フラグ。
+    **      このフラグで指定した非合法手も列挙する。
+    **      ゼロを指定すると合法手のみ列挙する。
     **  @param[out] actList   合法手のリストを受け取る変数。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
@@ -300,6 +303,7 @@ public:
     ErrCode
     makeLegalActionList(
             const  PlayerIndex  cPlayer,
+            const  ActionFlag   fLegals,
             ActionList          &actList)  const;
 
     //----------------------------------------------------------------
@@ -307,6 +311,9 @@ public:
     **
     **  @param [in] curStat   現在の盤面データ。
     **  @param [in] cPlayer   現在の手番のプレーヤーの番号。
+    **  @param [in] fLegals   合法判定フラグ。
+    **      このフラグで指定した非合法手も列挙する。
+    **      ゼロを指定すると合法手のみ列挙する。
     **  @param[out] actList   合法手のリストを受け取る変数。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
@@ -317,6 +324,7 @@ public:
     makeLegalActionList(
             const  InternState  &curStat,
             const  PlayerIndex  cPlayer,
+            const  ActionFlag   fLegals,
             ActionList          &actList);
 
     //----------------------------------------------------------------

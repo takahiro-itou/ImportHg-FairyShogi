@@ -162,7 +162,8 @@ ErrCode
 GameController::makeLegalActionList(
         ActionDataList  &actList)  const
 {
-    return ( this->m_gcBoard.makeLegalActionList(this->m_curTurn, actList) );
+    return ( this->m_gcBoard.makeLegalActionList(
+                     this->m_curTurn, 0, actList) );
 }
 
 //----------------------------------------------------------------
@@ -179,7 +180,7 @@ GameController::makeLegalActionList(
     ActionDataList  vActs;
     const  ErrCode
         retErr  = this->m_gcBoard.makeLegalActionList(
-                        this->m_curTurn, vActs);
+                        this->m_curTurn,  fLegals,  vActs);
 
     actList.clear();
     actList.reserve( vActs.size() );

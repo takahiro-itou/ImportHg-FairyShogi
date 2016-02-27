@@ -276,9 +276,11 @@ BoardState::isCheckState(
 ErrCode
 BoardState::makeLegalActionList(
         const  PlayerIndex  cPlayer,
+        const  ActionFlag   fLegals,
         ActionList          &actList)  const
 {
-    return ( makeLegalActionList(this->m_icState, cPlayer, actList) );
+    return ( makeLegalActionList(
+                     this->m_icState, cPlayer, fLegals, actList) );
 }
 
 //----------------------------------------------------------------
@@ -289,6 +291,7 @@ ErrCode
 BoardState::makeLegalActionList(
         const  InternState  &curStat,
         const  PlayerIndex  cPlayer,
+        const  ActionFlag   fLegals,
         ActionList          &actList)
 {
 ////    typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
@@ -335,6 +338,7 @@ BoardState::makeLegalActionList(
             actData.fpMoved = p;
             actData.fpAfter = actData.fpMoved;
             actData.putHand = HAND_EMPTY_PIECE;
+            actData.fLegals = Common::ALF_LEGAL_ACTION;
 
             int cntProm = 0;
             PieceIndex  vProm[2] = { p, -1 };
@@ -363,8 +367,12 @@ BoardState::makeLegalActionList(
             actTemp.xOldCol = 4 - (actData.xOldCol);
             playForward(actTemp, tmpStat);
 
+            actData.fLegals = Common::ALF_LEGAL_ACTION;
             if ( isCheckState(tmpStat, cPlayer, bbCheck) > 0 ) {
-                continue;
+                if ( !(fLegals & Common::ALF_IGNORE_CHECK) ) {
+                    continue;
+                }
+                actData.fLegals |= Common::ALF_IGNORE_CHECK;
             }
 
             actList.push_back(actData);
@@ -382,9 +390,12 @@ BoardState::makeLegalActionList(
         actData.yOldRow = -1;
         actData.fpCatch = FIELD_EMPTY_SQUARE;
         actData.fpMoved = FIELD_EMPTY_SQUARE;
+        actData.fLegals = Common::ALF_LEGAL_ACTION;
+
         for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
-            if ( s_tblHandOwner[k] != cPlayer )   { continue; }
+            if ( s_tblHandOwner[k] != cPlayer ) { continue; }
             if ( curStat.m_nHands[k] <= 0 )     { continue; }
+
             if ( (k == HAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
                 continue;
             }
@@ -392,6 +403,21 @@ BoardState::makeLegalActionList(
                     && ((actData.yNewRow) == POS_NUM_ROWS - 1) )
             {
                 continue;
+            }
+
+            int     flgDps  = 0;
+            if ( (k == HAND_BLACK_PAWN) || (k == HAND_WHITE_PAWN) ) {
+                for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
+                    if ( curStat.m_bsField[actData.xNewCol * POS_NUM_ROWS + y] == k ) {
+                        flgDps  = 1;
+                    }
+                }
+            }
+            if ( flgDps ) {
+                if ( !(fLegals & Common::ALF_DOUBLE_PAWNS) ) {
+                    continue;
+                }
+                actData.fLegals |= Common::ALF_DOUBLE_PAWNS;
             }
 
             actData.putHand = k;
@@ -406,7 +432,10 @@ BoardState::makeLegalActionList(
             playForward(actTemp, tmpStat);
 
             if ( isCheckState(tmpStat, cPlayer, bbCheck) > 0 ) {
-                continue;
+                if ( !(fLegals & Common::ALF_IGNORE_CHECK) ) {
+                    continue;
+                }
+                actData.fLegals |= Common::ALF_IGNORE_CHECK;
             }
 
             actList.push_back(actData);
