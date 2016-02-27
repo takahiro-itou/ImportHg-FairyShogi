@@ -27,13 +27,7 @@
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
 
-/**
-**    ダミーのグローバル変数。
-**
-**    インスタンスを壱個だけ生成して、
-**  コンストラクタで表を構築させる。
-**/
-RuleTables  g_objRules;
+namespace  {
 
 CONSTEXPR_VAR   int
 s_tblOwner[BoardState::NUM_FIELD_PIECE_TYPES] = {
@@ -46,6 +40,34 @@ CONSTEXPR_VAR   int
 s_tblHandOwner[BoardState::NUM_HAND_TYPES]    = {
     -1,     0, 0, 0, 0, 0, 0,   1, 1, 1, 1, 1, 1
 };
+
+CONSTEXPR_VAR   PieceIndex  s_tblHandConv[] = {
+    BoardState::FIELD_EMPTY_SQUARE,
+
+    BoardState::FIELD_BLACK_PAWN,
+    BoardState::FIELD_BLACK_SILVER,
+    BoardState::FIELD_BLACK_GOLD,
+    BoardState::FIELD_BLACK_BISHOP,
+    BoardState::FIELD_BLACK_ROOK,
+    BoardState::FIELD_BLACK_KING,
+
+    BoardState::FIELD_WHITE_PAWN,
+    BoardState::FIELD_WHITE_SILVER,
+    BoardState::FIELD_WHITE_GOLD,
+    BoardState::FIELD_WHITE_BISHOP,
+    BoardState::FIELD_WHITE_ROOK,
+    BoardState::FIELD_WHITE_KING
+};
+
+/**
+**    ダミーのグローバル変数。
+**
+**    インスタンスを壱個だけ生成して、
+**  コンストラクタで表を構築させる。
+**/
+RuleTables  g_objRules;
+
+}   //  End of (Unnamed) namespace.
 
 //========================================================================
 //
@@ -192,24 +214,6 @@ BoardState::encodePutAction(
         const  PosRow       yPutRow,
         const  PieceIndex   pHand)
 {
-    constexpr   PieceIndex  s_tblHandConv[] = {
-        FIELD_EMPTY_SQUARE,
-
-        FIELD_BLACK_PAWN,
-        FIELD_BLACK_SILVER,
-        FIELD_BLACK_GOLD,
-        FIELD_BLACK_BISHOP,
-        FIELD_BLACK_ROOK,
-        FIELD_BLACK_KING,
-
-        FIELD_WHITE_PAWN,
-        FIELD_WHITE_SILVER,
-        FIELD_WHITE_GOLD,
-        FIELD_WHITE_BISHOP,
-        FIELD_WHITE_ROOK,
-        FIELD_WHITE_KING
-    };
-
     const   ActionData  act = {
         xPutCol,    yPutRow,
         -1,         -1,
@@ -244,6 +248,8 @@ BoardState::isCheckState(
         const  PlayerIndex  dPlayer,
         TBitBoard           &bbFrom)
 {
+    bbFrom.clear();
+
     //  守備側の玉の座標を計算する。    //
     const  PieceIndex
         piKing  = (dPlayer == 0 ? FIELD_BLACK_KING : FIELD_WHITE_KING);
@@ -314,29 +320,6 @@ BoardState::makeLegalActionList(
         //  その場所には、持ち駒を打つこともできない。  //
         if ( s_tblOwner[cpiTrg] == cPlayer )    { continue; }
 
-#if 0
-        const  TablePiece  & tblFr  = RuleTables::s_tblMoveFrom[posTrg];
-        for ( PieceIndex p = FIELD_BLACK_PAWN; p < FIELD_WHITE_DRAGON; ++ p )
-        {
-            if ( s_tblOwner[p] != cPlayer ) { continue; }
-            const  uint32_t  tvMask = tblFr[p];
-            for ( FieldIndex posSrc = 0; posSrc < FIELD_SIZE; ++ posSrc )
-            {
-                if ( curStat.m_bsField[posSrc] != p )   { continue; }
-                if ( ((tvMask >> posSrc) & 1) == 0 )    { continue; }
-
-
-    const  RuleTables::BitBoardVal  pinMask = RuleTables::getPinMask(p, posTrg, posSrc);
-    int     bPinOK  = 1;
-    for ( int c = 0; c < FIELD_SIZE; ++ c ) {
-        if ( ((pinMask >> c) & 1) == 0 ) { continue; }
-        if ( curStat.m_bsField[c] != FIELD_EMPTY_SQUARE ) {
-            bPinOK  = 0;
-            break;
-        }
-    }
-                if ( bPinOK == 0 ) { continue; }
-#endif
         TBitBoard    bbFrom;
         getAttackFromList(curStat, posTrg, cPlayer, bbFrom);
         const  BB_Iter  itrEndB = bbFrom.end();
@@ -349,9 +332,9 @@ BoardState::makeLegalActionList(
             actData.yNewRow = (posTrg % POS_NUM_ROWS);
             actData.xOldCol = (posSrc / POS_NUM_ROWS);
             actData.yOldRow = (posSrc % POS_NUM_ROWS);
-            actData.putHand = HAND_EMPTY_PIECE;
             actData.fpMoved = p;
             actData.fpAfter = actData.fpMoved;
+            actData.putHand = HAND_EMPTY_PIECE;
 
             int cntProm = 0;
             PieceIndex  vProm[2] = { p, -1 };
@@ -370,26 +353,25 @@ BoardState::makeLegalActionList(
                     vProm[cntProm]  = s_tblPromNew[p];
                 }
             }
+            actData.fpAfter = vProm[0];
 
             //  動かしてみて、自殺だったらスキップ。    //
             /** @todo   内部の座標のトラブルのため変換。    **/
+            ::memcpy( &tmpStat, &curStat, sizeof(tmpStat) );
             ::memcpy( &actTemp, &actData, sizeof(actTemp) );
             actTemp.xNewCol = 4 - (actData.xNewCol);
             actTemp.xOldCol = 4 - (actData.xOldCol);
-            tmpStat = curStat;
             playForward(actTemp, tmpStat);
 
             if ( isCheckState(tmpStat, cPlayer, bbCheck) > 0 ) {
                 continue;
             }
 
-            actData.fpAfter = vProm[0];
             actList.push_back(actData);
 
             if ( vProm[1] == -1 ) { continue; }
             actData.fpAfter = vProm[1];
             actList.push_back(actData);
-///            }   //  Next  posSrc
         }   //  Next  itrB
 
         //  持ち駒を打つ。  //
@@ -398,6 +380,8 @@ BoardState::makeLegalActionList(
         actData.yNewRow = (posTrg % POS_NUM_ROWS);
         actData.xOldCol = -1;
         actData.yOldRow = -1;
+        actData.fpCatch = FIELD_EMPTY_SQUARE;
+        actData.fpMoved = FIELD_EMPTY_SQUARE;
         for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
             if ( s_tblHandOwner[k] != cPlayer )   { continue; }
             if ( curStat.m_nHands[k] <= 0 )     { continue; }
@@ -410,19 +394,21 @@ BoardState::makeLegalActionList(
                 continue;
             }
 
+            actData.putHand = k;
+
             //  動かしてみて、自殺だったらスキップ。    //
             /** @todo   内部の座標のトラブルのため変換。    **/
+            ::memcpy( &tmpStat, &curStat, sizeof(tmpStat) );
             ::memcpy( &actTemp, &actData, sizeof(actTemp) );
             actTemp.xNewCol = 4 - (actData.xNewCol);
             actTemp.xOldCol = 4 - (actData.xOldCol);
-            tmpStat = curStat;
+            actTemp.fpAfter = s_tblHandConv[k];
             playForward(actTemp, tmpStat);
 
             if ( isCheckState(tmpStat, cPlayer, bbCheck) > 0 ) {
                 continue;
             }
 
-            actData.putHand = k;
             actList.push_back(actData);
         }   //  Next  k
     }   //  Next  posTrg
@@ -667,7 +653,7 @@ BoardState::getAttackFromList(
     typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
 
     const  TablePiece  & tblFr  = RuleTables::s_tblMoveFrom[posTrg];
-    for ( PieceIndex p = FIELD_BLACK_PAWN; p < FIELD_WHITE_DRAGON; ++ p )
+    for ( PieceIndex p = FIELD_BLACK_PAWN; p < NUM_FIELD_PIECE_TYPES; ++ p )
     {
         //  指定されたプレーヤーの駒以外はスキップ。    //
         if ( s_tblOwner[p] != oPlayer ) { continue; }
