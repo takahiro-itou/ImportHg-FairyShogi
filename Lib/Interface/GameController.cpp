@@ -177,6 +177,8 @@ GameController::makeLegalActionList(
         ActionViewList      &actList)  const
 {
     typedef     ActionDataList::const_iterator      ActIter;
+
+    //  まず、全ての合法手を列挙する。  //
     ActionDataList  vActs;
     const  ErrCode
         retErr  = this->m_gcBoard.makeLegalActionList(
@@ -193,30 +195,39 @@ GameController::makeLegalActionList(
     ActIter         itrHead = vActs.begin();
     ActIter         itrTail = itrEnd;
 
+    //  合法手のリストは、内部の座標系で昇順ソートされている。  //
+    //  従って、ダイスの目を内部形式に合わせてから比較を行う。  //
+    const  TConstraint  curDice = convertConstraintCoord(
+            this->m_flgShow, (vCons < 0 ? (this->m_curDice) : vCons) );
+
     ActionView      actView;
-    TConstraint     curDice = (vCons < 0 ? (this->m_curDice) : vCons);
 
     for ( ; itrHead != itrEnd; ++ itrHead ) {
-        decodeActionData( this->m_flgShow, (* itrHead), &actView);
+        //  ダイスの目を内部形式に揃えているので、  //
+        //  比較の時は、座標を反転させないで行う。  //
+        decodeActionData( SCF_NORMAL_SHOW, (* itrHead), &actView );
         if ( (actView.xNewCol) >= curDice ) {
             break;
         }
     }
 
     for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
-        decodeActionData( this->m_flgShow, (* itr), &actView);
+        //  ダイスの目を内部形式に揃えているので、  //
+        //  比較の時は、座標を反転させないで行う。  //
+        decodeActionData( SCF_NORMAL_SHOW, (* itr), &actView );
         if ( (actView.xNewCol) != curDice ) {
             itrTail = itr;
             break;
         }
-        actList.push_back(actView);
     }
-    if ( itrHead != itrTail ) {
-        return ( ERR_SUCCESS );
+    if ( itrHead == itrTail ) {
+        //  指定した条件で合法手がない時は、何でもできる。  //
+        itrHead = vActs.begin();
+        itrTail = itrEnd;
     }
 
-    //  指定した条件で合法手がない時は、何でもできる。  //
-    for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr ) {
+    for ( ActIter itr = itrHead; itr != itrTail; ++ itr ) {
+        //  今度は表示を行うので、必要なら座標を反転する。  //
         decodeActionData( this->m_flgShow, (* itr), &actView);
         actList.push_back(actView);
     }
@@ -639,8 +650,8 @@ GameController::decodeActionData(
     //  表示フラグを確認して座標の調整を行う。  //
     if ( (flgShow) & SCF_FLIP_COLUMNS ) {
         //  水平方向の座標を反転させる。    //
-        pvAct->xNewCol  = (4 - (pvAct->xNewCol));
-        pvAct->xOldCol  = (4 - (pvAct->xOldCol));
+        pvAct->xNewCol  = (6 - (pvAct->xNewCol));
+        pvAct->xOldCol  = (6 - (pvAct->xOldCol));
     };
 
     return ( ERR_SUCCESS );
