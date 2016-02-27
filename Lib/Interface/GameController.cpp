@@ -61,6 +61,7 @@ s_tblPieceName[]    = {
 GameController::GameController()
     : m_gcBoard(),
       m_actList(),
+      m_flgShow(SCF_NORMAL_SHOW),
       m_curTurn(0),
       m_curDice(0)
 {
@@ -101,7 +102,7 @@ GameController::~GameController()
 
 ErrCode
 GameController::makeLegalActionList(
-        ActionList  &actList)  const
+        ActionDataList  &actList)  const
 {
     return ( this->m_gcBoard.makeLegalActionList(this->m_curTurn, actList) );
 }
@@ -194,9 +195,9 @@ ErrCode
 GameController::startThinking(
         ActionData  &actRet)
 {
-    typedef     ActionList::const_iterator      ActIter;
+    typedef     ActionDataList::const_iterator      ActIter;
 
-    ActionList  actList;
+    ActionDataList  actList;
 
     makeLegalActionList(actList);
 
@@ -269,9 +270,9 @@ ErrCode
 GameController::writeActionList(
         ActionViewList  &actList)  const
 {
-    typedef     ActionList::const_iterator  ActIter;
+    typedef     ActionDataList::const_iterator  ActIter;
 
-    const  ActionList  &obj = (this->m_actList);
+    const  ActionDataList  &obj = (this->m_actList);
 
     actList.clear();
     actList.resize(obj.size());

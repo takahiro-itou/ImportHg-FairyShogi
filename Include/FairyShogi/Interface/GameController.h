@@ -49,12 +49,26 @@ namespace  Interface  {
 
 class  GameController
 {
-public:
-    typedef     Game::BoardState::ActionData    ActionData;
-    typedef     std::vector<ActionData>         ActionList;
 
+//========================================================================
+//
+//    Internal Type Definitions.
+//
+public:
     typedef     Common::ActionView              ActionView;
     typedef     std::vector<ActionView>         ActionViewList;
+
+    /**   座標の表示関係のフラグ。  **/
+    enum  ShowCoordFlags
+    {
+        SCF_NORMAL_SHOW     = 0,    /**<  通常表示（右上を１一）。  **/
+        SCF_FLIP_COLUMNS    = 1,    /**<  水平方向の座標を反転。    **/
+        SCF_ROTATE_BOARD    = 2,    /**<  盤面をπラジアン回転。    **/
+        SCR_ROTATE_FLIP     = 3     /**<  水平反転後、回転も実施。  **/
+    };
+
+    typedef     Game::BoardState::ActionData    ActionData;
+    typedef     std::vector<ActionData>         ActionDataList;
 
 //========================================================================
 //
@@ -108,7 +122,7 @@ public:
     **/
     virtual  ErrCode
     makeLegalActionList(
-            ActionList  &actList)  const;
+            ActionDataList  &actList)  const;
 
     //----------------------------------------------------------------
     /**   駒を移動する指し手を入力して盤面を進める。
@@ -286,7 +300,10 @@ private:
     Game::BoardState    m_gcBoard;
 
     /**   棋譜データ。  **/
-    ActionList          m_actList;
+    ActionDataList      m_actList;
+
+    /**   表示フラグ。  **/
+    ShowCoordFlags      m_flgShow;
 
     /**   現在の手番。  **/
     PlayerIndex         m_curTurn;
