@@ -124,6 +124,19 @@ BoardState::~BoardState()
 //
 
 //----------------------------------------------------------------
+//    指定した局面のクローンを作成する。
+//
+
+ErrCode
+BoardState::cloneFrom(
+        const  BoardState  &objSrc)
+{
+    ::memcpy( &(this->m_icState),  &(objSrc.m_icState),
+              sizeof(this->m_icState) );
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
 //    指し手の内部形式を表示用データに変換する。
 //
 
