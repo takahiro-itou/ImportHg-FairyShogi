@@ -30,7 +30,7 @@ using   namespace   FAIRYSHOGI_NAMESPACE;
 
 typedef     Interface::GameController       GameController;
 
-typedef     GameController::ActionList      ActionList;
+typedef     GameController::ActionDataList  ActionList;
 typedef     ActionList::const_iterator      ActIter;
 
 typedef     GameController::ActionData      ActionData;

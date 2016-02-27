@@ -49,12 +49,26 @@ namespace  Interface  {
 
 class  GameController
 {
-public:
-    typedef     Game::BoardState::ActionData    ActionData;
-    typedef     std::vector<ActionData>         ActionList;
 
+//========================================================================
+//
+//    Internal Type Definitions.
+//
+public:
     typedef     Common::ActionView              ActionView;
     typedef     std::vector<ActionView>         ActionViewList;
+
+    /**   座標の表示関係のフラグ。  **/
+    enum  ShowCoordFlags
+    {
+        SCF_NORMAL_SHOW     = 0,    /**<  通常表示（右上を１一）。  **/
+        SCF_FLIP_COLUMNS    = 1,    /**<  水平方向の座標を反転。    **/
+        SCF_ROTATE_BOARD    = 2,    /**<  盤面をπラジアン回転。    **/
+        SCR_ROTATE_FLIP     = 3     /**<  水平反転後、回転も実施。  **/
+    };
+
+    typedef     Game::BoardState::ActionData    ActionData;
+    typedef     std::vector<ActionData>         ActionDataList;
 
 //========================================================================
 //
@@ -108,7 +122,22 @@ public:
     **/
     virtual  ErrCode
     makeLegalActionList(
-            ActionList  &actList)  const;
+            ActionDataList  &actList)  const;
+
+    //----------------------------------------------------------------
+    /**   指定した入力文字列を、指し手データに変換する。
+    **
+    **  @param [in] strPlay   指し手入力文字列。
+    **  @param[out] ptrAct    変換した結果を受け取る変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    parseActionText(
+            const  std::string  &strPlay,
+            ActionView  *       ptrAct)  const;
 
     //----------------------------------------------------------------
     /**   駒を移動する指し手を入力して盤面を進める。
@@ -275,6 +304,25 @@ public:
 //
 //    For Internal Use Only.
 //
+private:
+
+    //----------------------------------------------------------------
+    /**   入力した座標を内部処理用に変換する。
+    **
+    **  @param [in]     flgShow   現在の表示フラグ。
+    **      この値に基づいて反転や回転の影響を除去する。
+    **  @param [in,out] ptrCol    座標（横方向）。
+    **  @param [in,out] ptrRow    座標（縦方向）。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    convertCoordsFromConsole(
+            const   ShowCoordFlags  flgShow,
+            PosCol  *   const       ptrCol,
+            PosRow  *   const       ptrRow);
 
 //========================================================================
 //
@@ -286,7 +334,10 @@ private:
     Game::BoardState    m_gcBoard;
 
     /**   棋譜データ。  **/
-    ActionList          m_actList;
+    ActionDataList      m_actList;
+
+    /**   表示フラグ。  **/
+    ShowCoordFlags      m_flgShow;
 
     /**   現在の手番。  **/
     PlayerIndex         m_curTurn;

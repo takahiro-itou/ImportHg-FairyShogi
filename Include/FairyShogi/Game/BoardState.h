@@ -125,6 +125,7 @@ public:
         PieceIndex  fpMoved;        /**<  移動した駒。  **/
         PieceIndex  fpAfter;        /**<  移動後成り。  **/
         PieceIndex  putHand;        /**<  打った駒。    **/
+        ActionFlag  flgBads;        /**<  合法手判定。  **/
     };
 
     typedef     std::vector<ActionData>         ActionList;

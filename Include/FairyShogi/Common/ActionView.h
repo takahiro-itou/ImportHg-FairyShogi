@@ -25,6 +25,38 @@ namespace  Common  {
 
 //========================================================================
 //
+//    Type Definitions.
+//
+
+//----------------------------------------------------------------
+/**
+**    指し手の合法判定のフラグに使う定数。
+**/
+enum  ActionLegalFlag
+{
+    /**
+    **    合法手である。
+    **/
+    ALF_LEGAL_ACTION    = 0,
+
+    /**
+    **    王手放置。自ら王手になる場合を含む。
+    **/
+    ALF_IGNORE_CHECK    = 1,
+
+    /**
+    **    二歩。
+    **/
+    ALF_DOUBLE_PAWNS    = 2,
+
+    /**
+    **    打ち歩詰めの反則。
+    **/
+    ALF_DROP_PAWN_END   = 4
+};
+
+//========================================================================
+//
 //    ActionView  class.
 //
 /**
@@ -43,6 +75,8 @@ struct  ActionView
 
     PieceIndex  fpCatch;        /**<  捕獲した敵の駒の種類。    **/
     PieceIndex  putHand;        /**<  打った持ち駒の種類。      **/
+
+    ActionFlag  fLegals;        /**<  指し手の合法判定の結果。  **/
 };
 
 }   //  End of namespace  Common
