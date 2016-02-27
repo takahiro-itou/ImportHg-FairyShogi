@@ -247,7 +247,7 @@ GameController::parseActionText(
         convertCoordsFromConsole(this->m_flgShow, &xNewCol, &yNewRow);
         ptrAct->xNewCol = xNewCol;
         ptrAct->yNewRow = yNewRow;
-        pifTrg  = getBoardState().getFieldPiece(xNewCol, yNewRow);
+        pifTrg  = getBoardState().getFieldPiece(xNewCol - 1, yNewRow - 1);
     }
 
     //  移動先にある駒を捕獲する。  //
@@ -280,7 +280,8 @@ GameController::parseActionText(
         convertCoordsFromConsole(this->m_flgShow, &xOldCol, &yOldRow);
         ptrAct->xOldCol = xOldCol;
         ptrAct->yOldRow = yOldRow;
-        pifSrc  = getBoardState().getFieldPiece(xOldCol, yOldRow);
+        pifSrc  = getBoardState().getFieldPiece(xOldCol - 1, yOldRow - 1);
+        ptrAct->fpMoved = pifSrc;
     }
 
     size_t  posRead = 4;
@@ -399,43 +400,19 @@ GameController::setConstraint(
 
 ErrCode
 GameController::startThinking(
-        ActionData  &actRet)
+        ActionView  &actRet)
 {
-    typedef     ActionDataList::const_iterator      ActIter;
+    ActionViewList  actList;
 
-    ActionDataList  actList;
-
-    makeLegalActionList(actList);
-
-    const  ActIter  itrEnd  = actList.end();
-    ActIter         itrHead = actList.begin();
-    for ( ; itrHead != itrEnd; ++ itrHead ) {
-        if ( (itrHead->xNewCol) == (this->m_curDice) ) {
-            break;
-        }
-    }
-
-    ActIter         itrTail = itrEnd;
-    for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
-        if ( (itr->xNewCol) != (this->m_curDice) ) {
-            itrTail = itr;
-            break;
-        }
-    }
-
-    if ( itrHead == itrTail ) {
-        //  指定したダイスの目で合法手が無い場合。  //
-        //  ダイスの目が六の場合もここを通過する。  //
-        itrHead = actList.begin();
-        itrTail = itrEnd;
-    }
-    const  int  numAct  = (itrTail - itrHead);
+    makeLegalActionList(0,  this->m_curDice,  actList);
+    const  int  numAct  = actList.size();
     if ( numAct == 0 ) {
         return ( ERR_ILLEGAL_ACTION );
     }
 
     int  r  =  rand() % numAct;
-    actRet  =  *(itrHead + r);
+    actRet  =  actList[r];
+
     return ( ERR_SUCCESS );
 }
 

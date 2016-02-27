@@ -255,7 +255,7 @@ public:
     **/
     virtual  ErrCode
     startThinking(
-            ActionData  &actRet);
+            ActionView  &actRet);
 
     //----------------------------------------------------------------
     /**   表示用棋譜データの内容をストリームに出力する。

@@ -350,7 +350,7 @@ playForward(
         return ( 0 );
     }
 
-    displayActionView(actView, 1, std::cerr);
+    displayActionView(actView, 1, std::cerr)    <<  std::endl;
 
 #if 0
     int     nx, ny, ox, oy;
@@ -568,7 +568,7 @@ int
 executeGoCommand(
         GameController  &itfGame)
 {
-    ActionData  actData;
+    ActionView  actData;
 
     if ( itfGame.startThinking(actData) != ERR_SUCCESS ) {
         std::cerr   <<  "No Legal Actions"  <<  std::endl;
@@ -576,7 +576,9 @@ executeGoCommand(
     }
 
     std::cout   <<  "bestmove ";
-    displayActionData(actData,  0,  std::cout)  <<  std::endl;
+    displayActionView(actData,  0,  std::cout)  <<  std::endl;
+    std::cerr   <<  "#  COM : ";
+    displayActionView(actData,  1,  std::cerr)  <<  std::endl;
     return ( 0 );
 }
 
