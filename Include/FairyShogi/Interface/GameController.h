@@ -63,13 +63,15 @@ public:
     typedef     int     TConstraint;
 
     /**   座標の表示関係のフラグ。  **/
-    enum  ShowCoordFlags
+    enum  ShowCoordFlagValues
     {
         SCF_NORMAL_SHOW     = 0,    /**<  通常表示（右上を１一）。  **/
         SCF_FLIP_COLUMNS    = 1,    /**<  水平方向の座標を反転。    **/
         SCF_ROTATE_BOARD    = 2,    /**<  盤面をπラジアン回転。    **/
         SCF_ROTATE_FLIP     = 3     /**<  水平反転後、回転も実施。  **/
     };
+
+    typedef     int     ShowCoordFlags;
 
     typedef     Game::BoardState::ActionData    ActionData;
     typedef     std::vector<ActionData>         ActionDataList;

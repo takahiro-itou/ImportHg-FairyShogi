@@ -99,8 +99,7 @@ g_tblPromotion[]    = {
     Game::BoardState::FIELD_WHITE_DRAGON,
 };
 
-const
-int
+size_t
 parseText(
         const   std::string         &strText,
         const   char  *             vSeps,
@@ -142,7 +141,7 @@ parseText(
     return ( vTokens.size() );
 }
 
-int
+ErrCode
 setPosition(
         const  std::string  &strData,
         GameController      &objGame)
@@ -157,15 +156,15 @@ setPosition(
             vTokens);
     if ( vTokens[0] == "startpos" ) {
         objGame.resetGame();
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
 
     std::cerr   <<  "Invalid Position Format["  <<  strData  <<  "]"
                 <<  std::endl;
-    return ( 0 );
+    return ( ERR_SUCCESS );
 }
 
-int
+ErrCode
 displaySfen(
         const  GameController  &objGame,
         std::ostream           &outStr)
@@ -206,21 +205,31 @@ displaySfen(
     }
 
     outStr  <<  " 1\n";
-    return ( 0 );
 
+    return ( ERR_SUCCESS );
 }
 
-int
+ErrCode
 displayBoard(
         const  GameController  &objGame,
         std::ostream           &outStr)
 {
+    const   GameController::ShowCoordFlags
+        flgShow = objGame.getShowFlag();
+
     Common::ViewBuffer  vb;
     ::memset( &vb, 0, sizeof(vb) );
     objGame.writeToViewBuffer(vb);
 
     //  盤面を表示する。    //
-    outStr  <<  "| 5| 4| 3| 2| 1|\n";
+    if ( (flgShow == GameController::SCF_FLIP_COLUMNS)
+            || (flgShow == GameController::SCF_ROTATE_BOARD) )
+    {
+        outStr  <<  "| 1| 2| 3| 4| 5|\n";
+    } else {
+        outStr  <<  "| 5| 4| 3| 2| 1|\n";
+    }
+
     outStr  <<  "----------------\n";
     for ( int y = 0; y < 5; ++ y ) {
         for ( int x = 0; x < 5; ++ x ) {
@@ -228,7 +237,11 @@ displayBoard(
             const  PieceIndex   dp  = vb.piBoard[pi];
             outStr  <<  "|"  <<  g_tblPieceName[dp];
         }
-        outStr  <<  "|"  <<  (y+1)  <<  "\n";
+        if ( (flgShow) & GameController::SCF_ROTATE_BOARD ) {
+            outStr  <<  "|"  <<  (5-y)  <<  "\n";
+        } else {
+            outStr  <<  "|"  <<  (y+1)  <<  "\n";
+        }
         outStr  <<  "----------------\n";
     }
 
@@ -248,7 +261,8 @@ displayBoard(
     }
 
     outStr  <<  std::endl;
-    return ( 0 );
+
+    return ( ERR_SUCCESS );
 }
 
 std::ostream  &
@@ -305,7 +319,7 @@ displayActionView(
     return ( outStr );
 }
 
-int
+ErrCode
 executePlayerCommand(
         const  std::string  &strArgs,
         GameController      &objGame)
@@ -316,57 +330,40 @@ executePlayerCommand(
         const  PlayerIndex  pi  =  objGame.getCurrentPlayer();
         objGame.setCurrentPlayer(pi ^ 1);
         std::cerr   <<  chName[objGame.getCurrentPlayer()]  <<  std::endl;
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
     if ( strArgs == "get" ) {
         std::cout   <<  chName[objGame.getCurrentPlayer()]  <<  std::endl;
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
 
     if ( (strArgs[0] == '0') || (strArgs[0] == 'b') ) {
         objGame.setCurrentPlayer(0);
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
     if ( (strArgs[0] == '1') || (strArgs[0] == 'w') ) {
         objGame.setCurrentPlayer(1);
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
 
     std::cerr   <<  "Invalid Arguments."    <<  std::endl;
-    return ( 0 );
+    return ( ERR_SUCCESS );
 }
 
-int
+ErrCode
 playForward(
-        const  std::string  &strPlay,
+        const  std::string  &strArgs,
         GameController      &objGame)
 {
     ActionView  actView;
 
-    if ( objGame.parseActionText(strPlay, &actView) != ERR_SUCCESS )
+    if ( objGame.parseActionText(strArgs, &actView) != ERR_SUCCESS )
     {
-        std::cerr   <<  "Invalid Arguments."
-                    <<  std::endl;
-        return ( 0 );
+        std::cerr   <<  "Invalid Arguments."    <<  std::endl;
+        return ( ERR_SUCCESS );
     }
 
     displayActionView(actView, 1, std::cerr)    <<  std::endl;
-
-#if 0
-    int     nx, ny, ox, oy;
-    int     pr  = 0;
-
-    nx  =  strPlay[2] - '0';
-    ny  =  strPlay[3] - '0';
-
-    if ( (nx < 1) || (5 < nx) || (ny < 1) || (5 < ny) ) {
-        std::cerr   <<  "Out of Range (Target)"
-                    <<  std::endl;
-        return ( 0 );
-    }
-    nx  = 5 - nx;
-    --  ny;
-#endif
 
     ActionList      actList;
     objGame.makeLegalActionList(0, -1, actList);
@@ -382,86 +379,19 @@ playForward(
 
     if ( flgLeg != Common::ALF_LEGAL_ACTION ) {
         std::cerr   <<  "Not Legal Move."   <<  std::endl;
-        if ( strPlay[strPlay.length() - 1] != '!' ) {
-            return ( 0 );
+        if ( strArgs[strArgs.length() - 1] != '!' ) {
+            return ( ERR_ILLEGAL_ACTION );
         }
     }
     objGame.playForward(actView);
 
-#if 0
-    if ( strPlay[1] == '*' ) {
-        //  持ち駒を打つ。  //
-        int  h  = -1;
-        for ( int ht = 0; ht < 13; ++ ht ) {
-            if ( g_tblHandName[ht][0] == strPlay[0] ) {
-                h   = ht;
-                break;
-            }
-        }
-        if ( h == -1 ) {
-            std::cerr   <<  "Invalid Piece Name"    <<  strPlay
-                        <<  std::endl;
-            return ( 0 );
-        }
-
-        for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
-            if ( (itr->putHand) != h )  { continue; }
-            if ( (itr->xNewCol) != 4 - nx ) { continue; }
-            if ( (itr->yNewRow) != ny ) { continue; }
-            flgLeg  = 1;
-        }
-        if ( (flgLeg == 0) ) {
-            std::cerr   <<  "Not Legal Put."    <<  std::endl;
-            if ( strPlay[4] != '!' ) {
-                return ( 0 );
-            }
-        }
-
-        objGame.playPutAction(nx, ny, h);
-
-    } else {
-        ox  =  strPlay[0] - '0';
-        oy  =  strPlay[1] - '0';
-        if ( (ox < 1) || (5 < ox) || (oy < 1) || (5 < oy) ) {
-            std::cerr   <<  "Out of Range (Source)"
-                        <<  std::endl;
-            return ( 0 );
-        }
-        ox  =  5 - ox;
-        --  oy;
-        const  int  trg = objGame.getBoardState().getFieldPiece(ox, oy);
-        if ( (strPlay.length() >= 5) && (strPlay[4] == '+') ) {
-            pr  = g_tblPromotion[trg];
-        } else {
-            pr  = trg;
-        }
-
-        for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
-            if ( (itr->xNewCol) != 4 - nx ) { continue; }
-            if ( (itr->yNewRow) != ny ) { continue; }
-            if ( (itr->xOldCol) != 4 - ox ) { continue; }
-            if ( (itr->yOldRow) != oy ) { continue; }
-//            if ( (itr->fpAfter) != pr ) { continue; }
-            flgLeg  = 1;
-        }
-        if ( (flgLeg == 0) ) {
-            std::cerr   <<  "Not Legal Move."   <<  std::endl;
-            if ( strPlay[strPlay.length() - 1] != '!' ) {
-                return ( 0 );
-            }
-        }
-
-        objGame.playMoveAction(ox, oy, nx, ny, pr);
-    }
-#endif
-
     executePlayerCommand("next", objGame);
     objGame.setConstraint(6);
 
-    return ( 0 );
+    return ( ERR_SUCCESS );
 }
 
-int
+ErrCode
 executeDiceCommand(
         const  std::string  &strArgs,
         GameController      &objGame)
@@ -474,38 +404,38 @@ executeDiceCommand(
     if ( numChk == 1 ) {
         std::cerr   <<  "* CHECK!"  <<  std::endl;
         objGame.setConstraint(6);
-        return ( 0 );
+        return ( ERR_SUCCESS );
     } else if ( numChk >= 2 ) {
         std::cerr   <<  "** DOUBLE CHECK!"  <<  std::endl;
         objGame.setConstraint(6);
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
 
     if ( strArgs[0] == 'g' ) {
         std::cout   <<  "Current Constraint. Dice = "
                     <<  objGame.getConstraint()
                     <<  std::endl;
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
 
     if ( strArgs[0] == 'r' ) {
         const  int  rn  =  ((std::rand() >> 8) % 6) + 1;
         std::cout   <<  rn  <<  std::endl;
         objGame.setConstraint(rn);
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
 
     const  int  dr  =  strArgs[0] - '0';
     if ( (dr < 0) || (6 < dr) ) {
         std::cerr   <<  "Invalid Arguments."    <<  std::endl;
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
     objGame.setConstraint(dr);
 
-    return ( 0 );
+    return ( ERR_SUCCESS );
 }
 
-int
+ErrCode
 executeListCommand(
         const  std::string     &strArgs,
         const  GameController  &objGame,
@@ -561,10 +491,10 @@ executeListCommand(
             <<  cntChk  <<  "  IC/SCs,  "
             <<  cntDFs  <<  "  DFs"
             <<  std::endl;
-    return ( 0 );
+    return ( ERR_SUCCESS );
 }
 
-int
+ErrCode
 executeGoCommand(
         GameController  &objGame)
 {
@@ -572,19 +502,62 @@ executeGoCommand(
 
     if ( objGame.startThinking(actData) != ERR_SUCCESS ) {
         std::cerr   <<  "No Legal Actions"  <<  std::endl;
-        return ( 0 );
+        return ( ERR_SUCCESS );
     }
 
     std::cout   <<  "bestmove ";
     displayActionView(actData,  0,  std::cout)  <<  std::endl;
     std::cerr   <<  "#  COM : ";
     displayActionView(actData,  1,  std::cerr)  <<  std::endl;
-    return ( 0 );
+    return ( ERR_SUCCESS );
 }
 
-int
+ErrCode
+executeFlipCommand(
+        const  std::string  &strArgs,
+        GameController      &objGame)
+
+{
+    int     flgNow  = objGame.getShowFlag();
+
+    if ( strArgs[0] == 'c' ) {
+        //  Change.
+        flgNow  ^=  GameController::SCF_FLIP_COLUMNS;
+    } else if ( strArgs[0] == 'n' ) {
+        //  Normal.
+        flgNow  &=  (~ GameController::SCF_FLIP_COLUMNS);
+    } else if ( strArgs[0] == 'r' ) {
+        //  Reverse.
+        flgNow  |=  GameController::SCF_FLIP_COLUMNS;
+    } else {
+        return ( ERR_INVALID_COMMAND );
+    }
+
+    return ( objGame.setShowFlag(flgNow) );
+}
+
+ErrCode
+executeRotateCommand(
+        const  std::string  &strArgs,
+        GameController      &objGame)
+
+{
+    if ( strArgs[0] == 'c' ) {
+        //  Change Rotate.
+
+    } else if ( strArgs[0] == 'n' ) {
+        //  Normal.
+    } else if ( strArgs[0] == 'r' ) {
+        //  Reverse.
+    }
+
+    return ( ERR_INVALID_COMMAND );
+}
+
+ErrCode
 parseConsoleInput(
-        const  std::string  &strLine)
+        const  std::string  &strLine,
+        GameController      &objGame)
 {
     std::vector<std::string>    vTokens;
 
@@ -595,36 +568,39 @@ parseConsoleInput(
             strLine,  " \t",  1,  vTokens);
 
     if ( vTokens[0] == "go" ) {
-        return ( executeGoCommand(g_gcGameCtrl) );
+        return ( executeGoCommand(objGame) );
     } else if ( vTokens[0] == "dice" ) {
         if ( vTokens.size() == 1 ) {
             std::cerr   <<  "Require Arguments."    <<  std::endl;
-            return ( 0 );
+            return ( ERR_SUCCESS );
         }
-        return ( executeDiceCommand(vTokens[1], g_gcGameCtrl) );
+        return ( executeDiceCommand(vTokens[1], objGame) );
     } else if ( vTokens[0] == "position" ) {
         if ( vTokens.size() == 1 ) {
             std::cerr   <<  "Require Arguments."    <<  std::endl;
-            return ( 0 );
+            return ( ERR_SUCCESS );
         }
-        return  ( setPosition(vTokens[1], g_gcGameCtrl) );
+        return  ( setPosition(vTokens[1], objGame) );
 
     } else if ( vTokens[0] == "fwd" ) {
-        return ( playForward(vTokens[1], g_gcGameCtrl) );
+        return ( playForward(vTokens[1], objGame) );
     } else if ( vTokens[0] == "sfen" ) {
-        return ( displaySfen(g_gcGameCtrl, std::cout) );
+        return ( displaySfen(objGame, std::cout) );
     } else if ( vTokens[0] == "show" ) {
-        return ( displayBoard(g_gcGameCtrl, std::cout) );
+        return ( displayBoard(objGame, std::cout) );
     } else if ( vTokens[0] == "list" ) {
         vTokens.push_back("cur");
-        return ( executeListCommand(vTokens[1], g_gcGameCtrl, std::cout) );
+        return ( executeListCommand(vTokens[1], objGame, std::cout) );
     } else if ( vTokens[0] == "player") {
         vTokens.push_back("next");
-        return ( executePlayerCommand(vTokens[1], g_gcGameCtrl) );
+        return ( executePlayerCommand(vTokens[1], objGame) );
+    } else if ( vTokens[0] == "flip" ) {
+        vTokens.push_back("change");
+        return ( executeFlipCommand(vTokens[1], objGame) );
     }
 
     std::cerr   <<  "Invalid Command."  << std::endl;
-    return ( 0 );
+    return ( ERR_SUCCESS );
 }
 
 int  main(int argc, char * argv[])
@@ -649,10 +625,9 @@ int  main(int argc, char * argv[])
             break;
         }
 
-        const  int  retVal  = parseConsoleInput(strBuf);
-        if ( retVal != 0 ) {
-            std::cerr   <<  "Command Failed."   <<  std::endl;
-            //exit ( retVal );
+        const  int  retVal  = parseConsoleInput(strBuf, g_gcGameCtrl);
+        if ( retVal != ERR_SUCCESS ) {
+            std::cerr   <<  "\nCommand Failed"  <<  std::endl;
         }
     }
 
