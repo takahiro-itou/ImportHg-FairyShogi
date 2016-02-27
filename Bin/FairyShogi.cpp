@@ -16,6 +16,7 @@
 **/
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
+#include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/ViewBuffer.h"
 #include    "FairyShogi/Interface/GameController.h"
 
@@ -30,9 +31,10 @@ using   namespace   FAIRYSHOGI_NAMESPACE;
 
 typedef     Interface::GameController       GameController;
 
-typedef     GameController::ActionDataList  ActionList;
+typedef     GameController::ActionViewList  ActionList;
 typedef     ActionList::const_iterator      ActIter;
 
+typedef     GameController::ActionView      ActionView;
 typedef     GameController::ActionData      ActionData;
 
 GameController      g_gcGameCtrl;
@@ -276,6 +278,33 @@ displayActionData(
     return ( outStr );
 }
 
+std::ostream  &
+displayActionView(
+        const  ActionView   &actView,
+        const  int          flgName,
+        std::ostream        &outStr)
+{
+    if ( actView.putHand == Game::BoardState::HAND_EMPTY_PIECE ) {
+        outStr  <<  (actView.xOldCol)   <<  (actView.yOldRow)
+                <<  (actView.xNewCol)   <<  (actView.yNewRow);
+        if ( flgName ) {
+            outStr  <<  (g_tblPieceName2[actView.fpMoved]);
+        }
+        if ( (actView.fpAfter) != (actView.fpMoved) ) {
+            outStr  <<  '+';
+        } else {
+            outStr  <<  ' ';
+        }
+    } else {
+        outStr  <<  (g_tblHandName[actView.putHand])
+                <<  '*'
+                <<  (actView.xNewCol)   <<  (actView.yNewRow)
+                <<  ' ';
+    }
+
+    return ( outStr );
+}
+
 int
 executePlayerCommand(
         const  std::string  &strArgs,
@@ -327,7 +356,7 @@ playForward(
     --  ny;
 
     ActionList      actList;
-    itfGame.makeLegalActionList(actList);
+    itfGame.makeLegalActionList(0, -1, actList);
     const  ActIter  itrEnd  = actList.end();
 
     int             flgLeg  = 0;
@@ -454,40 +483,40 @@ executeListCommand(
         std::ostream           &outStr)
 {
     int     dc  =  itfGame.getConstraint();
-    if ( strArgs == "all" ) {
+    if ( strArgs[0] == 'a' ) {
         dc  =  6;
     } else if ( ('0' <= strArgs[0]) && (strArgs[0] <= '6') ) {
-        dc  =  strArgs[0] - '1';
+        dc  =  strArgs[0];
     }
-    std::cerr   <<  "List For Dice = "  <<  (dc+1)  <<  std::endl;
+    ActionFlag  fLegal  =  Common::ALF_LEGAL_ACTION;
+    if ( strArgs[ strArgs.length() ] == '!' ) {
+        fLegal  =  Common::ALF_ALL_FLAGS;
+    }
+    std::cerr   <<  "List For Dice = "  <<  dc  <<  std::endl;
 
     ActionList      vActs;
-    itfGame.makeLegalActionList(vActs);
+    itfGame.makeLegalActionList(fLegal, dc, vActs);
+    const  ActIter  itrEnd  =  vActs.end();
 
-    const  ActIter  itrEnd  = vActs.end();
-    ActIter         itrHead = vActs.begin();
-    for ( ; itrHead != itrEnd; ++ itrHead ) {
-        if ( (itrHead->xNewCol) >= dc ) {
-            break;
-        }
-    }
+    int     cntDisp = 0;
+    int     cntLeg  = 0;
+    int     cntBad  = 0;
+    int     cntChk  = 0;
+    int     cntDFs  = 0;
 
-    ActIter         itrTail = itrEnd;
-    for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
-        if ( (itr->xNewCol) != dc ) {
-            itrTail = itr;
-            break;
-        }
-    }
-    if ( itrHead == itrTail ) {
-        itrHead = vActs.begin();
-        itrTail = itrEnd;
-    }
-
-    int             cntDisp = 0;
-    for ( ActIter itr = itrHead; itr != itrTail; ++ itr )
+    for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr )
     {
-        displayActionData( (* itr), 1, outStr );
+        displayActionView( (* itr), 1, outStr );
+        if ( (itr->fLegals) != Common::ALF_LEGAL_ACTION ) {
+            ++  cntBad;
+            outStr  <<  '!';
+        } else {
+            ++  cntLeg;
+        }
+
+        if ( (itr->fLegals) & Common::ALF_IGNORE_CHECK ) { ++  cntChk; }
+        if ( (itr->fLegals) & Common::ALF_DOUBLE_PAWNS ) { ++  cntDFs; }
+
         outStr  <<  ", ";
         ++  cntDisp;
         if ( cntDisp >= 8 ) {
@@ -496,9 +525,13 @@ executeListCommand(
         }
     }
 
-    outStr  <<  std::endl
-            <<  (itrTail - itrHead)
-            <<  "  Legal Actions."  <<  std::endl;
+    outStr  <<  std::endl   <<  (vActs.size())
+            <<  "  Actions."  <<  std::endl;
+    outStr  <<  cntLeg  <<  "  Legals,  "
+            <<  cntBad  <<  "  Illegals,  "
+            <<  cntChk  <<  "  IC/SCs,  "
+            <<  cntDFs  <<  "  DFs"
+            <<  std::endl;
     return ( 0 );
 }
 
