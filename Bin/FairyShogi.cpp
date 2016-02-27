@@ -453,24 +453,23 @@ executeDiceCommand(
 
     if ( strArgs[0] == 'g' ) {
         std::cout   <<  "Current Constraint. Dice = "
-                    <<  itfGame.getConstraint() + 1
+                    <<  itfGame.getConstraint()
                     <<  std::endl;
         return ( 0 );
     }
 
     if ( strArgs[0] == 'r' ) {
-        const  int  rn  =  ((std::rand() >> 8) % 6);
-        std::cout   <<  (rn+1)  <<  std::endl;
+        const  int  rn  =  ((std::rand() >> 8) % 6) + 1;
+        std::cout   <<  rn  <<  std::endl;
         itfGame.setConstraint(rn);
         return ( 0 );
     }
 
-    const  int  dr  =  strArgs[0] - '1';
-    if ( (dr < 0) || (5 < dr) ) {
+    const  int  dr  =  strArgs[0] - '0';
+    if ( (dr < 0) || (6 < dr) ) {
         std::cerr   <<  "Invalid Arguments."    <<  std::endl;
         return ( 0 );
     }
-
     itfGame.setConstraint(dr);
 
     return ( 0 );
@@ -486,10 +485,10 @@ executeListCommand(
     if ( strArgs[0] == 'a' ) {
         dc  =  6;
     } else if ( ('0' <= strArgs[0]) && (strArgs[0] <= '6') ) {
-        dc  =  strArgs[0];
+        dc  =  strArgs[0] - '0';
     }
     ActionFlag  fLegal  =  Common::ALF_LEGAL_ACTION;
-    if ( strArgs[ strArgs.length() ] == '!' ) {
+    if ( strArgs[ strArgs.length() - 1 ] == '!' ) {
         fLegal  =  Common::ALF_ALL_FLAGS;
     }
     std::cerr   <<  "List For Dice = "  <<  dc  <<  std::endl;

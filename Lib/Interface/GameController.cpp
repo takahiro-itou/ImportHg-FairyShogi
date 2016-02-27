@@ -204,7 +204,7 @@ GameController::makeLegalActionList(
     }
 
     for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
-        decodeActionData( this->m_flgShow, (* itrHead), &actView);
+        decodeActionData( this->m_flgShow, (* itr), &actView);
         if ( (actView.xNewCol) != curDice ) {
             itrTail = itr;
             break;
@@ -217,7 +217,7 @@ GameController::makeLegalActionList(
 
     //  指定した条件で合法手がない時は、何でもできる。  //
     for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr ) {
-        decodeActionData( this->m_flgShow, (* itrHead), &actView);
+        decodeActionData( this->m_flgShow, (* itr), &actView);
         actList.push_back(actView);
     }
 

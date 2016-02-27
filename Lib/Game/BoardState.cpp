@@ -132,14 +132,15 @@ BoardState::decodeActionData(
         const   ActionData   &  actData,
         Common::ActionView  *   actView)
 {
-    actView->xNewCol    = actData.xNewCol;
-    actView->yNewRow    = actData.yNewRow;
-    actView->xOldCol    = actData.xOldCol;
-    actView->yOldRow    = actData.yOldRow;
+    actView->xNewCol    = (actData.xNewCol + 1);
+    actView->yNewRow    = (actData.yNewRow + 1);
+    actView->xOldCol    = (actData.xOldCol + 1);
+    actView->yOldRow    = (actData.yOldRow + 1);
     actView->fpAfter    = actData.fpAfter;
     actView->fpMoved    = actData.fpMoved;
     actView->fpCatch    = actData.fpCatch;
     actView->putHand    = actData.putHand;
+    actView->fLegals    = (actData.fLegals);
 
     return ( ERR_SUCCESS );
 }
