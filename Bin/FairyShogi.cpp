@@ -18,7 +18,7 @@
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/ViewBuffer.h"
-#include    "FairyShogi/Interface/GameController.h"
+#include    "FairyShogi/Interface/ConsoleInterface.h"
 
 #include    <iostream>
 #include    <limits>
@@ -29,7 +29,7 @@
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
 
-typedef     Interface::GameController       GameController;
+typedef     Interface::ConsoleInterface     GameController;
 
 typedef     GameController::ActionViewList  ActionList;
 typedef     ActionList::const_iterator      ActIter;
