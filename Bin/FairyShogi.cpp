@@ -75,7 +75,8 @@ g_tblHandName[]     = {
 
 CONSTEXPR_VAR   const   int
 g_tblPromotion[]    = {
-    0,
+    Game::BoardState::FIELD_EMPTY_SQUARE,
+
     Game::BoardState::FIELD_BLACK_PR_PAWN,
     Game::BoardState::FIELD_BLACK_PR_SILVER,
     Game::BoardState::FIELD_BLACK_GOLD,
@@ -351,7 +352,7 @@ executePlayerCommand(
 }
 
 ErrCode
-playForward(
+executeForwardCommand(
         const  std::string  &strArgs,
         GameController      &objGame)
 {
@@ -570,10 +571,7 @@ parseConsoleInput(
     if ( vTokens[0] == "go" ) {
         return ( executeGoCommand(objGame) );
     } else if ( vTokens[0] == "dice" ) {
-        if ( vTokens.size() == 1 ) {
-            std::cerr   <<  "Require Arguments."    <<  std::endl;
-            return ( ERR_SUCCESS );
-        }
+        vTokens.push_back("get");
         return ( executeDiceCommand(vTokens[1], objGame) );
     } else if ( vTokens[0] == "position" ) {
         if ( vTokens.size() == 1 ) {
@@ -581,9 +579,8 @@ parseConsoleInput(
             return ( ERR_SUCCESS );
         }
         return  ( setPosition(vTokens[1], objGame) );
-
     } else if ( vTokens[0] == "fwd" ) {
-        return ( playForward(vTokens[1], objGame) );
+        return ( executeForwardCommand(vTokens[1], objGame) );
     } else if ( vTokens[0] == "sfen" ) {
         return ( displaySfen(objGame, std::cout) );
     } else if ( vTokens[0] == "show" ) {
