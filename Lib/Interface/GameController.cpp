@@ -359,8 +359,35 @@ GameController::startThinking(
         return ( ERR_ILLEGAL_ACTION );
     }
 
-    int  r  =  rand() % numAct;
-    actRet  =  actList[r];
+    BoardState      bsClone;
+    ActionData      actData;
+    ActionDataList  vActs;
+    int             idxMin  =  0;
+    size_t          scrMin  =  100000;
+
+    for ( int r = 0;  r < numAct;  ++ r ) {
+        bsClone.cloneFrom(this->m_gcBoard);
+        BoardState::encodeActionData(actList[r], &actData);
+        bsClone.playForward(actData);
+
+        vActs.clear();
+        bsClone.makeLegalActionList(this->m_curTurn ^ 1,  0,  vActs);
+        const  size_t  cntLegs  =  vActs.size();
+        if ( cntLegs == 0 ) {
+            idxMin  =  r;
+            scrMin  =  0;
+            break;
+        }
+
+        const  double  dblRnd   =  (rand() * 2.0 / RAND_MAX);
+        const  size_t  scrCur   =  (cntLegs) * (dblRnd + 9);
+        if ( scrCur < scrMin ) {
+            idxMin  =  r;
+            scrMin  =  cntLegs;
+        }
+    }
+
+    actRet  =  actList[idxMin];
 
     return ( ERR_SUCCESS );
 }
