@@ -370,7 +370,7 @@ executeForwardCommand(
     objGame.makeLegalActionList(0, -1, actList);
     const  ActIter  itrEnd  = actList.end();
 
-    ActionFlag      flgLeg  =  Common::ALF_LEGAL_ACTION;
+    ActionFlag      flgLeg  =  Common::ALF_ILLEGAL_MOVE;
     for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
         if ( GameController::isEquals(* itr, actView) ) {
             flgLeg  = (itr->fLegals);

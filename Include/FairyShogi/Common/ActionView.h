@@ -40,24 +40,29 @@ enum  ActionLegalFlag
     ALF_LEGAL_ACTION    = 0,
 
     /**
+    **    駒の動かし方の間違い。
+    **/
+    ALF_ILLEGAL_MOVE    = 1,
+
+    /**
     **    王手放置。自ら王手になる場合を含む。
     **/
-    ALF_IGNORE_CHECK    = 1,
+    ALF_IGNORE_CHECK    = 2,
 
     /**
     **    二歩。
     **/
-    ALF_DOUBLE_PAWNS    = 2,
+    ALF_DOUBLE_PAWNS    = 4,
 
     /**
     **    打ち歩詰めの反則。
     **/
-    ALF_DROP_PAWN_END   = 4,
+    ALF_DROP_PAWN_END   = 8,
 
     /**
     **    全てのフラグの論理和。
     **/
-    ALF_ALL_FLAGS       = 7
+    ALF_ALL_FLAGS       = 15
 };
 
 //========================================================================

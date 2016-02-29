@@ -386,7 +386,7 @@ BoardState::makeLegalActionList(
             actData.yNewRow = (posTrg % POS_NUM_ROWS);
             actData.xOldCol = (posSrc / POS_NUM_ROWS);
             actData.yOldRow = (posSrc % POS_NUM_ROWS);
-            actData.fpCatch = FIELD_EMPTY_SQUARE;
+            actData.fpCatch = cpiTrg;
             actData.fpMoved = p;
             actData.fpAfter = p;
             actData.putHand = HAND_EMPTY_PIECE;
