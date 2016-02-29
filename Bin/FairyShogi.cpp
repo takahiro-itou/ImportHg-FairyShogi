@@ -370,7 +370,7 @@ executeForwardCommand(
     objGame.makeLegalActionList(0, -1, actList);
     const  ActIter  itrEnd  = actList.end();
 
-    ActionFlag      flgLeg  =  Common::ALF_LEGAL_ACTION;
+    ActionFlag      flgLeg  =  Common::ALF_ILLEGAL_MOVE;
     for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
         if ( GameController::isEquals(* itr, actView) ) {
             flgLeg  = (itr->fLegals);
@@ -567,6 +567,9 @@ parseConsoleInput(
 
     parseText(
             strLine,  " \t",  1,  vTokens);
+    if ( vTokens.empty() ) {
+        return ( ERR_INVALID_COMMAND );
+    }
 
     if ( vTokens[0] == "go" ) {
         return ( executeGoCommand(objGame) );
@@ -618,6 +621,10 @@ int  main(int argc, char * argv[])
         }
         std::cerr   <<  ">";
         std::getline(inStr, strBuf);
+        if ( strBuf.empty() ) {
+            continue;
+        }
+
         if ( strBuf == "quit" ) {
             break;
         }

@@ -25,6 +25,7 @@
 #include    <memory.h>
 
 #include    <assert.h>
+#include    <iomanip>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
@@ -299,7 +300,19 @@ BoardState::isCheckState(
     }
     if ( posTrg == FIELD_SIZE ) {
         //  致命的エラー。玉がどこにもいない。  //
-        std::cerr   <<  "# FATAL ERROR : No King."  <<  std::endl;
+        std::cerr   <<  "# FATAL ERROR : No King :"
+                    <<  piKing  <<  std::endl;
+        for ( PosRow y = 0; y < POS_NUM_ROWS; ++ y ) {
+            for ( PosCol x = 0; x < POS_NUM_COLS; ++ x ) {
+                const  FieldIndex   fi
+                    = getMatrixPos(POS_NUM_COLS - 1 - x, y);
+                std::cerr   <<  std::setw(2)
+                            <<  curStat.m_bsField[fi]
+                            <<  ", ";
+            }
+            std::cerr   <<  std::endl;
+        }
+
         return ( 0 );
     }
 
@@ -373,7 +386,7 @@ BoardState::makeLegalActionList(
             actData.yNewRow = (posTrg % POS_NUM_ROWS);
             actData.xOldCol = (posSrc / POS_NUM_ROWS);
             actData.yOldRow = (posSrc % POS_NUM_ROWS);
-            actData.fpCatch = FIELD_EMPTY_SQUARE;
+            actData.fpCatch = cpiTrg;
             actData.fpMoved = p;
             actData.fpAfter = p;
             actData.putHand = HAND_EMPTY_PIECE;
