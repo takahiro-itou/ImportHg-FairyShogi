@@ -24,6 +24,7 @@
 #include    <limits>
 #include    <cstdlib>
 #include    <cstring>
+#include    <fstream>
 #include    <time.h>
 #include    <vector>
 
@@ -38,6 +39,8 @@ typedef     GameController::ActionView      ActionView;
 typedef     GameController::ActionData      ActionData;
 
 GameController      g_gcGameCtrl;
+
+std::ofstream       g_outStrKifu;
 
 CONSTEXPR_VAR   const   char  *
 g_tblPieceName[]    = {
@@ -302,9 +305,6 @@ displayActionView(
     if ( actView.putHand == Game::BoardState::HAND_EMPTY_PIECE ) {
         outStr  <<  (actView.xOldCol)   <<  (actView.yOldRow)
                 <<  (actView.xNewCol)   <<  (actView.yNewRow);
-        if ( flgName ) {
-            outStr  <<  (g_tblPieceName2[actView.fpMoved]);
-        }
         if ( (actView.fpAfter) != (actView.fpMoved) ) {
             outStr  <<  '+';
         } else {
@@ -314,7 +314,10 @@ displayActionView(
         outStr  <<  (g_tblHandName[actView.putHand])
                 <<  '*'
                 <<  (actView.xNewCol)   <<  (actView.yNewRow)
-                <<  ' ';
+                <<  "  ";
+    }
+    if ( flgName ) {
+        outStr  <<  (g_tblPieceName[actView.fpMoved])  <<  ' ';
     }
 
     return ( outStr );
@@ -384,6 +387,12 @@ executeForwardCommand(
             return ( ERR_ILLEGAL_ACTION );
         }
     }
+
+    g_outStrKifu    <<  "dice "
+                    <<  objGame.getConstraint()
+                    <<  "\nfwd ";
+    displayActionView(actView,  1,  g_outStrKifu)   <<  std::endl;
+
     objGame.playForward(actView);
 
     executePlayerCommand("next", objGame);
@@ -615,6 +624,9 @@ int  main(int argc, char * argv[])
 
     g_gcGameCtrl.resetGame();
 
+    g_outStrKifu.open(".backup.kifu.swp");
+    displaySfen(g_gcGameCtrl,  g_outStrKifu);
+
     for ( ;; ) {
         if ( ! inStr ) {
             break;
@@ -634,6 +646,8 @@ int  main(int argc, char * argv[])
             std::cerr   <<  "\nCommand Failed"  <<  std::endl;
         }
     }
+
+    g_outStrKifu.close();
 
     return ( 0 );
 }
