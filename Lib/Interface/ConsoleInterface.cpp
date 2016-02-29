@@ -19,6 +19,8 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 
+#include    <memory.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
 
@@ -146,6 +148,8 @@ ConsoleInterface::parseActionText(
     PieceIndex  pifTrg  =  Game::BoardState::FIELD_EMPTY_SQUARE;
     const  ShowCoordFlags  flgShow  =  getShowFlag();
 
+    ::memset( ptrAct, 0, sizeof(ActionView) );
+
     {
         PosCol  xNewCol = strPlay[2] - '0';
         PosRow  yNewRow = strPlay[3] - '0';
@@ -192,6 +196,7 @@ ConsoleInterface::parseActionText(
         ptrAct->yOldRow = yOldRow;
         pifSrc  = getBoardState().getFieldPiece(xOldCol - 1, yOldRow - 1);
         ptrAct->fpMoved = pifSrc;
+        ptrAct->putHand = Game::BoardState::HAND_EMPTY_PIECE;
     }
 
     size_t  posRead = 4;
