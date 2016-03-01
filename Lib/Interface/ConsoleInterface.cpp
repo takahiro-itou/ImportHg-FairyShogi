@@ -176,8 +176,8 @@ ConsoleInterface::parseActionText(
         //  持ち駒を打つ。  //
         ptrAct->xDispOldCol = 0;
         ptrAct->yDispOldRow = 0;
-        ptrAct->xPlayNewCol = 0;
-        ptrAct->yPlayNewRow = 0;
+        ptrAct->xPlayOldCol = 0;
+        ptrAct->yPlayOldRow = 0;
 
         ptrAct->fpAfter = Game::BoardState::FIELD_EMPTY_SQUARE;
         ptrAct->fpMoved = Game::BoardState::FIELD_EMPTY_SQUARE;
