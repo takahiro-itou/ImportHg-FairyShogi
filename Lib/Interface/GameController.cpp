@@ -201,7 +201,6 @@ GameController::makeLegalActionList(
             this->m_flgShow, (vCons < 0 ? (this->m_curDice) : vCons) );
 
     ActionView      actView;
-
     for ( ; itrHead != itrEnd; ++ itrHead ) {
         //  ダイスの目を内部形式に揃えているので、  //
         //  比較の時は、座標を反転させないで行う。  //
@@ -211,6 +210,7 @@ GameController::makeLegalActionList(
         }
     }
 
+    size_t      cntLegs = 0;
     for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
         //  ダイスの目を内部形式に揃えているので、  //
         //  比較の時は、座標を反転させないで行う。  //
@@ -219,8 +219,11 @@ GameController::makeLegalActionList(
             itrTail = itr;
             break;
         }
+        if ( (actView.fLegals) == Common::ALF_LEGAL_ACTION ) {
+            ++  cntLegs;
+        }
     }
-    if ( itrHead == itrTail ) {
+    if ( (cntLegs == 0) ) {
         //  指定した条件で合法手がない時は、何でもできる。  //
         itrHead = vActs.begin();
         itrTail = itrEnd;
