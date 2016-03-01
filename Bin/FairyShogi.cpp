@@ -391,7 +391,11 @@ executeForwardCommand(
     g_outStrKifu    <<  "dice "
                     <<  objGame.getConstraint()
                     <<  "\nfwd ";
-    displayActionView(actView,  1,  g_outStrKifu)   <<  std::endl;
+    displayActionView(actView,  1,  g_outStrKifu);
+    if ( flgLeg != Common::ALF_LEGAL_ACTION ) {
+        g_outStrKifu    <<  '!';
+    }
+    g_outStrKifu    <<  std::endl;
 
     objGame.playForward(actView);
 
