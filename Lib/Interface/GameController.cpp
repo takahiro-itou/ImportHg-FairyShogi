@@ -605,7 +605,6 @@ GameController::convertConstraintCoord(
     return ( vCons );
 }
 
-
 //----------------------------------------------------------------
 //    指し手の内部形式を表示用データに変換する。
 //
@@ -632,6 +631,10 @@ GameController::decodeActionData(
         pvAct->xDispNewCol  = (pvAct->xPlayNewCol);
         pvAct->xDispOldCol  = (pvAct->xPlayOldCol);
     }
+
+    //  垂直方向の座標はそのまま。  //
+    pvAct->yDispNewRow  =  (pvAct->yPlayNewRow);
+    pvAct->yDispOldRow  =  (pvAct->yPlayOldRow);
 
     return ( ERR_SUCCESS );
 }
