@@ -302,18 +302,18 @@ displayActionView(
         const  int          flgName,
         std::ostream        &outStr)
 {
-    if ( actView.putHand == Game::BoardState::HAND_EMPTY_PIECE ) {
-        outStr  <<  (actView.xOldCol)   <<  (actView.yOldRow)
-                <<  (actView.xNewCol)   <<  (actView.yNewRow);
+    if ( actView.hpiDrop == Game::BoardState::HAND_EMPTY_PIECE ) {
+        outStr  <<  (actView.xDispOldCol)   <<  (actView.yDispOldRow)
+                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow);
         if ( (actView.fpAfter) != (actView.fpMoved) ) {
             outStr  <<  '+';
         } else {
             outStr  <<  ' ';
         }
     } else {
-        outStr  <<  (g_tblHandName[actView.putHand])
+        outStr  <<  (g_tblHandName[actView.hpiDrop])
                 <<  '*'
-                <<  (actView.xNewCol)   <<  (actView.yNewRow)
+                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow)
                 <<  "  ";
     }
     if ( flgName ) {
