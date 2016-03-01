@@ -361,6 +361,10 @@ GameController::startThinking(
     if ( numAct == 0 ) {
         return ( ERR_ILLEGAL_ACTION );
     }
+    if ( numAct == 1 ) {
+        actRet  =  actList[0];
+        return ( ERR_SUCCESS );
+    }
 
     BoardState      bsClone;
     ActionData      actData;
