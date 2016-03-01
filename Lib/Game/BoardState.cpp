@@ -395,14 +395,18 @@ BoardState::makeLegalActionList(
             int cntProm = 0;
             PieceIndex  vProm[2] = { p, -1 };
             if ( s_tblOwner[p] == 0 ) {
-                if ( (actData.yNewRow) == 0 ) {
+                if (       ((actData.yNewRow) == 0)
+                        || ((actData.yOldRow) == 0)  )
+                {
                     if ( p != FIELD_BLACK_PAWN ) {
                         vProm[cntProm ++]   = p;
                     }
                     vProm[cntProm]  = s_tblPromNew[p];
                 }
             } else {
-                if ( (actData.yNewRow) == POS_NUM_ROWS - 1 ) {
+                if (       ((actData.yNewRow) == POS_NUM_ROWS - 1)
+                        || ((actData.yOldRow) == POS_NUM_ROWS - 1)  )
+                {
                     if ( p != FIELD_WHITE_PAWN ) {
                         vProm[cntProm ++]   = p;
                     }
