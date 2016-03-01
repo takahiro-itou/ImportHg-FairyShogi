@@ -456,6 +456,7 @@ BoardState::makeLegalActionList(
                 continue;
             }
 
+            actData.fLegals = Common::ALF_LEGAL_ACTION;
             int     flgDps  = 0;
             if ( (k == HAND_BLACK_PAWN) || (k == HAND_WHITE_PAWN) ) {
                 for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
