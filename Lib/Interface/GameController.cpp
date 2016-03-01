@@ -363,7 +363,7 @@ GameController::startThinking(
     ActionData      actData;
     ActionDataList  vActs;
     int             idxMin  =  0;
-    size_t          scrMin  =  100000;
+    double          scrMin  =  100000;
 
     for ( int r = 0;  r < numAct;  ++ r ) {
         bsClone.cloneFrom(this->m_gcBoard);
@@ -372,15 +372,20 @@ GameController::startThinking(
 
         vActs.clear();
         bsClone.makeLegalActionList(this->m_curTurn ^ 1,  0,  vActs);
-        const  size_t  cntLegs  =  vActs.size();
+        size_t  cntLegs =  vActs.size();
         if ( cntLegs == 0 ) {
             idxMin  =  r;
             scrMin  =  0;
             break;
         }
 
-        const  double  dblRnd   =  (rand() * 2.0 / RAND_MAX);
-        const  size_t  scrCur   =  (cntLegs) * (dblRnd + 9);
+        BoardState::TBitBoard   bbCheck;
+        if ( bsClone.isCheckState(this->m_curTurn ^ 1, bbCheck) > 0 ) {
+            cntLegs *= 3;
+        }
+
+        const  double  dblRnd   =  (rand() * 4.0 / RAND_MAX);
+        const  size_t  scrCur   =  (cntLegs) * (dblRnd + 8);
         if ( scrCur < scrMin ) {
             idxMin  =  r;
             scrMin  =  cntLegs;
