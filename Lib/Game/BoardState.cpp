@@ -146,17 +146,22 @@ BoardState::cloneFrom(
 ErrCode
 BoardState::decodeActionData(
         const   ActionData   &  actData,
-        Common::ActionView  *   actView)
+        ActionView  *  const    actView)
 {
-    actView->xNewCol    =  (actData.xNewCol + 1);
-    actView->yNewRow    =  (actData.yNewRow + 1);
-    actView->xOldCol    =  (actData.xOldCol + 1);
-    actView->yOldRow    =  (actData.yOldRow + 1);
-    actView->fpAfter    =  (actData.fpAfter);
-    actView->fpMoved    =  (actData.fpMoved);
-    actView->fpCatch    =  (actData.fpCatch);
-    actView->putHand    =  (actData.putHand);
-    actView->fLegals    =  (actData.fLegals);
+    ::memset( actView, 0, sizeof(ActionView) );
+
+    actView->xPlayNewCol    =  (actData.xNewCol + 1);
+    actView->yPlayNewRow    =  (actData.yNewRow + 1);
+    actView->xPlayOldCol    =  (actData.xOldCol + 1);
+    actView->yPlayOldRow    =  (actData.yOldRow + 1);
+
+    actView->fpAfter        =  (actData.fpAfter);
+    actView->fpMoved        =  (actData.fpMoved);
+    actView->fpCatch        =  (actData.fpCatch);
+    actView->hpiDrop        =  (actData.putHand);
+    actView->putHand        =  (actData.putHand);
+
+    actView->fLegals        =  (actData.fLegals);
 
     return ( ERR_SUCCESS );
 }
@@ -170,14 +175,16 @@ BoardState::encodeActionData(
         const   ActionView   &  actView,
         ActionData  *  const    actData)
 {
-    actData->xNewCol    =  (actView.xNewCol - 1);
-    actData->yNewRow    =  (actView.yNewRow - 1);
-    actData->xOldCol    =  (actView.xOldCol - 1);
-    actData->yOldRow    =  (actView.yOldRow - 1);
+    ::memset( actData, 0, sizeof(ActionData) );
+
+    actData->xNewCol    =  (actView.xPlayNewCol - 1);
+    actData->yNewRow    =  (actView.yPlayNewRow - 1);
+    actData->xOldCol    =  (actView.xPlayOldCol - 1);
+    actData->yOldRow    =  (actView.yPlayOldRow - 1);
     actData->fpCatch    =  (actView.fpCatch);
     actData->fpMoved    =  (actView.fpMoved);
     actData->fpAfter    =  (actView.fpAfter);
-    actData->putHand    =  (actView.putHand);
+    actData->putHand    =  (actView.hpiDrop);
     actData->fLegals    =  (actView.fLegals);
 
     return ( ERR_SUCCESS );

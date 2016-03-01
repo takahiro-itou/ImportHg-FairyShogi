@@ -158,9 +158,14 @@ ConsoleInterface::parseActionText(
         {
             return ( ERR_FAILURE );
         }
+
+        ptrAct->xDispNewCol = xNewCol;
+        ptrAct->yDispNewRow = yNewRow;
+
         convertCoordsFromConsole(flgShow, &xNewCol, &yNewRow);
-        ptrAct->xNewCol = xNewCol;
-        ptrAct->yNewRow = yNewRow;
+        ptrAct->xPlayNewCol = xNewCol;
+        ptrAct->yPlayNewRow = yNewRow;
+
         pifTrg  = getBoardState().getFieldPiece(xNewCol - 1, yNewRow - 1);
     }
 
@@ -169,20 +174,26 @@ ConsoleInterface::parseActionText(
 
     if ( strPlay[1] == '*' ) {
         //  持ち駒を打つ。  //
-        ptrAct->xOldCol = 0;
-        ptrAct->yOldRow = 0;
+        ptrAct->xDispOldCol = 0;
+        ptrAct->yDispOldRow = 0;
+        ptrAct->xPlayNewCol = 0;
+        ptrAct->yPlayNewRow = 0;
+
         ptrAct->fpAfter = Game::BoardState::FIELD_EMPTY_SQUARE;
         ptrAct->fpMoved = Game::BoardState::FIELD_EMPTY_SQUARE;
+        ptrAct->hpiDrop = Game::BoardState::HAND_EMPTY_PIECE;
         ptrAct->putHand = Game::BoardState::HAND_EMPTY_PIECE;
 
         for ( int i = 0; i < Game::BoardState::NUM_HAND_TYPES; ++ i ) {
             if ( strPlay[0] == s_tblHandName[i] ) {
+                ptrAct->hpiDrop = i;
                 ptrAct->putHand = i;
                 pifSrc  = s_tblHandConv[i];
                 break;
             }
         }
     } else {
+        //  盤上の駒を移動させる。  //
         PosCol  xOldCol = strPlay[0] - '0';
         PosRow  yOldRow = strPlay[1] - '0';
         if (       (xOldCol < 1) || (5 < xOldCol)
@@ -191,11 +202,16 @@ ConsoleInterface::parseActionText(
             return ( ERR_FAILURE );
         }
 
+        ptrAct->xDispOldCol = xOldCol;
+        ptrAct->yDispOldRow = yOldRow;
+
         convertCoordsFromConsole(flgShow, &xOldCol, &yOldRow);
-        ptrAct->xOldCol = xOldCol;
-        ptrAct->yOldRow = yOldRow;
+        ptrAct->xPlayOldCol = xOldCol;
+        ptrAct->yPlayOldRow = yOldRow;
+
         pifSrc  = getBoardState().getFieldPiece(xOldCol - 1, yOldRow - 1);
         ptrAct->fpMoved = pifSrc;
+        ptrAct->hpiDrop = Game::BoardState::HAND_EMPTY_PIECE;
         ptrAct->putHand = Game::BoardState::HAND_EMPTY_PIECE;
     }
 

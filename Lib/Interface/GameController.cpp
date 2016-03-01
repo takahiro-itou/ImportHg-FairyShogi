@@ -205,7 +205,7 @@ GameController::makeLegalActionList(
         //  ダイスの目を内部形式に揃えているので、  //
         //  比較の時は、座標を反転させないで行う。  //
         decodeActionData( SCF_NORMAL_SHOW, (* itrHead), &actView );
-        if ( (actView.xNewCol) >= curDice ) {
+        if ( (actView.xPlayNewCol) >= curDice ) {
             break;
         }
     }
@@ -215,7 +215,7 @@ GameController::makeLegalActionList(
         //  ダイスの目を内部形式に揃えているので、  //
         //  比較の時は、座標を反転させないで行う。  //
         decodeActionData( SCF_NORMAL_SHOW, (* itr), &actView );
-        if ( (actView.xNewCol) != curDice ) {
+        if ( (actView.xPlayNewCol) != curDice ) {
             itrTail = itr;
             break;
         }
@@ -414,14 +414,14 @@ GameController::writeActionView(
         const  ActionView   &actView,
         std::ostream        &outStr)
 {
-    outStr  <<  (5 - actView.xNewCol)
-            <<  (actView.yNewRow + 1)
+    outStr  <<  (actView.xDispNewCol)
+            <<  (actView.yDispNewRow)
             <<  ' '
             <<  s_tblPieceName[actView.fpAfter];
-    if ( (actView.putHand) == 0 ) {
+    if ( (actView.hpiDrop) == 0 ) {
         outStr  <<  " ("
-                <<  (5 - actView.xOldCol)
-                <<  (actView.yOldRow + 1)
+                <<  (actView.xDispOldCol)
+                <<  (actView.yDispOldRow)
                 <<  ")";
         if ( (actView.fpAfter) != (actView.fpMoved) ) {
             outStr  <<  " (PROMOTE)";
@@ -483,13 +483,13 @@ GameController::isEquals(
         const  ActionView  &avLhs,
         const  ActionView  &avRhs)
 {
-    if (       ( (avLhs.xNewCol) != (avRhs.xNewCol) )
-            || ( (avLhs.yNewRow) != (avRhs.yNewRow) )
-            || ( (avLhs.xOldCol) != (avRhs.xOldCol) )
-            || ( (avLhs.yOldRow) != (avRhs.yOldRow) )
+    if (       ( (avLhs.xPlayNewCol) != (avRhs.xPlayNewCol) )
+            || ( (avLhs.yPlayNewRow) != (avRhs.yPlayNewRow) )
+            || ( (avLhs.xPlayOldCol) != (avRhs.xPlayOldCol) )
+            || ( (avLhs.yPlayOldRow) != (avRhs.yPlayOldRow) )
             || ( (avLhs.fpMoved) != (avRhs.fpMoved) )
             || ( (avLhs.fpAfter) != (avRhs.fpAfter) )
-            || ( (avLhs.putHand) != (avRhs.putHand) )
+            || ( (avLhs.hpiDrop) != (avRhs.hpiDrop) )
             || ( (avLhs.fpCatch) != (avRhs.fpCatch) )
     )
     {
@@ -626,9 +626,12 @@ GameController::decodeActionData(
     //  表示フラグを確認して座標の調整を行う。  //
     if ( (flgShow) & SCF_FLIP_COLUMNS ) {
         //  水平方向の座標を反転させる。    //
-        pvAct->xNewCol  = (6 - (pvAct->xNewCol));
-        pvAct->xOldCol  = (6 - (pvAct->xOldCol));
-    };
+        pvAct->xDispNewCol  = (5 + 1 - (pvAct->xPlayNewCol));
+        pvAct->xDispOldCol  = (5 + 1 - (pvAct->xPlayOldCol));
+    } else {
+        pvAct->xDispNewCol  = (pvAct->xPlayNewCol);
+        pvAct->xDispOldCol  = (pvAct->xPlayOldCol);
+    }
 
     return ( ERR_SUCCESS );
 }
