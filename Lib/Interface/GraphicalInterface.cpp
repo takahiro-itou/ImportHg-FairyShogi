@@ -147,19 +147,26 @@ GraphicalInterface::setupMoveActionFromMouse(
         ptrAct  =  &(actTmp);
     }
 
+    ptrAct->xDispNewCol = xNewCol;
+    ptrAct->yDispNewRow = yNewRow;
     convertCoordsFromMouse(
             flgShow,  xNewCol,  yNewRow,
-            &(ptrAct->xNewCol), &(ptrAct->yNewRow) );
+            &(ptrAct->xPlayNewCol), &(ptrAct->yPlayNewRow) );
+
+    ptrAct->xDispOldCol = xOldCol;
+    ptrAct->yDispOldRow = yOldRow;
     convertCoordsFromMouse(
             flgShow,  xOldCol,  yOldRow,
-            &(ptrAct->xOldCol), &(ptrAct->yOldRow) );
+            &(ptrAct->xPlayOldCol), &(ptrAct->yPlayOldRow) );
 
     ptrAct->fpCatch = curStat.getFieldPiece(
-                            ptrAct->xNewCol - 1,  ptrAct->yNewRow - 1);
+                            ptrAct->xPlayNewCol - 1,
+                            ptrAct->yPlayNewRow - 1);
     ptrAct->fpMoved = curStat.getFieldPiece(
-                            ptrAct->xOldCol - 1,  ptrAct->yOldRow - 1);
+                            ptrAct->xPlayOldCol - 1,
+                            ptrAct->yPlayOldRow - 1);
     ptrAct->fpAfter = (ptrAct->fpMoved);
-    ptrAct->putHand = Game::BoardState::HAND_EMPTY_PIECE;
+    ptrAct->hpiDrop = Game::BoardState::HAND_EMPTY_PIECE;
     ptrAct->fLegals = Common::ALF_LEGAL_ACTION;
 
     vProms->clear();
@@ -191,21 +198,26 @@ GraphicalInterface::setupPutActionFromMouse(
     const  ShowCoordFlags      flgShow  =  getShowFlag();
     const  Game::BoardState  & curStat  =  getBoardState();
 
+    ptrAct->xDispNewCol = xPutCol;
+    ptrAct->yDispNewRow = yPutRow;
     convertCoordsFromMouse(
             flgShow,  xPutCol,  yPutRow,
-            &(ptrAct->xNewCol), &(ptrAct->yNewRow) );
+            &(ptrAct->xPlayNewCol), &(ptrAct->yPlayNewRow) );
 
-    ptrAct->xOldCol = 0;
-    ptrAct->yOldRow = 0;
+    ptrAct->xPlayOldCol = 0;
+    ptrAct->yPlayOldRow = 0;
+    ptrAct->xDispOldCol = 0;
+    ptrAct->yDispOldRow = 0;
     ptrAct->fpCatch = curStat.getFieldPiece(
-                            ptrAct->xNewCol - 1,  ptrAct->yNewRow - 1);
+                            ptrAct->xPlayNewCol - 1,
+                            ptrAct->yPlayNewRow - 1);
     ptrAct->fpMoved = Game::BoardState::FIELD_EMPTY_SQUARE;
     ptrAct->fpAfter = s_tblHandConv[pHand];
-    ptrAct->putHand = pHand;
+    ptrAct->hpiDrop = pHand;
     ptrAct->fLegals = Common::ALF_LEGAL_ACTION;
 
     vProms->clear();
-    vProms->push_back(ptrAct->putHand);
+    vProms->push_back(ptrAct->hpiDrop);
 
     return ( ERR_SUCCESS );
 }

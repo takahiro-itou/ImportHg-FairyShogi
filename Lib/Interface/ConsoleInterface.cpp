@@ -182,12 +182,10 @@ ConsoleInterface::parseActionText(
         ptrAct->fpAfter = Game::BoardState::FIELD_EMPTY_SQUARE;
         ptrAct->fpMoved = Game::BoardState::FIELD_EMPTY_SQUARE;
         ptrAct->hpiDrop = Game::BoardState::HAND_EMPTY_PIECE;
-        ptrAct->putHand = Game::BoardState::HAND_EMPTY_PIECE;
 
         for ( int i = 0; i < Game::BoardState::NUM_HAND_TYPES; ++ i ) {
             if ( strPlay[0] == s_tblHandName[i] ) {
                 ptrAct->hpiDrop = i;
-                ptrAct->putHand = i;
                 pifSrc  = s_tblHandConv[i];
                 break;
             }
@@ -212,7 +210,6 @@ ConsoleInterface::parseActionText(
         pifSrc  = getBoardState().getFieldPiece(xOldCol - 1, yOldRow - 1);
         ptrAct->fpMoved = pifSrc;
         ptrAct->hpiDrop = Game::BoardState::HAND_EMPTY_PIECE;
-        ptrAct->putHand = Game::BoardState::HAND_EMPTY_PIECE;
     }
 
     size_t  posRead = 4;

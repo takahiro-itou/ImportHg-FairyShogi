@@ -159,7 +159,6 @@ BoardState::decodeActionData(
     actView->fpMoved        =  (actData.fpMoved);
     actView->fpCatch        =  (actData.fpCatch);
     actView->hpiDrop        =  (actData.putHand);
-    actView->putHand        =  (actData.putHand);
 
     actView->fLegals        =  (actData.fLegals);
 
