@@ -384,7 +384,9 @@ private:
 //    Other Features.
 //
 private:
-
+    typedef     GameController      This;
+    GameController      (const  This  &);
+    This &  operator =  (const  This  &);
 public:
     //  テストクラス。  //
     friend  class   GameControllerTest;

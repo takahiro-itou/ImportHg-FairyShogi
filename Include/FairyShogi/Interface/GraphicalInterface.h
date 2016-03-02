@@ -18,7 +18,7 @@
 #if !defined( FAIRYSHOGI_INTERFACE_INCLUDED_GRAPHICAL_INTERFACE_H )
 #    define   FAIRYSHOGI_INTERFACE_INCLUDED_GRAPHICAL_INTERFACE_H
 
-#include    "FairyShogi/Interface/GameController.h"
+#include    "FairyShogi/Interface/ConsoleInterface.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
@@ -31,7 +31,7 @@ namespace  Interface  {
 **    グラフィカル版のゲーム管理クラス。
 **/
 
-class  GraphicalInterface : public  GameController
+class  GraphicalInterface : public  ConsoleInterface
 {
 
 //========================================================================
@@ -172,8 +172,12 @@ private:
 //
 private:
     /**   スーパークラス。  **/
-    typedef     GameController      Super;
+    typedef     ConsoleInterface        Super;
 
+private:
+    typedef     GraphicalInterface      This;
+    GraphicalInterface  (const  This  &);
+    This &  operator =  (const  This  &);
 public:
     //  テストクラス。  //
     friend  class   GraphicalInterfaceTest;
