@@ -364,7 +364,7 @@ executeForwardCommand(
     if ( objGame.parseActionText(strArgs, &actView) != ERR_SUCCESS )
     {
         std::cerr   <<  "Invalid Arguments."    <<  std::endl;
-        return ( ERR_SUCCESS );
+        return ( ERR_INVALID_COMMAND );
     }
 
     displayActionView(actView, 1, std::cerr)    <<  std::endl;
@@ -596,6 +596,7 @@ parseConsoleInput(
         }
         return  ( setPosition(vTokens[1], objGame) );
     } else if ( vTokens[0] == "fwd" ) {
+        vTokens.push_back("");
         return ( executeForwardCommand(vTokens[1], objGame) );
     } else if ( vTokens[0] == "sfen" ) {
         return ( displaySfen(objGame, std::cout) );

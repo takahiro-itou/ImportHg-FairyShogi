@@ -134,7 +134,14 @@ PromotionScreen::onLButtonUp(
     const  PieceIndex   xSelCol = (xPos / SQUARE_WIDTH);
     const  PieceIndex   ySelRow = (yPos / SQUARE_HEIGHT);
 
-    this->m_psSelected  = (ySelRow * numCols) + (xSelCol);
+    const  PieceIndex   iSelect = (ySelRow * numCols) + (xSelCol);
+    const  PieceIndex   nSelMax = (this->m_prmOptions.size());
+
+    if ( (iSelect < 0) || (nSelMax <= iSelect) ) {
+        return ( EH_RESULT_REDRAW );
+    }
+
+    this->m_psSelected  =  iSelect;
 
     return ( EH_RESULT_REDRAW );
 }

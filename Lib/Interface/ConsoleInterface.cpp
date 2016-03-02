@@ -144,6 +144,10 @@ ConsoleInterface::parseActionText(
         const  std::string  &strPlay,
         ActionView  *       ptrAct)  const
 {
+    if ( strPlay.length() < 4 ) {
+        return ( ERR_INVALID_COMMAND );
+    }
+
     PieceIndex  pifSrc  =  Game::BoardState::FIELD_EMPTY_SQUARE;
     PieceIndex  pifTrg  =  Game::BoardState::FIELD_EMPTY_SQUARE;
     const  ShowCoordFlags  flgShow  =  getShowFlag();
@@ -156,7 +160,7 @@ ConsoleInterface::parseActionText(
         if (       (xNewCol < 1) || (5 < xNewCol)
                 || (yNewRow < 1) || (5 < yNewRow) )
         {
-            return ( ERR_FAILURE );
+            return ( ERR_INVALID_COMMAND );
         }
 
         ptrAct->xDispNewCol = xNewCol;
@@ -190,6 +194,10 @@ ConsoleInterface::parseActionText(
                 break;
             }
         }
+        if ( ptrAct->hpiDrop == Game::BoardState::HAND_EMPTY_PIECE ) {
+            return ( ERR_INVALID_COMMAND );
+        }
+
     } else {
         //  盤上の駒を移動させる。  //
         PosCol  xOldCol = strPlay[0] - '0';
