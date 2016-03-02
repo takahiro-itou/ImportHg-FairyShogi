@@ -31,12 +31,12 @@ LIBINSTANTIATIONS       =
 LIBCXXINLINEFILES       =
 
 LIBNOINSTHEADERS        =  \
-        RuleTables.h           \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
         $(INCLIBDIR)/BitSet.h      \
         $(INCLIBDIR)/BoardState.h  \
+        $(INCLIBDIR)/RuleTables.h  \
         $(EXTRALIBHEADERS)
 
 LIBNODISTHEADERS        =
