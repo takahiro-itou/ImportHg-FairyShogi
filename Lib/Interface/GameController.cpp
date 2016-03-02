@@ -155,6 +155,17 @@ GameController::~GameController()
 //
 
 //----------------------------------------------------------------
+//    コンピュータの思考を開始する。
+//
+
+ErrCode
+GameController::computeBestAction(
+        ActionView  &actRet)
+{
+    return ( startThinking(actRet) );
+}
+
+//----------------------------------------------------------------
 //    現在の局面の合法手を列挙する。
 //
 
