@@ -120,17 +120,17 @@ public:
 public:
 
     //----------------------------------------------------------------
-    /**   現在の局面の合法手を列挙する。
+    /**   コンピュータの思考を開始する。
     **
-    **  @param[out] actList   合法手のリストを受け取る変数。
+    **  @param[out] actRet    思考した結果を受け取る変数。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
     **      -   正常終了の場合は、ゼロを返す。
     **/
     virtual  ErrCode
-    makeLegalActionList(
-            ActionDataList  &actList)  const;
+    computeBestAction(
+            ActionView  &actRet);
 
     //----------------------------------------------------------------
     /**   現在の局面の合法手を列挙する。
@@ -165,44 +165,6 @@ public:
             const  ActionView   &actFwd);
 
     //----------------------------------------------------------------
-    /**   駒を移動する指し手を入力して盤面を進める。
-    **
-    **  @param [in] xOldCol   移動元の座標（横方向）。
-    **  @param [in] yOldRow   移動元の座標（縦方向）。
-    **  @param [in] xNewCol   移動先の座標（横方向）。
-    **  @param [in] yNewRow   移動先の座標（縦方向）。
-    **  @param [in] flgProm   駒の成り、不成り。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    playMoveAction(
-            const  PosCol       xOldCol,
-            const  PosRow       yOldRow,
-            const  PosCol       xNewCol,
-            const  PosRow       yNewRow,
-            const  PieceIndex   flgProm);
-
-    //----------------------------------------------------------------
-    /**   持ち駒を打つ指し手を入力して盤面を進める。
-    **
-    **  @param [in] xPutCol   駒を打つ座標（横方向）。
-    **  @param [in] yPutRow   駒を打つ座標（縦方向）。
-    **  @param [in] pHand     打つ駒の種類。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    playPutAction(
-            const  PosCol       xPutCol,
-            const  PosRow       yPutRow,
-            const  PieceIndex   pHand);
-
-    //----------------------------------------------------------------
     /**   盤面を初期状態に設定する。
     **
     **  @return     エラーコードを返す。
@@ -212,54 +174,6 @@ public:
     **/
     virtual  ErrCode
     resetGame();
-
-    //----------------------------------------------------------------
-    /**   指定したマウス入力を、指し手データに変換する。
-    **
-    **  @note   この時点では成り不成りが未定でも良い。
-    **      移動先で成れる駒のリストが引数に返される。
-    **  @param [in] xOldCol   移動元の座標（横方向）。
-    **  @param [in] yOldRow   移動元の座標（縦方向）。
-    **  @param [in] xNewCol   移動先の座標（横方向）。
-    **  @param [in] yNewRow   移動先の座標（縦方向）。
-    **  @param[out] vProms    移動先で成れる駒のリスト。
-    **  @param[out] ptrAct    変換した結果を受け取る変数。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    setupMoveActionFromMouse(
-            const  PosCol       xOldCol,
-            const  PosRow       yOldRow,
-            const  PosCol       xNewCol,
-            const  PosRow       yNewRow,
-            PromoteList  *      vProms,
-            ActionView   *      ptrAct)  const;
-
-    //----------------------------------------------------------------
-    /**   指定したマウス入力を、指し手データに変換する。
-    **
-    **  @param [in] xPutCol   駒を打つ座標（横方向）。
-    **  @param [in] yPutRow   駒を打つ座標（縦方向）。
-    **  @param [in] pHand     打つ駒の種類。
-    **  @param[out] vProms    移動先で成れる駒のリスト。
-    **      駒を打つ場合は、成った状態では打てないが、
-    **      変則ルールに対応するために、念のため準備。
-    **  @param[out] ptrAct    変換した結果を受け取る変数。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    setupPutActionFromMouse(
-            const  PosCol       xPutCol,
-            const  PosRow       yPutRow,
-            const  PieceIndex   pHand,
-            PromoteList  *      vProms,
-            ActionView   *      ptrAct)  const;
 
     //----------------------------------------------------------------
     /**   コンピュータの思考を開始する。
@@ -470,7 +384,9 @@ private:
 //    Other Features.
 //
 private:
-
+    typedef     GameController      This;
+    GameController      (const  This  &);
+    This &  operator =  (const  This  &);
 public:
     //  テストクラス。  //
     friend  class   GameControllerTest;

@@ -155,15 +155,14 @@ GameController::~GameController()
 //
 
 //----------------------------------------------------------------
-//    現在の局面の合法手を列挙する。
+//    コンピュータの思考を開始する。
 //
 
 ErrCode
-GameController::makeLegalActionList(
-        ActionDataList  &actList)  const
+GameController::computeBestAction(
+        ActionView  &actRet)
 {
-    return ( this->m_gcBoard.makeLegalActionList(
-                     this->m_curTurn, 0, actList) );
+    return ( startThinking(actRet) );
 }
 
 //----------------------------------------------------------------
@@ -258,54 +257,6 @@ GameController::playForward(
 }
 
 //----------------------------------------------------------------
-//    駒を移動する指し手を入力して盤面を進める。
-//
-
-ErrCode
-GameController::playMoveAction(
-        const  PosCol       xOldCol,
-        const  PosRow       yOldRow,
-        const  PosCol       xNewCol,
-        const  PosRow       yNewRow,
-        const  PieceIndex   flgProm)
-{
-    const  Game::BoardState::ActionData
-        act = this->m_gcBoard.encodeMoveAction(
-                    xOldCol, yOldRow, xNewCol, yNewRow, flgProm);
-
-    const  ErrCode  retErr  = this->m_gcBoard.playForward(act);
-
-    if ( retErr == ERR_SUCCESS ) {
-        this->m_actList.push_back(act);
-    }
-
-    return ( retErr );
-}
-
-//----------------------------------------------------------------
-//    持ち駒を打つ指し手を入力して盤面を進める。
-//
-
-ErrCode
-GameController::playPutAction(
-        const  PosCol       xPutCol,
-        const  PosRow       yPutRow,
-        const  PieceIndex   pHand)
-{
-    const  Game::BoardState::ActionData
-        act = this->m_gcBoard.encodePutAction(
-                    xPutCol, yPutRow, pHand);
-
-    const  ErrCode  retErr  = this->m_gcBoard.playForward(act);
-
-    if ( retErr == ERR_SUCCESS ) {
-        this->m_actList.push_back(act);
-    }
-
-    return ( retErr );
-}
-
-//----------------------------------------------------------------
 //    盤面を初期状態に設定する。
 //
 
@@ -313,37 +264,6 @@ ErrCode
 GameController::resetGame()
 {
     return ( this->m_gcBoard.resetGameBoard() );
-}
-
-//----------------------------------------------------------------
-//    指定したマウス入力を、指し手データに変換する。
-//
-
-ErrCode
-GameController::setupMoveActionFromMouse(
-        const  PosCol       xOldCol,
-        const  PosRow       yOldRow,
-        const  PosCol       xNewCol,
-        const  PosRow       yNewRow,
-        PromoteList  *      vProms,
-        ActionView   *      ptrAct)  const
-{
-    return ( ERR_FAILURE );
-}
-
-//----------------------------------------------------------------
-//    指定したマウス入力を、指し手データに変換する。
-//
-
-ErrCode
-GameController::setupPutActionFromMouse(
-        const  PosCol       xPutCol,
-        const  PosRow       yPutRow,
-        const  PieceIndex   pHand,
-        PromoteList  *      vProms,
-        ActionView   *      ptrAct)  const
-{
-    return ( ERR_FAILURE );
 }
 
 //----------------------------------------------------------------

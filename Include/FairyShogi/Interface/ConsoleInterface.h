@@ -137,6 +137,10 @@ private:
     /**   スーパークラス。  **/
     typedef     GameController      Super;
 
+private:
+    typedef     ConsoleInterface    This;
+    ConsoleInterface    (const  This  &);
+    This &  operator =  (const  This  &);
 public:
     //  テストクラス。  //
     friend  class   ConsoleInterfaceTest;
