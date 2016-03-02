@@ -17,7 +17,7 @@
 
 #include    "FairyShogi/Game/BoardState.h"
 
-#include    "RuleTables.h"
+#include    "FairyShogi/Game/RuleTables.h"
 
 #include    "FairyShogi/Common/ActionView.h"
 

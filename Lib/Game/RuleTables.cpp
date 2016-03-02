@@ -15,7 +15,7 @@
 **      @file       Game/RuleTables.cpp
 **/
 
-#include    "RuleTables.h"
+#include    "FairyShogi/Game/RuleTables.h"
 
 #include    "FairyShogi/Game/BitSet.h"
 
