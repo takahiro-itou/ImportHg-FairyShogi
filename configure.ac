@@ -155,7 +155,7 @@ AC_CONFIG_FILES([
     Include/FairyShogi/.Config/ConfiguredFairyShogi.h
 ])
 
-
+AC_CONFIG_FILES([Lib/libfsgEngine.a:Lib/.LinkerScript/fsgEngine.in])
 AC_CONFIG_FILES([Lib/libfsgGame.a:Lib/.LinkerScript/fsgGame.in])
 AC_CONFIG_FILES([Lib/libfsgInterface.a:Lib/.LinkerScript/fsgInterface.in])
 
