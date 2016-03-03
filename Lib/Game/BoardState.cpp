@@ -62,6 +62,33 @@ CONSTEXPR_VAR   PieceIndex  s_tblHandConv[] = {
     BoardState::FIELD_WHITE_KING
 };
 
+CONSTEXPR_VAR   PieceIndex
+s_tblCatchToHand[BoardState::NUM_FIELD_PIECE_TYPES] = {
+    BoardState::HAND_EMPTY_PIECE,
+
+    BoardState::HAND_WHITE_PAWN,
+    BoardState::HAND_WHITE_SILVER,
+    BoardState::HAND_WHITE_GOLD,
+    BoardState::HAND_WHITE_BISHOP,
+    BoardState::HAND_WHITE_ROOK,
+    BoardState::HAND_WHITE_KING,
+    BoardState::HAND_WHITE_PAWN,
+    BoardState::HAND_WHITE_SILVER,
+    BoardState::HAND_WHITE_BISHOP,
+    BoardState::HAND_WHITE_ROOK,
+
+    BoardState::HAND_BLACK_PAWN,
+    BoardState::HAND_BLACK_SILVER,
+    BoardState::HAND_BLACK_GOLD,
+    BoardState::HAND_BLACK_BISHOP,
+    BoardState::HAND_BLACK_ROOK,
+    BoardState::HAND_BLACK_KING,
+    BoardState::HAND_BLACK_PAWN,
+    BoardState::HAND_BLACK_SILVER,
+    BoardState::HAND_BLACK_BISHOP,
+    BoardState::HAND_BLACK_ROOK
+};
+
 /**
 **    ダミーのグローバル変数。
 **
@@ -426,6 +453,50 @@ BoardState::makeLegalActionList(
 }
 
 //----------------------------------------------------------------
+//    指定した指し手で盤面を戻す。
+//
+
+ErrCode
+BoardState::playBackward(
+        const  ActionData   &actBwd)
+{
+    return ( playBackward(actBwd, this->m_icState) );
+}
+
+//----------------------------------------------------------------
+//    指定した指し手で盤面を戻す。
+//
+
+ErrCode
+BoardState::playBackward(
+        const  ActionData   &actBwd,
+        InternState         &curStat)
+{
+    //  駒を打っていた時は、その駒を持ち駒に戻す。  //
+    if ( actBwd.putHand != HAND_EMPTY_PIECE ) {
+        ++  curStat.m_nHands[actBwd.putHand];
+    }
+
+    //  捕獲した相手の駒があれば元に戻す。  //
+    //  これには、持ち駒を減らす処理と、    //
+    //  盤上に戻す処理の二つの処理が必要。  //
+    if ( actBwd.fpCatch != FIELD_EMPTY_SQUARE ) {
+        const  PieceIndex   piHand  = s_tblCatchToHand[actBwd.fpCatch];
+        --  curStat.m_nHands[piHand];
+    }
+    curStat.m_bsField[ getMatrixPos(actBwd.xNewCol, actBwd.yNewRow) ]
+            =  actBwd.fpCatch;
+
+    //  移動した駒がある時は、元の位置に戻す。  //
+    if ( (actBwd.fpMoved) != FIELD_EMPTY_SQUARE ) {
+        curStat.m_bsField[ getMatrixPos(actBwd.xOldCol, actBwd.yOldRow) ]
+                =  actBwd.fpMoved;
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
 //    指定した指し手で盤面を進める。
 //
 
@@ -433,56 +504,7 @@ ErrCode
 BoardState::playForward(
         const  ActionData   &actFwd)
 {
-    InternState  & icSt = (this->m_icState);
-
-    constexpr   PieceIndex  piCatchTable[]  = {
-        HAND_EMPTY_PIECE,
-
-        HAND_WHITE_PAWN,
-        HAND_WHITE_SILVER,
-        HAND_WHITE_GOLD,
-        HAND_WHITE_BISHOP,
-        HAND_WHITE_ROOK,
-        HAND_WHITE_KING,
-        HAND_WHITE_PAWN,
-        HAND_WHITE_SILVER,
-        HAND_WHITE_BISHOP,
-        HAND_WHITE_ROOK,
-
-        HAND_BLACK_PAWN,
-        HAND_BLACK_SILVER,
-        HAND_BLACK_GOLD,
-        HAND_BLACK_BISHOP,
-        HAND_BLACK_ROOK,
-        HAND_BLACK_KING,
-        HAND_BLACK_PAWN,
-        HAND_BLACK_SILVER,
-        HAND_BLACK_BISHOP,
-        HAND_BLACK_ROOK
-    };
-
-    //  移動元のマスを空きマスにする。  //
-    if ( (actFwd.fpMoved) != FIELD_EMPTY_SQUARE ) {
-        icSt.m_bsField[ getMatrixPos(actFwd.xOldCol, actFwd.yOldRow) ]
-                = FIELD_EMPTY_SQUARE;
-    }
-
-    //  移動先に指定した駒を書き込む。  //
-    icSt.m_bsField[ getMatrixPos(actFwd.xNewCol, actFwd.yNewRow) ]
-            = actFwd.fpAfter;
-
-    //  取った相手の駒を持ち駒にする。  //
-    if ( actFwd.fpCatch != FIELD_EMPTY_SQUARE ) {
-        const  PieceIndex   piHand  = piCatchTable[actFwd.fpCatch];
-        ++  icSt.m_nHands[piHand];
-    }
-
-    //  駒を打つ場合は持ち駒を減らす。  //
-    if ( actFwd.putHand != HAND_EMPTY_PIECE ) {
-        --  icSt.m_nHands[actFwd.putHand];
-    }
-
-    return ( ERR_SUCCESS );
+    return ( playForward(actFwd, this->m_icState) );
 }
 
 ErrCode
@@ -490,45 +512,19 @@ BoardState::playForward(
         const  ActionData   &actFwd,
         InternState         &curStat)
 {
-    constexpr   PieceIndex  piCatchTable[]  = {
-        HAND_EMPTY_PIECE,
-
-        HAND_WHITE_PAWN,
-        HAND_WHITE_SILVER,
-        HAND_WHITE_GOLD,
-        HAND_WHITE_BISHOP,
-        HAND_WHITE_ROOK,
-        HAND_WHITE_KING,
-        HAND_WHITE_PAWN,
-        HAND_WHITE_SILVER,
-        HAND_WHITE_BISHOP,
-        HAND_WHITE_ROOK,
-
-        HAND_BLACK_PAWN,
-        HAND_BLACK_SILVER,
-        HAND_BLACK_GOLD,
-        HAND_BLACK_BISHOP,
-        HAND_BLACK_ROOK,
-        HAND_BLACK_KING,
-        HAND_BLACK_PAWN,
-        HAND_BLACK_SILVER,
-        HAND_BLACK_BISHOP,
-        HAND_BLACK_ROOK
-    };
-
     //  移動元のマスを空きマスにする。  //
     if ( (actFwd.fpMoved) != FIELD_EMPTY_SQUARE ) {
         curStat.m_bsField[ getMatrixPos(actFwd.xOldCol, actFwd.yOldRow) ]
-                = FIELD_EMPTY_SQUARE;
+                =  FIELD_EMPTY_SQUARE;
     }
 
     //  移動先に指定した駒を書き込む。  //
     curStat.m_bsField[ getMatrixPos(actFwd.xNewCol, actFwd.yNewRow) ]
-            = actFwd.fpAfter;
+            =  actFwd.fpAfter;
 
     //  取った相手の駒を持ち駒にする。  //
     if ( actFwd.fpCatch != FIELD_EMPTY_SQUARE ) {
-        const  PieceIndex   piHand  = piCatchTable[actFwd.fpCatch];
+        const  PieceIndex   piHand  = s_tblCatchToHand[actFwd.fpCatch];
         ++  curStat.m_nHands[piHand];
     }
 
