@@ -62,7 +62,7 @@ if [ -d  Lib/${testcommondir}/Tests ] ; then
       &&  ${LN_S}  ../../Tests/.TestsCommon/Makefile.am)
 fi
 
-for  dir  in  Common  Game  Interface  ; do
+for  dir  in  Common  Engine  Game  Interface  ; do
     if [ -d Lib/${dir}/Tests ] ; then
         (cd  Lib/${dir}/Tests  \
           &&  ${RM_F}  Makefile.am  \

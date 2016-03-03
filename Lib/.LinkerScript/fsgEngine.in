@@ -1,0 +1,7 @@
+
+/*  Linker Script.  */
+INPUT( AS_NEEDED(Engine/libfsgEngine.staticd.a) )
+
+INPUT( AS_NEEDED(-lfsgGame) )
+
+
