@@ -355,6 +355,14 @@ executePlayerCommand(
 }
 
 ErrCode
+executeBackwardCommand(
+        const  std::string  &strArgs,
+        GameController      &objGame)
+{
+    return ( objGame.playBackward() );
+}
+
+ErrCode
 executeForwardCommand(
         const  std::string  &strArgs,
         GameController      &objGame)
@@ -598,6 +606,7 @@ parseConsoleInput(
     } else if ( vTokens[0] == "fwd" ) {
         vTokens.push_back("");
         return ( executeForwardCommand(vTokens[1], objGame) );
+
     } else if ( vTokens[0] == "sfen" ) {
         return ( displaySfen(objGame, std::cout) );
     } else if ( vTokens[0] == "show" ) {
@@ -613,6 +622,9 @@ parseConsoleInput(
         return ( executeFlipCommand(vTokens[1], objGame) );
     } else if ( vTokens[0] == "srand" ) {
         std::srand( ::time(NULL) );
+    } else if ( (vTokens[0] == "bwd") || (vTokens[0] == "back") ) {
+        vTokens.push_back("");
+        return ( executeBackwardCommand(vTokens[1], objGame) );
     }
 
     std::cerr   <<  "Invalid Command."  << std::endl;

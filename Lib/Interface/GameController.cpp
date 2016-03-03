@@ -238,6 +238,49 @@ GameController::makeLegalActionList(
 }
 
 //----------------------------------------------------------------
+//    最後に入力した指し手で盤面を戻す。
+//
+
+ErrCode
+GameController::playBackward()
+{
+    if ( (this->m_actList.empty()) ) {
+        return ( ERR_INVALID_COMMAND );
+    }
+
+    const  ActionData  actData  =  (this->m_actList.back());
+
+    ErrCode     retErr  = ERR_SUCCESS;
+    retErr  =  this->m_gcBoard.playBackward(actData);
+
+    if ( retErr != ERR_SUCCESS ) {
+        return ( retErr );
+    }
+
+    this->m_actList.pop_back();
+    return ( retErr );
+}
+
+//----------------------------------------------------------------
+//    指定した指し手で盤面を戻す。
+//
+
+ErrCode
+GameController::playBackward(
+        const  ActionView   &actBwd)
+{
+    ErrCode     retErr  = ERR_SUCCESS;
+    ActionData  actData;
+
+    retErr  =  BoardState::encodeActionData(actBwd, &actData);
+    if ( retErr != ERR_SUCCESS ) {
+        return ( retErr );
+    }
+
+    return ( this->m_gcBoard.playBackward(actData) );
+}
+
+//----------------------------------------------------------------
 //    指定した指し手で盤面を進める。
 //
 
@@ -253,7 +296,12 @@ GameController::playForward(
         return ( retErr );
     }
 
-    return ( this->m_gcBoard.playForward(actData) );
+    retErr  =  this->m_gcBoard.playForward(actData);
+    if ( retErr == ERR_SUCCESS ) {
+        this->m_actList.push_back(actData);
+    }
+
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
