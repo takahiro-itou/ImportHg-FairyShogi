@@ -559,6 +559,40 @@ executeFlipCommand(
 }
 
 ErrCode
+executeRecordCommand(
+        const  std::string      &strArgs,
+        const  GameController   &objGame)
+{
+    ActionList  actList;
+    ErrCode     retErr  =  ERR_SUCCESS;
+
+    retErr  =  objGame.writeActionList(actList);
+    if ( retErr != ERR_SUCCESS ) {
+        return ( retErr );
+    }
+
+    std::ostream  *    pOutStr  =  &(std::cout);
+    std::ofstream      ofsRec;
+    if ( !(strArgs.empty()) ) {
+        ofsRec.open( strArgs.c_str() );
+        if ( !ofsRec ) {
+            std::cerr   <<  "File Open Failure. ["  <<  strArgs
+                        <<  "]"     <<  std::endl;
+        } else {
+            pOutStr =  &(ofsRec);
+        }
+    }
+
+    const  ActIter  itrEnd  =  actList.end();
+    for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr )
+    {
+        displayActionView( * itr, 1,  * pOutStr )   <<  std::endl;
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+ErrCode
 executeRotateCommand(
         const  std::string  &strArgs,
         GameController      &objGame)
@@ -625,6 +659,9 @@ parseConsoleInput(
     } else if ( (vTokens[0] == "bwd") || (vTokens[0] == "back") ) {
         vTokens.push_back("");
         return ( executeBackwardCommand(vTokens[1], objGame) );
+    } else if ( (vTokens[0] == "record") )  {
+        vTokens.push_back("");
+        return ( executeRecordCommand(vTokens[1], objGame) );
     }
 
     std::cerr   <<  "Invalid Command."  << std::endl;

@@ -416,14 +416,19 @@ GameController::writeActionList(
     actList.clear();
     actList.resize(obj.size());
 
-    size_t          idx     = 0;
-    const  ActIter  itrEnd  = obj.end();
+    ErrCode         retErr  =  ERR_SUCCESS;
+    ErrCode         tmpErr;
+    size_t          idx     =  0;
+    const  ActIter  itrEnd  =  obj.end();
     for ( ActIter itr = obj.begin(); itr != itrEnd; ++ itr, ++ idx )
     {
-        this->m_gcBoard.decodeActionData( *itr, &actList[idx] );
+        tmpErr  = decodeActionData(this->m_flgShow, (* itr), &actList[idx]);
+        if ( tmpErr != ERR_SUCCESS ) {
+            retErr  =  tmpErr;
+        }
     }
 
-    return ( ERR_SUCCESS );
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
