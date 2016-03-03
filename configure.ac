@@ -146,6 +146,7 @@ AC_CONFIG_FILES([
     Lib/Makefile
     Lib/.Config/Makefile
     Lib/Common/Makefile
+    Lib/Engine/Makefile
     Lib/Game/Makefile
     Lib/Interface/Makefile
 ])
@@ -164,6 +165,7 @@ dnl
 
 AC_CONFIG_FILES([
     Lib/Common/Tests/Makefile
+    Lib/Engine/Tests/Makefile
     Lib/Game/Tests/Makefile
     Lib/Interface/Tests/Makefile
     Lib/Tests/Makefile
