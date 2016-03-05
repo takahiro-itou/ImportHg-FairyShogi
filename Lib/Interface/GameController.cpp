@@ -32,13 +32,22 @@ namespace  {
 **    棋譜に表示する駒の名称。
 **/
 
-constexpr   const   char  *
-s_tblPieceName[]    = {
+CONSTEXPR_VAR   const   char  *
+s_tblPieceName[Common::NUM_FIELD_PIECE_TYPES]  =  {
     "",
-    "+Pawn",  "+Silver",  "+Gold",  "+Bishop",  "+Rook",  "+King",
-    "+Tokin", "+NariGin", "+Uma",   "+Ryu",
-    "-Pawn",  "-Silver",  "-Gold",  "-Bishop",  "-Rook",  "-King",
-    "-Tokin", "-NariGin", "-Uma",   "-Ryu"
+    "FU",  "KY",  "KE",  "GI",  "KI",  "KA",  "HI",  "OU",
+    "TO",  "NY",  "NK",  "NG",  "UM",  "RY",
+    "FU",  "KY",  "KE",  "GI",  "KI",  "KA",  "HI",  "OU",
+    "TO",  "NY",  "NK",  "NG",  "UM",  "RY"
+};
+
+CONSTEXPR_VAR   const   char  *
+s_tblPieceSfenName[Common::NUM_FIELD_PIECE_TYPES]  =  {
+    "  ",
+    " P",  " L",  " N",  " S",  " G",  " B",  " R",  " K",
+    "+P",  "+L",  "+N",  "+S",         "+B",  "+R",
+    " p",  " l",  " n",  " s",  " g",  " b",  " r",  " k",
+    "+p",  "+l",  "+n",  "+s",         "+b",  "+r"
 };
 
 /**
