@@ -33,6 +33,7 @@ LIBNOINSTHEADERS        =  \
 
 INCLIBHEADERS           =  \
         $(INCLIBDIR)/ActionView.h          \
+        $(INCLIBDIR)/DefaultShogiPieces.h  \
         $(INCLIBDIR)/FairyShogiConst.h     \
         $(INCLIBDIR)/FairyShogiSettings.h  \
         $(INCLIBDIR)/FairyShogiTypes.h     \
