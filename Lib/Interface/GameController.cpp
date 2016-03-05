@@ -54,25 +54,6 @@ s_tblHandName[Game::BoardState::NUM_HAND_TYPES] = {
 
 using   Game::BoardState;
 
-CONSTEXPR_VAR   PieceIndex
-s_tblHandConv[BoardState::NUM_HAND_TYPES]   = {
-    BoardState::FIELD_EMPTY_SQUARE,
-
-    BoardState::FIELD_BLACK_PAWN,
-    BoardState::FIELD_BLACK_SILVER,
-    BoardState::FIELD_BLACK_GOLD,
-    BoardState::FIELD_BLACK_BISHOP,
-    BoardState::FIELD_BLACK_ROOK,
-    BoardState::FIELD_BLACK_KING,
-
-    BoardState::FIELD_WHITE_PAWN,
-    BoardState::FIELD_WHITE_SILVER,
-    BoardState::FIELD_WHITE_GOLD,
-    BoardState::FIELD_WHITE_BISHOP,
-    BoardState::FIELD_WHITE_ROOK,
-    BoardState::FIELD_WHITE_KING
-};
-
 CONSTEXPR_VAR   const   int
 s_tblPromotion[]    = {
     0,
@@ -105,6 +86,26 @@ s_tblPromotion[]    = {
 //
 //    GameController  class.
 //
+
+const   Common::EFieldPiece
+GameController::s_tblHandConv[Common::NUM_HAND_TYPES]   =
+{
+    Common::FIELD_EMPTY_SQUARE,
+
+    Common::FIELD_BLACK_PAWN,
+    Common::FIELD_BLACK_SILVER,
+    Common::FIELD_BLACK_GOLD,
+    Common::FIELD_BLACK_BISHOP,
+    Common::FIELD_BLACK_ROOK,
+    Common::FIELD_BLACK_KING,
+
+    Common::FIELD_WHITE_PAWN,
+    Common::FIELD_WHITE_SILVER,
+    Common::FIELD_WHITE_GOLD,
+    Common::FIELD_WHITE_BISHOP,
+    Common::FIELD_WHITE_ROOK,
+    Common::FIELD_WHITE_KING
+};
 
 //========================================================================
 //
@@ -569,7 +570,6 @@ GameController::setConstraint(
     return ( ERR_SUCCESS );
 }
 
-
 //----------------------------------------------------------------
 //    現在の手番を持つプレーヤーを取得する。
 //
@@ -590,6 +590,18 @@ GameController::setCurrentPlayer(
 {
     this->m_curTurn = cPlayer;
     return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    指定した座標にある駒を取得する。
+//
+
+Common::EFieldPiece
+GameController::getFieldPiece(
+        const  PosCol   xCol,
+        const  PosRow   yRow)  const
+{
+    return ( this->m_gcBoard.decodeFieldPiece(xCol, yRow) );
 }
 
 //----------------------------------------------------------------

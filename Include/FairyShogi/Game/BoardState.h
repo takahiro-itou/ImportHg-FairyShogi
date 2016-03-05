@@ -208,6 +208,18 @@ public:
             ActionView  *  const    actView);
 
     //----------------------------------------------------------------
+    /**   指定した座標にある駒を取得する。
+    **
+    **  @param [in] xCol      横方向の座標。
+    **  @param [in] yRow      縦方向の座標。
+    **  @return     指定した座標の駒番号を返す。
+    **/
+    Common::EFieldPiece
+    decodeFieldPiece(
+            const  PosCol   xCol,
+            const  PosRow   yRow)  const;
+
+    //----------------------------------------------------------------
     /**   指し手の表示用形式を内部形式に変換する。
     **
     **  @param [in] actView   指し手データの表示用形式。

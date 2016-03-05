@@ -20,6 +20,7 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Common/DefaultShogiPieces.h"
 #include    "FairyShogi/Common/FairyShogiConst.h"
 
 #include    "FairyShogi/Game/BoardState.h"
@@ -339,6 +340,18 @@ public:
             const  PlayerIndex  cPlayer);
 
     //----------------------------------------------------------------
+    /**   指定した座標にある駒を取得する。
+    **
+    **  @param [in] xCol      横方向の座標。
+    **  @param [in] yRow      縦方向の座標。
+    **  @return     指定した座標の駒番号を返す。
+    **/
+    Common::EFieldPiece
+    getFieldPiece(
+            const  PosCol   xCol,
+            const  PosRow   yRow)  const;
+
+    //----------------------------------------------------------------
     /**   ゲームの勝敗を取得する。
     **
     **  @return     ゲームの勝敗を返す。
@@ -416,6 +429,15 @@ private:
 //
 //    Member Variables.
 //
+protected:
+
+    /**
+    **    持ち駒を打つ時の番号変換表。
+    **  持ち駒番号を、盤上の駒番号に変換する。
+    **/
+    static  const   Common::EFieldPiece
+    s_tblHandConv[Common::NUM_HAND_TYPES];
+
 private:
 
     /**   盤面の状態。  **/

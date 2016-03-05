@@ -39,25 +39,6 @@ s_tblHandName[Game::BoardState::NUM_HAND_TYPES] = {
 
 using   Game::BoardState;
 
-CONSTEXPR_VAR   PieceIndex
-s_tblHandConv[BoardState::NUM_HAND_TYPES]   = {
-    BoardState::FIELD_EMPTY_SQUARE,
-
-    BoardState::FIELD_BLACK_PAWN,
-    BoardState::FIELD_BLACK_SILVER,
-    BoardState::FIELD_BLACK_GOLD,
-    BoardState::FIELD_BLACK_BISHOP,
-    BoardState::FIELD_BLACK_ROOK,
-    BoardState::FIELD_BLACK_KING,
-
-    BoardState::FIELD_WHITE_PAWN,
-    BoardState::FIELD_WHITE_SILVER,
-    BoardState::FIELD_WHITE_GOLD,
-    BoardState::FIELD_WHITE_BISHOP,
-    BoardState::FIELD_WHITE_ROOK,
-    BoardState::FIELD_WHITE_KING
-};
-
 CONSTEXPR_VAR   const   int
 s_tblPromotion[]    = {
     0,
@@ -190,7 +171,7 @@ ConsoleInterface::parseActionText(
         for ( int i = 0; i < Game::BoardState::NUM_HAND_TYPES; ++ i ) {
             if ( strPlay[0] == s_tblHandName[i] ) {
                 ptrAct->hpiDrop = i;
-                pifSrc  = s_tblHandConv[i];
+                pifSrc  =  s_tblHandConv[i];
                 break;
             }
         }

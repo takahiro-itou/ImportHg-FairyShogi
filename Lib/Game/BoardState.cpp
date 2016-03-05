@@ -32,6 +32,53 @@ namespace  Game  {
 
 namespace  {
 
+CONSTEXPR_VAR   Common::EFieldPiece
+s_tblDecodeField[]  =  {
+    Common::FIELD_EMPTY_SQUARE,
+
+    Common::FIELD_BLACK_PAWN,
+    Common::FIELD_BLACK_SILVER,
+    Common::FIELD_BLACK_GOLD,
+    Common::FIELD_BLACK_BISHOP,
+    Common::FIELD_BLACK_ROOK,
+    Common::FIELD_BLACK_KING,
+    Common::FIELD_BLACK_PR_PAWN,
+    Common::FIELD_BLACK_PR_SILVER,
+    Common::FIELD_BLACK_PR_BISHOP,
+    Common::FIELD_BLACK_PR_ROOK,
+
+    Common::FIELD_WHITE_PAWN,
+    Common::FIELD_WHITE_SILVER,
+    Common::FIELD_WHITE_GOLD,
+    Common::FIELD_WHITE_BISHOP,
+    Common::FIELD_WHITE_ROOK,
+    Common::FIELD_WHITE_KING,
+    Common::FIELD_WHITE_PR_PAWN,
+    Common::FIELD_WHITE_PR_SILVER,
+    Common::FIELD_WHITE_PR_BISHOP,
+    Common::FIELD_WHITE_PR_ROOK
+};
+
+
+CONSTEXPR_VAR   Common::EHandPiece
+s_tblDecodeHands[]  =  {
+    Common::HAND_EMPTY_PIECE,
+
+    Common::HAND_BLACK_PAWN,
+    Common::HAND_BLACK_SILVER,
+    Common::HAND_BLACK_GOLD,
+    Common::HAND_BLACK_BISHOP,
+    Common::HAND_BLACK_ROOK,
+    Common::HAND_BLACK_KING,
+
+    Common::HAND_WHITE_PAWN,
+    Common::HAND_WHITE_SILVER,
+    Common::HAND_WHITE_GOLD,
+    Common::HAND_WHITE_BISHOP,
+    Common::HAND_WHITE_ROOK,
+    Common::HAND_WHITE_KING
+};
+
 CONSTEXPR_VAR   int
 s_tblOwner[BoardState::NUM_FIELD_PIECE_TYPES] = {
     -1,
@@ -190,6 +237,18 @@ BoardState::decodeActionData(
     actView->fLegals        =  (actData.fLegals);
 
     return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    指定した座標にある駒を取得する。
+//
+
+Common::EFieldPiece
+BoardState::decodeFieldPiece(
+        const  PosCol   xCol,
+        const  PosRow   yRow)  const
+{
+    return ( s_tblDecodeField[ getFieldPiece(xCol, yRow) ] );
 }
 
 //----------------------------------------------------------------
