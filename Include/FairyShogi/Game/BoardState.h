@@ -88,6 +88,34 @@ public:
     };
 
     enum  {
+        BOARD_EMPTY_SQUARE,
+
+        BOARD_BLACK_PAWN,
+        BOARD_BLACK_SILVER,
+        BOARD_BLACK_GOLD,
+        BOARD_BLACK_BISHOP,
+        BOARD_BLACK_ROOK,
+        BOARD_BLACK_KING,
+        BOARD_BLACK_PR_PAWN,
+        BOARD_BLACK_PR_SILVER,
+        BOARD_BLACK_PR_BISHOP,
+        BOARD_BLACK_PR_ROOK,
+
+        BOARD_WHITE_PAWN,
+        BOARD_WHITE_SILVER,
+        BOARD_WHITE_GOLD,
+        BOARD_WHITE_BISHOP,
+        BOARD_WHITE_ROOK,
+        BOARD_WHITE_KING,
+        BOARD_WHITE_PR_PAWN,
+        BOARD_WHITE_PR_SILVER,
+        BOARD_WHITE_PR_BISHOP,
+        BOARD_WHITE_PR_ROOK,
+
+        NUM_PIECE_TYPES
+    };
+
+    enum  {
         HAND_EMPTY_PIECE,
 
         HAND_BLACK_PAWN,
@@ -107,11 +135,31 @@ public:
         NUM_HAND_TYPES
     };
 
+    enum  {
+        IHAND_EMPTY_PIECE,
+
+        IHAND_BLACK_PAWN,
+        IHAND_BLACK_SILVER,
+        IHAND_BLACK_GOLD,
+        IHAND_BLACK_BISHOP,
+        IHAND_BLACK_ROOK,
+        IHAND_BLACK_KING,
+
+        IHAND_WHITE_PAWN,
+        IHAND_WHITE_SILVER,
+        IHAND_WHITE_GOLD,
+        IHAND_WHITE_BISHOP,
+        IHAND_WHITE_ROOK,
+        IHAND_WHITE_KING,
+
+        NUM_IHAND_TYPES
+    };
+
     /**   盤面データの内部形式の型。    **/
     struct  InternState
     {
         PieceIndex  m_bsField[POS_NUM_ROWS * POS_NUM_COLS];
-        THandCount  m_nHands [NUM_HAND_TYPES];
+        THandCount  m_hcHands[NUM_IHAND_TYPES];
     };
 
     /**   指し手データの内部形式の型。  **/
@@ -124,7 +172,7 @@ public:
         PieceIndex  fpCatch;        /**<  捕まえた駒。  **/
         PieceIndex  fpMoved;        /**<  移動した駒。  **/
         PieceIndex  fpAfter;        /**<  移動後成り。  **/
-        PieceIndex  putHand;        /**<  打った駒。    **/
+        PieceIndex  hpiDrop;        /**<  打った駒。    **/
         ActionFlag  fLegals;        /**<  合法手判定。  **/
     };
 

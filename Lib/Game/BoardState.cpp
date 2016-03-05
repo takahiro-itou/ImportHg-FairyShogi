@@ -33,7 +33,7 @@ namespace  Game  {
 namespace  {
 
 CONSTEXPR_VAR   Common::EFieldPiece
-s_tblDecodeField[]  =  {
+s_tblDecodeField[BoardState::NUM_PIECE_TYPES]   =  {
     Common::FIELD_EMPTY_SQUARE,
 
     Common::FIELD_BLACK_PAWN,
@@ -59,9 +59,43 @@ s_tblDecodeField[]  =  {
     Common::FIELD_WHITE_PR_ROOK
 };
 
+CONSTEXPR_VAR   PieceIndex
+s_tblEncodeField[Common::NUM_FIELD_PIECE_TYPES]  =  {
+    BoardState::BOARD_EMPTY_SQUARE,
+
+    BoardState::BOARD_BLACK_PAWN,
+    BoardState::BOARD_EMPTY_SQUARE,         //  香車。  //
+    BoardState::BOARD_EMPTY_SQUARE,         //  桂馬。  //
+    BoardState::BOARD_BLACK_SILVER,
+    BoardState::BOARD_BLACK_GOLD,
+    BoardState::BOARD_BLACK_BISHOP,
+    BoardState::BOARD_BLACK_ROOK,
+    BoardState::BOARD_BLACK_KING,
+    BoardState::BOARD_BLACK_PR_PAWN,
+    BoardState::BOARD_EMPTY_SQUARE,         //  成香。  //
+    BoardState::BOARD_EMPTY_SQUARE,         //  成桂。  //
+    BoardState::BOARD_BLACK_PR_SILVER,
+    BoardState::BOARD_BLACK_PR_BISHOP,
+    BoardState::BOARD_BLACK_PR_ROOK,
+
+    BoardState::BOARD_WHITE_PAWN,
+    BoardState::BOARD_EMPTY_SQUARE,         //  香車。  //
+    BoardState::BOARD_EMPTY_SQUARE,         //  桂馬。  //
+    BoardState::BOARD_WHITE_SILVER,
+    BoardState::BOARD_WHITE_GOLD,
+    BoardState::BOARD_WHITE_BISHOP,
+    BoardState::BOARD_WHITE_ROOK,
+    BoardState::BOARD_WHITE_KING,
+    BoardState::BOARD_WHITE_PR_PAWN,
+    BoardState::BOARD_EMPTY_SQUARE,         //  成香。  //
+    BoardState::BOARD_EMPTY_SQUARE,         //  成桂。  //
+    BoardState::BOARD_WHITE_PR_SILVER,
+    BoardState::BOARD_WHITE_PR_BISHOP,
+    BoardState::BOARD_WHITE_PR_ROOK
+};
 
 CONSTEXPR_VAR   Common::EHandPiece
-s_tblDecodeHands[]  =  {
+s_tblDecodeHands[BoardState::NUM_IHAND_TYPES]   =  {
     Common::HAND_EMPTY_PIECE,
 
     Common::HAND_BLACK_PAWN,
@@ -77,6 +111,29 @@ s_tblDecodeHands[]  =  {
     Common::HAND_WHITE_BISHOP,
     Common::HAND_WHITE_ROOK,
     Common::HAND_WHITE_KING
+};
+
+CONSTEXPR_VAR   PieceIndex
+s_tblEncodeHands[Common::NUM_HAND_TYPES]  =  {
+    BoardState::IHAND_EMPTY_PIECE,
+
+    BoardState::IHAND_BLACK_PAWN,
+    BoardState::IHAND_EMPTY_PIECE,          //  香車。  //
+    BoardState::IHAND_EMPTY_PIECE,          //  桂馬。  //
+    BoardState::IHAND_BLACK_SILVER,
+    BoardState::IHAND_BLACK_GOLD,
+    BoardState::IHAND_BLACK_BISHOP,
+    BoardState::IHAND_BLACK_ROOK,
+    BoardState::IHAND_BLACK_KING,
+
+    BoardState::IHAND_WHITE_PAWN,
+    BoardState::IHAND_EMPTY_PIECE,          //  香車。  //
+    BoardState::IHAND_EMPTY_PIECE,          //  桂馬。  //
+    BoardState::IHAND_WHITE_SILVER,
+    BoardState::IHAND_WHITE_GOLD,
+    BoardState::IHAND_WHITE_BISHOP,
+    BoardState::IHAND_WHITE_ROOK,
+    BoardState::IHAND_WHITE_KING
 };
 
 CONSTEXPR_VAR   int
@@ -229,10 +286,10 @@ BoardState::decodeActionData(
     actView->xPlayOldCol    =  (actData.xOldCol + 1);
     actView->yPlayOldRow    =  (actData.yOldRow + 1);
 
-    actView->fpAfter        =  (actData.fpAfter);
-    actView->fpMoved        =  (actData.fpMoved);
-    actView->fpCatch        =  (actData.fpCatch);
-    actView->hpiDrop        =  (actData.putHand);
+    actView->fpAfter        =  s_tblDecodeField[ actData.fpAfter ];
+    actView->fpMoved        =  s_tblDecodeField[ actData.fpMoved ];
+    actView->fpCatch        =  s_tblDecodeField[ actData.fpCatch ];
+    actView->hpiDrop        =  s_tblDecodeHands[ actData.hpiDrop ];
 
     actView->fLegals        =  (actData.fLegals);
 
@@ -266,10 +323,12 @@ BoardState::encodeActionData(
     actData->yNewRow    =  (actView.yPlayNewRow - 1);
     actData->xOldCol    =  (actView.xPlayOldCol - 1);
     actData->yOldRow    =  (actView.yPlayOldRow - 1);
-    actData->fpCatch    =  (actView.fpCatch);
-    actData->fpMoved    =  (actView.fpMoved);
-    actData->fpAfter    =  (actView.fpAfter);
-    actData->putHand    =  (actView.hpiDrop);
+
+    actData->fpCatch    =  s_tblEncodeField[ actView.fpCatch ];
+    actData->fpMoved    =  s_tblEncodeField[ actView.fpMoved ];
+    actData->fpAfter    =  s_tblEncodeField[ actView.fpAfter ];
+    actData->hpiDrop    =  s_tblEncodeHands[ actView.hpiDrop ];
+
     actData->fLegals    =  (actView.fLegals);
 
     return ( ERR_SUCCESS );
@@ -399,7 +458,7 @@ BoardState::makeLegalActionList(
             actData.fpCatch = cpiTrg;
             actData.fpMoved = p;
             actData.fpAfter = p;
-            actData.putHand = HAND_EMPTY_PIECE;
+            actData.hpiDrop = IHAND_EMPTY_PIECE;
             actData.fLegals = Common::ALF_LEGAL_ACTION;
 
             int cntProm = 0;
@@ -454,12 +513,12 @@ BoardState::makeLegalActionList(
         actData.fpCatch = FIELD_EMPTY_SQUARE;
         actData.fpMoved = FIELD_EMPTY_SQUARE;
         actData.fpAfter = FIELD_EMPTY_SQUARE;
-        actData.putHand = HAND_EMPTY_PIECE;
+        actData.hpiDrop = IHAND_EMPTY_PIECE;
         actData.fLegals = Common::ALF_LEGAL_ACTION;
 
         for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
             if ( s_tblHandOwner[k] != cPlayer ) { continue; }
-            if ( curStat.m_nHands[k] <= 0 )     { continue; }
+            if ( curStat.m_hcHands[k] <= 0 )    { continue; }
 
             if ( (k == HAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
                 continue;
@@ -488,7 +547,7 @@ BoardState::makeLegalActionList(
                 actData.fLegals |= Common::ALF_DOUBLE_PAWNS;
             }
 
-            actData.putHand = k;
+            actData.hpiDrop = k;
             actData.fpAfter = s_tblHandConv[k];
 
             //  動かしてみて、自殺だったらスキップ。    //
@@ -532,8 +591,8 @@ BoardState::playBackward(
         InternState         &curStat)
 {
     //  駒を打っていた時は、その駒を持ち駒に戻す。  //
-    if ( actBwd.putHand != HAND_EMPTY_PIECE ) {
-        ++  curStat.m_nHands[actBwd.putHand];
+    if ( actBwd.hpiDrop != IHAND_EMPTY_PIECE ) {
+        ++  curStat.m_hcHands[actBwd.hpiDrop];
     }
 
     //  捕獲した相手の駒があれば元に戻す。  //
@@ -541,7 +600,7 @@ BoardState::playBackward(
     //  盤上に戻す処理の二つの処理が必要。  //
     if ( actBwd.fpCatch != FIELD_EMPTY_SQUARE ) {
         const  PieceIndex   piHand  = s_tblCatchToHand[actBwd.fpCatch];
-        --  curStat.m_nHands[piHand];
+        --  curStat.m_hcHands[piHand];
     }
     curStat.m_bsField[ getMatrixPos(actBwd.xNewCol, actBwd.yNewRow) ]
             =  actBwd.fpCatch;
@@ -584,12 +643,12 @@ BoardState::playForward(
     //  取った相手の駒を持ち駒にする。  //
     if ( actFwd.fpCatch != FIELD_EMPTY_SQUARE ) {
         const  PieceIndex   piHand  = s_tblCatchToHand[actFwd.fpCatch];
-        ++  curStat.m_nHands[piHand];
+        ++  curStat.m_hcHands[piHand];
     }
 
     //  駒を打つ場合は持ち駒を減らす。  //
-    if ( actFwd.putHand != HAND_EMPTY_PIECE ) {
-        --  curStat.m_nHands[actFwd.putHand];
+    if ( actFwd.hpiDrop != IHAND_EMPTY_PIECE ) {
+        --  curStat.m_hcHands[actFwd.hpiDrop];
     }
 
     return ( ERR_SUCCESS );
@@ -632,7 +691,7 @@ BoardState::resetGameBoard(
     pCurStat->m_bsField[getMatrixPos(0, 4)] = FIELD_BLACK_ROOK;
 
     for ( int hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
-        pCurStat->m_nHands[hp]  = 0;
+        pCurStat->m_hcHands[hp] = 0;
     }
 
     return ( ERR_SUCCESS );
@@ -671,7 +730,7 @@ BoardState::copyToViewBuffer(
     }
 
     for ( int hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
-        bufView.nHands[hp]  = curStat.m_nHands[hp];
+        bufView.nHands[hp] = curStat.m_hcHands[hp];
     }
 
     return ( ERR_FAILURE );
