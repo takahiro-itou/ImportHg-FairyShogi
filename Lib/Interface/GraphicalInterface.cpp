@@ -29,25 +29,6 @@ namespace  {
 
 using   Game::BoardState;
 
-CONSTEXPR_VAR   PieceIndex
-s_tblHandConv[BoardState::NUM_HAND_TYPES]   = {
-    BoardState::FIELD_EMPTY_SQUARE,
-
-    BoardState::FIELD_BLACK_PAWN,
-    BoardState::FIELD_BLACK_SILVER,
-    BoardState::FIELD_BLACK_GOLD,
-    BoardState::FIELD_BLACK_BISHOP,
-    BoardState::FIELD_BLACK_ROOK,
-    BoardState::FIELD_BLACK_KING,
-
-    BoardState::FIELD_WHITE_PAWN,
-    BoardState::FIELD_WHITE_SILVER,
-    BoardState::FIELD_WHITE_GOLD,
-    BoardState::FIELD_WHITE_BISHOP,
-    BoardState::FIELD_WHITE_ROOK,
-    BoardState::FIELD_WHITE_KING
-};
-
 CONSTEXPR_VAR   const   int
 s_tblPromotion[]    = {
     BoardState::FIELD_EMPTY_SQUARE,
@@ -208,6 +189,7 @@ GraphicalInterface::setupPutActionFromMouse(
     ptrAct->yPlayOldRow = 0;
     ptrAct->xDispOldCol = 0;
     ptrAct->yDispOldRow = 0;
+
     ptrAct->fpCatch = curStat.getFieldPiece(
                             ptrAct->xPlayNewCol - 1,
                             ptrAct->yPlayNewRow - 1);
