@@ -699,6 +699,14 @@ int  main(int argc, char * argv[])
         if ( retVal != ERR_SUCCESS ) {
             std::cerr   <<  "\nCommand Failed"  <<  std::endl;
         }
+        GameStateFlags  fgStat  =  g_gcGameCtrl.testGameStateResult();
+        std::cerr   <<  "# DEBUG : Game Status = "  <<  fgStat
+                <<  std::endl;
+        if ( fgStat == Common::GAME_IS_OVER ) {
+            std::cerr   <<  "# DEBUG : Game Result = "
+                        <<  g_gcGameCtrl.getGameResult()
+                        <<  std::endl;
+        }
     }
 
     g_outStrKifu.close();
