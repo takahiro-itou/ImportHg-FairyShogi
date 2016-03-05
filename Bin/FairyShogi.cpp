@@ -15,6 +15,8 @@
 **      @file       Bin/FairyShogi.cpp
 **/
 
+#include    "CommandInterpreter.h"
+
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/ViewBuffer.h"
@@ -29,6 +31,8 @@
 #include    <vector>
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
+
+Interface::CommandInterpreter   g_ciGameCtrl;
 
 typedef     Interface::ConsoleInterface     GameController;
 
@@ -647,12 +651,14 @@ int  main(int argc, char * argv[])
                 <<  std::endl;
 
     std::string     strBuf;
+    ErrCode         retErr;
+
     std::istream   & inStr  = (std::cin);
 
-    g_gcGameCtrl.resetGame();
+    // g_gcGameCtrl.resetGame();
 
-    g_outStrKifu.open(".backup.kifu.swp");
-    displaySfen(g_gcGameCtrl,  g_outStrKifu);
+    // g_outStrKifu.open(".backup.kifu.swp");
+    // displaySfen(g_gcGameCtrl,  g_outStrKifu);
 
     for ( ;; ) {
         if ( ! inStr ) {
@@ -660,29 +666,35 @@ int  main(int argc, char * argv[])
         }
         std::cerr   <<  ">";
         std::getline(inStr, strBuf);
+
         if ( strBuf.empty() ) {
             continue;
         }
-
+        if ( strBuf[0] == '#' ) {
+            //  コメント行は無視する。  //
+            continue;
+        }
         if ( strBuf == "quit" ) {
+            //  終了コマンドを処理。    //
             break;
         }
 
-        const  int  retVal  = parseConsoleInput(strBuf, g_gcGameCtrl);
-        if ( retVal != ERR_SUCCESS ) {
+        retErr  =  g_ciGameCtrl.interpretConsoleInput(strBuf,  std::cout);
+        if ( retErr != ERR_SUCCESS ) {
             std::cerr   <<  "\nCommand Failed"  <<  std::endl;
         }
-        GameStateFlags  fgStat  =  g_gcGameCtrl.testGameStateResult();
-        std::cerr   <<  "# DEBUG : Game Status = "  <<  fgStat
-                <<  std::endl;
-        if ( fgStat == Common::GAME_IS_OVER ) {
-            std::cerr   <<  "# DEBUG : Game Result = "
-                        <<  g_gcGameCtrl.getGameResult()
-                        <<  std::endl;
-        }
+        // GameStateFlags  fgStat  =  g_gcGameCtrl.testGameStateResult();
+        // std::cerr   <<  "# DEBUG : Game Status = "  <<  fgStat
+        //         <<  std::endl;
+        // if ( fgStat == Common::GAME_IS_OVER ) {
+        //     std::cerr   <<  "# DEBUG : Game Result = "
+        //                 <<  g_gcGameCtrl.getGameResult()
+        //                 <<  std::endl;
+        // }
+
     }
 
-    g_outStrKifu.close();
+//    g_outStrKifu.close();
 
     return ( 0 );
 }

@@ -91,6 +91,16 @@ CommandInterpreter::CommandInterpreter()
     : m_ciGameCtrl(),
       m_outStrSwap()
 {
+    //  ゲームをリセットする。  //
+    this->m_ciGameCtrl.resetGame();
+
+    //  緊急用スワップファイルを準備する。  //
+    this->m_outStrSwap.open(".backup.swp");
+    this->m_outStrSwap  <<  "#  Initial Position.\n";
+    this->m_outStrSwap  <<  "position ";
+    executeSfenCommand(
+            "",  this->m_ciGameCtrl,  this->m_outStrSwap,  * this);
+    this->m_outStrSwap  <<  "\n#  Command History"  <<  std::endl;
 }
 
 //----------------------------------------------------------------
@@ -100,6 +110,7 @@ CommandInterpreter::CommandInterpreter()
 
 CommandInterpreter::~CommandInterpreter()
 {
+    this->m_outStrSwap.close();
 }
 
 //========================================================================
