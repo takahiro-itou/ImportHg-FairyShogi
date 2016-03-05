@@ -76,33 +76,6 @@ g_tblHandName[]     = {
     "p", "s", "g", "b", "r", "k"
 };
 
-CONSTEXPR_VAR   const   int
-g_tblPromotion[]    = {
-    Game::BoardState::FIELD_EMPTY_SQUARE,
-
-    Game::BoardState::FIELD_BLACK_PR_PAWN,
-    Game::BoardState::FIELD_BLACK_PR_SILVER,
-    Game::BoardState::FIELD_BLACK_GOLD,
-    Game::BoardState::FIELD_BLACK_HORSE,
-    Game::BoardState::FIELD_BLACK_DRAGON,
-    Game::BoardState::FIELD_BLACK_KING,
-    Game::BoardState::FIELD_BLACK_PR_PAWN,
-    Game::BoardState::FIELD_BLACK_PR_SILVER,
-    Game::BoardState::FIELD_BLACK_HORSE,
-    Game::BoardState::FIELD_BLACK_DRAGON,
-
-    Game::BoardState::FIELD_WHITE_PR_PAWN,
-    Game::BoardState::FIELD_WHITE_PR_SILVER,
-    Game::BoardState::FIELD_WHITE_GOLD,
-    Game::BoardState::FIELD_WHITE_HORSE,
-    Game::BoardState::FIELD_WHITE_DRAGON,
-    Game::BoardState::FIELD_WHITE_KING,
-    Game::BoardState::FIELD_WHITE_PR_PAWN,
-    Game::BoardState::FIELD_WHITE_PR_SILVER,
-    Game::BoardState::FIELD_WHITE_HORSE,
-    Game::BoardState::FIELD_WHITE_DRAGON,
-};
-
 size_t
 parseText(
         const   std::string         &strText,
@@ -698,6 +671,14 @@ int  main(int argc, char * argv[])
         const  int  retVal  = parseConsoleInput(strBuf, g_gcGameCtrl);
         if ( retVal != ERR_SUCCESS ) {
             std::cerr   <<  "\nCommand Failed"  <<  std::endl;
+        }
+        GameStateFlags  fgStat  =  g_gcGameCtrl.testGameStateResult();
+        std::cerr   <<  "# DEBUG : Game Status = "  <<  fgStat
+                <<  std::endl;
+        if ( fgStat == Common::GAME_IS_OVER ) {
+            std::cerr   <<  "# DEBUG : Game Result = "
+                        <<  g_gcGameCtrl.getGameResult()
+                        <<  std::endl;
         }
     }
 
