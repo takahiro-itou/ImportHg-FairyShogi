@@ -122,8 +122,8 @@ GameController::GameController()
       m_flgShow(SCF_NORMAL_SHOW),
       m_curTurn(0),
       m_curDice(0),
-      m_fStatus(GAME_IS_RUNNING),
-      m_gResult(GAME_RESULT_DRAW)
+      m_fStatus(Common::GAME_IS_RUNNING),
+      m_gResult(Common::GAME_RESULT_DRAW)
 {
 }
 
@@ -315,8 +315,8 @@ GameController::resetGame()
 {
     const  ErrCode  retErr  =  this->m_gcBoard.resetGameBoard();
 
-    this->m_fStatus         =  GAME_IS_RUNNING;
-    this->m_gResult         =  GAME_RESULT_DRAW;
+    this->m_fStatus         =  Common::GAME_IS_RUNNING;
+    this->m_gResult         =  Common::GAME_RESULT_DRAW;
 
     return ( retErr );
 }
@@ -386,8 +386,8 @@ GameController::startThinking(
 GameStateFlags
 GameController::testGameStateResult()
 {
-    GameResultVals  resVal  =  GAME_RESULT_DRAW;
-    GameStateFlags  fgStat  =  GAME_IS_RUNNING;
+    GameResultVals  resVal  =  Common::GAME_RESULT_DRAW;
+    GameStateFlags  fgStat  =  Common::GAME_IS_RUNNING;
 
     Game::BoardState::TBitBoard     bbCheck;
 
@@ -402,12 +402,12 @@ GameController::testGameStateResult()
         this->m_gcBoard.isCheckState(Common::PLAYER_WHITE,  bbCheck);
         if ( bbCheck.empty() ) {
             //  王手が掛かっていないので、ステイルメイトである。    //
-            resVal  =  GAME_BLACK_WON_STALEMATE;
+            resVal  |=  Common::GAME_BLACK_WON_STALEMATE;
         } else {
             //  王手が掛かっていて合法手が無いのでチェックメイト。  //
-            resVal  =  GAME_WHITE_WON_CHECKMATE;
+            resVal  |=  Common::GAME_WHITE_WON_CHECKMATE;
         }
-        fgStat  =  GAME_IS_OVER;
+        fgStat  =  Common::GAME_IS_OVER;
     }
 
     //  現局面での先手の合法手を確認する。  //
@@ -419,12 +419,12 @@ GameController::testGameStateResult()
         this->m_gcBoard.isCheckState(Common::PLAYER_WHITE,  bbCheck);
         if ( bbCheck.empty() ) {
             //  王手が掛かっていないので、ステイルメイトである。    //
-            resVal  =  GAME_WHITE_WON_STALEMATE;
+            resVal  |=  Common::GAME_WHITE_WON_STALEMATE;
         } else {
             //  王手が掛かっていて合法手が無いのでチェックメイト。  //
-            resVal  =  GAME_BLACK_WON_CHECKMATE;
+            resVal  |=  Common::GAME_BLACK_WON_CHECKMATE;
         }
-        fgStat  =  GAME_IS_OVER;
+        fgStat  =  Common::GAME_IS_OVER;
     }
 
     this->m_fStatus = fgStat;

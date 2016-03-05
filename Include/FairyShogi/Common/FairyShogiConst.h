@@ -21,13 +21,14 @@
 #include    "FairyShogiSettings.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
+namespace  Common  {
 
 //----------------------------------------------------------------
 /**
 **    ゲームの状態を管理する列挙型。
 **/
 
-enum  GameStateFlags
+enum
 {
     /**   ゲーム終了。  **/
     GAME_IS_OVER        =  0,
@@ -41,7 +42,7 @@ enum  GameStateFlags
 **    ゲームの勝敗を管理する列挙型。
 **/
 
-enum  GameResultVals
+enum
 {
     /**
     **    引き分け。ゲームが終了していない場合も含む。
@@ -106,8 +107,6 @@ enum  GameResultVals
     **/
     GAME_WHITE_WON_B_VIOLATE    =  GAME_WHITE_WON | GAME_ENDED_VIOLATE
 };
-
-namespace  Common  {
 
 //----------------------------------------------------------------
 /**
