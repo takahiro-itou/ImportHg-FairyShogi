@@ -724,13 +724,17 @@ BoardState::copyToViewBuffer(
 {
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
-            const  int  pi  = (yr * POS_NUM_COLS) + (POS_NUM_COLS - 1 - xc);
-            bufView.piBoard[pi] = curStat.m_bsField[getMatrixPos(xc, yr)];
+            const  FieldIndex
+                fi  =  (yr * POS_NUM_COLS) + (POS_NUM_COLS - 1 - xc);
+            const  PieceIndex
+                pi  =  curStat.m_bsField[ getMatrixPos(xc, yr) ];
+            bufView.piBoard[fi] = s_tblDecodeField[pi];
         }
     }
 
-    for ( int hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
-        bufView.nHands[hp] = curStat.m_hcHands[hp];
+    for ( PieceIndex hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
+        const   Common::EHandPiece  hpiTrg  =  s_tblDecodeHands[hp];
+        bufView.nHands[hpiTrg]  = curStat.m_hcHands[hp];
     }
 
     return ( ERR_FAILURE );

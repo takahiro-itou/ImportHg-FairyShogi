@@ -36,28 +36,28 @@ namespace  {
 CONSTEXPR_VAR   const   char  *
 s_tblPieceName[]    = {
     "  ",
-    " P",  " S",  " G",  " B",  " R",  " K",
-    "+P",  "+S",  "+B",  "+R",
-    " p",  " s",  " g",  " b",  " r",  " k",
-    "+p",  "+s",  "+b",  "+r"
+    " P",  " L",  " N",  " S",  " G",  " B",  " R",  " K",
+    "+P",  "+L",  "+N",  "+S",         "+B",  "+R",
+    " p",  " l",  " n",  " s",  " g",  " b",  " r",  " k",
+    "+p",  "+l",  "+n",  "+s",         "+b",  "+r"
 };
 
 CONSTEXPR_VAR   const   char  *
 s_tblPieceName2[]   = {
     "W",
-    "P",  "S",  "G",  "B",  "R",  "K",
-    "+P", "+S", "+B", "+R",
-    "p",  "s",  "g",  "b",  "r",  "k",
-    "+p", "+s", "+b", "+r"
+    "P" ,  "L",  "N",  "S",  "G",  "B",  "R",  "K",
+    "+P", "+L", "+N", "+S",       "+B", "+R",
+    "p" ,  "l",  "n",  "s",  "g",  "b",  "r",  "k",
+    "+p", "+l", "+n", "+s",       "+b", "+r"
 };
 
 CONSTEXPR_VAR   const   char  *
 s_tblSfenName[]     = {
     "1",
-    "P",   "S",   "G",   "B",   "R",   "K",
-    "+P",  "+S",  "+B",  "+R",
-    "p",   "s",   "g",   "b",   "r",   "k",
-    "+p",  "+s",  "+b",  "+r"
+    "P" ,  "L",  "N",  "S",  "G",  "B",  "R",  "K",
+    "+P", "+L", "+N", "+S",       "+B", "+R",
+    "p" ,  "l",  "n",  "s",  "g",  "b",  "r",  "k",
+    "+p", "+l", "+n", "+s",       "+b", "+r"
 };
 
 CONSTEXPR_VAR   const   char  *

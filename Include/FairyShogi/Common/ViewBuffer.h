@@ -52,7 +52,7 @@ struct  ViewBuffer
     PieceIndex      numHandTypes[FSSYSLIMIT::MAX_NUM_PLAYERS];
 
     /**   盤上の状態。      **/
-    PieceIndex      piBoard[FSSYSLIMIT::MAX_FIELD_SIZE];
+    EFieldPiece     piBoard[FSSYSLIMIT::MAX_FIELD_SIZE];
 
     /**   持ち駒の数。      **/
     THandCount      nHands [FSSYSLIMIT::MAX_HAND_TYPES];
