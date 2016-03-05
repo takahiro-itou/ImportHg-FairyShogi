@@ -121,7 +121,9 @@ GameController::GameController()
       m_actList(),
       m_flgShow(SCF_NORMAL_SHOW),
       m_curTurn(0),
-      m_curDice(0)
+      m_curDice(0),
+      m_fStatus(GAME_IS_RUNNING),
+      m_gResult(GAME_RESULT_DRAW)
 {
 }
 
@@ -311,7 +313,12 @@ GameController::playForward(
 ErrCode
 GameController::resetGame()
 {
-    return ( this->m_gcBoard.resetGameBoard() );
+    const  ErrCode  retErr  =  this->m_gcBoard.resetGameBoard();
+
+    this->m_fStatus         =  GAME_IS_RUNNING;
+    this->m_gResult         =  GAME_RESULT_DRAW;
+
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
@@ -529,6 +536,26 @@ GameController::setCurrentPlayer(
 {
     this->m_curTurn = cPlayer;
     return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    ゲームの勝敗を取得する。
+//
+
+GameResultVals
+GameController::getGameResult()  const
+{
+    return ( this->m_gResult );
+}
+
+//----------------------------------------------------------------
+//    現在のゲームの状態を取得する。
+//
+
+GameStateFlags
+GameController::getGameStateFlags()  const
+{
+    return ( this->m_fStatus );
 }
 
 //----------------------------------------------------------------
