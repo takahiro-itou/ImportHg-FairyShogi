@@ -29,31 +29,41 @@ namespace  {
 
 using   Game::BoardState;
 
-CONSTEXPR_VAR   const   int
+CONSTEXPR_VAR   const   PieceIndex
 s_tblPromotion[]    = {
-    BoardState::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
 
-    BoardState::FIELD_BLACK_PR_PAWN,
-    BoardState::FIELD_BLACK_PR_SILVER,
-    BoardState::FIELD_BLACK_GOLD,
-    BoardState::FIELD_BLACK_HORSE,
-    BoardState::FIELD_BLACK_DRAGON,
-    BoardState::FIELD_BLACK_KING,
-    BoardState::FIELD_EMPTY_SQUARE,
-    BoardState::FIELD_EMPTY_SQUARE,
-    BoardState::FIELD_EMPTY_SQUARE,
-    BoardState::FIELD_EMPTY_SQUARE,
+    Common::FIELD_BLACK_PR_PAWN,
+    Common::FIELD_BLACK_PR_LANCE,
+    Common::FIELD_BLACK_PR_KNIGHT,
+    Common::FIELD_BLACK_PR_SILVER,
+    Common::FIELD_BLACK_GOLD,
+    Common::FIELD_BLACK_PR_BISHOP,
+    Common::FIELD_BLACK_PR_ROOK,
+    Common::FIELD_BLACK_KING,
 
-    BoardState::FIELD_WHITE_PR_PAWN,
-    BoardState::FIELD_WHITE_PR_SILVER,
-    BoardState::FIELD_WHITE_GOLD,
-    BoardState::FIELD_WHITE_HORSE,
-    BoardState::FIELD_WHITE_DRAGON,
-    BoardState::FIELD_WHITE_KING,
-    BoardState::FIELD_EMPTY_SQUARE,
-    BoardState::FIELD_EMPTY_SQUARE,
-    BoardState::FIELD_EMPTY_SQUARE,
-    BoardState::FIELD_EMPTY_SQUARE
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
+
+    Common::FIELD_WHITE_PR_PAWN,
+    Common::FIELD_WHITE_PR_LANCE,
+    Common::FIELD_WHITE_PR_KNIGHT,
+    Common::FIELD_WHITE_PR_SILVER,
+    Common::FIELD_WHITE_GOLD,
+    Common::FIELD_WHITE_PR_BISHOP,
+    Common::FIELD_WHITE_PR_ROOK,
+    Common::FIELD_WHITE_KING,
+
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE,
+    Common::FIELD_EMPTY_SQUARE
 };
 
 }   //  End of (Unnamed) namespace.
@@ -140,10 +150,10 @@ GraphicalInterface::setupMoveActionFromMouse(
             flgShow,  xOldCol,  yOldRow,
             &(ptrAct->xPlayOldCol), &(ptrAct->yPlayOldRow) );
 
-    ptrAct->fpCatch = curStat.getFieldPiece(
+    ptrAct->fpCatch = curStat.decodeFieldPiece(
                             ptrAct->xPlayNewCol - 1,
                             ptrAct->yPlayNewRow - 1);
-    ptrAct->fpMoved = curStat.getFieldPiece(
+    ptrAct->fpMoved = curStat.decodeFieldPiece(
                             ptrAct->xPlayOldCol - 1,
                             ptrAct->yPlayOldRow - 1);
     ptrAct->fpAfter = (ptrAct->fpMoved);
