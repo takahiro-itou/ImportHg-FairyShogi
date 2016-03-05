@@ -31,38 +31,47 @@ namespace  {
 **/
 
 CONSTEXPR_VAR   const   char
-s_tblHandName[Game::BoardState::NUM_HAND_TYPES] = {
+s_tblHandName[Common::NUM_HAND_TYPES]  =  {
     'W',
-    'P',  'S',  'G',  'B',  'R',  'K',
-    'p',  's',  'g',  'b',  'r',  'k'
+    'P',  'L',  'N',  'S',  'G',  'B',  'R',  'K',
+    'p',  'l',  'n',  's',  'g',  'b',  'r',  'k'
 };
 
 using   Game::BoardState;
 
-CONSTEXPR_VAR   const   int
-s_tblPromotion[]    = {
-    0,
-    BoardState::FIELD_BLACK_PR_PAWN,
-    BoardState::FIELD_BLACK_PR_SILVER,
-    BoardState::FIELD_BLACK_GOLD,
-    BoardState::FIELD_BLACK_HORSE,
-    BoardState::FIELD_BLACK_DRAGON,
-    BoardState::FIELD_BLACK_KING,
-    BoardState::FIELD_BLACK_PR_PAWN,
-    BoardState::FIELD_BLACK_PR_SILVER,
-    BoardState::FIELD_BLACK_HORSE,
-    BoardState::FIELD_BLACK_DRAGON,
+CONSTEXPR_VAR   const   Common::EFieldPiece
+s_tblPromotion[Common::NUM_FIELD_PIECE_TYPES]  =  {
+    Common::FIELD_EMPTY_SQUARE,
 
-    BoardState::FIELD_WHITE_PR_PAWN,
-    BoardState::FIELD_WHITE_PR_SILVER,
-    BoardState::FIELD_WHITE_GOLD,
-    BoardState::FIELD_WHITE_HORSE,
-    BoardState::FIELD_WHITE_DRAGON,
-    BoardState::FIELD_WHITE_KING,
-    BoardState::FIELD_WHITE_PR_PAWN,
-    BoardState::FIELD_WHITE_PR_SILVER,
-    BoardState::FIELD_WHITE_HORSE,
-    BoardState::FIELD_WHITE_DRAGON,
+    Common::FIELD_BLACK_PR_PAWN,
+    Common::FIELD_BLACK_PR_LANCE,
+    Common::FIELD_BLACK_PR_KNIGHT,
+    Common::FIELD_BLACK_PR_SILVER,
+    Common::FIELD_BLACK_GOLD,
+    Common::FIELD_BLACK_PR_BISHOP,
+    Common::FIELD_BLACK_PR_ROOK,
+    Common::FIELD_BLACK_KING,
+    Common::FIELD_BLACK_PR_PAWN,
+    Common::FIELD_BLACK_PR_LANCE,
+    Common::FIELD_BLACK_PR_KNIGHT,
+    Common::FIELD_BLACK_PR_SILVER,
+    Common::FIELD_BLACK_PR_BISHOP,
+    Common::FIELD_BLACK_PR_ROOK,
+
+    Common::FIELD_WHITE_PR_PAWN,
+    Common::FIELD_WHITE_PR_LANCE,
+    Common::FIELD_WHITE_PR_KNIGHT,
+    Common::FIELD_WHITE_PR_SILVER,
+    Common::FIELD_WHITE_GOLD,
+    Common::FIELD_WHITE_PR_BISHOP,
+    Common::FIELD_WHITE_PR_ROOK,
+    Common::FIELD_WHITE_KING,
+    Common::FIELD_WHITE_PR_PAWN,
+    Common::FIELD_WHITE_PR_LANCE,
+    Common::FIELD_WHITE_PR_KNIGHT,
+    Common::FIELD_WHITE_PR_SILVER,
+    Common::FIELD_WHITE_PR_BISHOP,
+    Common::FIELD_WHITE_PR_ROOK
 };
 
 }   //  End of (Unnamed) namespace.
@@ -129,9 +138,10 @@ ConsoleInterface::parseActionText(
         return ( ERR_INVALID_COMMAND );
     }
 
-    PieceIndex  pifSrc  =  Game::BoardState::FIELD_EMPTY_SQUARE;
-    PieceIndex  pifTrg  =  Game::BoardState::FIELD_EMPTY_SQUARE;
-    const  ShowCoordFlags  flgShow  =  getShowFlag();
+    Common::EFieldPiece     pifSrc  =  Common::FIELD_EMPTY_SQUARE;
+    Common::EFieldPiece     pifTrg  =  Common::FIELD_EMPTY_SQUARE;
+    const  BoardState   &   curStat =  getBoardState();
+    const  ShowCoordFlags   flgShow =  getShowFlag();
 
     ::memset( ptrAct, 0, sizeof(ActionView) );
 
@@ -151,7 +161,7 @@ ConsoleInterface::parseActionText(
         ptrAct->xPlayNewCol = xNewCol;
         ptrAct->yPlayNewRow = yNewRow;
 
-        pifTrg  = getBoardState().getFieldPiece(xNewCol - 1, yNewRow - 1);
+        pifTrg  =  curStat.decodeFieldPiece(xNewCol - 1, yNewRow - 1);
     }
 
     //  移動先にある駒を捕獲する。  //
@@ -164,11 +174,11 @@ ConsoleInterface::parseActionText(
         ptrAct->xPlayOldCol = 0;
         ptrAct->yPlayOldRow = 0;
 
-        ptrAct->fpAfter = Game::BoardState::FIELD_EMPTY_SQUARE;
-        ptrAct->fpMoved = Game::BoardState::FIELD_EMPTY_SQUARE;
-        ptrAct->hpiDrop = Game::BoardState::HAND_EMPTY_PIECE;
+        ptrAct->fpAfter = Common::FIELD_EMPTY_SQUARE;
+        ptrAct->fpMoved = Common::FIELD_EMPTY_SQUARE;
+        ptrAct->hpiDrop = Common::HAND_EMPTY_PIECE;
 
-        for ( int i = 0; i < Game::BoardState::NUM_HAND_TYPES; ++ i ) {
+        for ( int i = 0; i < Common::NUM_HAND_TYPES; ++ i ) {
             if ( strPlay[0] == s_tblHandName[i] ) {
                 ptrAct->hpiDrop = i;
                 pifSrc  =  s_tblHandConv[i];
@@ -196,7 +206,7 @@ ConsoleInterface::parseActionText(
         ptrAct->xPlayOldCol = xOldCol;
         ptrAct->yPlayOldRow = yOldRow;
 
-        pifSrc  = getBoardState().getFieldPiece(xOldCol - 1, yOldRow - 1);
+        pifSrc  =  curStat.decodeFieldPiece(xOldCol - 1, yOldRow - 1);
         ptrAct->fpMoved = pifSrc;
         ptrAct->hpiDrop = Game::BoardState::HAND_EMPTY_PIECE;
     }
