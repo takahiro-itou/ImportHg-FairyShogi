@@ -25,7 +25,11 @@
 #include    "FairyShogi/Game/BoardState.h"
 
 #include    <iosfwd>
-#include    <string>
+
+#if !defined( FAIRYSHOGI_SYS_INCLUDED_STL_STRING )
+#    include    <string>
+#    define     FAIRYSHOGI_SYS_INCLUDED_STL_STRING
+#endif
 
 #if !defined( FAIRYSHOGI_SYS_INCLUDED_STL_VECTOR )
 #    include    <vector>
