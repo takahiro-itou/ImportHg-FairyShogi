@@ -23,7 +23,7 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
-        EngineBase.cp p         \
+        EngineBase.cpp         \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =
