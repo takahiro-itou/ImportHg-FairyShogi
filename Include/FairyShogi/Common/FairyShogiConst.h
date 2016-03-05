@@ -107,5 +107,27 @@ enum  GameResultVals
     GAME_WHITE_WON_B_VIOLATE    =  GAME_WHITE_WON | GAME_ENDED_VIOLATE
 };
 
+namespace  Common  {
+
+//----------------------------------------------------------------
+/**
+**    手番を管理すする列挙型。
+**/
+
+enum
+{
+    PLAYER_BLACK        =  0,       /**<  先手番。  */
+    PLAYER_WHITE        =  1,       /**<  後手番。  **/
+
+    /**
+    **    手番を交代するための定数。
+    **
+    **    手番を管理している値に、この定数の排他的論理輪を取る。
+    **/
+    PLAYER_OPPOSITE     =  1
+};
+
+}   //  End of namespace  Common
 FAIRYSHOGI_NAMESPACE_END
+
 #endif

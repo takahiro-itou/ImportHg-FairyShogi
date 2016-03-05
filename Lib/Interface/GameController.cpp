@@ -379,6 +379,58 @@ GameController::startThinking(
     return ( ERR_SUCCESS );
 }
 
+//----------------------------------------------------------------
+//    ゲームの状態と勝敗を判定する。
+//
+
+GameStateFlags
+GameController::testGameStateResult()
+{
+    GameResultVals  resVal  =  GAME_RESULT_DRAW;
+    GameStateFlags  fgStat  =  GAME_IS_RUNNING;
+
+    Game::BoardState::TBitBoard     bbCheck;
+
+    ActionDataList  vActs;
+
+    //  現局面での先手の合法手を確認する。  //
+    vActs.clear();
+    this->m_gcBoard.makeLegalActionList(
+            Common::PLAYER_BLACK,  Common::ALF_LEGAL_ACTION,  vActs);
+    if ( vActs.empty() ) {
+        //  先手に合法手が存在しない。  //
+        this->m_gcBoard.isCheckState(Common::PLAYER_WHITE,  bbCheck);
+        if ( bbCheck.empty() ) {
+            //  王手が掛かっていないので、ステイルメイトである。    //
+            resVal  =  GAME_BLACK_WON_STALEMATE;
+        } else {
+            //  王手が掛かっていて合法手が無いのでチェックメイト。  //
+            resVal  =  GAME_WHITE_WON_CHECKMATE;
+        }
+        fgStat  =  GAME_IS_OVER;
+    }
+
+    //  現局面での先手の合法手を確認する。  //
+    vActs.clear();
+    this->m_gcBoard.makeLegalActionList(
+            Common::PLAYER_WHITE,  Common::ALF_LEGAL_ACTION,  vActs);
+    if ( vActs.empty() ) {
+        //  後手に合法手が存在しない。  //
+        this->m_gcBoard.isCheckState(Common::PLAYER_WHITE,  bbCheck);
+        if ( bbCheck.empty() ) {
+            //  王手が掛かっていないので、ステイルメイトである。    //
+            resVal  =  GAME_WHITE_WON_STALEMATE;
+        } else {
+            //  王手が掛かっていて合法手が無いのでチェックメイト。  //
+            resVal  =  GAME_BLACK_WON_CHECKMATE;
+        }
+        fgStat  =  GAME_IS_OVER;
+    }
+
+    this->m_fStatus = fgStat;
+    this->m_gResult = resVal;
+    return ( fgStat );
+}
 
 //----------------------------------------------------------------
 //    表示用棋譜データの内容をストリームに出力する。
