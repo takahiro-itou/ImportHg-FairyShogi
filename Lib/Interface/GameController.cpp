@@ -205,7 +205,8 @@ GameController::makeLegalActionList(
     for ( ; itrHead != itrEnd; ++ itrHead ) {
         //  ダイスの目を内部形式に揃えているので、  //
         //  比較の時は、座標を反転させないで行う。  //
-        decodeActionData( SCF_NORMAL_SHOW, (* itrHead), &actView );
+        //  表示用座標ではなく、内部用座標で比較。  //
+        BoardState::decodeActionData( (* itrHead),  &actView );
         if ( (actView.xPlayNewCol) >= curDice ) {
             break;
         }
@@ -215,7 +216,8 @@ GameController::makeLegalActionList(
     for ( ActIter itr = itrHead; itr != itrEnd; ++ itr ) {
         //  ダイスの目を内部形式に揃えているので、  //
         //  比較の時は、座標を反転させないで行う。  //
-        decodeActionData( SCF_NORMAL_SHOW, (* itr), &actView );
+        //  表示用座標ではなく、内部用座標で比較。  //
+        BoardState::decodeActionData( (* itr),  &actView );
         if ( (actView.xPlayNewCol) != curDice ) {
             itrTail = itr;
             break;
@@ -232,7 +234,7 @@ GameController::makeLegalActionList(
 
     for ( ActIter itr = itrHead; itr != itrTail; ++ itr ) {
         //  今度は表示を行うので、必要なら座標を反転する。  //
-        decodeActionData( this->m_flgShow, (* itr), &actView);
+        decodeActionData( this->m_flgShow,  (* itr),  &actView);
         actList.push_back(actView);
     }
 
