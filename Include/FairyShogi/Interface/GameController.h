@@ -20,6 +20,8 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Common/FairyShogiConst.h"
+
 #include    "FairyShogi/Game/BoardState.h"
 
 #include    <iosfwd>
@@ -213,6 +215,14 @@ public:
             ActionView  &actRet);
 
     //----------------------------------------------------------------
+    /**   ゲームの状態と勝敗を判定する。
+    **
+    **  @return     ゲーム状態を返す。
+    **/
+    virtual  GameStateFlags
+    testGameStateResult();
+
+    //----------------------------------------------------------------
     /**   表示用棋譜データの内容をストリームに出力する。
     **
     **  @param [in] actView   棋譜表示用構造体。
@@ -325,6 +335,22 @@ public:
             const  PlayerIndex  cPlayer);
 
     //----------------------------------------------------------------
+    /**   ゲームの勝敗を取得する。
+    **
+    **  @return     ゲームの勝敗を返す。
+    **/
+    GameResultVals
+    getGameResult()  const;
+
+    //----------------------------------------------------------------
+    /**   現在のゲームの状態を取得する。
+    **
+    **  @return     ゲーム状態を返す。
+    **/
+    GameStateFlags
+    getGameStateFlags()  const;
+
+    //----------------------------------------------------------------
     /**   現在の盤面の表示フラグを取得する。
     **
     **  @return     盤面表示フラグ。
@@ -402,6 +428,12 @@ private:
 
     /**   現在の出目。  **/
     TConstraint         m_curDice;
+
+    /**   実行の状態。  **/
+    GameStateFlags      m_fStatus;
+
+    /**   ゲーム勝敗。  **/
+    GameResultVals      m_gResult;
 
 //========================================================================
 //

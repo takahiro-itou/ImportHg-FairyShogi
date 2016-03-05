@@ -94,3 +94,14 @@ FairyShogiWin32_SOURCES   =  FairyShogiWin32.cpp  \
 
 FairyShogiWin32_LDADD     =  -lfsgInterface  -lGdi32
 
+##
+##    Resource Files.
+##
+
+all-local :
+	for  file  in  Back.bmp  Pieces.bmp  ; do     \
+        if  test ! -e  $${file} ; then            \
+            cp     -pv  $(srcdir)/$${file}  .  ;  \
+        fi ;                                      \
+    done
+
