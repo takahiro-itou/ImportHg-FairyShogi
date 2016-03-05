@@ -25,6 +25,29 @@ LIBTOPDIR               =  $(BLDTOPDIR)/Lib
 ##    List of Source and Header Files.
 ##
 
+EXTRALIBSOURCES         =
+EXTRANOINSTHEADERS      =
+EXTRALIBHEADERS         =
+
+LIBCXXSOURCEFILES       =  \
+        CommandInterpreter.cpp  \
+        $(EXTRALIBSOURCES)
+
+LIBINSTANTIATIONS       =
+LIBCXXINLINEFILES       =
+
+LIBNOINSTHEADERS        =  \
+        CommandInterpreter.h   \
+        $(EXTRANOINSTHEADERS)
+
+INCLIBHEADERS           =  \
+        $(EXTRALIBHEADERS)
+
+LIBNODISTHEADERS        =
+
+LIBINSTALLSOURCES       =
+LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+
 ##
 ##    List of Libraries.
 ##
@@ -57,6 +80,8 @@ bin_PROGRAMS            =  \
 ##    Build Programs.
 ##
 
-FairyShogi_SOURCES      =  FairyShogi.cpp
+FairyShogi_SOURCES      =  FairyShogi.cpp  \
+        $(LIBCOMPILESOURCES)
+
 FairyShogi_LDADD        =  -lfsgInterface
 
