@@ -20,6 +20,8 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "DefaultShogiPieces.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Common  {
 

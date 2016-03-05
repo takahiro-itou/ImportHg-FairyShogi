@@ -15,12 +15,13 @@
 **      @file       Common/DefaultShogiPieces.h
 **/
 
+#include    "FairyShogi/Common/FairyShogiTypes.h"
+
 #if !defined( FAIRYSHOGI_COMMON_INCLUDED_DEFAULT_SHOGI_PIECES_H )
 #    define   FAIRYSHOGI_COMMON_INCLUDED_DEFAULT_SHOGI_PIECES_H
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Common  {
-
 
 //----------------------------------------------------------------
 /**
