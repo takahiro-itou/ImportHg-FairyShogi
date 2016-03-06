@@ -734,10 +734,7 @@ BoardState::copyToViewBuffer(
     bufView.numRows     =  POS_NUM_ROWS;
     bufView.numCols     =  POS_NUM_COLS;
 
-    for ( PlayerIndex i = 0; i < Common::NUM_PLAYERS; ++ i ) {
-        bufView.numHandTypes[i] = (NUM_IHAND_TYPES / 2);
-    }
-
+    //  盤上の駒のデータをコピーする。  //
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
             const  PosCol   wrtCol  =  (POS_NUM_COLS - 1 - xc);
@@ -745,6 +742,11 @@ BoardState::copyToViewBuffer(
                 pi  =  curStat.m_bsField[ getMatrixPos(xc, yr) ];
             bufView.fpBoard[yr][wrtCol] = s_tblDecodeField[pi];
         }
+    }
+
+    //  持ち駒のデータをコピーする。    //
+    for ( PlayerIndex i = 0; i < Common::NUM_PLAYERS; ++ i ) {
+        bufView.numHandTypes[i] = 0;
     }
 
     for ( PieceIndex hp = 0; hp < NUM_IHAND_TYPES; ++ hp ) {
