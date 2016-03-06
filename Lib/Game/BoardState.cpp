@@ -20,6 +20,7 @@
 #include    "FairyShogi/Game/RuleTables.h"
 
 #include    "FairyShogi/Common/ActionView.h"
+#include    "FairyShogi/Common/FairyShogiConst.h"
 
 #include    <iostream>
 #include    <memory.h>
@@ -136,61 +137,81 @@ s_tblEncodeHands[Common::NUM_HAND_TYPES]  =  {
     BoardState::IHAND_WHITE_KING
 };
 
+CONSTEXPR_VAR   PieceIndex
+s_tblPromNew[BoardState::NUM_PIECE_TYPES]   =  {
+    -1,
+    BoardState::BOARD_BLACK_PR_PAWN,
+    BoardState::BOARD_BLACK_PR_SILVER,
+    -1,
+    BoardState::BOARD_BLACK_PR_BISHOP,
+    BoardState::BOARD_BLACK_PR_ROOK,
+    -1,     -1,  -1,  -1,  -1,
+
+    BoardState::BOARD_WHITE_PR_PAWN,
+    BoardState::BOARD_WHITE_PR_SILVER,
+    -1,
+    BoardState::BOARD_WHITE_PR_BISHOP,
+    BoardState::BOARD_WHITE_PR_ROOK,
+    -1,     -1,  -1,  -1,  -1,
+};
+
+
 CONSTEXPR_VAR   int
-s_tblOwner[BoardState::NUM_FIELD_PIECE_TYPES] = {
+s_tblPieceOwner[BoardState::NUM_PIECE_TYPES]    =  {
     -1,
     0, 0, 0, 0, 0, 0,   0, 0, 0, 0,
     1, 1, 1, 1, 1, 1,   1, 1, 1, 1
 };
 
 CONSTEXPR_VAR   int
-s_tblHandOwner[BoardState::NUM_HAND_TYPES]    = {
+s_tblHandsOwner[BoardState::NUM_IHAND_TYPES]    =  {
     -1,     0, 0, 0, 0, 0, 0,   1, 1, 1, 1, 1, 1
 };
 
-CONSTEXPR_VAR   PieceIndex  s_tblHandConv[] = {
-    BoardState::FIELD_EMPTY_SQUARE,
+CONSTEXPR_VAR   PieceIndex
+s_tblHandConv[BoardState::NUM_IHAND_TYPES]  =  {
+    BoardState::BOARD_EMPTY_SQUARE,
 
-    BoardState::FIELD_BLACK_PAWN,
-    BoardState::FIELD_BLACK_SILVER,
-    BoardState::FIELD_BLACK_GOLD,
-    BoardState::FIELD_BLACK_BISHOP,
-    BoardState::FIELD_BLACK_ROOK,
-    BoardState::FIELD_BLACK_KING,
+    BoardState::BOARD_BLACK_PAWN,
+    BoardState::BOARD_BLACK_SILVER,
+    BoardState::BOARD_BLACK_GOLD,
+    BoardState::BOARD_BLACK_BISHOP,
+    BoardState::BOARD_BLACK_ROOK,
+    BoardState::BOARD_BLACK_KING,
 
-    BoardState::FIELD_WHITE_PAWN,
-    BoardState::FIELD_WHITE_SILVER,
-    BoardState::FIELD_WHITE_GOLD,
-    BoardState::FIELD_WHITE_BISHOP,
-    BoardState::FIELD_WHITE_ROOK,
-    BoardState::FIELD_WHITE_KING
+    BoardState::BOARD_WHITE_PAWN,
+    BoardState::BOARD_WHITE_SILVER,
+    BoardState::BOARD_WHITE_GOLD,
+    BoardState::BOARD_WHITE_BISHOP,
+    BoardState::BOARD_WHITE_ROOK,
+    BoardState::BOARD_WHITE_KING
 };
 
 CONSTEXPR_VAR   PieceIndex
-s_tblCatchToHand[BoardState::NUM_FIELD_PIECE_TYPES] = {
-    BoardState::HAND_EMPTY_PIECE,
+s_tblCatchToHand[BoardState::NUM_PIECE_TYPES] = {
+    BoardState::IHAND_EMPTY_PIECE,
 
-    BoardState::HAND_WHITE_PAWN,
-    BoardState::HAND_WHITE_SILVER,
-    BoardState::HAND_WHITE_GOLD,
-    BoardState::HAND_WHITE_BISHOP,
-    BoardState::HAND_WHITE_ROOK,
-    BoardState::HAND_WHITE_KING,
-    BoardState::HAND_WHITE_PAWN,
-    BoardState::HAND_WHITE_SILVER,
-    BoardState::HAND_WHITE_BISHOP,
-    BoardState::HAND_WHITE_ROOK,
+    BoardState::IHAND_WHITE_PAWN,
+    BoardState::IHAND_WHITE_SILVER,
+    BoardState::IHAND_WHITE_GOLD,
+    BoardState::IHAND_WHITE_BISHOP,
+    BoardState::IHAND_WHITE_ROOK,
+    BoardState::IHAND_WHITE_KING,
+    BoardState::IHAND_WHITE_PAWN,
+    BoardState::IHAND_WHITE_SILVER,
+    BoardState::IHAND_WHITE_BISHOP,
+    BoardState::IHAND_WHITE_ROOK,
 
-    BoardState::HAND_BLACK_PAWN,
-    BoardState::HAND_BLACK_SILVER,
-    BoardState::HAND_BLACK_GOLD,
-    BoardState::HAND_BLACK_BISHOP,
-    BoardState::HAND_BLACK_ROOK,
-    BoardState::HAND_BLACK_KING,
-    BoardState::HAND_BLACK_PAWN,
-    BoardState::HAND_BLACK_SILVER,
-    BoardState::HAND_BLACK_BISHOP,
-    BoardState::HAND_BLACK_ROOK
+    BoardState::IHAND_BLACK_PAWN,
+    BoardState::IHAND_BLACK_SILVER,
+    BoardState::IHAND_BLACK_GOLD,
+    BoardState::IHAND_BLACK_BISHOP,
+    BoardState::IHAND_BLACK_ROOK,
+    BoardState::IHAND_BLACK_KING,
+    BoardState::IHAND_BLACK_PAWN,
+    BoardState::IHAND_BLACK_SILVER,
+    BoardState::IHAND_BLACK_BISHOP,
+    BoardState::IHAND_BLACK_ROOK
 };
 
 /**
@@ -414,20 +435,7 @@ BoardState::makeLegalActionList(
         const  ActionFlag   fLegals,
         ActionList          &actList)
 {
-////    typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
     typedef     TBitBoard::const_iterator   BB_Iter;
-
-
-    CONSTEXPR_VAR   PieceIndex
-            s_tblPromNew[BoardState::NUM_FIELD_PIECE_TYPES]   = {
-        -1,
-        FIELD_BLACK_PR_PAWN,    FIELD_BLACK_PR_SILVER,  -1,
-        FIELD_BLACK_HORSE,      FIELD_BLACK_DRAGON,     -1,
-        -1,  -1,  -1,  -1,
-        FIELD_WHITE_PR_PAWN,    FIELD_WHITE_PR_SILVER,  -1,
-        FIELD_WHITE_HORSE,      FIELD_WHITE_DRAGON,     -1,
-        -1,  -1,  -1,  -1,
-    };
 
     ActionData  actData;
 
@@ -441,7 +449,7 @@ BoardState::makeLegalActionList(
 
         //  対象の座標に自分の駒がある場合は移動不可。  //
         //  その場所には、持ち駒を打つこともできない。  //
-        if ( s_tblOwner[cpiTrg] == cPlayer )    { continue; }
+        if ( s_tblPieceOwner[cpiTrg] == cPlayer )   { continue; }
 
         TBitBoard    bbFrom;
         getAttackFromList(curStat, posTrg, cPlayer, bbFrom);
@@ -463,7 +471,7 @@ BoardState::makeLegalActionList(
 
             int cntProm = 0;
             PieceIndex  vProm[2] = { p, -1 };
-            if ( s_tblOwner[p] == 0 ) {
+            if ( s_tblPieceOwner[p] == Common::PLAYER_BLACK ) {
                 if (       ((actData.yNewRow) == 0)
                         || ((actData.yOldRow) == 0)  )
                 {
@@ -517,8 +525,8 @@ BoardState::makeLegalActionList(
         actData.fLegals = Common::ALF_LEGAL_ACTION;
 
         for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
-            if ( s_tblHandOwner[k] != cPlayer ) { continue; }
-            if ( curStat.m_hcHands[k] <= 0 )    { continue; }
+            if ( s_tblHandsOwner[k] != cPlayer )  { continue; }
+            if ( curStat.m_hcHands[k] <= 0 )      { continue; }
 
             if ( (k == HAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
                 continue;
@@ -777,13 +785,13 @@ BoardState::getAttackFromList(
         const  PlayerIndex  oPlayer,
         TBitBoard           &bbFrom)
 {
-    typedef     uint32_t        TablePiece[NUM_FIELD_PIECE_TYPES];
+    typedef     uint32_t        TablePiece[NUM_PIECE_TYPES];
 
     const  TablePiece  & tblFr  = RuleTables::s_tblMoveFrom[posTrg];
-    for ( PieceIndex p = FIELD_BLACK_PAWN; p < NUM_FIELD_PIECE_TYPES; ++ p )
+    for ( PieceIndex p = FIELD_BLACK_PAWN; p < NUM_PIECE_TYPES; ++ p )
     {
         //  指定されたプレーヤーの駒以外はスキップ。    //
-        if ( s_tblOwner[p] != oPlayer ) { continue; }
+        if ( s_tblPieceOwner[p] != oPlayer ) { continue; }
 
         //  可能性のある移動元を順に調べる。    //
         const  uint32_t  tvMask = tblFr[p];
