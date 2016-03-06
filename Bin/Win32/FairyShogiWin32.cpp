@@ -18,6 +18,7 @@
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
 #include    "BoardScreen.h"
+#include    "DiceScreen.h"
 #include    "PromotionScreen.h"
 
 #include    "FairyShogi/Common/ActionView.h"
@@ -49,6 +50,7 @@ constexpr   char
 g_szClassName[] = "FairyShogiWindow";
 
 Interface::BoardScreen      g_scrBoard;
+Interface::DiceScreen       g_scrDice;
 Interface::PromotionScreen  g_scrProm;
 
 /**   マウスのキャプチャフラグ。    **/
@@ -85,6 +87,7 @@ constexpr   int     KIFU_FONT_HEIGHT    = 24;
 
 Interface::BitmapImage      g_imgScreen;
 Interface::BitmapImage      g_imgBoard;
+Interface::BitmapImage      g_imgDice;
 Interface::BitmapImage      g_imgPromote;
 
 }   //  End of (Unnamed) namespace.
@@ -106,10 +109,19 @@ onLButtonDown(
     Interface::ScreenLayer::EventResult
             evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
 
+    if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    {
+        //  ダイス選択中。  //
+        return ( 0 );
+    }
+
     if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
         //  成り駒選択中。  //
-    } else {
+        return ( 0 );
+    }
+
+    {
         evtRet  = g_scrBoard.onLButtonDown(fwKeys, xPos, yPos);
     }
 
@@ -140,6 +152,19 @@ onLButtonUp(
 
     Interface::ScreenLayer::EventResult
             evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
+
+    if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    {
+        //  ダイス選択中。  //
+        evtRet  = g_scrDice.onLButtonUp(fwKeys, xPos, yPos);
+        const  Interface::ChoiceScreen::ChoiceIndex
+            pidSel  = g_scrDice.getUserSelect();
+        if ( pidSel >= 0 ) {
+            g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        }
+        ::InvalidateRect(hWnd, NULL, FALSE);
+        return ( 0 );
+    }
 
     if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
@@ -236,7 +261,20 @@ onPaint(
             g_imgBoard,
             0, 0);
 
-    //  成り駒選択画面を表示する。      //
+    //  ダイス選択画面を表示する。  //
+    if ( g_scrDice.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
+    {
+        g_scrDice.drawScreenLayer( &g_imgDice );
+        g_imgScreen.copyRectangle(
+                g_scrDice.getLeft(),
+                g_scrDice.getTop(),
+                g_scrDice.getWidth(),
+                g_scrDice.getHeight(),
+                g_imgDice,
+                0,  0);
+    }
+
+    //  成り駒選択画面を表示する。  //
     if ( g_scrProm.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
     {
         g_scrProm.drawScreenLayer( &g_imgPromote );
@@ -382,6 +420,12 @@ WinMain(
         return ( 0 );
     }
 
+    if ( g_scrDice.setupBitmapImages("Dice.bmp") != ERR_SUCCESS )
+    {
+        ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
+        return ( 0 );
+    }
+
     if ( g_scrProm.setupBitmapImages("Pieces.bmp") != ERR_SUCCESS )
     {
         ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
@@ -395,11 +439,19 @@ WinMain(
     {
         ::MessageBox(hWnd,  "Not Enough Memory!",   NULL,  MB_OK);
     }
+
     if ( g_imgBoard.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
             != ERR_SUCCESS )
     {
         ::MessageBox(hWnd,  "Not Enough Memory!",   NULL,  MB_OK);
     }
+
+    if ( g_imgDice.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
+            != ERR_SUCCESS )
+    {
+        ::MessageBox(hWnd,  "Not Enough Memory!",   NULL,  MB_OK);
+    }
+
     if ( g_imgPromote.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
             != ERR_SUCCESS )
     {
@@ -420,6 +472,13 @@ WinMain(
     g_scrProm.setTop   (VIEW_BOARD_TOP);
     g_scrProm.setWidth (SQUARE_WIDTH * 10);
     g_scrProm.setHeight(SQUARE_HEIGHT * 2);
+
+    g_scrDice.setSelectionList();
+    g_scrDice.setLeft  (0);
+    g_scrDice.setTop   (0);
+    g_scrDice.setWidth (384);
+    g_scrDice.setHeight(384);
+    g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
 
     //  ウィンドウを表示する。  //
     ::ShowWindow(hWnd, nCmdShow);

@@ -129,7 +129,7 @@ DiceScreen::setSelectionList()
     setupChoiceDisplay(3, 2, 128, 128);
 
     vOpts.clear();
-    for ( ChoiceIndex i = 0; i < 5; ++ i ) {
+    for ( ChoiceIndex i = 0; i < 6; ++ i ) {
         vOpts.push_back(i);
     }
 
