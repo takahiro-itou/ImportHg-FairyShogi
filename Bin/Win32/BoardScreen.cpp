@@ -25,27 +25,6 @@ namespace  Interface  {
 
 namespace  {
 
-#if 0
-CONSTEXPR_VAR   EHandPiece
-s_tblHandDecode[]   =  {
-    Common::HAND_EMPTY_PIECE,
-
-    Common::HAND_BLACK_PAWN,
-    Common::HAND_BLACK_SILVER,
-    Common::HAND_BLACK_GOLD,
-    Common::HAND_BLACK_BISHOP,
-    Common::HAND_BLACK_ROOK,
-    Common::HAND_BLACK_KING,
-
-    Common::HAND_WHITE_PAWN,
-    Common::HAND_WHITE_SILVER,
-    Common::HAND_WHITE_GOLD,
-    Common::HAND_WHITE_BISHOP,
-    Common::HAND_WHITE_ROOK,
-    Common::HAND_WHITE_KING
-};
-#endif
-
 CONSTEXPR_VAR   Common::EHandPiece
 s_tblHandEncBlack[] = {
     Common::HAND_BLACK_PAWN,
@@ -184,23 +163,24 @@ BoardScreen::drawScreenLayer(
     }
 
     //  後手の持ち駒を表示する。    //
-    int     tx  = 0;
     for ( PlayerIndex i = 0; i < vb.numPlayers; ++ i ) {
         const  PieceIndex  numHand  =  vb.numHandTypes[i];
-        for ( PieceIndex c = 0;  c < numHand;  ++ c, ++ tx )
+        for ( PieceIndex c = 0;  c < numHand;  ++ c )
         {
-            const  Common::EHandPiece   piHand  =  vb.hpIndex[i][c];
-            const  THandCount           hcHand  =  vb.hpCount[i][c];
+            const   Common::EHandPiece  piHand  =  vb.hpIndex[i][c];
+            const   THandCount          hcHand  =  vb.hpCount[i][c];
             if ( hcHand <= 0 )  { continue; }
 
-            dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
+            dx  = (c * SQUARE_WIDTH) + LEFT_MARGIN;
             dy  = TOP_MARGIN;
             if ( i == 0 ) {
                 dy  += (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT;
+                sx  =  (piHand - Common::HAND_BLACK_PAWN) * SQUARE_WIDTH;
+            } else {
+                sx  =  (piHand - Common::HAND_WHITE_PAWN) * SQUARE_WIDTH;
             }
 
-            sx  = (piHand - HANDS_WHITE_PAWN) * SQUARE_WIDTH;
-            sy  = (1) * SQUARE_HEIGHT;
+            sy  = (i) * SQUARE_HEIGHT;
             bmpTrg->copyRectangle(
                     dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
                     *(this->m_biPiece), sx, sy);

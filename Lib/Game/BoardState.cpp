@@ -750,10 +750,10 @@ BoardState::copyToViewBuffer(
     }
 
     for ( PieceIndex hp = 0; hp < NUM_IHAND_TYPES; ++ hp ) {
-        const   Common::EHandPiece  hpiTrg  =  s_tblDecodeHands[hp];
-
-        const  PlayerIndex  pi  =  s_tblHandsOwner[hpiTrg];
+        const  PlayerIndex  pi  =  s_tblHandsOwner[hp];
         if ( pi < 0 ) { continue; }
+
+        const   Common::EHandPiece  hpiTrg  =  s_tblDecodeHands[hp];
 
         const   PieceIndex   hpIdx  =  bufView.numHandTypes[pi];
         bufView.hpIndex[pi][hpIdx]  =  hpiTrg;
