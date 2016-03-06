@@ -91,6 +91,19 @@ ScreenLayer::~ScreenLayer()
 //    Public Member Functions (Virtual Functions).
 //
 
+//----------------------------------------------------------------
+//    イベントハンドラを呼び出す。
+//
+
+ScreenLayer::EventResult
+ScreenLayer::dispatchLButtonUp(
+        const   DWORD   fwKeys,
+        const   UINT    xPos,
+        const   UINT    yPos)
+{
+    return ( onLButtonUp(fwKeys, xPos - getLeft(), yPos - getTop()) );
+}
+
 //========================================================================
 //
 //    Public Member Functions.
@@ -204,6 +217,29 @@ ScreenLayer::setWidth(
         const  WindowCoord  wcVal)
 {
     return ( (this->m_cWidth) = wcVal );
+}
+
+//========================================================================
+//
+//    Protected Member Functions (Virtual Functions).
+//
+
+//----------------------------------------------------------------
+//    マウスの左ボタンを離した時のイベントハンドラ。
+//
+
+ScreenLayer::EventResult
+ScreenLayer::onLButtonUp(
+        const   DWORD   fwKeys,
+        const   UINT    xPos,
+        const   UINT    yPos)
+{
+    UTL_HELP_UNUSED_ARGUMENT(fwKeys);
+    UTL_HELP_UNUSED_ARGUMENT(xPos);
+    UTL_HELP_UNUSED_ARGUMENT(yPos);
+
+    //  デフォルト動作は、何もしない。  //
+    return ( EH_RESULT_SUCCESS );
 }
 
 //========================================================================

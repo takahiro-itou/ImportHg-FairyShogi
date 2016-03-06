@@ -20,13 +20,6 @@
 
 #include    "ScreenLayer.h"
 
-#if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
-#    define     STRICT
-#    define     WIN32_LEAN_AND_MEAN
-#    include    <windows.h>
-#    define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H
-#endif
-
 #if !defined( FAIRYSHOGI_STDC_INCLUDED_STL_STRING )
 #    include    <string>
 #    define     FAIRYSHOGI_STDC_INCLUDED_STL_STRING
@@ -117,7 +110,7 @@ public:
     **/
     virtual  ErrCode
     drawScreenLayer(
-            BitmapImage  *  bmpTrg)  const  override;
+            BitmapImage  *  bmpTrg)  const  OVERRIDE;
 
 //========================================================================
 //
@@ -134,20 +127,6 @@ public:
 //    Public Member Functions (Virtual Functions).
 //
 public:
-
-    //----------------------------------------------------------------
-    /**   マウスの左ボタンを離した時のイベントハンドラ。
-    **
-    **  @param [in] fwKeys
-    **  @param [in] xPos
-    **  @param [in] yPos
-    **  @return     イベントハンドラの処理結果。
-    **/
-    virtual  EventResult
-    onLButtonUp(
-            const   DWORD   fwKeys,
-            const   UINT    xPos,
-            const   UINT    yPos);
 
     //----------------------------------------------------------------
     /**   必要な画像データを準備する。
@@ -230,6 +209,26 @@ public:
             const  ChoiceIndex  numRows,
             const  ChoiceSize   xWidth,
             const  ChoiceSize   yHeight);
+
+//========================================================================
+//
+//    Protected Member Functions (Overrides).
+//
+protected:
+
+    //----------------------------------------------------------------
+    /**   マウスの左ボタンを離した時のイベントハンドラ。
+    **
+    **  @param [in] fwKeys
+    **  @param [in] xPos
+    **  @param [in] yPos
+    **  @return     イベントハンドラの処理結果。
+    **/
+    virtual  EventResult
+    onLButtonUp(
+            const   DWORD   fwKeys,
+            const   UINT    xPos,
+            const   UINT    yPos)  OVERRIDE;
 
 //========================================================================
 //
