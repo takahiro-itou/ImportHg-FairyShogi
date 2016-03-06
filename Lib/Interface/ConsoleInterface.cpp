@@ -185,7 +185,7 @@ ConsoleInterface::parseActionText(
                 break;
             }
         }
-        if ( ptrAct->hpiDrop == Game::BoardState::HAND_EMPTY_PIECE ) {
+        if ( ptrAct->hpiDrop == Common::HAND_EMPTY_PIECE ) {
             return ( ERR_INVALID_COMMAND );
         }
 
@@ -208,7 +208,7 @@ ConsoleInterface::parseActionText(
 
         pifSrc  =  curStat.decodeFieldPiece(xOldCol - 1, yOldRow - 1);
         ptrAct->fpMoved = pifSrc;
-        ptrAct->hpiDrop = Game::BoardState::HAND_EMPTY_PIECE;
+        ptrAct->hpiDrop = Common::HAND_EMPTY_PIECE;
     }
 
     size_t  posRead = 4;

@@ -25,9 +25,10 @@ namespace  Interface  {
 
 namespace  {
 
-CONSTEXPR_VAR   PieceIndex
+#if 0
+CONSTEXPR_VAR   EHandPiece
 s_tblHandDecode[]   =  {
-    0,
+    Common::HAND_EMPTY_PIECE,
 
     Common::HAND_BLACK_PAWN,
     Common::HAND_BLACK_SILVER,
@@ -43,25 +44,26 @@ s_tblHandDecode[]   =  {
     Common::HAND_WHITE_ROOK,
     Common::HAND_WHITE_KING
 };
+#endif
 
-constexpr   PieceIndex
+CONSTEXPR_VAR   Common::EHandPiece
 s_tblHandEncBlack[] = {
-    Game::BoardState::HAND_BLACK_PAWN,
-    Game::BoardState::HAND_BLACK_SILVER,
-    Game::BoardState::HAND_BLACK_GOLD,
-    Game::BoardState::HAND_BLACK_BISHOP,
-    Game::BoardState::HAND_BLACK_ROOK,
-    Game::BoardState::HAND_BLACK_KING
+    Common::HAND_BLACK_PAWN,
+    Common::HAND_BLACK_SILVER,
+    Common::HAND_BLACK_GOLD,
+    Common::HAND_BLACK_BISHOP,
+    Common::HAND_BLACK_ROOK,
+    Common::HAND_BLACK_KING
 };
 
-constexpr   PieceIndex
+CONSTEXPR_VAR   Common::EHandPiece
 s_tblHandEncWhite[] = {
-    Game::BoardState::HAND_WHITE_PAWN,
-    Game::BoardState::HAND_WHITE_SILVER,
-    Game::BoardState::HAND_WHITE_GOLD,
-    Game::BoardState::HAND_WHITE_BISHOP,
-    Game::BoardState::HAND_WHITE_ROOK,
-    Game::BoardState::HAND_WHITE_KING
+    Common::HAND_WHITE_PAWN,
+    Common::HAND_WHITE_SILVER,
+    Common::HAND_WHITE_GOLD,
+    Common::HAND_WHITE_BISHOP,
+    Common::HAND_WHITE_ROOK,
+    Common::HAND_WHITE_KING
 };
 
 }   //  End of (Unnamed) namespace.

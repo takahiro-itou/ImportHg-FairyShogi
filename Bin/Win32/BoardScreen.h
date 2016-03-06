@@ -274,37 +274,52 @@ private:
 
 private:
 
-    static  constexpr   int
-    HANDS_BLACK_PAWN    = Game::BoardState::HAND_BLACK_PAWN;
+    static  CONSTEXPR_VAR   PieceIndex
+    HANDS_BLACK_PAWN    =  Common::HAND_BLACK_PAWN;
 
-    static  constexpr   int
-    HANDS_BLACK_KING    = Game::BoardState::HAND_BLACK_KING;
+    static  CONSTEXPR_VAR   PieceIndex
+    HANDS_BLACK_KING    =  Common::HAND_BLACK_KING;
 
-    static  constexpr   int
-    HANDS_WHITE_PAWN    = Game::BoardState::HAND_WHITE_PAWN;
+    static  CONSTEXPR_VAR   PieceIndex
+    HANDS_WHITE_PAWN    =  Common::HAND_WHITE_PAWN;
 
-    static  constexpr   int
-    HANDS_WHITE_KING    = Game::BoardState::HAND_WHITE_KING;
+    static  CONSTEXPR_VAR   PieceIndex
+    HANDS_WHITE_KING    =  Common::HAND_WHITE_KING;
 
     /**
     **  @todo   ダミー定数。
     **      本来なら、ゲームクラスからもらってくる。
     **/
-    static  constexpr   int     POS_NUM_COLS        =  5;
-    static  constexpr   int     POS_NUM_ROWS        =  5;
+    static  CONSTEXPR_VAR   int
+    POS_NUM_COLS        =  5;
+
+    static  CONSTEXPR_VAR   int
+    POS_NUM_ROWS        =  5;
 
     //  定数。  //
-    static  constexpr   int     LEFT_MARGIN         = 64;
-    static  constexpr   int     TOP_MARGIN          = 64;
+    static  CONSTEXPR_VAR   int
+    LEFT_MARGIN         = 64;
 
-    static  constexpr   int     BOARD_TOP_OFFSET    = 1;
-    static  constexpr   int     BOARD_LEFT_OFFSET   = 0;
+    static  CONSTEXPR_VAR   int
+    TOP_MARGIN          = 64;
 
-    static  constexpr   int     SQUARE_WIDTH        = 64;
-    static  constexpr   int     SQUARE_HEIGHT       = 64;
+    static  CONSTEXPR_VAR   int
+    BOARD_TOP_OFFSET    = 1;
 
-    static  constexpr   int     VIEW_NUM_COLS       = (POS_NUM_COLS);
-    static  constexpr   int     VIEW_NUM_ROWS       = (POS_NUM_ROWS) + 2;
+    static  CONSTEXPR_VAR   int
+    BOARD_LEFT_OFFSET   = 0;
+
+    static  CONSTEXPR_VAR   int
+    SQUARE_WIDTH        = 64;
+
+    static  CONSTEXPR_VAR   int
+    SQUARE_HEIGHT       = 64;
+
+    static  CONSTEXPR_VAR   int
+    VIEW_NUM_COLS       = (POS_NUM_COLS);
+
+    static  CONSTEXPR_VAR   int
+    VIEW_NUM_ROWS       = (POS_NUM_ROWS) + 2;
 
     /**
     **    駒の移動方法。
