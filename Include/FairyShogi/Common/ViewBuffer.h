@@ -61,9 +61,6 @@ struct  ViewBuffer
 
     /**   持ち駒の数。      **/
     THandCount      hcHands[FSSYSLIMIT::MAX_HAND_TYPES];
-
-    /**   持ち駒の数。      **/
-    THandCount      nHands[FSSYSLIMIT::MAX_HAND_TYPES];
 };
 
 }   //  End of namespace  Common

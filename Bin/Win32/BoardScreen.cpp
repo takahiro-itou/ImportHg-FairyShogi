@@ -169,14 +169,16 @@ BoardScreen::drawScreenLayer(
 
     //  後手の持ち駒を表示する。    //
     int     tx  = 0;
-    for ( int c = HANDS_WHITE_PAWN; c <= HANDS_WHITE_KING; ++ c, ++ tx )
+    for ( int c = 0;  c < vb.numHandTypes[Common::PLAYER_WHITE];  ++ c, ++ tx )
     {
-        const  THandCount   numHand = vb.nHands[c];
-        if ( numHand <= 0 ) { continue; }
+        const  PieceIndex   pi  =  c + vb.numHandTypes[Common::PLAYER_BLACK];
+        const  Common::EHandPiece   piHand  =  vb.piHands[pi];
+        const  THandCount           hcHand  =  vb.hcHands[pi];
+        if ( hcHand <= 0 )  { continue; }
 
         dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
         dy  = TOP_MARGIN;
-        sx  = (c - HANDS_WHITE_PAWN) * SQUARE_WIDTH;
+        sx  = (piHand - HANDS_WHITE_PAWN) * SQUARE_WIDTH;
         sy  = (1) * SQUARE_HEIGHT;
         bmpTrg->copyRectangle(
                 dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
@@ -202,14 +204,16 @@ BoardScreen::drawScreenLayer(
 
     //  先手の持ち駒を表示する。    //
     tx  = 0;
-    for ( int c = HANDS_BLACK_PAWN; c <= HANDS_BLACK_KING; ++ c, ++ tx )
+    for ( int c = 0;  c < vb.numHandTypes[Common::PLAYER_BLACK];  ++ c, ++ tx )
     {
-        const  THandCount   numHand = vb.nHands[c];
-        if ( numHand <= 0 ) { continue; }
+        const  PieceIndex   pi  =  c;
+        const  Common::EHandPiece   piHand  =  vb.piHands[pi];
+        const  THandCount           hcHand  =  vb.hcHands[pi];
+        if ( hcHand <= 0 )  { continue; }
 
         dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
         dy  = (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT + TOP_MARGIN;
-        sx  = (c - HANDS_BLACK_PAWN) * SQUARE_WIDTH;
+        sx  = (piHand - HANDS_BLACK_PAWN) * SQUARE_WIDTH;
         sy  = (0) * SQUARE_HEIGHT;
         bmpTrg->copyRectangle(
                 dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
