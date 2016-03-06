@@ -189,6 +189,11 @@ GraphicalInterface::setupPutActionFromMouse(
     const  ShowCoordFlags      flgShow  =  getShowFlag();
     const  Game::BoardState  & curStat  =  getBoardState();
 
+    ActionView  actTmp;
+    if ( ptrAct == (nullptr) ) {
+        ptrAct  =  &(actTmp);
+    }
+
     ptrAct->xDispNewCol = xPutCol;
     ptrAct->yDispNewRow = yPutRow;
     convertCoordsFromMouse(
