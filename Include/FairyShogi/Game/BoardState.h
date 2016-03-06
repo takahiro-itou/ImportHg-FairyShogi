@@ -60,34 +60,6 @@ public:
     };
 
     enum  {
-        FIELD_EMPTY_SQUARE,
-
-        FIELD_BLACK_PAWN,
-        FIELD_BLACK_SILVER,
-        FIELD_BLACK_GOLD,
-        FIELD_BLACK_BISHOP,
-        FIELD_BLACK_ROOK,
-        FIELD_BLACK_KING,
-        FIELD_BLACK_PR_PAWN,
-        FIELD_BLACK_PR_SILVER,
-        FIELD_BLACK_HORSE,
-        FIELD_BLACK_DRAGON,
-
-        FIELD_WHITE_PAWN,
-        FIELD_WHITE_SILVER,
-        FIELD_WHITE_GOLD,
-        FIELD_WHITE_BISHOP,
-        FIELD_WHITE_ROOK,
-        FIELD_WHITE_KING,
-        FIELD_WHITE_PR_PAWN,
-        FIELD_WHITE_PR_SILVER,
-        FIELD_WHITE_HORSE,
-        FIELD_WHITE_DRAGON,
-
-        NUM_FIELD_PIECE_TYPES
-    };
-
-    enum  {
         BOARD_EMPTY_SQUARE,
 
         BOARD_BLACK_PAWN,
