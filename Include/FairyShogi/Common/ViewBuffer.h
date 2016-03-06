@@ -54,8 +54,16 @@ struct  ViewBuffer
     /**   盤上の状態。      **/
     EFieldPiece     piBoard[FSSYSLIMIT::MAX_FIELD_SIZE];
 
+    /**
+    **    持ち駒の駒番号。
+    **/
+    EHandPiece      piHands[FSSYSLIMIT::MAX_HAND_TYPES];
+
     /**   持ち駒の数。      **/
-    THandCount      nHands [FSSYSLIMIT::MAX_HAND_TYPES];
+    THandCount      hcHands[FSSYSLIMIT::MAX_HAND_TYPES];
+
+    /**   持ち駒の数。      **/
+    THandCount      nHands[FSSYSLIMIT::MAX_HAND_TYPES];
 };
 
 }   //  End of namespace  Common

@@ -742,7 +742,8 @@ BoardState::copyToViewBuffer(
 
     for ( PieceIndex hp = 0; hp < NUM_IHAND_TYPES; ++ hp ) {
         const   Common::EHandPiece  hpiTrg  =  s_tblDecodeHands[hp];
-        bufView.nHands[hpiTrg]  = curStat.m_hcHands[hp];
+        bufView.piHands[hp] = hpiTrg;
+        bufView.hcHands[hp] = curStat.m_hcHands[hp];
     }
 
     return ( ERR_FAILURE );
