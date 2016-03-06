@@ -63,8 +63,8 @@ s_tblSfenName[]     = {
 CONSTEXPR_VAR   const   char  *
 s_tblHandName[]     = {
     "WALL",
-    "P", "S", "G", "B", "R", "K",
-    "p", "s", "g", "b", "r", "k"
+    "P", "L", "N", "S", "G", "B", "R", "K",
+    "p", "l", "n", "s", "g", "b", "r", "k"
 };
 
 CONSTEXPR_VAR   char
@@ -223,7 +223,7 @@ CommandInterpreter::displayActionView(
         const  int          flgName,
         std::ostream        &outStr)
 {
-    if ( actView.hpiDrop == Game::BoardState::HAND_EMPTY_PIECE ) {
+    if ( actView.hpiDrop == Common::HAND_EMPTY_PIECE ) {
         outStr  <<  (actView.xDispOldCol)   <<  (actView.yDispOldRow)
                 <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow);
         if ( (actView.fpAfter) != (actView.fpMoved) ) {
@@ -239,6 +239,13 @@ CommandInterpreter::displayActionView(
     }
     if ( flgName ) {
         outStr  <<  (s_tblPieceName[actView.fpMoved])  <<  ' ';
+        if ( (actView.fpCatch) != Common::FIELD_EMPTY_SQUARE )  {
+           outStr   <<  "(x"
+                    <<  s_tblPieceName[actView.fpCatch]
+                    <<   ") ";
+        } else {
+            outStr  <<  "(x--) ";
+        }
     }
 
     return ( outStr );
@@ -356,6 +363,7 @@ CommandInterpreter::executeForwardCommand(
         return ( ERR_INVALID_COMMAND );
     }
 
+    std::cerr   <<  "# DEBUG : ";
     displayActionView(actView, 1, std::cerr)    <<  std::endl;
 
     ActionList      actList;
