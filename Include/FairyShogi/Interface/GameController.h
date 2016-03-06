@@ -237,7 +237,7 @@ public:
     virtual  std::ostream  &
     writeActionView(
             const  ActionView   &actView,
-            std::ostream        &outStr);
+            std::ostream        &outStr)  const;
 
     //----------------------------------------------------------------
     /**   棋譜データを表示用に変換する。

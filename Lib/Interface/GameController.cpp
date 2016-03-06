@@ -416,7 +416,7 @@ GameController::testGameStateResult()
 std::ostream  &
 GameController::writeActionView(
         const  ActionView   &actView,
-        std::ostream        &outStr)
+        std::ostream        &outStr)  const
 {
     outStr  <<  (actView.xDispNewCol)
             <<  (actView.yDispNewRow)
