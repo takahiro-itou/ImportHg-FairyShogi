@@ -82,6 +82,9 @@ CONSTEXPR_VAR   int     VIEW_BOARD_HEIGHT   =  640;
 CONSTEXPR_VAR   int     WINDOW_WIDTH        =  832;
 CONSTEXPR_VAR   int     WINDOW_HEIGHT       =  640;
 
+CONSTEXPR_VAR   int     DICE_WIDTH          =  128;
+CONSTEXPR_VAR   int     DICE_HEIGHT         =  128;
+
 CONSTEXPR_VAR   int     DICE_SCREEN_WIDTH   =  384;
 CONSTEXPR_VAR   int     DICE_SCREEN_HEIGHT  =  384;
 
@@ -91,9 +94,23 @@ CONSTEXPR_VAR   int     KIFU_VIEW_LEFT      =  LEFT_MARGIN
 CONSTEXPR_VAR   int     KIFU_VIEW_WIDTH     =  WINDOW_WIDTH - KIFU_VIEW_LEFT;
 CONSTEXPR_VAR   int     KIFU_FONT_HEIGHT    =  24;
 
+CONSTEXPR_VAR   int
+CURRENT_DICE_LEFT       =  KIFU_VIEW_WIDTH + SQUARE_WIDTH;
+
+CONSTEXPR_VAR   int
+CURRENT_DICE_TOP        =  SQUARE_HEIGHT;
+
+CONSTEXPR_VAR   int
+CURRENT_DICE_RIGHT      =  CURRENT_DICE_LEFT + DICE_WIDTH;
+
+CONSTEXPR_VAR   int
+CURRENT_DICE_BOTTOM     =  CURRENT_DICE_TOP + DICE_HEIGHT;
+
 Interface::BitmapImage      g_imgScreen;
-Interface::BitmapImage      g_imgBoard;
 Interface::BitmapImage      g_imgDice;
+Interface::BitmapImage      g_imgWork;
+
+Interface::BitmapImage      g_imgBoard;
 Interface::BitmapImage      g_imgPromote;
 
 }   //  End of (Unnamed) namespace.
@@ -163,10 +180,16 @@ onLButtonUp(
     {
         //  ダイス選択中。  //
         evtRet  = g_scrDice.onLButtonUp(fwKeys, xPos, yPos);
+
         const  Interface::ChoiceScreen::ChoiceIndex
             pidSel  = g_scrDice.getUserSelect();
+
         if ( pidSel >= 0 ) {
+            Interface::BoardScreen::GameInterface  &
+                    giGame  =  g_scrBoard.getGameController();
+
             g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+            giGame.setConstraint(pidSel + 1);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
         return ( 0 );
@@ -181,6 +204,15 @@ onLButtonUp(
             g_scrProm.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
             g_scrBoard.setPromotionOption(pidSel);
         }
+        ::InvalidateRect(hWnd, NULL, FALSE);
+        return ( 0 );
+    }
+
+    if ( (CURRENT_DICE_LEFT <= xPos) && (xPos < CURRENT_DICE_RIGHT)
+            && (CURRENT_DICE_TOP <= yPos) && (yPos < CURRENT_DICE_BOTTOM) )
+    {
+        //  ダイスを選択。  //
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
         ::InvalidateRect(hWnd, NULL, FALSE);
         return ( 0 );
     }
@@ -257,47 +289,69 @@ onPaint(
         }
     }
 
-    //  現在のダイスを表示する。    //
-
     //  メイン画面を描画する。  //
-    g_scrBoard.drawScreenLayer( &g_imgBoard );
-    g_imgScreen.copyRectangle(
-            g_scrBoard.getLeft(),
-            g_scrBoard.getTop(),
-            g_scrBoard.getWidth(),
-            g_scrBoard.getHeight(),
-            g_imgBoard,
-            0, 0);
+    {
+        Interface::BitmapImage  &  imgWork  =  g_imgBoard;
+        g_scrBoard.drawScreenLayer( & imgWork );
+        g_imgScreen.copyRectangle(
+                g_scrBoard.getLeft(),
+                g_scrBoard.getTop(),
+                g_scrBoard.getWidth(),
+                g_scrBoard.getHeight(),
+                imgWork,
+                0, 0);
+    }
+
+    //  現在のダイスを表示する。    //
+    {
+        const  Interface::BoardScreen::GameInterface  &
+            giGame  =  g_scrBoard.getGameController();
+        int     curDice = giGame.getConstraint() - 1;
+        if ( (curDice < 0) || (6 <= curDice) ) {
+            curDice = 5;
+        }
+        g_imgScreen.copyRectangle(
+                CURRENT_DICE_LEFT,  CURRENT_DICE_TOP,
+                DICE_WIDTH,         DICE_HEIGHT,
+                g_imgDice,
+                ((curDice % 3) * DICE_WIDTH),
+                ((curDice / 3) * DICE_HEIGHT) );
+    }
 
     //  ダイス選択画面を表示する。  //
     if ( g_scrDice.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
     {
-        g_scrDice.drawScreenLayer( &g_imgDice );
+        Interface::BitmapImage  &  imgWork  =  g_imgWork;
+
         g_imgScreen.drawTransparentRectangle(
                 g_scrDice.getLeft() - 4,
                 g_scrDice.getTop () - 4,
                 g_scrDice.getWidth () + 8,
                 g_scrDice.getHeight() + 8,
                 255,  0,  0,  0);
+
+        g_scrDice.drawScreenLayer( & imgWork );
         g_imgScreen.copyRectangle(
                 g_scrDice.getLeft(),
                 g_scrDice.getTop(),
                 g_scrDice.getWidth(),
                 g_scrDice.getHeight(),
-                g_imgDice,
+                imgWork,
                 0,  0);
     }
 
     //  成り駒選択画面を表示する。  //
     if ( g_scrProm.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
     {
-        g_scrProm.drawScreenLayer( &g_imgPromote );
+        Interface::BitmapImage  &  imgWork  =  g_imgPromote;
+
+        g_scrProm.drawScreenLayer( & imgWork );
         g_imgScreen.copyRectangle(
                 g_scrProm.getLeft(),
                 g_scrProm.getTop(),
                 g_scrProm.getWidth(),
                 g_scrProm.getHeight(),
-                g_imgPromote,
+                imgWork,
                 0, 0);
     }
 
@@ -446,6 +500,13 @@ WinMain(
         return ( 0 );
     }
 
+    if ( g_imgDice.openBitmapFile("Dice.bmp")
+            != ERR_SUCCESS )
+    {
+        ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
+        return ( 0 );
+    }
+
     //  バックバッファも準備する。  //
     HDC hDC = ::GetDC(hWnd);
     if ( g_imgScreen.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, hDC)
@@ -454,13 +515,13 @@ WinMain(
         ::MessageBox(hWnd,  "Not Enough Memory!",   NULL,  MB_OK);
     }
 
-    if ( g_imgBoard.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
+    if ( g_imgWork.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
             != ERR_SUCCESS )
     {
         ::MessageBox(hWnd,  "Not Enough Memory!",   NULL,  MB_OK);
     }
 
-    if ( g_imgDice.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
+    if ( g_imgBoard.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, 24)
             != ERR_SUCCESS )
     {
         ::MessageBox(hWnd,  "Not Enough Memory!",   NULL,  MB_OK);

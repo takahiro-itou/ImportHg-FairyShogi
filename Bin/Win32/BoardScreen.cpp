@@ -514,6 +514,16 @@ BoardScreen::getGameController()  const
 }
 
 //----------------------------------------------------------------
+//    ゲームコントローラのインスタンスを取得する。
+//
+
+BoardScreen::GameInterface  &
+BoardScreen::getGameController()
+{
+    return ( this->m_gcGameCtrl );
+}
+
+//----------------------------------------------------------------
 //    成り駒の選択肢を取得する。
 //
 
