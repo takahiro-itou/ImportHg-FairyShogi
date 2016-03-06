@@ -139,38 +139,6 @@ ChoiceScreen::drawScreenLayer(
 //    Public Member Functions (Overrides).
 //
 
-
-//----------------------------------------------------------------
-//    マウスの左ボタンを離した時のイベントハンドラ。
-//
-
-ChoiceScreen::EventResult
-ChoiceScreen::onLButtonUp(
-        const   DWORD   fwKeys,
-        const   UINT    xPos,
-        const   UINT    yPos)
-{
-    const  ChoiceSize   xImgWidth   =  (this->m_xImgWidth);
-    const  ChoiceSize   yImgHeight  =  (this->m_yImgHeight);
-
-    const  ChoiceIndex  numSelCols  =  (this->m_numSelCols);
-
-    const  ChoiceIndex  xSelCol     =  (xPos / xImgWidth);
-    const  ChoiceIndex  ySelRow     =  (yPos / yImgHeight);
-    const  ChoiceIndex  iSelect     =  (ySelRow * numSelCols) + (xSelCol);
-    const  ChoiceIndex  nSelMax     =  (this->m_prmOptions.size());
-
-    if ( (iSelect < 0) || (nSelMax <= iSelect) ) {
-        return ( EH_RESULT_REDRAW );
-    }
-
-    this->m_xSelCol     =  xSelCol;
-    this->m_ySelRow     =  ySelRow;
-    this->m_psSelected  =  iSelect;
-
-    return ( EH_RESULT_REDRAW );
-}
-
 //========================================================================
 //
 //    Public Member Functions (Pure Virtual Functions).
@@ -271,6 +239,42 @@ ChoiceScreen::setupChoiceDisplay(
     this->m_numSelRows  =  numRows;
 
     return ( ERR_SUCCESS );
+}
+
+//========================================================================
+//
+//    Protected Member Functions (Overrides).
+//
+
+//----------------------------------------------------------------
+//    マウスの左ボタンを離した時のイベントハンドラ。
+//
+
+ChoiceScreen::EventResult
+ChoiceScreen::onLButtonUp(
+        const   DWORD   fwKeys,
+        const   UINT    xPos,
+        const   UINT    yPos)
+{
+    const  ChoiceSize   xImgWidth   =  (this->m_xImgWidth);
+    const  ChoiceSize   yImgHeight  =  (this->m_yImgHeight);
+
+    const  ChoiceIndex  numSelCols  =  (this->m_numSelCols);
+
+    const  ChoiceIndex  xSelCol     =  (xPos / xImgWidth);
+    const  ChoiceIndex  ySelRow     =  (yPos / yImgHeight);
+    const  ChoiceIndex  iSelect     =  (ySelRow * numSelCols) + (xSelCol);
+    const  ChoiceIndex  nSelMax     =  (this->m_prmOptions.size());
+
+    if ( (iSelect < 0) || (nSelMax <= iSelect) ) {
+        return ( EH_RESULT_REDRAW );
+    }
+
+    this->m_xSelCol     =  xSelCol;
+    this->m_ySelRow     =  ySelRow;
+    this->m_psSelected  =  iSelect;
+
+    return ( EH_RESULT_REDRAW );
 }
 
 //========================================================================

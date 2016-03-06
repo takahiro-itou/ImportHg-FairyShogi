@@ -179,7 +179,7 @@ onLButtonUp(
     if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
         //  ダイス選択中。  //
-        evtRet  = g_scrDice.onLButtonUp(fwKeys, xPos, yPos);
+        evtRet  = g_scrDice.dispatchLButtonUp(fwKeys, xPos, yPos);
 
         const  Interface::ChoiceScreen::ChoiceIndex
             pidSel  = g_scrDice.getUserSelect();

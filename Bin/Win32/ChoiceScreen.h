@@ -116,21 +116,6 @@ public:
 //
 //    Public Member Functions (Overrides).
 //
-public:
-
-    //----------------------------------------------------------------
-    /**   マウスの左ボタンを離した時のイベントハンドラ。
-    **
-    **  @param [in] fwKeys
-    **  @param [in] xPos
-    **  @param [in] yPos
-    **  @return     イベントハンドラの処理結果。
-    **/
-    virtual  EventResult
-    onLButtonUp(
-            const   DWORD   fwKeys,
-            const   UINT    xPos,
-            const   UINT    yPos)  OVERRIDE;
 
 //========================================================================
 //
@@ -224,6 +209,26 @@ public:
             const  ChoiceIndex  numRows,
             const  ChoiceSize   xWidth,
             const  ChoiceSize   yHeight);
+
+//========================================================================
+//
+//    Protected Member Functions (Overrides).
+//
+protected:
+
+    //----------------------------------------------------------------
+    /**   マウスの左ボタンを離した時のイベントハンドラ。
+    **
+    **  @param [in] fwKeys
+    **  @param [in] xPos
+    **  @param [in] yPos
+    **  @return     イベントハンドラの処理結果。
+    **/
+    virtual  EventResult
+    onLButtonUp(
+            const   DWORD   fwKeys,
+            const   UINT    xPos,
+            const   UINT    yPos)  OVERRIDE;
 
 //========================================================================
 //
