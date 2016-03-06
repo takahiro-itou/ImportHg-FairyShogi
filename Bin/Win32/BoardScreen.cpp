@@ -167,31 +167,12 @@ BoardScreen::drawScreenLayer(
     memset(&vb, 0, sizeof(vb));
     this->m_gcGameCtrl.writeToViewBuffer(vb);
 
-    //  後手の持ち駒を表示する。    //
-    int     tx  = 0;
-    for ( int c = 0;  c < vb.numHandTypes[Common::PLAYER_WHITE];  ++ c, ++ tx )
-    {
-        const  PieceIndex   pi  =  c + vb.numHandTypes[Common::PLAYER_BLACK];
-        const  Common::EHandPiece   piHand  =  vb.piHands[pi];
-        const  THandCount           hcHand  =  vb.hcHands[pi];
-        if ( hcHand <= 0 )  { continue; }
-
-        dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
-        dy  = TOP_MARGIN;
-        sx  = (piHand - HANDS_WHITE_PAWN) * SQUARE_WIDTH;
-        sy  = (1) * SQUARE_HEIGHT;
-        bmpTrg->copyRectangle(
-                dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
-                *(this->m_biPiece), sx, sy);
-    }
-
     //  盤上にある駒を表示する。    //
     for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
         for ( int x = 0; x < POS_NUM_COLS; ++ x ) {
             dx  = (x * SQUARE_WIDTH) + LEFT_MARGIN;
             dy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
-            const  int          pi  = (y * POS_NUM_COLS) + x;
-            const  PieceIndex   dp  = vb.piBoard[pi];
+            const  PieceIndex   dp  = vb.fpBoard[y][x];
             if ( dp == 0 ) { continue; }
 
             sx  = ((dp - 1) % 14) * SQUARE_WIDTH;
@@ -202,6 +183,31 @@ BoardScreen::drawScreenLayer(
         }
     }
 
+    //  後手の持ち駒を表示する。    //
+    int     tx  = 0;
+    for ( PlayerIndex i = 0; i < vb.numPlayers; ++ i ) {
+        const  PieceIndex  numHand  =  vb.numHandTypes[i];
+        for ( PieceIndex c = 0;  c < numHand;  ++ c, ++ tx )
+        {
+            const  Common::EHandPiece   piHand  =  vb.hpIndex[i][c];
+            const  THandCount           hcHand  =  vb.hpCount[i][c];
+            if ( hcHand <= 0 )  { continue; }
+
+            dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
+            dy  = TOP_MARGIN;
+            if ( i == 0 ) {
+                dy  += (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT;
+            }
+
+            sx  = (piHand - HANDS_WHITE_PAWN) * SQUARE_WIDTH;
+            sy  = (1) * SQUARE_HEIGHT;
+            bmpTrg->copyRectangle(
+                    dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
+                    *(this->m_biPiece), sx, sy);
+        }
+    }
+
+#if 0
     //  先手の持ち駒を表示する。    //
     tx  = 0;
     for ( int c = 0;  c < vb.numHandTypes[Common::PLAYER_BLACK];  ++ c, ++ tx )
@@ -219,6 +225,7 @@ BoardScreen::drawScreenLayer(
                 dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
                 *(this->m_biPiece), sx, sy);
     }
+#endif
 
     //  選択しているマスがあれば強調表示。  //
     if ( (this->m_bcSelX >= 0) && (this->m_bcSelY >= 0) ) {

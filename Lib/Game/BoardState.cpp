@@ -740,19 +740,15 @@ BoardState::copyToViewBuffer(
 
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
-            const  FieldIndex
-                fi  =  (yr * POS_NUM_COLS) + (POS_NUM_COLS - 1 - xc);
+            const  PosCol   wrtCol  =  (POS_NUM_COLS - 1 - xc);
             const  PieceIndex
                 pi  =  curStat.m_bsField[ getMatrixPos(xc, yr) ];
-            bufView.piBoard[fi] = s_tblDecodeField[pi];
-            bufView.fpBoard[yr][xc] = s_tblDecodeField[pi];
+            bufView.fpBoard[yr][wrtCol] = s_tblDecodeField[pi];
         }
     }
 
     for ( PieceIndex hp = 0; hp < NUM_IHAND_TYPES; ++ hp ) {
         const   Common::EHandPiece  hpiTrg  =  s_tblDecodeHands[hp];
-        bufView.piHands[hp] = hpiTrg;
-        bufView.hcHands[hp] = curStat.m_hcHands[hp];
 
         const  PlayerIndex  pi  =  s_tblHandsOwner[hpiTrg];
         if ( pi < 0 ) { continue; }
