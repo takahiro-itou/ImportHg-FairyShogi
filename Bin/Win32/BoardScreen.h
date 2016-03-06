@@ -51,6 +51,8 @@ class  BoardScreen : public  ScreenLayer
 //
 public:
 
+    typedef     Interface::GraphicalInterface       GameInterface;
+
     /**
     **    現在の状態を管理する列挙型。
     **/
@@ -250,6 +252,14 @@ public:
     getCurrentState()  const;
 
     //----------------------------------------------------------------
+    /**   ゲームコントローラのインスタンスを取得する。
+    **
+    **  @return     インスタンスの参照を返す。
+    **/
+    const   GameInterface  &
+    getGameController()  const;
+
+    //----------------------------------------------------------------
     /**   成り駒の選択肢を取得する。
     **
     **  @return     成り駒を選択できる場合の選択肢を返す。
@@ -265,7 +275,6 @@ private:
 
     typedef     Common::ActionView                  ActionView;
 
-    typedef     Interface::GraphicalInterface       GameInterface;
     typedef     GameInterface::PromoteList          PromoteList;
 
 
