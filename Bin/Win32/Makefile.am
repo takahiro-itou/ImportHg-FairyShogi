@@ -26,6 +26,7 @@ EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
         BoardScreen.cpp      \
+        ChoiceScreen.cpp     \
         EngineProcess.cpp    \
         PromotionScreen.cpp  \
         Resources.cpp        \
@@ -37,6 +38,7 @@ LIBCXXINLINEFILES       =
 
 LIBNOINSTHEADERS        =  \
         BoardScreen.h        \
+        ChoiceScreen.h       \
         EngineProcess.h      \
         PromotionScreen.h    \
         Resources.h          \
