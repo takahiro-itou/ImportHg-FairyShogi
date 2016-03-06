@@ -128,7 +128,7 @@ private:
         POS_NUM_ROWS    =  BoardState::POS_NUM_ROWS,
         POS_NUM_COLS    =  BoardState::POS_NUM_COLS,
         FIELD_SIZE      =  POS_NUM_ROWS * POS_NUM_COLS,
-        NUM_PIECE_TYPES =  BoardState::NUM_FIELD_PIECE_TYPES,
+        NUM_PIECE_TYPES =  BoardState::NUM_PIECE_TYPES,
         NUM_HAND_TYPES  =  BoardState::NUM_HAND_TYPES,
         MAX_DIRECTIONS  =  9
     };

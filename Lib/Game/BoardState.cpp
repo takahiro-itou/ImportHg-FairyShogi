@@ -381,14 +381,14 @@ BoardState::isCheckState(
 
     //  守備側の玉の座標を計算する。    //
     const  PieceIndex
-        piKing  = (dPlayer == 0 ? FIELD_BLACK_KING : FIELD_WHITE_KING);
+        piKing  = (dPlayer == 0 ? BOARD_BLACK_KING : BOARD_WHITE_KING);
     FieldIndex  posTrg  = 0;
-    for ( ; posTrg < FIELD_SIZE; ++ posTrg ) {
+    for ( ; posTrg < BOARD_SIZE; ++ posTrg ) {
         if ( (curStat.m_bsField[posTrg]) == piKing ) {
             break;
         }
     }
-    if ( posTrg == FIELD_SIZE ) {
+    if ( posTrg == BOARD_SIZE ) {
         //  致命的エラー。玉がどこにもいない。  //
         std::cerr   <<  "# FATAL ERROR : No King :"
                     <<  piKing  <<  std::endl;
@@ -443,7 +443,7 @@ BoardState::makeLegalActionList(
     InternState tmpStat;
     TBitBoard   bbCheck;
 
-    for ( FieldIndex posTrg = 0; posTrg < FIELD_SIZE; ++ posTrg ) {
+    for ( FieldIndex posTrg = 0; posTrg < BOARD_SIZE; ++ posTrg ) {
         //  盤上の駒を動かす。  //
         const  PieceIndex   cpiTrg  = curStat.m_bsField[posTrg];
 
@@ -475,7 +475,7 @@ BoardState::makeLegalActionList(
                 if (       ((actData.yNewRow) == 0)
                         || ((actData.yOldRow) == 0)  )
                 {
-                    if ( p != FIELD_BLACK_PAWN ) {
+                    if ( p != BOARD_BLACK_PAWN ) {
                         vProm[cntProm ++]   = p;
                     }
                     vProm[cntProm]  = s_tblPromNew[p];
@@ -484,7 +484,7 @@ BoardState::makeLegalActionList(
                 if (       ((actData.yNewRow) == POS_NUM_ROWS - 1)
                         || ((actData.yOldRow) == POS_NUM_ROWS - 1)  )
                 {
-                    if ( p != FIELD_WHITE_PAWN ) {
+                    if ( p != BOARD_WHITE_PAWN ) {
                         vProm[cntProm ++]   = p;
                     }
                     vProm[cntProm]  = s_tblPromNew[p];
@@ -513,14 +513,14 @@ BoardState::makeLegalActionList(
         }   //  Next  itrB
 
         //  持ち駒を打つ。  //
-        if ( cpiTrg != FIELD_EMPTY_SQUARE ) { continue; }
+        if ( cpiTrg != BOARD_EMPTY_SQUARE ) { continue; }
         actData.xNewCol = (posTrg / POS_NUM_ROWS);
         actData.yNewRow = (posTrg % POS_NUM_ROWS);
         actData.xOldCol = -1;
         actData.yOldRow = -1;
-        actData.fpCatch = FIELD_EMPTY_SQUARE;
-        actData.fpMoved = FIELD_EMPTY_SQUARE;
-        actData.fpAfter = FIELD_EMPTY_SQUARE;
+        actData.fpCatch = BOARD_EMPTY_SQUARE;
+        actData.fpMoved = BOARD_EMPTY_SQUARE;
+        actData.fpAfter = BOARD_EMPTY_SQUARE;
         actData.hpiDrop = IHAND_EMPTY_PIECE;
         actData.fLegals = Common::ALF_LEGAL_ACTION;
 
@@ -528,7 +528,7 @@ BoardState::makeLegalActionList(
             if ( s_tblHandsOwner[k] != cPlayer )  { continue; }
             if ( curStat.m_hcHands[k] <= 0 )      { continue; }
 
-            if ( (k == HAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
+            if ( (k == IHAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
                 continue;
             }
             if ( (k == HAND_WHITE_PAWN)
@@ -606,7 +606,7 @@ BoardState::playBackward(
     //  捕獲した相手の駒があれば元に戻す。  //
     //  これには、持ち駒を減らす処理と、    //
     //  盤上に戻す処理の二つの処理が必要。  //
-    if ( actBwd.fpCatch != FIELD_EMPTY_SQUARE ) {
+    if ( actBwd.fpCatch != BOARD_EMPTY_SQUARE ) {
         const  PieceIndex   piHand  = s_tblCatchToHand[actBwd.fpCatch];
         --  curStat.m_hcHands[piHand];
     }
@@ -614,7 +614,7 @@ BoardState::playBackward(
             =  actBwd.fpCatch;
 
     //  移動した駒がある時は、元の位置に戻す。  //
-    if ( (actBwd.fpMoved) != FIELD_EMPTY_SQUARE ) {
+    if ( (actBwd.fpMoved) != BOARD_EMPTY_SQUARE ) {
         curStat.m_bsField[ getMatrixPos(actBwd.xOldCol, actBwd.yOldRow) ]
                 =  actBwd.fpMoved;
     }
@@ -639,9 +639,9 @@ BoardState::playForward(
         InternState         &curStat)
 {
     //  移動元のマスを空きマスにする。  //
-    if ( (actFwd.fpMoved) != FIELD_EMPTY_SQUARE ) {
+    if ( (actFwd.fpMoved) != BOARD_EMPTY_SQUARE ) {
         curStat.m_bsField[ getMatrixPos(actFwd.xOldCol, actFwd.yOldRow) ]
-                =  FIELD_EMPTY_SQUARE;
+                =  BOARD_EMPTY_SQUARE;
     }
 
     //  移動先に指定した駒を書き込む。  //
@@ -649,7 +649,7 @@ BoardState::playForward(
             =  actFwd.fpAfter;
 
     //  取った相手の駒を持ち駒にする。  //
-    if ( actFwd.fpCatch != FIELD_EMPTY_SQUARE ) {
+    if ( actFwd.fpCatch != BOARD_EMPTY_SQUARE ) {
         const  PieceIndex   piHand  = s_tblCatchToHand[actFwd.fpCatch];
         ++  curStat.m_hcHands[piHand];
     }
@@ -680,25 +680,25 @@ ErrCode
 BoardState::resetGameBoard(
         InternState  *  pCurStat)
 {
-    for ( int i = 0; i < POS_NUM_ROWS * POS_NUM_COLS; ++ i ) {
-        pCurStat->m_bsField[i]  = FIELD_EMPTY_SQUARE;
+    for ( FieldIndex i = 0; i < POS_NUM_ROWS * POS_NUM_COLS; ++ i ) {
+        pCurStat->m_bsField[i]  =  BOARD_EMPTY_SQUARE;
     }
 
-    pCurStat->m_bsField[getMatrixPos(4, 0)] = FIELD_WHITE_ROOK;
-    pCurStat->m_bsField[getMatrixPos(3, 0)] = FIELD_WHITE_BISHOP;
-    pCurStat->m_bsField[getMatrixPos(2, 0)] = FIELD_WHITE_SILVER;
-    pCurStat->m_bsField[getMatrixPos(1, 0)] = FIELD_WHITE_GOLD;
-    pCurStat->m_bsField[getMatrixPos(0, 0)] = FIELD_WHITE_KING;
-    pCurStat->m_bsField[getMatrixPos(0, 1)] = FIELD_WHITE_PAWN;
+    pCurStat->m_bsField[getMatrixPos(4, 0)] = BOARD_WHITE_ROOK;
+    pCurStat->m_bsField[getMatrixPos(3, 0)] = BOARD_WHITE_BISHOP;
+    pCurStat->m_bsField[getMatrixPos(2, 0)] = BOARD_WHITE_SILVER;
+    pCurStat->m_bsField[getMatrixPos(1, 0)] = BOARD_WHITE_GOLD;
+    pCurStat->m_bsField[getMatrixPos(0, 0)] = BOARD_WHITE_KING;
+    pCurStat->m_bsField[getMatrixPos(0, 1)] = BOARD_WHITE_PAWN;
 
-    pCurStat->m_bsField[getMatrixPos(4, 3)] = FIELD_BLACK_PAWN;
-    pCurStat->m_bsField[getMatrixPos(4, 4)] = FIELD_BLACK_KING;
-    pCurStat->m_bsField[getMatrixPos(3, 4)] = FIELD_BLACK_GOLD;
-    pCurStat->m_bsField[getMatrixPos(2, 4)] = FIELD_BLACK_SILVER;
-    pCurStat->m_bsField[getMatrixPos(1, 4)] = FIELD_BLACK_BISHOP;
-    pCurStat->m_bsField[getMatrixPos(0, 4)] = FIELD_BLACK_ROOK;
+    pCurStat->m_bsField[getMatrixPos(4, 3)] = BOARD_BLACK_PAWN;
+    pCurStat->m_bsField[getMatrixPos(4, 4)] = BOARD_BLACK_KING;
+    pCurStat->m_bsField[getMatrixPos(3, 4)] = BOARD_BLACK_GOLD;
+    pCurStat->m_bsField[getMatrixPos(2, 4)] = BOARD_BLACK_SILVER;
+    pCurStat->m_bsField[getMatrixPos(1, 4)] = BOARD_BLACK_BISHOP;
+    pCurStat->m_bsField[getMatrixPos(0, 4)] = BOARD_BLACK_ROOK;
 
-    for ( int hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
+    for ( PieceIndex hp = 0; hp < NUM_IHAND_TYPES; ++ hp ) {
         pCurStat->m_hcHands[hp] = 0;
     }
 
@@ -788,14 +788,14 @@ BoardState::getAttackFromList(
     typedef     uint32_t        TablePiece[NUM_PIECE_TYPES];
 
     const  TablePiece  & tblFr  = RuleTables::s_tblMoveFrom[posTrg];
-    for ( PieceIndex p = FIELD_BLACK_PAWN; p < NUM_PIECE_TYPES; ++ p )
+    for ( PieceIndex p = BOARD_BLACK_PAWN; p < NUM_PIECE_TYPES; ++ p )
     {
         //  指定されたプレーヤーの駒以外はスキップ。    //
         if ( s_tblPieceOwner[p] != oPlayer ) { continue; }
 
         //  可能性のある移動元を順に調べる。    //
         const  uint32_t  tvMask = tblFr[p];
-        for ( FieldIndex posSrc = 0; posSrc < FIELD_SIZE; ++ posSrc )
+        for ( FieldIndex posSrc = 0; posSrc < BOARD_SIZE; ++ posSrc )
         {
             //  対象の座標に目的の駒がない場合。    //
             if ( curStat.m_bsField[posSrc] != p )   { continue; }
@@ -807,9 +807,9 @@ BoardState::getAttackFromList(
             const  RuleTables::BitBoardVal
                 pinMask = RuleTables::getPinMask(p, posTrg, posSrc);
             int     bPinOK  = 1;
-            for ( int c = 0; c < FIELD_SIZE; ++ c ) {
+            for ( int c = 0; c < BOARD_SIZE; ++ c ) {
                 if ( ((pinMask >> c) & 1) == 0 ) { continue; }
-                if ( curStat.m_bsField[c] != FIELD_EMPTY_SQUARE ) {
+                if ( curStat.m_bsField[c] != BOARD_EMPTY_SQUARE ) {
                     bPinOK  = 0;
                     break;
                 }
