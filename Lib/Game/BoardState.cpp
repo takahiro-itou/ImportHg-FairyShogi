@@ -524,14 +524,14 @@ BoardState::makeLegalActionList(
         actData.hpiDrop = IHAND_EMPTY_PIECE;
         actData.fLegals = Common::ALF_LEGAL_ACTION;
 
-        for ( int k = HAND_BLACK_PAWN; k < HAND_WHITE_KING; ++ k ) {
+        for ( int k = IHAND_BLACK_PAWN; k < IHAND_WHITE_KING; ++ k ) {
             if ( s_tblHandsOwner[k] != cPlayer )  { continue; }
             if ( curStat.m_hcHands[k] <= 0 )      { continue; }
 
             if ( (k == IHAND_BLACK_PAWN) && ((actData.yNewRow) == 0) ) {
                 continue;
             }
-            if ( (k == HAND_WHITE_PAWN)
+            if ( (k == IHAND_WHITE_PAWN)
                     && ((actData.yNewRow) == POS_NUM_ROWS - 1) )
             {
                 continue;
@@ -539,7 +539,7 @@ BoardState::makeLegalActionList(
 
             actData.fLegals = Common::ALF_LEGAL_ACTION;
             int     flgDps  = 0;
-            if ( (k == HAND_BLACK_PAWN) || (k == HAND_WHITE_PAWN) ) {
+            if ( (k == IHAND_BLACK_PAWN) || (k == IHAND_WHITE_PAWN) ) {
                 for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
                     if ( curStat.m_bsField[actData.xNewCol * POS_NUM_ROWS + y]
                             == k )
@@ -740,7 +740,7 @@ BoardState::copyToViewBuffer(
         }
     }
 
-    for ( PieceIndex hp = 0; hp < NUM_HAND_TYPES; ++ hp ) {
+    for ( PieceIndex hp = 0; hp < NUM_IHAND_TYPES; ++ hp ) {
         const   Common::EHandPiece  hpiTrg  =  s_tblDecodeHands[hp];
         bufView.nHands[hpiTrg]  = curStat.m_hcHands[hp];
     }
