@@ -700,10 +700,12 @@ CommandInterpreter::executeShowCommand(
     }
 
     //  持ち駒を表示する。  //
-    for ( int c = 1; c < 12; ++ c ) {
-        if ( c == 1 ) {
+    for ( PieceIndex c = Common::HAND_BLACK_PAWN;
+            c <= Common::HAND_WHITE_KING; ++ c )
+    {
+        if ( c == Common::HAND_BLACK_PAWN ) {
             outStr  <<  "\nBLACK:";
-        } else if ( c == 7 ) {
+        } else if ( c == Common::HAND_WHITE_PAWN ) {
             outStr  <<  "\nWHITE:";
         }
 
