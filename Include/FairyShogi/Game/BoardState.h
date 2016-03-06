@@ -88,26 +88,6 @@ public:
     };
 
     enum  {
-        HAND_EMPTY_PIECE,
-
-        HAND_BLACK_PAWN,
-        HAND_BLACK_SILVER,
-        HAND_BLACK_GOLD,
-        HAND_BLACK_BISHOP,
-        HAND_BLACK_ROOK,
-        HAND_BLACK_KING,
-
-        HAND_WHITE_PAWN,
-        HAND_WHITE_SILVER,
-        HAND_WHITE_GOLD,
-        HAND_WHITE_BISHOP,
-        HAND_WHITE_ROOK,
-        HAND_WHITE_KING,
-
-        NUM_HAND_TYPES
-    };
-
-    enum  {
         IHAND_EMPTY_PIECE,
 
         IHAND_BLACK_PAWN,
