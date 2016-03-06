@@ -187,26 +187,6 @@ BoardScreen::drawScreenLayer(
         }
     }
 
-#if 0
-    //  先手の持ち駒を表示する。    //
-    tx  = 0;
-    for ( int c = 0;  c < vb.numHandTypes[Common::PLAYER_BLACK];  ++ c, ++ tx )
-    {
-        const  PieceIndex   pi  =  c;
-        const  Common::EHandPiece   piHand  =  vb.piHands[pi];
-        const  THandCount           hcHand  =  vb.hcHands[pi];
-        if ( hcHand <= 0 )  { continue; }
-
-        dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
-        dy  = (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT + TOP_MARGIN;
-        sx  = (piHand - HANDS_BLACK_PAWN) * SQUARE_WIDTH;
-        sy  = (0) * SQUARE_HEIGHT;
-        bmpTrg->copyRectangle(
-                dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
-                *(this->m_biPiece), sx, sy);
-    }
-#endif
-
     //  選択しているマスがあれば強調表示。  //
     if ( (this->m_bcSelX >= 0) && (this->m_bcSelY >= 0) ) {
         sx  = ((this->m_bcSelX) * SQUARE_WIDTH) + LEFT_MARGIN;
@@ -214,7 +194,7 @@ BoardScreen::drawScreenLayer(
 
         bmpTrg->drawTransparentRectangle(
                 sx,  sy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
-                255, 255, 0, 192);
+                0,  255,  0,    128);
     }
 
     //  移動先として現在マウスが示しているマスを強調表示。  //
@@ -224,7 +204,7 @@ BoardScreen::drawScreenLayer(
 
         bmpTrg->drawTransparentRectangle(
                 sx,  sy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
-                0, 0, 255, 192);
+                0,  0,  255,    128);
     }
 
     return ( ERR_SUCCESS );

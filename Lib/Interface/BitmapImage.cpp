@@ -446,13 +446,13 @@ BitmapImage::drawTransparentRectangle(
         PmPixelArray    ptrDst  = this->getPixels(dx, y);
         for ( BitmapCoord x = dx; x < dx2; ++ x ) {
             const  int  cB  = *(ptrDst);
-            *(ptrDst++) = ( (colB * (1 - vTr)) + (cB * vTr) ) >> 8;
+            *(ptrDst++) = ( (colB * (256 - vTr)) + (cB * vTr) ) >> 8;
 
             const  int  cG  = *(ptrDst);
-            *(ptrDst++) = ( (colG * (1 - vTr)) + (cG * vTr) ) >> 8;
+            *(ptrDst++) = ( (colG * (256 - vTr)) + (cG * vTr) ) >> 8;
 
             const  int  cR  = *(ptrDst);
-            *(ptrDst++) = ( (colR * (1 - vTr)) + (cR * vTr) ) >> 8;
+            *(ptrDst++) = ( (colR * (256 - vTr)) + (cR * vTr) ) >> 8;
         }
     }
 

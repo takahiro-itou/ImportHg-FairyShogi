@@ -60,30 +60,36 @@ HWND                    g_hCapture;
 //    画面に関する定数。
 //
 
-constexpr   int     POS_NUM_COLS        = 5;
-constexpr   int     POS_NUM_ROWS        = 5;
+CONSTEXPR_VAR   int     POS_NUM_COLS        =  5;
+CONSTEXPR_VAR   int     POS_NUM_ROWS        =  5;
 
-constexpr   int     BOARD_TOP_OFFSET    = 1;
-constexpr   int     BOARD_LEFT_OFFSET   = 0;
-constexpr   int     LEFT_MARGIN         = 64;
-constexpr   int     TOP_MARGIN          = 64;
-constexpr   int     SQUARE_WIDTH        = 64;
-constexpr   int     SQUARE_HEIGHT       = 64;
-constexpr   int     VIEW_NUM_COLS       = (POS_NUM_COLS);
-constexpr   int     VIEW_NUM_ROWS       = (POS_NUM_ROWS) + 2;
+CONSTEXPR_VAR   int     BOARD_TOP_OFFSET    =  1;
+CONSTEXPR_VAR   int     BOARD_LEFT_OFFSET   =  0;
+CONSTEXPR_VAR   int     LEFT_MARGIN         =  64;
+CONSTEXPR_VAR   int     TOP_MARGIN          =  64;
+CONSTEXPR_VAR   int     SQUARE_WIDTH        =  64;
+CONSTEXPR_VAR   int     SQUARE_HEIGHT       =  64;
+CONSTEXPR_VAR   int     VIEW_NUM_COLS       =  (POS_NUM_COLS);
+CONSTEXPR_VAR   int     VIEW_NUM_ROWS       =  (POS_NUM_ROWS) + 2;
 
-constexpr   int     VIEW_BOARD_LEFT     = 0;
-constexpr   int     VIEW_BOARD_TOP      = 0;
-constexpr   int     VIEW_BOARD_WIDTH    = (VIEW_NUM_COLS + 2) * SQUARE_WIDTH;
-constexpr   int     VIEW_BOARD_HEIGHT   = 640;
+CONSTEXPR_VAR   int     VIEW_BOARD_LEFT     =  0;
+CONSTEXPR_VAR   int     VIEW_BOARD_TOP      =  0;
+CONSTEXPR_VAR   int
+VIEW_BOARD_WIDTH    = (VIEW_NUM_COLS + 2) * SQUARE_WIDTH;
 
-constexpr   int     WINDOW_WIDTH        = 832;
-constexpr   int     WINDOW_HEIGHT       = 640;
+CONSTEXPR_VAR   int     VIEW_BOARD_HEIGHT   =  640;
 
-constexpr   int     KIFU_VIEW_LEFT      = LEFT_MARGIN
+CONSTEXPR_VAR   int     WINDOW_WIDTH        =  832;
+CONSTEXPR_VAR   int     WINDOW_HEIGHT       =  640;
+
+CONSTEXPR_VAR   int     DICE_SCREEN_WIDTH   =  384;
+CONSTEXPR_VAR   int     DICE_SCREEN_HEIGHT  =  384;
+
+CONSTEXPR_VAR   int     KIFU_VIEW_LEFT      =  LEFT_MARGIN
         + ((VIEW_NUM_COLS + 1) * SQUARE_WIDTH);
-constexpr   int     KIFU_VIEW_WIDTH     = WINDOW_WIDTH - KIFU_VIEW_LEFT;
-constexpr   int     KIFU_FONT_HEIGHT    = 24;
+
+CONSTEXPR_VAR   int     KIFU_VIEW_WIDTH     =  WINDOW_WIDTH - KIFU_VIEW_LEFT;
+CONSTEXPR_VAR   int     KIFU_FONT_HEIGHT    =  24;
 
 Interface::BitmapImage      g_imgScreen;
 Interface::BitmapImage      g_imgBoard;
@@ -251,6 +257,8 @@ onPaint(
         }
     }
 
+    //  現在のダイスを表示する。    //
+
     //  メイン画面を描画する。  //
     g_scrBoard.drawScreenLayer( &g_imgBoard );
     g_imgScreen.copyRectangle(
@@ -265,6 +273,12 @@ onPaint(
     if ( g_scrDice.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
     {
         g_scrDice.drawScreenLayer( &g_imgDice );
+        g_imgScreen.drawTransparentRectangle(
+                g_scrDice.getLeft() - 4,
+                g_scrDice.getTop () - 4,
+                g_scrDice.getWidth () + 8,
+                g_scrDice.getHeight() + 8,
+                255,  0,  0,  0);
         g_imgScreen.copyRectangle(
                 g_scrDice.getLeft(),
                 g_scrDice.getTop(),
@@ -474,10 +488,10 @@ WinMain(
     g_scrProm.setHeight(SQUARE_HEIGHT * 2);
 
     g_scrDice.setSelectionList();
-    g_scrDice.setLeft  (0);
-    g_scrDice.setTop   (0);
-    g_scrDice.setWidth (384);
-    g_scrDice.setHeight(384);
+    g_scrDice.setLeft( (WINDOW_WIDTH  - DICE_SCREEN_WIDTH)  / 2 );
+    g_scrDice.setTop ( (WINDOW_HEIGHT - DICE_SCREEN_HEIGHT) / 2 );
+    g_scrDice.setWidth (DICE_SCREEN_WIDTH);
+    g_scrDice.setHeight(DICE_SCREEN_HEIGHT);
     g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
 
     //  ウィンドウを表示する。  //
