@@ -26,6 +26,8 @@ EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
         BoardScreen.cpp      \
+        ChoiceScreen.cpp     \
+        DiceScreen.cpp       \
         EngineProcess.cpp    \
         PromotionScreen.cpp  \
         Resources.cpp        \
@@ -37,6 +39,8 @@ LIBCXXINLINEFILES       =
 
 LIBNOINSTHEADERS        =  \
         BoardScreen.h        \
+        ChoiceScreen.h       \
+        DiceScreen.h         \
         EngineProcess.h      \
         PromotionScreen.h    \
         Resources.h          \
@@ -99,9 +103,9 @@ FairyShogiWin32_LDADD     =  -lfsgInterface  -lGdi32
 ##
 
 all-local :
-	for  file  in  Back.bmp  Pieces.bmp  ; do     \
-        if  test ! -e  $${file} ; then            \
-            cp     -pv  $(srcdir)/$${file}  .  ;  \
-        fi ;                                      \
+	for  file  in  Back.bmp  Dice.bmp  Pieces.bmp  ; do  \
+        if  test ! -e  $${file} ; then                   \
+            cp     -pv  $(srcdir)/$${file}  .  ;         \
+        fi ;                                             \
     done
 
