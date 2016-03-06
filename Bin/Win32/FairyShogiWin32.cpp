@@ -479,9 +479,6 @@ WinMain(
     g_scrBoard.setWidth (VIEW_BOARD_WIDTH);
     g_scrBoard.setHeight(VIEW_BOARD_HEIGHT);
 
-    g_scrBoard.resetGame();
-    g_hCapture  = NULL;
-
     g_scrProm.setLeft  (0);
     g_scrProm.setTop   (VIEW_BOARD_TOP);
     g_scrProm.setWidth (SQUARE_WIDTH * 10);
@@ -492,7 +489,9 @@ WinMain(
     g_scrDice.setTop ( (WINDOW_HEIGHT - DICE_SCREEN_HEIGHT) / 2 );
     g_scrDice.setWidth (DICE_SCREEN_WIDTH);
     g_scrDice.setHeight(DICE_SCREEN_HEIGHT);
-    g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
+
+    g_scrBoard.resetGame();
+    g_hCapture  = NULL;
 
     //  ウィンドウを表示する。  //
     ::ShowWindow(hWnd, nCmdShow);
