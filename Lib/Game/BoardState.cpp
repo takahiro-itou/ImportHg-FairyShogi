@@ -156,14 +156,14 @@ s_tblPromNew[BoardState::NUM_PIECE_TYPES]   =  {
 };
 
 
-CONSTEXPR_VAR   int
+CONSTEXPR_VAR   PlayerIndex
 s_tblPieceOwner[BoardState::NUM_PIECE_TYPES]    =  {
     -1,
     0, 0, 0, 0, 0, 0,   0, 0, 0, 0,
     1, 1, 1, 1, 1, 1,   1, 1, 1, 1
 };
 
-CONSTEXPR_VAR   int
+CONSTEXPR_VAR   PlayerIndex
 s_tblHandsOwner[BoardState::NUM_IHAND_TYPES]    =  {
     -1,     0, 0, 0, 0, 0, 0,   1, 1, 1, 1, 1, 1
 };
@@ -745,6 +745,7 @@ BoardState::copyToViewBuffer(
             const  PieceIndex
                 pi  =  curStat.m_bsField[ getMatrixPos(xc, yr) ];
             bufView.piBoard[fi] = s_tblDecodeField[pi];
+            bufView.fpBoard[yr][xc] = s_tblDecodeField[pi];
         }
     }
 
@@ -752,9 +753,17 @@ BoardState::copyToViewBuffer(
         const   Common::EHandPiece  hpiTrg  =  s_tblDecodeHands[hp];
         bufView.piHands[hp] = hpiTrg;
         bufView.hcHands[hp] = curStat.m_hcHands[hp];
+
+        const  PlayerIndex  pi  =  s_tblHandsOwner[hpiTrg];
+        if ( pi < 0 ) { continue; }
+
+        const   PieceIndex   hpIdx  =  bufView.numHandTypes[pi];
+        bufView.hpIndex[pi][hpIdx]  =  hpiTrg;
+        bufView.hpCount[pi][hpIdx]  =  curStat.m_hcHands[hp];
+        bufView.numHandTypes[pi]    =  (hpIdx + 1);
     }
 
-    return ( ERR_FAILURE );
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
