@@ -297,7 +297,8 @@ BitmapImage::openBitmapFile(
 
     fclose(fp);
 
-    return ( readBitmap(ptrBuf, cbFile) );
+    const  ErrCode  retErr  =  readBitmap(ptrBuf, cbFile);
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
@@ -351,6 +352,42 @@ BitmapImage::readBitmap(
 
     this->m_ptrBuf  = ptrByte;
     this->m_ptrBits = (ptrBody) + ofsBits;
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    ビットマップイメージをファイルに書き込む。
+//
+
+ErrCode
+BitmapImage::saveBitmapFile(
+        const  std::string  &fileName)  const
+{
+#if  defined(  FAIRYSHOGI_WIN32_API )
+    FILE  *  fp = fopen(fileName.c_str(),  "wb");
+    if ( fp == NULL ) {
+        return ( ERR_FILE_OPEN_ERROR );
+    }
+
+    BITMAPINFOHEADER    biHead;
+    BITMAPFILEHEADER    bfHead;
+
+    const  size_t   cbBits  = (this->m_nLineBytes) * getHeight();
+
+    ::memcpy( &biHead,  &(this->m_ptrInfo->bmiHeader),  sizeof(biHead) );
+    bfHead.bfType       =  0x4d42;
+    bfHead.bfSize       =  SIZE_OF_BITMAP_FILE_HEADER
+            + (biHead.biSize) +  cbBits;
+    bfHead.bfReserved1  =  0;
+    bfHead.bfReserved2  =  0;
+    bfHead.bfOffBits    =  SIZE_OF_BITMAP_FILE_HEADER + (biHead.biSize);
+
+    ::fwrite( &bfHead, 1, sizeof(bfHead), fp );
+    ::fwrite( &biHead, 1, sizeof(biHead), fp );
+    ::fwrite( this->m_ptrBits, 1, cbBits, fp );
+    ::fclose(fp);
+#endif
 
     return ( ERR_SUCCESS );
 }

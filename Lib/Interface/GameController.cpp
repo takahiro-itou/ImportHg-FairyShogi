@@ -32,52 +32,22 @@ namespace  {
 **    棋譜に表示する駒の名称。
 **/
 
-constexpr   const   char  *
-s_tblPieceName[]    = {
+CONSTEXPR_VAR   const   char  *
+s_tblPieceName[Common::NUM_FIELD_PIECE_TYPES]  =  {
     "",
-    "+Pawn",  "+Silver",  "+Gold",  "+Bishop",  "+Rook",  "+King",
-    "+Tokin", "+NariGin", "+Uma",   "+Ryu",
-    "-Pawn",  "-Silver",  "-Gold",  "-Bishop",  "-Rook",  "-King",
-    "-Tokin", "-NariGin", "-Uma",   "-Ryu"
+    "FU",  "KY",  "KE",  "GI",  "KI",  "KA",  "HI",  "OU",
+    "TO",  "NY",  "NK",  "NG",  "UM",  "RY",
+    "FU",  "KY",  "KE",  "GI",  "KI",  "KA",  "HI",  "OU",
+    "TO",  "NY",  "NK",  "NG",  "UM",  "RY"
 };
 
-/**
-**    持ち駒の名前。
-**/
-
-CONSTEXPR_VAR   const   char
-s_tblHandName[Game::BoardState::NUM_HAND_TYPES] = {
-    'W',
-    'P',  'S',  'G',  'B',  'R',  'K',
-    'p',  's',  'g',  'b',  'r',  'k'
-};
-
-using   Game::BoardState;
-
-CONSTEXPR_VAR   const   int
-s_tblPromotion[]    = {
-    0,
-    BoardState::FIELD_BLACK_PR_PAWN,
-    BoardState::FIELD_BLACK_PR_SILVER,
-    BoardState::FIELD_BLACK_GOLD,
-    BoardState::FIELD_BLACK_HORSE,
-    BoardState::FIELD_BLACK_DRAGON,
-    BoardState::FIELD_BLACK_KING,
-    BoardState::FIELD_BLACK_PR_PAWN,
-    BoardState::FIELD_BLACK_PR_SILVER,
-    BoardState::FIELD_BLACK_HORSE,
-    BoardState::FIELD_BLACK_DRAGON,
-
-    BoardState::FIELD_WHITE_PR_PAWN,
-    BoardState::FIELD_WHITE_PR_SILVER,
-    BoardState::FIELD_WHITE_GOLD,
-    BoardState::FIELD_WHITE_HORSE,
-    BoardState::FIELD_WHITE_DRAGON,
-    BoardState::FIELD_WHITE_KING,
-    BoardState::FIELD_WHITE_PR_PAWN,
-    BoardState::FIELD_WHITE_PR_SILVER,
-    BoardState::FIELD_WHITE_HORSE,
-    BoardState::FIELD_WHITE_DRAGON,
+CONSTEXPR_VAR   const   char  *
+s_tblPieceSfenName[Common::NUM_FIELD_PIECE_TYPES]  =  {
+    "  ",
+    " P",  " L",  " N",  " S",  " G",  " B",  " R",  " K",
+    "+P",  "+L",  "+N",  "+S",         "+B",  "+R",
+    " p",  " l",  " n",  " s",  " g",  " b",  " r",  " k",
+    "+p",  "+l",  "+n",  "+s",         "+b",  "+r"
 };
 
 }   //  End of (Unnamed) namespace.
@@ -93,6 +63,8 @@ GameController::s_tblHandConv[Common::NUM_HAND_TYPES]   =
     Common::FIELD_EMPTY_SQUARE,
 
     Common::FIELD_BLACK_PAWN,
+    Common::FIELD_BLACK_LANCE,
+    Common::FIELD_BLACK_KNIGHT,
     Common::FIELD_BLACK_SILVER,
     Common::FIELD_BLACK_GOLD,
     Common::FIELD_BLACK_BISHOP,
@@ -100,6 +72,8 @@ GameController::s_tblHandConv[Common::NUM_HAND_TYPES]   =
     Common::FIELD_BLACK_KING,
 
     Common::FIELD_WHITE_PAWN,
+    Common::FIELD_WHITE_LANCE,
+    Common::FIELD_WHITE_KNIGHT,
     Common::FIELD_WHITE_SILVER,
     Common::FIELD_WHITE_GOLD,
     Common::FIELD_WHITE_BISHOP,
@@ -207,7 +181,7 @@ GameController::makeLegalActionList(
         //  ダイスの目を内部形式に揃えているので、  //
         //  比較の時は、座標を反転させないで行う。  //
         //  表示用座標ではなく、内部用座標で比較。  //
-        BoardState::decodeActionData( (* itrHead),  &actView );
+        Game::BoardState::decodeActionData( (* itrHead),  &actView );
         if ( (actView.xPlayNewCol) >= curDice ) {
             break;
         }
@@ -218,7 +192,7 @@ GameController::makeLegalActionList(
         //  ダイスの目を内部形式に揃えているので、  //
         //  比較の時は、座標を反転させないで行う。  //
         //  表示用座標ではなく、内部用座標で比較。  //
-        BoardState::decodeActionData( (* itr),  &actView );
+        Game::BoardState::decodeActionData( (* itr),  &actView );
         if ( (actView.xPlayNewCol) != curDice ) {
             itrTail = itr;
             break;
@@ -277,7 +251,7 @@ GameController::playBackward(
     ErrCode     retErr  = ERR_SUCCESS;
     ActionData  actData;
 
-    retErr  =  BoardState::encodeActionData(actBwd, &actData);
+    retErr  =  Game::BoardState::encodeActionData(actBwd, &actData);
     if ( retErr != ERR_SUCCESS ) {
         return ( retErr );
     }
@@ -296,7 +270,7 @@ GameController::playForward(
     ErrCode     retErr  = ERR_SUCCESS;
     ActionData  actData;
 
-    retErr  =  BoardState::encodeActionData(actFwd, &actData);
+    retErr  =  Game::BoardState::encodeActionData(actFwd, &actData);
     if ( retErr != ERR_SUCCESS ) {
         return ( retErr );
     }
@@ -344,15 +318,15 @@ GameController::startThinking(
         return ( ERR_SUCCESS );
     }
 
-    BoardState      bsClone;
-    ActionData      actData;
-    ActionDataList  vActs;
-    int             idxMin  =  0;
-    double          scrMin  =  100000;
+    Game::BoardState    bsClone;
+    ActionData          actData;
+    ActionDataList      vActs;
+    int                 idxMin  =  0;
+    double              scrMin  =  100000;
 
     for ( int r = 0;  r < numAct;  ++ r ) {
         bsClone.cloneFrom(this->m_gcBoard);
-        BoardState::encodeActionData(actList[r], &actData);
+        Game::BoardState::encodeActionData(actList[r], &actData);
         bsClone.playForward(actData);
 
         vActs.clear();
@@ -364,7 +338,7 @@ GameController::startThinking(
             break;
         }
 
-        BoardState::TBitBoard   bbCheck;
+        Game::BoardState::TBitBoard     bbCheck;
         if ( bsClone.isCheckState(this->m_curTurn ^ 1, bbCheck) > 0 ) {
             cntLegs *= 3;
         }

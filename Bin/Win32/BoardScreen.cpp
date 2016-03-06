@@ -25,6 +25,25 @@ namespace  Interface  {
 
 namespace  {
 
+CONSTEXPR_VAR   PieceIndex
+s_tblHandDecode[]   =  {
+    0,
+
+    Common::HAND_BLACK_PAWN,
+    Common::HAND_BLACK_SILVER,
+    Common::HAND_BLACK_GOLD,
+    Common::HAND_BLACK_BISHOP,
+    Common::HAND_BLACK_ROOK,
+    Common::HAND_BLACK_KING,
+
+    Common::HAND_WHITE_PAWN,
+    Common::HAND_WHITE_SILVER,
+    Common::HAND_WHITE_GOLD,
+    Common::HAND_WHITE_BISHOP,
+    Common::HAND_WHITE_ROOK,
+    Common::HAND_WHITE_KING
+};
+
 constexpr   PieceIndex
 s_tblHandEncBlack[] = {
     Game::BoardState::HAND_BLACK_PAWN,
@@ -171,8 +190,8 @@ BoardScreen::drawScreenLayer(
             const  PieceIndex   dp  = vb.piBoard[pi];
             if ( dp == 0 ) { continue; }
 
-            sx  = ((dp - 1) % 10) * SQUARE_WIDTH;
-            sy  = ((dp - 1) / 10) * SQUARE_HEIGHT;
+            sx  = ((dp - 1) % 14) * SQUARE_WIDTH;
+            sy  = ((dp - 1) / 14) * SQUARE_HEIGHT;
             bmpTrg->copyRectangle(
                     dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
                     *(this->m_biPiece), sx, sy);

@@ -95,8 +95,8 @@ PromotionScreen::drawScreenLayer(
     for ( OptIter itr = this->m_prmOptions.begin(); itr != itrEnd; ++ itr )
     {
         const  PieceIndex   pi  = (* itr);
-        const  WindowCoord  sx  = ((pi - 1) % 10) * SQUARE_WIDTH;
-        const  WindowCoord  sy  = ((pi - 1) / 10) * SQUARE_HEIGHT;
+        const  WindowCoord  sx  = ((pi - 1) % 14) * SQUARE_WIDTH;
+        const  WindowCoord  sy  = ((pi - 1) / 14) * SQUARE_HEIGHT;
 
         bmpTrg->copyRectangle(
                 dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
