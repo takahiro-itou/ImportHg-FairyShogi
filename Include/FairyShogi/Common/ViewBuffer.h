@@ -25,6 +25,13 @@
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Common  {
 
+enum  {
+    MAX_FIELD_COLS      =  FSSYSLIMIT::MAX_FIELD_COLS,
+    MAX_FIELD_ROWS      =  FSSYSLIMIT::MAX_FIELD_ROWS,
+    MAX_NUM_PLAYERS     =  FSSYSLIMIT::MAX_NUM_PLAYERS,
+    MAX_HAND_TYPES      =  FSSYSLIMIT::MAX_HAND_TYPES
+};
+
 //========================================================================
 //
 //    ViewBuffer  class.
@@ -49,13 +56,18 @@ struct  ViewBuffer
     **
     **    各プレーヤー毎に異なっていてもよい。
     **/
-    PieceIndex      numHandTypes[FSSYSLIMIT::MAX_NUM_PLAYERS];
+    PieceIndex      numHandTypes[MAX_NUM_PLAYERS];
 
     /**   盤上の状態。      **/
-    EFieldPiece     piBoard[FSSYSLIMIT::MAX_FIELD_SIZE];
+    EFieldPiece     fpBoard[MAX_FIELD_ROWS][MAX_FIELD_COLS];
+
+    /**
+    **    持ち駒の駒番号。
+    **/
+    EHandPiece      hpIndex[MAX_NUM_PLAYERS][MAX_HAND_TYPES];
 
     /**   持ち駒の数。      **/
-    THandCount      nHands [FSSYSLIMIT::MAX_HAND_TYPES];
+    THandCount      hpCount[MAX_NUM_PLAYERS][MAX_HAND_TYPES];
 };
 
 }   //  End of namespace  Common

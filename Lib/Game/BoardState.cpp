@@ -156,14 +156,14 @@ s_tblPromNew[BoardState::NUM_PIECE_TYPES]   =  {
 };
 
 
-CONSTEXPR_VAR   int
+CONSTEXPR_VAR   PlayerIndex
 s_tblPieceOwner[BoardState::NUM_PIECE_TYPES]    =  {
     -1,
     0, 0, 0, 0, 0, 0,   0, 0, 0, 0,
     1, 1, 1, 1, 1, 1,   1, 1, 1, 1
 };
 
-CONSTEXPR_VAR   int
+CONSTEXPR_VAR   PlayerIndex
 s_tblHandsOwner[BoardState::NUM_IHAND_TYPES]    =  {
     -1,     0, 0, 0, 0, 0, 0,   1, 1, 1, 1, 1, 1
 };
@@ -730,22 +730,38 @@ BoardState::copyToViewBuffer(
         const  InternState  &curStat,
         Common::ViewBuffer  &bufView)
 {
+    bufView.numPlayers  =  Common::NUM_PLAYERS;
+    bufView.numRows     =  POS_NUM_ROWS;
+    bufView.numCols     =  POS_NUM_COLS;
+
+    //  盤上の駒のデータをコピーする。  //
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
-            const  FieldIndex
-                fi  =  (yr * POS_NUM_COLS) + (POS_NUM_COLS - 1 - xc);
+            const  PosCol   wrtCol  =  (POS_NUM_COLS - 1 - xc);
             const  PieceIndex
                 pi  =  curStat.m_bsField[ getMatrixPos(xc, yr) ];
-            bufView.piBoard[fi] = s_tblDecodeField[pi];
+            bufView.fpBoard[yr][wrtCol] = s_tblDecodeField[pi];
         }
     }
 
-    for ( PieceIndex hp = 0; hp < NUM_IHAND_TYPES; ++ hp ) {
-        const   Common::EHandPiece  hpiTrg  =  s_tblDecodeHands[hp];
-        bufView.nHands[hpiTrg]  = curStat.m_hcHands[hp];
+    //  持ち駒のデータをコピーする。    //
+    for ( PlayerIndex i = 0; i < Common::NUM_PLAYERS; ++ i ) {
+        bufView.numHandTypes[i] = 0;
     }
 
-    return ( ERR_FAILURE );
+    for ( PieceIndex hp = 0; hp < NUM_IHAND_TYPES; ++ hp ) {
+        const  PlayerIndex  pi  =  s_tblHandsOwner[hp];
+        if ( pi < 0 ) { continue; }
+
+        const   Common::EHandPiece  hpiTrg  =  s_tblDecodeHands[hp];
+
+        const   PieceIndex   hpIdx  =  bufView.numHandTypes[pi];
+        bufView.hpIndex[pi][hpIdx]  =  hpiTrg;
+        bufView.hpCount[pi][hpIdx]  =  curStat.m_hcHands[hp];
+        bufView.numHandTypes[pi]    =  (hpIdx + 1);
+    }
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------

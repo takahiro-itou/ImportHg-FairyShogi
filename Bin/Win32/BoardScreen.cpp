@@ -25,27 +25,6 @@ namespace  Interface  {
 
 namespace  {
 
-#if 0
-CONSTEXPR_VAR   EHandPiece
-s_tblHandDecode[]   =  {
-    Common::HAND_EMPTY_PIECE,
-
-    Common::HAND_BLACK_PAWN,
-    Common::HAND_BLACK_SILVER,
-    Common::HAND_BLACK_GOLD,
-    Common::HAND_BLACK_BISHOP,
-    Common::HAND_BLACK_ROOK,
-    Common::HAND_BLACK_KING,
-
-    Common::HAND_WHITE_PAWN,
-    Common::HAND_WHITE_SILVER,
-    Common::HAND_WHITE_GOLD,
-    Common::HAND_WHITE_BISHOP,
-    Common::HAND_WHITE_ROOK,
-    Common::HAND_WHITE_KING
-};
-#endif
-
 CONSTEXPR_VAR   Common::EHandPiece
 s_tblHandEncBlack[] = {
     Common::HAND_BLACK_PAWN,
@@ -167,29 +146,12 @@ BoardScreen::drawScreenLayer(
     memset(&vb, 0, sizeof(vb));
     this->m_gcGameCtrl.writeToViewBuffer(vb);
 
-    //  後手の持ち駒を表示する。    //
-    int     tx  = 0;
-    for ( int c = HANDS_WHITE_PAWN; c <= HANDS_WHITE_KING; ++ c, ++ tx )
-    {
-        const  THandCount   numHand = vb.nHands[c];
-        if ( numHand <= 0 ) { continue; }
-
-        dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
-        dy  = TOP_MARGIN;
-        sx  = (c - HANDS_WHITE_PAWN) * SQUARE_WIDTH;
-        sy  = (1) * SQUARE_HEIGHT;
-        bmpTrg->copyRectangle(
-                dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
-                *(this->m_biPiece), sx, sy);
-    }
-
     //  盤上にある駒を表示する。    //
     for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
         for ( int x = 0; x < POS_NUM_COLS; ++ x ) {
             dx  = (x * SQUARE_WIDTH) + LEFT_MARGIN;
             dy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
-            const  int          pi  = (y * POS_NUM_COLS) + x;
-            const  PieceIndex   dp  = vb.piBoard[pi];
+            const  PieceIndex   dp  = vb.fpBoard[y][x];
             if ( dp == 0 ) { continue; }
 
             sx  = ((dp - 1) % 14) * SQUARE_WIDTH;
@@ -200,21 +162,50 @@ BoardScreen::drawScreenLayer(
         }
     }
 
+    //  後手の持ち駒を表示する。    //
+    for ( PlayerIndex i = 0; i < vb.numPlayers; ++ i ) {
+        const  PieceIndex  numHand  =  vb.numHandTypes[i];
+        for ( PieceIndex c = 0;  c < numHand;  ++ c )
+        {
+            const   Common::EHandPiece  piHand  =  vb.hpIndex[i][c];
+            const   THandCount          hcHand  =  vb.hpCount[i][c];
+            if ( hcHand <= 0 )  { continue; }
+
+            dx  = (c * SQUARE_WIDTH) + LEFT_MARGIN;
+            dy  = TOP_MARGIN;
+            if ( i == 0 ) {
+                dy  += (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT;
+                sx  =  (piHand - Common::HAND_BLACK_PAWN) * SQUARE_WIDTH;
+            } else {
+                sx  =  (piHand - Common::HAND_WHITE_PAWN) * SQUARE_WIDTH;
+            }
+
+            sy  = (i) * SQUARE_HEIGHT;
+            bmpTrg->copyRectangle(
+                    dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
+                    *(this->m_biPiece), sx, sy);
+        }
+    }
+
+#if 0
     //  先手の持ち駒を表示する。    //
     tx  = 0;
-    for ( int c = HANDS_BLACK_PAWN; c <= HANDS_BLACK_KING; ++ c, ++ tx )
+    for ( int c = 0;  c < vb.numHandTypes[Common::PLAYER_BLACK];  ++ c, ++ tx )
     {
-        const  THandCount   numHand = vb.nHands[c];
-        if ( numHand <= 0 ) { continue; }
+        const  PieceIndex   pi  =  c;
+        const  Common::EHandPiece   piHand  =  vb.piHands[pi];
+        const  THandCount           hcHand  =  vb.hcHands[pi];
+        if ( hcHand <= 0 )  { continue; }
 
         dx  = (tx * SQUARE_WIDTH) + LEFT_MARGIN;
         dy  = (POS_NUM_ROWS + BOARD_TOP_OFFSET) * SQUARE_HEIGHT + TOP_MARGIN;
-        sx  = (c - HANDS_BLACK_PAWN) * SQUARE_WIDTH;
+        sx  = (piHand - HANDS_BLACK_PAWN) * SQUARE_WIDTH;
         sy  = (0) * SQUARE_HEIGHT;
         bmpTrg->copyRectangle(
                 dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
                 *(this->m_biPiece), sx, sy);
     }
+#endif
 
     //  選択しているマスがあれば強調表示。  //
     if ( (this->m_bcSelX >= 0) && (this->m_bcSelY >= 0) ) {

@@ -626,8 +626,7 @@ CommandInterpreter::executeSfenCommand(
             outStr  <<  "/";
         }
         for ( int x = 0; x < 5; ++ x ) {
-            const  int          pi  = (y * 5) + x;
-            const  PieceIndex   dp  = vb.piBoard[pi];
+            const  PieceIndex   dp  = vb.fpBoard[y][x];
             outStr  <<  s_tblSfenName[dp];
         }
 
@@ -639,14 +638,19 @@ CommandInterpreter::executeSfenCommand(
 
     //  持ち駒を表示する。  //
     int     flg = 0;
-    for ( int c = 1; c < 12; ++ c ) {
-        const  THandCount   numHand = vb.nHands[c];
-        if ( numHand <= 0 ) { continue; }
-        flg = 1;
-        if ( numHand > 1 ) {
-            outStr  <<  (numHand);
+    for ( PlayerIndex i = 0; i < vb.numPlayers; ++ i ) {
+        const  PieceIndex  numHand  =  vb.numHandTypes[i];
+        for ( PieceIndex c = 0; c < numHand;  ++ c )
+        {
+            const  Common::EHandPiece   piHand  =  vb.hpIndex[i][c];
+            const  THandCount           hcHand  =  vb.hpCount[i][c];
+            if ( hcHand <= 0 ) { continue; }
+            flg = 1;
+            if ( hcHand > 1 ) {
+                outStr  <<  (hcHand);
+            }
+            outStr  <<  s_tblHandName[piHand];
         }
-        outStr  <<  s_tblHandName[c];
     }
     if ( flg == 0 ) {
         outStr  <<  "-";
@@ -668,6 +672,11 @@ CommandInterpreter::executeShowCommand(
         std::ostream        &outStr,
         CallbackClass       &ciClbk)
 {
+    CONSTEXPR_VAR   const  char  *  s_tblHandOwnerNames[2]  =  {
+        "\nBLACK:",
+        "\nWHITE:"
+    };
+
     const   GameController::ShowCoordFlags
         flgShow = objGame.getShowFlag();
 
@@ -687,8 +696,7 @@ CommandInterpreter::executeShowCommand(
     outStr  <<  "----------------\n";
     for ( int y = 0; y < 5; ++ y ) {
         for ( int x = 0; x < 5; ++ x ) {
-            const  int          pi  = (y * 5) + x;
-            const  PieceIndex   dp  = vb.piBoard[pi];
+            const  PieceIndex   dp  = vb.fpBoard[y][x];
             outStr  <<  "|"  <<  s_tblPieceName[dp];
         }
         if ( (flgShow) & GameController::SCF_ROTATE_BOARD ) {
@@ -700,22 +708,19 @@ CommandInterpreter::executeShowCommand(
     }
 
     //  持ち駒を表示する。  //
-    for ( PieceIndex c = Common::HAND_BLACK_PAWN;
-            c <= Common::HAND_WHITE_KING; ++ c )
-    {
-        if ( c == Common::HAND_BLACK_PAWN ) {
-            outStr  <<  "\nBLACK:";
-        } else if ( c == Common::HAND_WHITE_PAWN ) {
-            outStr  <<  "\nWHITE:";
+    for ( PlayerIndex i = 0; i < vb.numPlayers; ++ i ) {
+        outStr  <<  s_tblHandOwnerNames[i];
+        const  PieceIndex  numHand  =  vb.numHandTypes[i];
+        for ( PieceIndex c = 0; c < numHand;  ++ c )
+        {
+            const  Common::EHandPiece   piHand  =  vb.hpIndex[i][c];
+            const  THandCount           hcHand  =  vb.hpCount[i][c];
+            if ( hcHand <= 0 ) { continue; }
+            outStr  <<  s_tblHandName[piHand]
+                    <<  hcHand
+                    <<  ", ";
         }
-
-        const  THandCount   numHand = vb.nHands[c];
-        if ( numHand <= 0 ) { continue; }
-        outStr  <<  s_tblHandName[c]
-                <<  numHand
-                <<  ", ";
     }
-
     outStr  <<  std::endl;
 
     return ( ERR_SUCCESS );
