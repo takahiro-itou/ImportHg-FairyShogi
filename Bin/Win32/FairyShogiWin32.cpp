@@ -198,7 +198,7 @@ onLButtonUp(
     if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
         //  成り駒選択中。  //
-        evtRet  = g_scrProm.onLButtonUp(fwKeys, xPos, yPos);
+        evtRet  = g_scrProm.dispatchLButtonUp(fwKeys, xPos, yPos);
         const  PieceIndex   pidSel  = g_scrProm.getUserSelect();
         if ( pidSel >= 0 ) {
             g_scrProm.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);

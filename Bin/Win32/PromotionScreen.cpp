@@ -117,35 +117,6 @@ PromotionScreen::drawScreenLayer(
 //    Public Member Functions (Overrides).
 //
 
-
-//----------------------------------------------------------------
-//    マウスの左ボタンを離した時のイベントハンドラ。
-//
-
-PromotionScreen::EventResult
-PromotionScreen::onLButtonUp(
-        const   DWORD   fwKeys,
-        const   UINT    xPos,
-        const   UINT    yPos)
-{
-    const  WindowCoord  wcWidth = getWidth();
-    const  PieceIndex   numCols = wcWidth / SQUARE_WIDTH;
-
-    const  PieceIndex   xSelCol = (xPos / SQUARE_WIDTH);
-    const  PieceIndex   ySelRow = (yPos / SQUARE_HEIGHT);
-
-    const  PieceIndex   iSelect = (ySelRow * numCols) + (xSelCol);
-    const  PieceIndex   nSelMax = (this->m_prmOptions.size());
-
-    if ( (iSelect < 0) || (nSelMax <= iSelect) ) {
-        return ( EH_RESULT_REDRAW );
-    }
-
-    this->m_psSelected  =  iSelect;
-
-    return ( EH_RESULT_REDRAW );
-}
-
 //========================================================================
 //
 //    Public Member Functions (Pure Virtual Functions).
@@ -202,6 +173,39 @@ PromotionScreen::setSelectionList(
 {
     this->m_prmOptions  = vSelect;
     return ( ERR_SUCCESS );
+}
+
+//========================================================================
+//
+//    Protected Member Functions (Overrides).
+//
+
+//----------------------------------------------------------------
+//    マウスの左ボタンを離した時のイベントハンドラ。
+//
+
+PromotionScreen::EventResult
+PromotionScreen::onLButtonUp(
+        const   DWORD   fwKeys,
+        const   UINT    xPos,
+        const   UINT    yPos)
+{
+    const  WindowCoord  wcWidth = getWidth();
+    const  PieceIndex   numCols = wcWidth / SQUARE_WIDTH;
+
+    const  PieceIndex   xSelCol = (xPos / SQUARE_WIDTH);
+    const  PieceIndex   ySelRow = (yPos / SQUARE_HEIGHT);
+
+    const  PieceIndex   iSelect = (ySelRow * numCols) + (xSelCol);
+    const  PieceIndex   nSelMax = (this->m_prmOptions.size());
+
+    if ( (iSelect < 0) || (nSelMax <= iSelect) ) {
+        return ( EH_RESULT_REDRAW );
+    }
+
+    this->m_psSelected  =  iSelect;
+
+    return ( EH_RESULT_REDRAW );
 }
 
 //========================================================================

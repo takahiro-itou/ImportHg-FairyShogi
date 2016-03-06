@@ -20,13 +20,6 @@
 
 #include    "ScreenLayer.h"
 
-#if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
-#    define     STRICT
-#    define     WIN32_LEAN_AND_MEAN
-#    include    <windows.h>
-#    define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H
-#endif
-
 #if !defined( FAIRYSHOGI_STDC_INCLUDED_STL_STRING )
 #    include    <string>
 #    define     FAIRYSHOGI_STDC_INCLUDED_STL_STRING
@@ -50,11 +43,11 @@ namespace  Interface  {
 
 class  PromotionScreen : public  ScreenLayer
 {
-private:
 
-    /**   スーパークラス。  **/
-    typedef     ScreenLayer     Super;
-
+//========================================================================
+//
+//    Internal Type Definitions.
+//
 public:
 
     /**   ユーザーに示す選択肢の型。    **/
@@ -131,20 +124,6 @@ public:
 public:
 
     //----------------------------------------------------------------
-    /**   マウスの左ボタンを離した時のイベントハンドラ。
-    **
-    **  @param [in] fwKeys
-    **  @param [in] xPos
-    **  @param [in] yPos
-    **  @return     イベントハンドラの処理結果。
-    **/
-    virtual  EventResult
-    onLButtonUp(
-            const   DWORD   fwKeys,
-            const   UINT    xPos,
-            const   UINT    yPos);
-
-    //----------------------------------------------------------------
     /**   必要な画像データを準備する。
     **
     **  @param [in] imgPiece    駒の画像。
@@ -191,6 +170,26 @@ public:
 
 //========================================================================
 //
+//    Protected Member Functions (Overrides).
+//
+protected:
+
+    //----------------------------------------------------------------
+    /**   マウスの左ボタンを離した時のイベントハンドラ。
+    **
+    **  @param [in] fwKeys
+    **  @param [in] xPos
+    **  @param [in] yPos
+    **  @return     イベントハンドラの処理結果。
+    **/
+    virtual  EventResult
+    onLButtonUp(
+            const   DWORD   fwKeys,
+            const   UINT    xPos,
+            const   UINT    yPos)  OVERRIDE;
+
+//========================================================================
+//
 //    For Internal Use Only.
 //
 private:
@@ -217,6 +216,10 @@ private:
 //
 //    Other Features.
 //
+private:
+   /**   スーパークラス。  **/
+    typedef     ScreenLayer         Super;
+
 private:
     typedef     PromotionScreen     This;
     PromotionScreen     (const  This  &);
