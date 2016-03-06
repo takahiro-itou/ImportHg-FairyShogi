@@ -53,7 +53,8 @@ CONSTEXPR_VAR   int     g_tblConvPos[25] = {
 **    番兵付きの座標から、元の座標に変換するためのテーブル。
 **/
 
-CONSTEXPR_VAR   int     g_tblInvPos[49] = {
+CONSTEXPR_VAR   int
+g_tblInvPos[49]  =  {
     -1, -1, -1, -1, -1, -1, -1,
     -1,  0,  1,  2,  3,  4, -1,
     -1,  5,  6,  7,  8,  9, -1,
@@ -68,7 +69,7 @@ CONSTEXPR_VAR   int     g_tblInvPos[49] = {
 **/
 
 CONSTEXPR_VAR   int
-g_tblWalkDir[BoardState::NUM_FIELD_PIECE_TYPES][9] = {
+g_tblWalkDir[RuleTables::NUM_PIECE_TYPES][9]  =  {
     { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Empty.
 
     { N , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Pawn.
@@ -99,7 +100,7 @@ g_tblWalkDir[BoardState::NUM_FIELD_PIECE_TYPES][9] = {
 **/
 
 CONSTEXPR_VAR   int
-g_tblJumpDir[BoardState::NUM_FIELD_PIECE_TYPES][9] = {
+g_tblJumpDir[RuleTables::NUM_PIECE_TYPES][9]  =  {
     { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Empty.
 
     { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },      //  Black Pawn.

@@ -122,7 +122,7 @@ public:
 //
 //    For Internal Use Only.
 //
-private:
+public:
 
     enum  {
         POS_NUM_ROWS    =  BoardState::POS_NUM_ROWS,
@@ -132,6 +132,8 @@ private:
         NUM_HAND_TYPES  =  BoardState::NUM_HAND_TYPES,
         MAX_DIRECTIONS  =  9
     };
+
+private:
 
     typedef     int             TDirsTable[MAX_DIRECTIONS];
     typedef     BitBoardVal     TMoveTable[FIELD_SIZE];

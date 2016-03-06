@@ -30,7 +30,7 @@ namespace  {
 using   Game::BoardState;
 
 CONSTEXPR_VAR   const   PieceIndex
-s_tblPromotion[]    = {
+s_tblPromotion[Common::NUM_FIELD_PIECE_TYPES]  =  {
     Common::FIELD_EMPTY_SQUARE,
 
     Common::FIELD_BLACK_PR_PAWN,
@@ -157,17 +157,17 @@ GraphicalInterface::setupMoveActionFromMouse(
                             ptrAct->xPlayOldCol - 1,
                             ptrAct->yPlayOldRow - 1);
     ptrAct->fpAfter = (ptrAct->fpMoved);
-    ptrAct->hpiDrop = Game::BoardState::HAND_EMPTY_PIECE;
+    ptrAct->hpiDrop = Common::HAND_EMPTY_PIECE;
     ptrAct->fLegals = Common::ALF_LEGAL_ACTION;
 
     vProms->clear();
-    if ( (ptrAct->fpMoved) == Game::BoardState::FIELD_EMPTY_SQUARE ) {
+    if ( (ptrAct->fpMoved) == Common::FIELD_EMPTY_SQUARE ) {
         return ( ERR_FAILURE );
     }
 
     vProms->push_back(ptrAct->fpMoved);
     const  PieceIndex   piProm  =  s_tblPromotion[ptrAct->fpMoved];
-    if ( piProm != Game::BoardState::FIELD_EMPTY_SQUARE ) {
+    if ( piProm != Common::FIELD_EMPTY_SQUARE ) {
         vProms->push_back(piProm);
     };
 
@@ -203,7 +203,7 @@ GraphicalInterface::setupPutActionFromMouse(
     ptrAct->fpCatch = curStat.getFieldPiece(
                             ptrAct->xPlayNewCol - 1,
                             ptrAct->yPlayNewRow - 1);
-    ptrAct->fpMoved = Game::BoardState::FIELD_EMPTY_SQUARE;
+    ptrAct->fpMoved = Common::FIELD_EMPTY_SQUARE;
     ptrAct->fpAfter = s_tblHandConv[pHand];
     ptrAct->hpiDrop = pHand;
     ptrAct->fLegals = Common::ALF_LEGAL_ACTION;
