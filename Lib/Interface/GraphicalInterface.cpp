@@ -169,9 +169,9 @@ GraphicalInterface::setupMoveActionFromMouse(
     const  PieceIndex   piProm  =  s_tblPromotion[ptrAct->fpMoved];
     if ( piProm != Common::FIELD_EMPTY_SQUARE ) {
         vProms->push_back(piProm);
-    };
+    }
 
-    return ( ERR_FAILURE );
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
@@ -214,7 +214,7 @@ GraphicalInterface::setupPutActionFromMouse(
     ptrAct->fLegals = Common::ALF_LEGAL_ACTION;
 
     vProms->clear();
-    vProms->push_back(ptrAct->hpiDrop);
+    vProms->push_back(ptrAct->fpAfter);
 
     return ( ERR_SUCCESS );
 }
