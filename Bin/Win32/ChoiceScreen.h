@@ -20,13 +20,6 @@
 
 #include    "ScreenLayer.h"
 
-#if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
-#    define     STRICT
-#    define     WIN32_LEAN_AND_MEAN
-#    include    <windows.h>
-#    define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H
-#endif
-
 #if !defined( FAIRYSHOGI_STDC_INCLUDED_STL_STRING )
 #    include    <string>
 #    define     FAIRYSHOGI_STDC_INCLUDED_STL_STRING
@@ -117,21 +110,11 @@ public:
     **/
     virtual  ErrCode
     drawScreenLayer(
-            BitmapImage  *  bmpTrg)  const  override;
+            BitmapImage  *  bmpTrg)  const  OVERRIDE;
 
 //========================================================================
 //
 //    Public Member Functions (Overrides).
-//
-
-//========================================================================
-//
-//    Public Member Functions (Pure Virtual Functions).
-//
-
-//========================================================================
-//
-//    Public Member Functions (Virtual Functions).
 //
 public:
 
@@ -147,7 +130,18 @@ public:
     onLButtonUp(
             const   DWORD   fwKeys,
             const   UINT    xPos,
-            const   UINT    yPos);
+            const   UINT    yPos)  OVERRIDE;
+
+//========================================================================
+//
+//    Public Member Functions (Pure Virtual Functions).
+//
+
+//========================================================================
+//
+//    Public Member Functions (Virtual Functions).
+//
+public:
 
     //----------------------------------------------------------------
     /**   必要な画像データを準備する。

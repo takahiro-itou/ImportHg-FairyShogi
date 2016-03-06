@@ -20,6 +20,13 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
+#    define     STRICT
+#    define     WIN32_LEAN_AND_MEAN
+#    include    <windows.h>
+#    define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H
+#endif
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 
 //  クラスの前方宣言。  //
@@ -133,6 +140,21 @@ public:
 //
 //    Public Member Functions (Virtual Functions).
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   イベントハンドラを呼び出す。
+    **
+    **  @param [in] fwKeys
+    **  @param [in] xPos
+    **  @param [in] yPos
+    **  @return     イベントハンドラの処理結果。
+    **/
+    virtual  EventResult
+    dispatchLButtonUp(
+            const   DWORD   fwKeys,
+            const   UINT    xPos,
+            const   UINT    yPos);
 
 //========================================================================
 //
@@ -234,6 +256,26 @@ public:
     WindowCoord
     setWidth(
             const  WindowCoord  wcVal);
+
+//========================================================================
+//
+//    Protected Member Functions (Virtual Functions).
+//
+protected:
+
+    //----------------------------------------------------------------
+    /**   マウスの左ボタンを離した時のイベントハンドラ。
+    **
+    **  @param [in] fwKeys
+    **  @param [in] xPos
+    **  @param [in] yPos
+    **  @return     イベントハンドラの処理結果。
+    **/
+    virtual  EventResult
+    onLButtonUp(
+            const   DWORD   fwKeys,
+            const   UINT    xPos,
+            const   UINT    yPos);
 
 //========================================================================
 //
