@@ -730,6 +730,14 @@ BoardState::copyToViewBuffer(
         const  InternState  &curStat,
         Common::ViewBuffer  &bufView)
 {
+    bufView.numPlayers  =  Common::NUM_PLAYERS;
+    bufView.numRows     =  POS_NUM_ROWS;
+    bufView.numCols     =  POS_NUM_COLS;
+
+    for ( PlayerIndex i = 0; i < Common::NUM_PLAYERS; ++ i ) {
+        bufView.numHandTypes[i] = (NUM_IHAND_TYPES / 2);
+    }
+
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
             const  FieldIndex

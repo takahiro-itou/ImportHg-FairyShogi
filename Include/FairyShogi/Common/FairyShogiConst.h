@@ -117,6 +117,7 @@ enum
 {
     PLAYER_BLACK        =  0,       /**<  先手番。  */
     PLAYER_WHITE        =  1,       /**<  後手番。  **/
+    NUM_PLAYERS,
 
     /**
     **    手番を交代するための定数。

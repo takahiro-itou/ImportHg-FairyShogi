@@ -640,13 +640,14 @@ CommandInterpreter::executeSfenCommand(
     //  持ち駒を表示する。  //
     int     flg = 0;
     for ( int c = 1; c < 12; ++ c ) {
-        const  THandCount   numHand = vb.nHands[c];
-        if ( numHand <= 0 ) { continue; }
+        const  Common::EHandPiece   piHand  =  vb.piHands[c];
+        const  THandCount           hcHand  =  vb.hcHands[c];
+        if ( hcHand <= 0 ) { continue; }
         flg = 1;
-        if ( numHand > 1 ) {
-            outStr  <<  (numHand);
+        if ( hcHand > 1 ) {
+            outStr  <<  (hcHand);
         }
-        outStr  <<  s_tblHandName[c];
+        outStr  <<  s_tblHandName[piHand];
     }
     if ( flg == 0 ) {
         outStr  <<  "-";
@@ -668,6 +669,11 @@ CommandInterpreter::executeShowCommand(
         std::ostream        &outStr,
         CallbackClass       &ciClbk)
 {
+    CONSTEXPR_VAR   const  char  *  s_tblHandOwnerNames[2]  =  {
+        "\nBLACK:",
+        "\nWHITE:"
+    };
+
     const   GameController::ShowCoordFlags
         flgShow = objGame.getShowFlag();
 
@@ -700,22 +706,20 @@ CommandInterpreter::executeShowCommand(
     }
 
     //  持ち駒を表示する。  //
-    for ( PieceIndex c = Common::HAND_BLACK_PAWN;
-            c <= Common::HAND_WHITE_KING; ++ c )
-    {
-        if ( c == Common::HAND_BLACK_PAWN ) {
-            outStr  <<  "\nBLACK:";
-        } else if ( c == Common::HAND_WHITE_PAWN ) {
-            outStr  <<  "\nWHITE:";
+    PieceIndex  pi  =  0;
+    for ( PlayerIndex i = 0; i < vb.numPlayers; ++ i ) {
+        outStr  <<  s_tblHandOwnerNames[i];
+        const  PieceIndex  numHand  =  vb.numHandTypes[i];
+        for ( PieceIndex c = 0; c < numHand;  ++ c, ++ pi )
+        {
+            const  Common::EHandPiece   piHand  =  vb.piHands[pi];
+            const  THandCount           hcHand  =  vb.hcHands[pi];
+            if ( hcHand <= 0 ) { continue; }
+            outStr  <<  s_tblHandName[piHand]
+                    <<  hcHand
+                    <<  ", ";
         }
-
-        const  THandCount   numHand = vb.nHands[c];
-        if ( numHand <= 0 ) { continue; }
-        outStr  <<  s_tblHandName[c]
-                <<  numHand
-                <<  ", ";
     }
-
     outStr  <<  std::endl;
 
     return ( ERR_SUCCESS );
