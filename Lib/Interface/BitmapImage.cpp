@@ -17,9 +17,8 @@
 
 #include    "FairyShogi/Interface/BitmapImage.h"
 
+#include    <memory.h>
 #include    <stdio.h>
-#include    <windows.h>
-#include    <Wingdi.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
@@ -56,8 +55,12 @@ struct  BitmapImage::TRgbQuad
 
 struct  BitmapImage::TBitmapInfo
 {
-    BitmapInfoHeader    bmiHeader;
-    RgbQuad             bmiColors[1];
+    TBitmapInfoHeader   bmiHeader;
+    TRgbQuad            bmiColors[1];
+};
+
+enum  {
+    BI_RGB  =  0
 };
 
 #endif  //  !defined( FAIRYSHOGI_WIN32_API )

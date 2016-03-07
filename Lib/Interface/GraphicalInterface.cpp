@@ -20,7 +20,6 @@
 #include    "FairyShogi/Common/ActionView.h"
 
 #include    <sstream>
-#include    <windows.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
