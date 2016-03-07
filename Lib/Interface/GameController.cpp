@@ -145,10 +145,13 @@ GameController::computeBestAction(
     Common::ViewBuffer  vbCur;
     ErrCode             retErr  =  ERR_SUCCESS;
 
+    const  TConstraint  ccDice  =  convertConstraintCoord(
+            this->m_flgShow,  (this->m_curDice) );
+
     this->m_gcBoard.copyToViewBuffer(vbCur);
     retErr  =  gEngine.computeBestAction(
-                    vbCur,  this->m_curTurn,
-                    this->m_curDice,  actRet);
+                    vbCur,   this->m_curTurn,
+                    ccDice,  actRet);
 
     setupActionDisplayCoord( this->m_flgShow, &actRet );
 

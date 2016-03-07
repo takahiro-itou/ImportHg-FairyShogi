@@ -86,6 +86,8 @@ EngineBase::computeBestAction(
 {
     typedef     BoardState::ActionData          ActionData;
     typedef     std::vector<ActionData>         ActionDataList;
+    typedef     ActionDataList::const_iterator  ActIter;
+
 
     //  現在の局面を、内部形式に変換する。  //
     BoardState      curStat;
@@ -106,13 +108,17 @@ EngineBase::computeBestAction(
     }
 
     BoardState      bsClone;
+    BoardState      bsClone2;
     ActionData      actData;
     ActionDataList  vActs;
+    ActionDataList  vActs2;
 
     int             idxMin  =  0;
     double          scrMin  =  100000;
 
     for ( int r = 0;  r < numAct;  ++ r ) {
+        BoardState::TBitBoard   bbCheck;
+
         bsClone.cloneFrom(curStat);
         BoardState::encodeActionData(actList[r], &actData);
         bsClone.playForward(actData);
@@ -121,18 +127,51 @@ EngineBase::computeBestAction(
         bsClone.makeLegalActionList(piTurn ^ 1,  0,  vActs);
         size_t  cntLegs =  vActs.size();
         if ( cntLegs == 0 ) {
+            //  次の相手側の合法手が無い場合。  //
+            if ( bsClone.isCheckState(piTurn ^ 1,  bbCheck) == 0 ) {
+                //  王手が掛かっていない時は、選択しない。  //
+                //  ステイルメイトなので、逆転負けになる。  //
+                continue;
+            }
+            //  チェックメイトなので、それを選択して勝ち。  //
             idxMin  =  r;
             scrMin  =  0;
             break;
         }
 
-        BoardState::TBitBoard   bbCheck;
+        //  相手側の手番をパスして、その次の自分の合法手を考える。  //
+        size_t  numRch  =  0;
+        vActs.clear();
+        bsClone.makeLegalActionList(piTurn,  0,  vActs);
+        const  ActIter  itrEnd  =  vActs.end();
+        for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr ) {
+            bsClone2.cloneFrom(bsClone);
+            bsClone2.playForward(* itr);
+
+            vActs2.clear();
+            bsClone2.makeLegalActionList(piTurn ^ 1,  0,  vActs2);
+            if ( vActs.empty() ) {
+                //  相手側の合法手が無い。勝ちの局面。  //
+                //  換言すると壱手詰めの詰めろの状態。  //
+                ++  numRch;
+            }
+        }
+        if ( numRch > 0 ) {
+            idxMin  =  r;
+            const   double  scrCur  =  -1.0 * numRch;
+            if ( scrCur < scrMin ) {
+                idxMin  =  r;
+                scrMin  =  scrCur;
+            }
+        }
+
+        //  それ以外は、相手の合法手を減らす。  //
         if ( bsClone.isCheckState(piTurn ^ 1, bbCheck) > 0 ) {
             cntLegs *= 3;
         }
 
-        const  double  dblRnd   =  (rand() * 4.0 / RAND_MAX);
-        const  double   scrCur   =  (cntLegs) * (dblRnd + 8);
+        const   double  dblRnd  =  (rand() * 4.0 / RAND_MAX);
+        const   double  scrCur  =  (cntLegs) * (dblRnd + 8);
         if ( scrCur < scrMin ) {
             idxMin  =  r;
             scrMin  =  scrCur;
