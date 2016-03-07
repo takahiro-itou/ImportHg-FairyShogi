@@ -356,6 +356,49 @@ BoardState::encodeActionData(
 }
 
 //----------------------------------------------------------------
+//    表示用バッファから内部形式に変換する。
+//
+
+ErrCode
+BoardState::encodeFromViewBuffer(
+        const  Common::ViewBuffer  &bufView)
+{
+    return ( encodeFromViewBuffer(bufView, this->m_icState) );
+}
+
+//----------------------------------------------------------------
+//    表示用バッファから内部形式に変換する。
+//
+
+ErrCode
+BoardState::encodeFromViewBuffer(
+        const  Common::ViewBuffer  &bufView,
+        InternState                &curStat)
+{
+    //  盤上の駒のデータをコピーする。  //
+    for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
+        for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
+            const  PosCol   wrtCol  =  (POS_NUM_COLS - 1 - xc);
+            const  PieceIndex   pi  =  bufView.fpBoard[yr][wrtCol];
+            curStat.m_bsField[getMatrixPos(xc, yr)]  =  s_tblEncodeHands[pi];
+        }
+    }
+
+    //  持ち駒のデータをコピーする。    //
+    for ( PlayerIndex i = 0; i < Common::NUM_PLAYERS; ++ i ) {
+        const  PieceIndex  numHand  =  bufView.numHandTypes[i];
+        for ( PieceIndex hp = 0; hp < numHand; ++ hp ) {
+            const   Common::EHandPiece  hpiIdx  =  bufView.hpIndex[i][hp];
+
+            const   PieceIndex  hpiTrg  =  s_tblEncodeHands[hpiIdx];
+            curStat.m_hcHands[hpiTrg]   =  bufView.hpCount[i][hp];
+        }
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
 //    王手が掛かっているかどうかを判定する。
 //
 

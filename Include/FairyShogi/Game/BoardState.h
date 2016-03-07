@@ -235,6 +235,34 @@ public:
             ActionData  *  const    actData);
 
     //----------------------------------------------------------------
+    /**   表示用バッファから内部形式に変換する。
+    **
+    **  @param [in] bufView   表示用バッファ。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    encodeFromViewBuffer(
+            const  Common::ViewBuffer  &bufView);
+
+    //----------------------------------------------------------------
+    /**   表示用バッファから内部形式に変換する。
+    **
+    **  @param [in] bufView   表示用バッファ。
+    **  @param[out] curStat   内部形式を書き込む変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    encodeFromViewBuffer(
+            const  Common::ViewBuffer  &bufView,
+            InternState                &curStat);
+
+    //----------------------------------------------------------------
     /**   王手が掛かっているかどうかを判定する。
     **
     **  @param [in] dPlayer   判定を行うプレーヤー。
