@@ -41,6 +41,7 @@
 #endif
 
 #include    <fstream>
+#include    <sstream>
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
 
@@ -105,6 +106,18 @@ CURRENT_DICE_RIGHT      =  CURRENT_DICE_LEFT + DICE_WIDTH;
 
 CONSTEXPR_VAR   int
 CURRENT_DICE_BOTTOM     =  CURRENT_DICE_TOP + DICE_HEIGHT;
+
+CONSTEXPR_VAR   int
+START_ENGINE_LEFT       =  CURRENT_DICE_RIGHT + 32;
+
+CONSTEXPR_VAR   int
+START_ENGINE_TOP        =  CURRENT_DICE_TOP;
+
+CONSTEXPR_VAR   int
+START_ENGINE_RIGHT      =  START_ENGINE_LEFT + DICE_WIDTH;
+
+CONSTEXPR_VAR   int
+START_ENGINE_BOTTOM     =  START_ENGINE_TOP + DICE_HEIGHT;
 
 Interface::BitmapImage      g_imgScreen;
 Interface::BitmapImage      g_imgDice;
@@ -217,6 +230,21 @@ onLButtonUp(
         return ( 0 );
     }
 
+    if (      (START_ENGINE_LEFT <= xPos) && (xPos < START_ENGINE_RIGHT)
+            && (START_ENGINE_TOP <= yPos) && (yPos < START_ENGINE_BOTTOM) )
+    {
+        Common::ActionView  actData;
+        Interface::BoardScreen::GameInterface  &
+                giGame  =  g_scrBoard.getGameController();
+        giGame.computeBestAction(actData);
+        std::stringstream   ss;
+        ss  <<  (actData.xDispOldCol)   <<  (actData.yDispOldRow)
+            <<  (actData.xDispNewCol)   <<  (actData.yDispNewRow);
+        ::MessageBox(hWnd, ss.str().c_str(), "Best Move",  MB_OK);
+        ::InvalidateRect(hWnd, NULL, FALSE);
+        return ( 0 );
+    }
+
     evtRet  = g_scrBoard.onLButtonUp(fwKeys, xPos, yPos);
     const   Interface::BoardScreen::ScreenState
         bssCurStat  = g_scrBoard.getCurrentState();
@@ -316,6 +344,16 @@ onPaint(
                 g_imgDice,
                 ((curDice % 3) * DICE_WIDTH),
                 ((curDice / 3) * DICE_HEIGHT) );
+    }
+
+    //  現在のエンジンを表示する。  //
+    {
+        g_imgScreen.copyRectangle(
+                START_ENGINE_LEFT,  START_ENGINE_TOP,
+                DICE_WIDTH,         DICE_HEIGHT,
+                g_imgDice,
+                ((8 % 3) * DICE_WIDTH),
+                ((8 / 3) * DICE_HEIGHT) );
     }
 
     //  ダイス選択画面を表示する。  //
