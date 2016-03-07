@@ -20,6 +20,7 @@
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Game/BoardState.h"
 
+#include    <iostream>
 #include    <stdlib.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -127,9 +128,17 @@ EngineBase::computeBestAction(
         bsClone.makeLegalActionList(piTurn ^ 1,  0,  vActs);
         size_t  cntLegs =  vActs.size();
 
+        std::cerr   <<  "# INFO : "
+                    <<  (actData.xOldCol)   <<  (actData.yOldRow)
+                    <<  "->"
+                    <<  (actData.xNewCol)   <<  (actData.yNewRow)
+                    <<  '='
+                    <<  (actData.fpAfter)
+                    <<  "...";
         if ( bsClone.isCheckState(piTurn ^ 1,  bbCheck) > 0 ) {
             if ( cntLegs == 0 ) {
                 //  チェックメイトなので、それを選択して勝ち。  //
+                std::cerr   <<  " CHECK MATE"   <<  std::endl;
                 idxMin  =  r;
                 scrMin  =  0;
                 break;
@@ -138,6 +147,7 @@ EngineBase::computeBestAction(
             if ( cntLegs == 0 ) {
                 //  王手が掛かっていない時は、選択しない。  //
                 //  ステイルメイトなので、逆転負けになる。  //
+                std::cerr   <<  "STALE MATE"    <<  std::endl;
                 continue;
             }
 
@@ -168,12 +178,14 @@ EngineBase::computeBestAction(
                     idxMin  =  r;
                     scrMin  =  scrCur;
                 }
+                std::cerr   <<  "TUMERO."   <<  std::endl;
                 continue;
             }
         }
 
         //  それ以外は、相手の合法手を減らす。  //
         if ( bsClone.isCheckState(piTurn ^ 1, bbCheck) > 0 ) {
+            std::cerr   <<  "CHECK.";
             cntLegs *= 3;
         }
 
@@ -183,6 +195,8 @@ EngineBase::computeBestAction(
             idxMin  =  r;
             scrMin  =  scrCur;
         }
+        std::cerr   <<  "@ "    <<  scrCur
+                    <<  " / "   <<  scrMin  <<  std::endl;
     }
 
     actRet  =  actList[idxMin];
