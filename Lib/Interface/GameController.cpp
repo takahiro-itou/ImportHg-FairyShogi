@@ -315,64 +315,6 @@ GameController::resetGame()
 }
 
 //----------------------------------------------------------------
-//    コンピュータの思考を開始する。
-//
-
-ErrCode
-GameController::startThinking(
-        ActionView  &actRet)
-{
-    ActionViewList  actList;
-
-    makeLegalActionList(0,  this->m_curDice,  actList);
-    const  int  numAct  = actList.size();
-    if ( numAct == 0 ) {
-        return ( ERR_ILLEGAL_ACTION );
-    }
-    if ( numAct == 1 ) {
-        actRet  =  actList[0];
-        return ( ERR_SUCCESS );
-    }
-
-    Game::BoardState    bsClone;
-    ActionData          actData;
-    ActionDataList      vActs;
-    int                 idxMin  =  0;
-    double              scrMin  =  100000;
-
-    for ( int r = 0;  r < numAct;  ++ r ) {
-        bsClone.cloneFrom(this->m_gcBoard);
-        Game::BoardState::encodeActionData(actList[r], &actData);
-        bsClone.playForward(actData);
-
-        vActs.clear();
-        bsClone.makeLegalActionList(this->m_curTurn ^ 1,  0,  vActs);
-        size_t  cntLegs =  vActs.size();
-        if ( cntLegs == 0 ) {
-            idxMin  =  r;
-            scrMin  =  0;
-            break;
-        }
-
-        Game::BoardState::TBitBoard     bbCheck;
-        if ( bsClone.isCheckState(this->m_curTurn ^ 1, bbCheck) > 0 ) {
-            cntLegs *= 3;
-        }
-
-        const  double  dblRnd   =  (rand() * 4.0 / RAND_MAX);
-        const  size_t  scrCur   =  (cntLegs) * (dblRnd + 8);
-        if ( scrCur < scrMin ) {
-            idxMin  =  r;
-            scrMin  =  cntLegs;
-        }
-    }
-
-    actRet  =  actList[idxMin];
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
 //    ゲームの状態と勝敗を判定する。
 //
 
