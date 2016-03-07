@@ -129,9 +129,11 @@ EngineBase::computeBestAction(
         size_t  cntLegs =  vActs.size();
 
         std::cerr   <<  "# INFO : "
-                    <<  (actData.xOldCol)   <<  (actData.yOldRow)
+                    <<  (actData.xOldCol) + 1
+                    <<  (actData.yOldRow) + 1
                     <<  "->"
-                    <<  (actData.xNewCol)   <<  (actData.yNewRow)
+                    <<  (actData.xNewCol) + 1
+                    <<  (actData.yNewRow) + 1
                     <<  '='
                     <<  (actData.fpAfter)
                     <<  "...";
