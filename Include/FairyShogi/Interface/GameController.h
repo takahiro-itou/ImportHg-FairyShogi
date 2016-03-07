@@ -425,6 +425,22 @@ private:
             const   ActionData   &  actData,
             ActionView  *  const    pvAct);
 
+    //----------------------------------------------------------------
+    /**   指し手データの内、表示用座標を設定する。
+    **
+    **  @param [in]     flgShow   現在の表示フラグ。
+    **      この値に基づいて反転や回転も処理する。
+    **  @param[out] pvAct     表示用データを書き込む領域。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    setupActionDisplayCoord(
+            const   ShowCoordFlags  flgShow,
+            ActionView  *  const    pvAct);
+
 //========================================================================
 //
 //    Member Variables.

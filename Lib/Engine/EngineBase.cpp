@@ -91,6 +91,8 @@ EngineBase::computeBestAction(
     BoardState      curStat;
     ActionViewList  actList;
 
+    curStat.encodeFromViewBuffer(vbCur);
+
     actList.clear();
     makeLegalActionList(curStat,  piTurn,  vCons,  actList);
 

@@ -20,6 +20,8 @@
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/ViewBuffer.h"
 
+#include    "FairyShogi/Engine/EngineBase.h"
+
 #include    <ostream>
 #include    <stdlib.h>
 
@@ -139,7 +141,18 @@ ErrCode
 GameController::computeBestAction(
         ActionView  &actRet)
 {
-    return ( startThinking(actRet) );
+    Engine::EngineBase  gEngine;
+    Common::ViewBuffer  vbCur;
+    ErrCode             retErr  =  ERR_SUCCESS;
+
+    this->m_gcBoard.copyToViewBuffer(vbCur);
+    retErr  =  gEngine.computeBestAction(
+                    vbCur,  this->m_curTurn,
+                    this->m_curDice,  actRet);
+
+    setupActionDisplayCoord( this->m_flgShow, &actRet );
+
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
@@ -662,6 +675,18 @@ GameController::decodeActionData(
         return ( retErr );
     }
 
+    return ( setupActionDisplayCoord(flgShow, pvAct) );
+}
+
+//----------------------------------------------------------------
+//    指し手データの内、表示用座標を設定する。
+//
+
+ErrCode
+GameController::setupActionDisplayCoord(
+        const   ShowCoordFlags  flgShow,
+        ActionView  *  const    pvAct)
+{
     //  表示フラグを確認して座標の調整を行う。  //
     if ( (flgShow) & SCF_FLIP_COLUMNS ) {
         //  水平方向の座標を反転させる。    //
