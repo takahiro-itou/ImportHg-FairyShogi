@@ -415,7 +415,7 @@ CommandInterpreter::executeGoCommand(
 {
     ActionView  actData;
 
-    if ( objGame.startThinking(actData) != ERR_SUCCESS ) {
+    if ( objGame.computeBestAction(actData) != ERR_SUCCESS ) {
         std::cerr   <<  "No Legal Actions"  <<  std::endl;
         return ( ERR_SUCCESS );
     }

@@ -132,10 +132,10 @@ EngineBase::computeBestAction(
         }
 
         const  double  dblRnd   =  (rand() * 4.0 / RAND_MAX);
-        const  size_t  scrCur   =  (cntLegs) * (dblRnd + 8);
+        const  double   scrCur   =  (cntLegs) * (dblRnd + 8);
         if ( scrCur < scrMin ) {
             idxMin  =  r;
-            scrMin  =  cntLegs;
+            scrMin  =  scrCur;
         }
     }
 

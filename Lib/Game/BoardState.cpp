@@ -380,7 +380,7 @@ BoardState::encodeFromViewBuffer(
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
             const  PosCol   wrtCol  =  (POS_NUM_COLS - 1 - xc);
             const  PieceIndex   pi  =  bufView.fpBoard[yr][wrtCol];
-            curStat.m_bsField[getMatrixPos(xc, yr)]  =  s_tblEncodeHands[pi];
+            curStat.m_bsField[getMatrixPos(xc, yr)]  =  s_tblEncodeField[pi];
         }
     }
 
