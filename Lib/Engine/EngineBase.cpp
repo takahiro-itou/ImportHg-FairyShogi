@@ -126,42 +126,49 @@ EngineBase::computeBestAction(
         vActs.clear();
         bsClone.makeLegalActionList(piTurn ^ 1,  0,  vActs);
         size_t  cntLegs =  vActs.size();
-        if ( cntLegs == 0 ) {
-            //  次の相手側の合法手が無い場合。  //
-            if ( bsClone.isCheckState(piTurn ^ 1,  bbCheck) == 0 ) {
+
+        if ( bsClone.isCheckState(piTurn ^ 1,  bbCheck) > 0 ) {
+            if ( cntLegs == 0 ) {
+                //  チェックメイトなので、それを選択して勝ち。  //
+                idxMin  =  r;
+                scrMin  =  0;
+                break;
+            }
+        } else {
+            if ( cntLegs == 0 ) {
                 //  王手が掛かっていない時は、選択しない。  //
                 //  ステイルメイトなので、逆転負けになる。  //
                 continue;
             }
-            //  チェックメイトなので、それを選択して勝ち。  //
-            idxMin  =  r;
-            scrMin  =  0;
-            break;
-        }
 
-        //  相手側の手番をパスして、その次の自分の合法手を考える。  //
-        size_t  numRch  =  0;
-        vActs.clear();
-        bsClone.makeLegalActionList(piTurn,  0,  vActs);
-        const  ActIter  itrEnd  =  vActs.end();
-        for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr ) {
-            bsClone2.cloneFrom(bsClone);
-            bsClone2.playForward(* itr);
+            //  相手側の手番をパスして、その次の自分の合法手を考える。  //
+            size_t  numRch  =  0;
+            vActs.clear();
+            bsClone.makeLegalActionList(piTurn,  0,  vActs);
+            const  ActIter  itrEnd  =  vActs.end();
+            for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr )
+            {
+                bsClone2.cloneFrom(bsClone);
+                bsClone2.playForward(* itr);
 
-            vActs2.clear();
-            bsClone2.makeLegalActionList(piTurn ^ 1,  0,  vActs2);
-            if ( vActs.empty() ) {
-                //  相手側の合法手が無い。勝ちの局面。  //
-                //  換言すると壱手詰めの詰めろの状態。  //
-                ++  numRch;
+                vActs2.clear();
+                bsClone2.makeLegalActionList(piTurn ^ 1,  0,  vActs2);
+                if ( vActs.empty() ) {
+                    //  相手側の合法手が無い。勝ちの局面。  //
+                    //  換言すると壱手詰めの詰めろの状態。  //
+                    //  ここではステイルメイトを無視した。  //
+                    ++  numRch;
+                }
             }
-        }
-        if ( numRch > 0 ) {
-            idxMin  =  r;
-            const   double  scrCur  =  -1.0 * numRch;
-            if ( scrCur < scrMin ) {
+            if ( numRch > 0 ) {
+                //  詰めろを掛けられる時は掛ける。  //
                 idxMin  =  r;
-                scrMin  =  scrCur;
+                const   double  scrCur  =  -1.0 * numRch;
+                if ( scrCur < scrMin ) {
+                    idxMin  =  r;
+                    scrMin  =  scrCur;
+                }
+                continue;
             }
         }
 
