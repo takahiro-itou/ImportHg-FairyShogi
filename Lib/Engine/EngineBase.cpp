@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Engine/EngineBase.h"
 
+#include    "EngineLevel0.h"
+
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Game/BoardState.h"
 
@@ -30,6 +32,40 @@ namespace  Engine  {
 //
 //    EngineBase  class.
 //
+
+//========================================================================
+//
+//    Factory.
+//
+
+//----------------------------------------------------------------
+//    思考エンジンのインスタンスを生成する。
+//
+
+EngineBase  *
+EngineBase::createEngine()
+{
+    EngineBase  *   ptrEng  =  (nullptr);
+    ptrEng  =  new  EngineLevel0;
+
+    return ( ptrEng );
+}
+
+//----------------------------------------------------------------
+//    思考エンジンのインスタンスを破棄する。
+//
+
+ErrCode
+EngineBase::destroyEngine(
+        EngineBase  *  &ptrEng)
+{
+    if ( ptrEng != (nullptr) ) {
+        delete  ptrEng;
+    }
+
+    ptrEng  = (nullptr);
+    return ( ERR_SUCCESS );
+}
 
 //========================================================================
 //
