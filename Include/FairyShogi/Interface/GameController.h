@@ -44,6 +44,10 @@ namespace  Common  {
 struct  ActionView;
 }   //  End of namespace  Common
 
+namespace  Engine  {
+class   EngineBase;
+}   //  End of namespace  Engine
+
 namespace  Interface  {
 
 //========================================================================
@@ -443,6 +447,11 @@ protected:
 
 private:
 
+    /**   思考エンジンクラス。  **/
+    typedef     Engine::EngineBase      TEngineBase;
+
+private:
+
     /**   盤面の状態。  **/
     Game::BoardState    m_gcBoard;
 
@@ -463,6 +472,9 @@ private:
 
     /**   ゲーム勝敗。  **/
     GameResultVals      m_gResult;
+
+    /**   エンジン。    **/
+    TEngineBase  *      m_pEngine;
 
 //========================================================================
 //

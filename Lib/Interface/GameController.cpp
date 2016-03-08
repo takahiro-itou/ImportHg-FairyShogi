@@ -100,8 +100,10 @@ GameController::GameController()
       m_curTurn(0),
       m_curDice(0),
       m_fStatus(Common::GAME_IS_RUNNING),
-      m_gResult(Common::GAME_RESULT_DRAW)
+      m_gResult(Common::GAME_RESULT_DRAW),
+      m_pEngine(nullptr)
 {
+    this->m_pEngine = TEngineBase::createEngine();
 }
 
 //----------------------------------------------------------------
@@ -141,7 +143,6 @@ ErrCode
 GameController::computeBestAction(
         ActionView  &actRet)
 {
-    Engine::EngineBase  gEngine;
     Common::ViewBuffer  vbCur;
     ErrCode             retErr  =  ERR_SUCCESS;
 
@@ -149,7 +150,7 @@ GameController::computeBestAction(
             this->m_flgShow,  (this->m_curDice) );
 
     this->m_gcBoard.copyToViewBuffer(vbCur);
-    retErr  =  gEngine.computeBestAction(
+    retErr  =  this->m_pEngine->computeBestAction(
                     vbCur,   this->m_curTurn,
                     ccDice,  actRet);
 
