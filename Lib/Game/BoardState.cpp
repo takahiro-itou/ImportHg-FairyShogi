@@ -580,12 +580,13 @@ BoardState::makeLegalActionList(
                 continue;
             }
 
+            const  PieceIndex  fpAfter  =  s_tblHandConv[k];
             actData.fLegals = Common::ALF_LEGAL_ACTION;
             int     flgDps  = 0;
             if ( (k == IHAND_BLACK_PAWN) || (k == IHAND_WHITE_PAWN) ) {
                 for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
                     if ( curStat.m_bsField[actData.xNewCol * POS_NUM_ROWS + y]
-                            == k )
+                            == fpAfter )
                     {
                         flgDps  = 1;
                     }
@@ -599,7 +600,7 @@ BoardState::makeLegalActionList(
             }
 
             actData.hpiDrop = k;
-            actData.fpAfter = s_tblHandConv[k];
+            actData.fpAfter = fpAfter;
 
             //  動かしてみて、自殺だったらスキップ。    //
             ::memcpy( &tmpStat, &curStat, sizeof(tmpStat) );
