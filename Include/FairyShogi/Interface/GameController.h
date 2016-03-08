@@ -467,14 +467,15 @@ private:
     /**   現在の出目。  **/
     TConstraint         m_curDice;
 
+    /**   思考エンジンの配列。  **/
+    TEngineBase  *      m_ptrEngines[Common::NUM_PLAYERS];
+
     /**   実行の状態。  **/
     GameStateFlags      m_fStatus;
 
     /**   ゲーム勝敗。  **/
     GameResultVals      m_gResult;
 
-    /**   エンジン。    **/
-    TEngineBase  *      m_pEngine;
 
 //========================================================================
 //

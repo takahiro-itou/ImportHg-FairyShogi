@@ -99,11 +99,13 @@ GameController::GameController()
       m_flgShow(SCF_NORMAL_SHOW),
       m_curTurn(0),
       m_curDice(0),
+      m_ptrEngines(),
       m_fStatus(Common::GAME_IS_RUNNING),
-      m_gResult(Common::GAME_RESULT_DRAW),
-      m_pEngine(nullptr)
+      m_gResult(Common::GAME_RESULT_DRAW)
 {
-    this->m_pEngine = TEngineBase::createEngine();
+    for ( PlayerIndex pi = 0; pi < Common::NUM_PLAYERS; ++ pi ) {
+        this->m_ptrEngines[pi]  =  TEngineBase::createEngine();
+    }
 }
 
 //----------------------------------------------------------------
@@ -113,6 +115,10 @@ GameController::GameController()
 
 GameController::~GameController()
 {
+    for ( PlayerIndex pi = 0; pi < Common::NUM_PLAYERS; ++ pi ) {
+        TEngineBase::destroyEngine( this->m_ptrEngines[pi] );
+        this->m_ptrEngines[pi]  =  (nullptr);
+    }
 }
 
 //========================================================================
@@ -150,7 +156,7 @@ GameController::computeBestAction(
             this->m_flgShow,  (this->m_curDice) );
 
     this->m_gcBoard.copyToViewBuffer(vbCur);
-    retErr  =  this->m_pEngine->computeBestAction(
+    retErr  =  this->m_ptrEngines[this->m_curTurn]->computeBestAction(
                     vbCur,   this->m_curTurn,
                     ccDice,  actRet);
 
