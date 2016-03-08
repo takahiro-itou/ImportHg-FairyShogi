@@ -31,7 +31,7 @@ namespace  Engine  {
 **    思考エンジンクラス。
 **/
 
-class  EngineLevel0 : public  EngineBase
+class  EngineLevel0 : public  EngineImplements
 {
 
 //========================================================================

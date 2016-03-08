@@ -30,6 +30,25 @@ namespace  Engine  {
 //    Constructor(s) and Destructor.
 //
 
+//----------------------------------------------------------------
+//    インスタンスを初期化する
+//  （デフォルトコンストラクタ）。
+//
+
+EngineImplements::EngineImplements()
+    : Super()
+{
+}
+
+//----------------------------------------------------------------
+//    インスタンスを破棄する
+//  （デストラクタ）。
+//
+
+EngineImplements::~EngineImplements()
+{
+}
+
 //========================================================================
 //
 //    Public Member Functions (Implement Pure Virtual).

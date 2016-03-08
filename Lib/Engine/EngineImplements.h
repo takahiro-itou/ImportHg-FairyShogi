@@ -31,13 +31,28 @@ namespace  Engine  {
 **    思考エンジンの実装クラス。
 **/
 
-class  EngineImplements
+class  EngineImplements : public  EngineBase
 {
 
 //========================================================================
 //
 //    Constructor(s) and Destructor.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   インスタンスを初期化する
+    **  （デフォルトコンストラクタ）。
+    **
+    **/
+    EngineImplements();
+
+    //----------------------------------------------------------------
+    /**   インスタンスを破棄する
+    **  （デストラクタ）。
+    **
+    **/
+    virtual  ~EngineImplements();
 
 //========================================================================
 //
@@ -88,6 +103,10 @@ class  EngineImplements
 //
 //    Other Features.
 //
+private:
+    /**   スーパークラス。  **/
+    typedef     EngineBase          Super;
+
 private:
     typedef     EngineImplements    This;
     EngineImplements    (const  This  &);
