@@ -567,7 +567,7 @@ BoardState::makeLegalActionList(
         actData.hpiDrop = IHAND_EMPTY_PIECE;
         actData.fLegals = Common::ALF_LEGAL_ACTION;
 
-        for ( int k = IHAND_BLACK_PAWN; k < IHAND_WHITE_KING; ++ k ) {
+        for ( int k = IHAND_BLACK_PAWN; k <= IHAND_WHITE_KING; ++ k ) {
             if ( s_tblHandsOwner[k] != cPlayer )  { continue; }
             if ( curStat.m_hcHands[k] <= 0 )      { continue; }
 
