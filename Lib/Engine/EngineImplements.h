@@ -83,6 +83,31 @@ public:
 //
 //    Protected Member Functions.
 //
+protected:
+    typedef     Game::BoardState            BoardState;
+
+    typedef     std::vector<ActionView>     ActionViewList;
+
+protected:
+
+    //----------------------------------------------------------------
+    /**   現在の局面の合法手を列挙する。
+    **
+    **  @param [in] curStat   現在の局面。
+    **  @param [in] piTurn    現在の手番のプレーヤー番号。
+    **  @param [in] vCons     制約条件。
+    **  @param[out] actList   合法手のリストを受け取る変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    makeLegalActionList(
+            const  BoardState   &curStat,
+            const  PlayerIndex  piTurn,
+            const  TConstraint  vCons,
+            ActionViewList      &actList);
 
 //========================================================================
 //
