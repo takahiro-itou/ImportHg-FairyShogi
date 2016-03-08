@@ -129,6 +129,7 @@ EngineBase::computeBestAction(
         size_t  cntLegs =  vActs.size();
 
         std::cerr   <<  "# INFO : "
+                    <<  '['  <<  r  <<  "] "
                     <<  (actData.xOldCol) + 1
                     <<  (actData.yOldRow) + 1
                     <<  "->"
@@ -165,7 +166,7 @@ EngineBase::computeBestAction(
 
                 vActs2.clear();
                 bsClone2.makeLegalActionList(piTurn ^ 1,  0,  vActs2);
-                if ( vActs.empty() ) {
+                if ( vActs2.empty() ) {
                     //  相手側の合法手が無い。勝ちの局面。  //
                     //  換言すると壱手詰めの詰めろの状態。  //
                     //  ここではステイルメイトを無視した。  //
@@ -201,6 +202,7 @@ EngineBase::computeBestAction(
                     <<  " / "   <<  scrMin  <<  std::endl;
     }
 
+    std::cerr   <<  "# INFO : Select Index = "  <<  idxMin  <<  std::endl;
     actRet  =  actList[idxMin];
 
     return ( ERR_SUCCESS );
