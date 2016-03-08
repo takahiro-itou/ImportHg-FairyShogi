@@ -150,6 +150,10 @@ protected:
 //    Other Features.
 //
 private:
+    /**   スーパークラス。  **/
+    typedef     EngineImplements    Super;
+
+private:
     typedef     EngineLevel0        This;
     EngineLevel0        (const  This  &);
     This &  operator =  (const  This  &);

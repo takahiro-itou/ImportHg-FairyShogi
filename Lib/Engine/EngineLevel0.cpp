@@ -42,6 +42,7 @@ namespace  Engine  {
 //
 
 EngineLevel0::EngineLevel0()
+    : Super()
 {
 }
 
