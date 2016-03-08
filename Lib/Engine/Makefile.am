@@ -24,12 +24,14 @@ EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
         EngineBase.cpp         \
+        EngineImplements.cpp   \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =
 LIBCXXINLINEFILES       =
 
 LIBNOINSTHEADERS        =  \
+        EngineImplements.h     \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
