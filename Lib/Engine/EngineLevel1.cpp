@@ -140,12 +140,9 @@ EngineLevel1::computeBestAction(
         int     cntLegOppn  =  0;
         int     cntLegSelf  =  0;
 
-        {
-            ActionDataList  vActsT;
-            vActsT.clear();
-            bsClone.makeLegalActionList(piTurn ^ 1,  0,  vActsT);
-            cntLegOppn  =  vActsT.size();
-        }
+        vActsE.clear();
+        bsClone.makeLegalActionList(piTurn ^ 1,  0,  vActsE);
+        cntLegOppn  =  vActsE.size();
 
         std::cerr   <<  "# INFO : "
                     <<  '['  <<  r  <<  "] "
@@ -210,7 +207,7 @@ EngineLevel1::computeBestAction(
                 //  詰めろを掛けられる時は掛ける。  //
                 const  int  scrCur  =  numWinDice * 1000 + numWinPats;
 ////                const   double  scrCur  =  -1.0 * numRch;
-                if ( scrCur < scrTmr ) {
+                if ( scrTmr < scrCur ) {
                     std::cerr   <<  "*SEL ";
                     idxMax  =  r;
                     idxTmr  =  r;
@@ -229,9 +226,6 @@ EngineLevel1::computeBestAction(
         const  int  scrCatchUp  =  s_tblPieceScore[actData.fpCatch] * 6;
 
         //  次に相手に取られる自分の駒の期待値を計算する。  //
-        vActsE.clear();
-        bsClone.makeLegalActionList(piTurn ^ 1, 0, vActsE);
-
         int     scrCatchMe  =  0;
         int     scrAtkMaxs[6]  =  { 0, 0, 0, 0, 0, 0 };
         const  ActIter  itrEndE = vActsE.end();
@@ -248,11 +242,17 @@ EngineLevel1::computeBestAction(
             }
         }
 
+        //  自分の合法手。本当は、相手の手番だが無視。  //
+        vActsS.clear();
+        bsClone.makeLegalActionList(piTurn,  0,  vActsS);
         cntLegSelf  =  vActsS.size();
+
+        //  相手の合法手の総数は既に計算済み。  //
+        //  そこから期待値を算出する。          //
         if ( bsClone.isCheckState(piTurn ^ 1, bbCheck) > 0 ) {
             std::cerr   <<  "CHECK.";
             cntLegOppn  *=  3;
-            scrCatchMe  =   scrAtkMaxs[5] * 5;
+            scrCatchMe  =   scrAtkMaxs[5] * 6;
         } else {
             scrCatchMe  =   scrAtkMaxs[0] + scrAtkMaxs[1]
                     +  scrAtkMaxs[2] + scrAtkMaxs[3]
@@ -260,7 +260,7 @@ EngineLevel1::computeBestAction(
         }
 
         const  int  scrCur  =  (scrCatchUp - scrCatchMe)
-            +  ((cntLegSelf - cntLegOppn) * 6);
+            +  ((cntLegSelf - cntLegOppn));
 ////        const   double  scrCur  =  (cntLegs) * (dblRnd + 8);
         if ( scrMax < scrCur ) {
             std::cerr   <<  "*SEL ";
