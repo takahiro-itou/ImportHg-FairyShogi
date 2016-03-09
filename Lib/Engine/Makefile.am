@@ -26,6 +26,7 @@ LIBCXXSOURCEFILES       =  \
         EngineBase.cpp         \
         EngineImplements.cpp   \
         EngineLevel0.cpp       \
+        EngineLevel1.cpp       \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =
@@ -34,6 +35,7 @@ LIBCXXINLINEFILES       =
 LIBNOINSTHEADERS        =  \
         EngineImplements.h     \
         EngineLevel0.h         \
+        EngineLevel1.h         \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
