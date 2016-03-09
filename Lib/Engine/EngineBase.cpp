@@ -18,6 +18,7 @@
 #include    "FairyShogi/Engine/EngineBase.h"
 
 #include    "EngineLevel0.h"
+#include    "EngineLevel1.h"
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Game/BoardState.h"
@@ -49,7 +50,7 @@ EngineBase::createEngine(
     UTL_HELP_UNUSED_ARGUMENT(engName);
 
     EngineBase  *   ptrEng  =  (nullptr);
-    ptrEng  =  new  EngineLevel0;
+    ptrEng  =  new  EngineLevel1;
 
     return ( ptrEng );
 }
