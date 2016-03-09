@@ -43,8 +43,11 @@ namespace  Engine  {
 //
 
 EngineBase  *
-EngineBase::createEngine()
+EngineBase::createEngine(
+        const  std::string  &engName)
 {
+    UTL_HELP_UNUSED_ARGUMENT(engName);
+
     EngineBase  *   ptrEng  =  (nullptr);
     ptrEng  =  new  EngineLevel0;
 
@@ -119,7 +122,6 @@ EngineBase::~EngineBase()
 //
 //    Accessors.
 //
-
 
 //========================================================================
 //

@@ -104,7 +104,7 @@ GameController::GameController()
       m_gResult(Common::GAME_RESULT_DRAW)
 {
     for ( PlayerIndex pi = 0; pi < Common::NUM_PLAYERS; ++ pi ) {
-        this->m_ptrEngines[pi]  =  TEngineBase::createEngine();
+        this->m_ptrEngines[pi]  =  TEngineBase::createEngine("");
     }
 }
 
