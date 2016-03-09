@@ -199,7 +199,7 @@ EngineLevel1::computeBestAction(
                                 <<  (itrS->xNewCol + 1)
                                 <<  (itrS->yNewRow + 1)
                                 <<  (itrS->fpAfter)
-                                <<  ')';
+                                <<  "] ";
                     ++  numWinPats;
                 }
             }   //  Next  itrE
