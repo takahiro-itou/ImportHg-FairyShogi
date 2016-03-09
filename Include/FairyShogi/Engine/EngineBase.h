@@ -20,6 +20,11 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#if !defined( FAIRYSHOGI_SYS_INCLUDED_STL_STRING )
+#    include    <string>
+#    define     FAIRYSHOGI_SYS_INCLUDED_STL_STRING
+#endif
+
 #if !defined( FAIRYSHOGI_SYS_INCLUDED_STL_VECTOR )
 #    include    <vector>
 #    define     FAIRYSHOGI_SYS_INCLUDED_STL_VECTOR
@@ -59,10 +64,12 @@ public:
     //----------------------------------------------------------------
     /**   思考エンジンのインスタンスを生成する。
     **
+    **  @param [in] engName   生成するエンジン名。
     **  @return     生成したインスタンス（指すポインタ）。
     **/
     static  EngineBase  *
-    createEngine();
+    createEngine(
+            const  std::string  &engName);
 
     //----------------------------------------------------------------
     /**   思考エンジンのインスタンスを破棄する。
@@ -159,7 +166,6 @@ public:
 //========================================================================
 //
 //    Protected Member Functions.
-//
 //
 
 //========================================================================

@@ -10,12 +10,12 @@
 *************************************************************************/
 
 /**
-**      An Implementation of EngineLevel0 class.
+**      An Implementation of EngineLevel1 class.
 **
-**      @file       Engine/EngineLevel0.cpp
+**      @file       Engine/EngineLevel1.cpp
 **/
 
-#include    "EngineLevel0.h"
+#include    "EngineLevel1.h"
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Game/BoardState.h"
@@ -26,9 +26,20 @@
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Engine  {
 
+namespace  {
+
+CONSTEXPR_VAR   int
+s_tblPieceScore[21] =  {
+    0,
+    10, 50, 60, 70, 80, 0,  10, 50, 70, 80,
+    10, 50, 60, 70, 80, 0,  10, 50, 70, 80,
+};
+
+}   //  End of (Unnamed) namespace.
+
 //========================================================================
 //
-//    EngineLevel0  class.
+//    EngineLevel1  class.
 //
 
 //========================================================================
@@ -41,7 +52,7 @@ namespace  Engine  {
 //  （デフォルトコンストラクタ）。
 //
 
-EngineLevel0::EngineLevel0()
+EngineLevel1::EngineLevel1()
     : Super()
 {
 }
@@ -51,7 +62,7 @@ EngineLevel0::EngineLevel0()
 //  （デストラクタ）。
 //
 
-EngineLevel0::~EngineLevel0()
+EngineLevel1::~EngineLevel1()
 {
 }
 
@@ -80,7 +91,7 @@ EngineLevel0::~EngineLevel0()
 //
 
 ErrCode
-EngineLevel0::computeBestAction(
+EngineLevel1::computeBestAction(
         const  ViewBuffer   &vbCur,
         const  PlayerIndex  piTurn,
         const  TConstraint  vCons,
@@ -89,7 +100,6 @@ EngineLevel0::computeBestAction(
     typedef     BoardState::ActionData          ActionData;
     typedef     std::vector<ActionData>         ActionDataList;
     typedef     ActionDataList::const_iterator  ActIter;
-
 
     //  現在の局面を、内部形式に変換する。  //
     BoardState      curStat;
@@ -112,11 +122,13 @@ EngineLevel0::computeBestAction(
     BoardState      bsClone;
     BoardState      bsClone2;
     ActionData      actData;
-    ActionDataList  vActs;
-    ActionDataList  vActs2;
+    ActionDataList  vActsS;
+    ActionDataList  vActsE;
 
-    int             idxMin  =  0;
-    double          scrMin  =  100000;
+    int             idxMax  =  0;
+    int             idxTmr  =  -1;
+    int             scrTmr  =  -1;
+    int             scrMax  =  -10000000;
 
     for ( int r = 0;  r < numAct;  ++ r ) {
         BoardState::TBitBoard   bbCheck;
@@ -125,9 +137,12 @@ EngineLevel0::computeBestAction(
         BoardState::encodeActionData(actList[r], &actData);
         bsClone.playForward(actData);
 
-        vActs.clear();
-        bsClone.makeLegalActionList(piTurn ^ 1,  0,  vActs);
-        size_t  cntLegs =  vActs.size();
+        int     cntLegOppn  =  0;
+        int     cntLegSelf  =  0;
+
+        vActsE.clear();
+        bsClone.makeLegalActionList(piTurn ^ 1,  0,  vActsE);
+        cntLegOppn  =  vActsE.size();
 
         std::cerr   <<  "# INFO : "
                     <<  '['  <<  r  <<  "] "
@@ -139,16 +154,16 @@ EngineLevel0::computeBestAction(
                     <<  '='
                     <<  (actData.fpAfter)
                     <<  "...";
+
         if ( bsClone.isCheckState(piTurn ^ 1,  bbCheck) > 0 ) {
-            if ( cntLegs == 0 ) {
+            if ( cntLegOppn == 0 ) {
                 //  チェックメイトなので、それを選択して勝ち。  //
                 std::cerr   <<  " CHECK MATE"   <<  std::endl;
-                idxMin  =  r;
-                scrMin  =  0;
-                break;
+                actRet  =  actList[r];
+                return ( ERR_SUCCESS );
             }
         } else {
-            if ( cntLegs == 0 ) {
+            if ( cntLegOppn == 0 ) {
                 //  王手が掛かっていない時は、選択しない。  //
                 //  ステイルメイトなので、逆転負けになる。  //
                 std::cerr   <<  "STALE MATE"    <<  std::endl;
@@ -156,55 +171,119 @@ EngineLevel0::computeBestAction(
             }
 
             //  相手側の手番をパスして、その次の自分の合法手を考える。  //
-            size_t  numRch  =  0;
-            vActs.clear();
-            bsClone.makeLegalActionList(piTurn,  0,  vActs);
-            const  ActIter  itrEnd  =  vActs.end();
-            for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr )
+            size_t  numWinPats  =  0;
+            size_t  numWinDice  =  0;
+
+            vActsS.clear();
+            bsClone.makeLegalActionList(piTurn,  0,  vActsS);
+            int     flgWins[6]  =  { 0, 0, 0, 0, 0, 0 };
+            const  ActIter  itrEndS  =  vActsS.end();
+            for ( ActIter itrS = vActsS.begin(); itrS != itrEndS; ++ itrS )
             {
                 bsClone2.cloneFrom(bsClone);
-                bsClone2.playForward(* itr);
+                bsClone2.playForward(* itrS);
 
-                vActs2.clear();
-                bsClone2.makeLegalActionList(piTurn ^ 1,  0,  vActs2);
-                if ( vActs2.empty() ) {
+                ActionDataList  vActsT;
+                vActsT.clear();
+                bsClone2.makeLegalActionList(piTurn ^ 1,  0,  vActsT);
+                if ( vActsT.empty() ) {
                     //  相手側の合法手が無い。勝ちの局面。  //
                     //  換言すると壱手詰めの詰めろの状態。  //
                     //  ここではステイルメイトを無視した。  //
-                    ++  numRch;
+                    if ( ++ flgWins[itrS->xNewCol] == 1 ) {
+                        ++  numWinDice;
+                    }
+                    std::cerr   <<  "["
+                                <<  (itrS->xOldCol + 1)
+                                <<  (itrS->yOldRow + 1)
+                                <<  (itrS->xNewCol + 1)
+                                <<  (itrS->yNewRow + 1)
+                                <<  (itrS->fpAfter)
+                                <<  "] ";
+                    ++  numWinPats;
                 }
-            }
-            if ( numRch > 0 ) {
+            }   //  Next  itrE
+            if ( numWinPats > 0 ) {
                 //  詰めろを掛けられる時は掛ける。  //
-                idxMin  =  r;
-                const   double  scrCur  =  -1.0 * numRch;
-                if ( scrCur < scrMin ) {
-                    idxMin  =  r;
-                    scrMin  =  scrCur;
+                const  int  scrCur  =  numWinDice * 1000 + numWinPats;
+////                const   double  scrCur  =  -1.0 * numRch;
+                if ( scrTmr < scrCur ) {
+                    std::cerr   <<  "*SEL ";
+                    idxMax  =  r;
+                    idxTmr  =  r;
+                    scrTmr  =  scrCur;
+                    scrMax  =  scrCur;
                 }
-                std::cerr   <<  "TUMERO."   <<  std::endl;
+                std::cerr   <<  "  TUMERO : "   <<  scrCur
+                            <<  " / "   <<  scrTmr  <<  std::endl;
                 continue;
             }
         }
 
-        //  それ以外は、相手の合法手を減らす。  //
+        //  それ以外は、駒の損得と、合法手の数で計算する。  //
+
+        //  まず、捕獲した相手の駒の点数を加算する。        //
+        const  int  scrCatchUp  =  s_tblPieceScore[actData.fpCatch] * 6;
+
+        //  次に相手に取られる自分の駒の期待値を計算する。  //
+        int     scrCatchMe  =  0;
+        int     scrAtkMaxs[6]  =  { 0, 0, 0, 0, 0, 0 };
+        const  ActIter  itrEndE = vActsE.end();
+        for ( ActIter itrE = vActsE.begin(); itrE != itrEndE; ++ itrE )
+        {
+            if ( (itrE->fpCatch) == 0 ) { continue; }
+            const  int  nx  =  (itrE->xNewCol);
+            const  int  sc  =  s_tblPieceScore[itrE->fpCatch];
+            if ( scrAtkMaxs[nx] < sc ) {
+                if ( scrAtkMaxs[ 5] < sc ) {
+                    scrAtkMaxs[ 5]  =  sc;
+                }
+                scrAtkMaxs[nx]  =  sc;
+            }
+        }
+
+        //  自分の合法手。本当は、相手の手番だが無視。  //
+        vActsS.clear();
+        bsClone.makeLegalActionList(piTurn,  0,  vActsS);
+        cntLegSelf  =  vActsS.size();
+
+        //  相手の合法手の総数は既に計算済み。  //
+        //  そこから期待値を算出する。          //
         if ( bsClone.isCheckState(piTurn ^ 1, bbCheck) > 0 ) {
             std::cerr   <<  "CHECK.";
-            cntLegs *= 3;
+            cntLegOppn  *=  3;
+            scrCatchMe  =   scrAtkMaxs[5] * 6;
+        } else {
+            scrCatchMe  =   scrAtkMaxs[0] + scrAtkMaxs[1]
+                    +  scrAtkMaxs[2] + scrAtkMaxs[3]
+                    +  scrAtkMaxs[4] + scrAtkMaxs[5];
         }
 
-        const   double  dblRnd  =  (rand() * 4.0 / RAND_MAX);
-        const   double  scrCur  =  (cntLegs) * (dblRnd + 8);
-        if ( scrCur < scrMin ) {
-            idxMin  =  r;
-            scrMin  =  scrCur;
+        const  int  scrCur  =  (scrCatchUp - scrCatchMe)
+            +  ((cntLegSelf - cntLegOppn));
+////        const   double  scrCur  =  (cntLegs) * (dblRnd + 8);
+        if ( scrMax < scrCur ) {
+            std::cerr   <<  "*SEL ";
+            idxMax  =  r;
+            scrMax  =  scrCur;
         }
         std::cerr   <<  "@ "    <<  scrCur
-                    <<  " / "   <<  scrMin  <<  std::endl;
+                    <<  " / "   <<  scrMax
+                    <<  ", # +CU="  <<  scrCatchUp
+                    <<  ", -CM="    <<  scrCatchMe
+                    <<  ", +MS="    <<  cntLegSelf
+                    <<  ", -ME="    <<  cntLegOppn
+                    <<  std::endl;
     }
 
-    std::cerr   <<  "# INFO : Select Index = "  <<  idxMin  <<  std::endl;
-    actRet  =  actList[idxMin];
+    if ( idxTmr >= 0 ) {
+        std::cerr   <<  "# INFO : TUMERO (or HISSI) Finded ."
+                    <<  std::endl;
+        idxMax  =  idxTmr;
+    }
+
+    std::cerr   <<  "# INFO : Select Index = "  <<  idxMax  <<  std::endl;
+    actRet  =  actList[idxMax];
 
     return ( ERR_SUCCESS );
 }
