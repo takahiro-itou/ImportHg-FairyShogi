@@ -344,6 +344,25 @@ private:
     **      -   正常終了の場合は、ゼロを返す。
     **/
     static  ErrCode
+    executeSeedCommand(
+            const  std::string  &strArgs,
+            ConsoleInterface    &objGame,
+            std::ostream        &outStr,
+            CallbackClass       &ciClbk);
+
+    //----------------------------------------------------------------
+    /**   コマンドを実行する。
+    **
+    **  @param [in]     strArgs   コマンドの引数。
+    **  @param [in,out] objGame   ゲーム管理インスタンス。
+    **  @param    [out] outStr    出力ストリーム。
+    **  @param [in,out] ciClbk    コールバックインスタンス。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
     executeSfenCommand(
             const  std::string  &strArgs,
             ConsoleInterface    &objGame,

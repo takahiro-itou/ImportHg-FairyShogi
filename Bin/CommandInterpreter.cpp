@@ -183,8 +183,9 @@ CommandInterpreter::interpretConsoleInput(
     } else if ( vTokens[0] == "flip" ) {
         vTokens.push_back("change");
         pfnExecCmd  =  &(executeFlipCommand);
-    } else if ( vTokens[0] == "srand" ) {
-        std::srand( ::time(NULL) );
+    } else if ( vTokens[0] == "seed" ) {
+        vTokens.push_back("");
+        pfnExecCmd  =  &(executeSeedCommand);
     } else if ( (vTokens[0] == "bwd") || (vTokens[0] == "back") ) {
         vTokens.push_back("");
         pfnExecCmd  =  &(executeBackwardCommand);
@@ -198,7 +199,10 @@ CommandInterpreter::interpretConsoleInput(
         return ( ERR_INVALID_COMMAND );
     }
 
-    return ( (* pfnExecCmd)(vTokens[1],  objGame,  outStr,  *this) );
+    ErrCode     retErr  =  ERR_INVALID_COMMAND;
+    retErr  =  (* pfnExecCmd)(vTokens[1],  objGame,  outStr,  *this);
+
+    return ( retErr );
 }
 
 //========================================================================
@@ -262,7 +266,10 @@ CommandInterpreter::executeBackwardCommand(
         std::ostream        &outStr,
         CallbackClass       &ciClbk)
 {
-    return ( objGame.playBackward() );
+    const  ErrCode  retErr  =  objGame.playBackward();
+    executePlayerCommand("next",  objGame,  outStr,  ciClbk);
+    objGame.setConstraint(6);
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
@@ -413,6 +420,9 @@ CommandInterpreter::executeGoCommand(
         std::ostream        &outStr,
         CallbackClass       &ciClbk)
 {
+    UTL_HELP_UNUSED_ARGUMENT(strArgs);
+    UTL_HELP_UNUSED_ARGUMENT(ciClbk);
+
     ActionView  actData;
 
     if ( objGame.computeBestAction(actData) != ERR_SUCCESS ) {
@@ -420,8 +430,8 @@ CommandInterpreter::executeGoCommand(
         return ( ERR_SUCCESS );
     }
 
-    std::cout   <<  "bestmove ";
-    displayActionView(actData,  0,  std::cout)  <<  std::endl;
+    outStr      <<  "bestmove ";
+    displayActionView(actData,  0,  outStr)     <<  std::endl;
     std::cerr   <<  "#  COM : ";
     displayActionView(actData,  1,  std::cerr)  <<  std::endl;
 
@@ -603,6 +613,27 @@ CommandInterpreter::executeRotateCommand(
     }
 
     return ( ERR_INVALID_COMMAND );
+}
+
+//----------------------------------------------------------------
+//    コマンドを実行する。
+//
+
+ErrCode
+CommandInterpreter::executeSeedCommand(
+        const  std::string  &strArgs,
+        ConsoleInterface    &objGame,
+        std::ostream        &outStr,
+        CallbackClass       &ciClbk)
+{
+    UTL_HELP_UNUSED_ARGUMENT(strArgs);
+    UTL_HELP_UNUSED_ARGUMENT(objGame);
+    UTL_HELP_UNUSED_ARGUMENT(outStr);
+    UTL_HELP_UNUSED_ARGUMENT(ciClbk);
+
+    std::srand( time(nullptr) );
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
