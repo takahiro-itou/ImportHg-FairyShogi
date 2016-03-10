@@ -17,7 +17,7 @@
 
 #include    "TestDriver.h"
 
-#include    "RuleTables.h"
+#include    "FairyShogi/Game/RuleTables.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
