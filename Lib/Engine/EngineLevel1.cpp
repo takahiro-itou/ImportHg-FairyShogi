@@ -29,10 +29,17 @@ namespace  Engine  {
 namespace  {
 
 CONSTEXPR_VAR   int
-s_tblPieceScore[21] =  {
+s_tblCatchScore[21] =  {
     0,
     10, 50, 60, 70, 80, 0,  10, 50, 70, 80,
     10, 50, 60, 70, 80, 0,  10, 50, 70, 80,
+};
+
+CONSTEXPR_VAR   int
+s_tblPieceScore[21] =  {
+    0,
+    10, 50, 60, 70, 80, 0,  35, 55, 90, 100,
+    10, 50, 60, 70, 80, 0,  35, 55, 90, 100
 };
 
 }   //  End of (Unnamed) namespace.
@@ -223,7 +230,7 @@ EngineLevel1::computeBestAction(
         //  それ以外は、駒の損得と、合法手の数で計算する。  //
 
         //  まず、捕獲した相手の駒の点数を加算する。        //
-        const  int  scrCatchUp  =  s_tblPieceScore[actData.fpCatch] * 6;
+        const  int  scrCatchUp  =  s_tblCatchScore[actData.fpCatch] * 6;
 
         //  次に相手に取られる自分の駒の期待値を計算する。  //
         int     scrCatchMe  =  0;
@@ -259,8 +266,15 @@ EngineLevel1::computeBestAction(
                     +  scrAtkMaxs[4] + scrAtkMaxs[5];
         }
 
+        //  成りボーナスを加算する。    //
+        int         sbProm  =  0;
+        if ( actData.hpiDrop == 0 ) {
+            sbProm  =  s_tblPieceScore[actData.fpAfter]
+                    -  s_tblPieceScore[actData.fpMoved];
+        }
+
         const  int  scrCur  =  (scrCatchUp - scrCatchMe)
-            +  ((cntLegSelf - cntLegOppn));
+            +  ((cntLegSelf - cntLegOppn)) + sbProm;
 ////        const   double  scrCur  =  (cntLegs) * (dblRnd + 8);
         if ( scrMax < scrCur ) {
             std::cerr   <<  "*SEL ";
