@@ -235,10 +235,15 @@ onLButtonUp(
             && (START_ENGINE_TOP <= yPos) && (yPos < START_ENGINE_BOTTOM) )
     {
         Common::ActionView  actData;
+        std::stringstream   ss;
+
         Interface::BoardScreen::GameInterface  &
                 giGame  =  g_scrBoard.getGameController();
-        giGame.computeBestAction(actData);
-        std::stringstream   ss;
+        if ( giGame.computeBestAction(actData) != ERR_SUCCESS ) {
+            ::MessageBox(hWnd, "No Legal Actions", "GAME OVER", MB_OK);
+            ::InvalidateRect(hWnd, NULL, FALSE);
+            return ( 0 );
+        }
         ss  <<  (actData.xDispOldCol)   <<  (actData.yDispOldRow)
             <<  (actData.xDispNewCol)   <<  (actData.yDispNewRow);
         ss  <<  "# DEBUG : "
