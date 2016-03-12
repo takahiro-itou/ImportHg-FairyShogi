@@ -188,19 +188,18 @@ onLButtonUp(
 
     Interface::ScreenLayer::EventResult
             evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
+    Interface::BoardScreen::GameInterface  &
+            giGame  =  g_scrBoard.getGameController();
 
+    //  ダイス選択中。  //
     if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
-        //  ダイス選択中。  //
         evtRet  = g_scrDice.dispatchLButtonUp(fwKeys, xPos, yPos);
 
         const  Interface::ChoiceScreen::ChoiceIndex
             pidSel  = g_scrDice.getUserSelect();
 
         if ( pidSel >= 0 ) {
-            Interface::BoardScreen::GameInterface  &
-                    giGame  =  g_scrBoard.getGameController();
-
             g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
             giGame.setConstraint(pidSel + 1);
         }
@@ -208,9 +207,9 @@ onLButtonUp(
         return ( 0 );
     }
 
+    //  成り駒選択中。  //
     if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
-        //  成り駒選択中。  //
         evtRet  = g_scrProm.dispatchLButtonUp(fwKeys, xPos, yPos);
         const  PieceIndex   pidSel  = g_scrProm.getUserSelect();
         if ( pidSel >= 0 ) {
@@ -221,19 +220,20 @@ onLButtonUp(
         return ( 0 );
     }
 
+    //  ダイス選択画面を表示する。  //
     if ( (CURRENT_DICE_LEFT <= xPos) && (xPos < CURRENT_DICE_RIGHT)
             && (CURRENT_DICE_TOP <= yPos) && (yPos < CURRENT_DICE_BOTTOM) )
     {
-        //  ダイスを選択。  //
+        g_scrDice.setSelectionList(giGame.getCurrentPlayer());
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
         ::InvalidateRect(hWnd, NULL, FALSE);
         return ( 0 );
     }
 
+    //  思考エンジン起動。  //
     if (      (START_ENGINE_LEFT <= xPos) && (xPos < START_ENGINE_RIGHT)
             && (START_ENGINE_TOP <= yPos) && (yPos < START_ENGINE_BOTTOM) )
     {
-        //  思考エンジン起動。  //
         Common::ActionView  actData;
         Interface::BoardScreen::GameInterface  &
                 giGame  =  g_scrBoard.getGameController();
