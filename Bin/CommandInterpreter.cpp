@@ -18,6 +18,7 @@
 #include    "CommandInterpreter.h"
 
 #include    "FairyShogi/Common/ActionView.h"
+#include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Common/ViewBuffer.h"
 
 #include    <iostream>

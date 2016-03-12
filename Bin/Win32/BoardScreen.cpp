@@ -18,6 +18,7 @@
 #include    "BoardScreen.h"
 
 #include    "FairyShogi/Common/ActionView.h"
+#include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -549,15 +550,21 @@ BoardScreen::playAction(
         const  BoardCoord   trgX,
         const  BoardCoord   trgY,
         const  PieceIndex   iPrm)
+
 {
+    Interface::BoardScreen::GameInterface  &
+            giGame  =  this->getGameController();
+
     ActionView  actView;
     PromoteList plDummy;
 
     setupActionView(
-            this->m_gcGameCtrl,  srcX,  srcY,  trgX,  trgY,
+            giGame,     srcX,  srcY,  trgX,  trgY,
             &plDummy,   &actView );
     actView.fpAfter = iPrm;
-    this->m_gcGameCtrl.playForward(actView);
+    giGame.playForward(actView);
+    giGame.setCurrentPlayer( giGame.getCurrentPlayer() ^ 1 );
+    giGame.setConstraint(6);
 
     this->m_bcSrcX  = -1;
     this->m_bcSrcY  = -1;
@@ -578,7 +585,6 @@ BoardScreen::playAction(
     return ( ERR_SUCCESS );
 }
 
-
 //----------------------------------------------------------------
 //    移動先を指定して、移動可能性と成り駒選択肢を検査する。
 //
@@ -590,6 +596,9 @@ BoardScreen::setActionInput(
         const  BoardCoord   trgX,
         const  BoardCoord   trgY)
 {
+    Interface::BoardScreen::GameInterface  &
+            giGame  =  this->getGameController();
+
     this->m_bcSrcX  = srcX;
     this->m_bcSrcY  = srcY;
     this->m_bcTrgX  = trgX;
@@ -597,7 +606,7 @@ BoardScreen::setActionInput(
 
     this->m_prmOptions.clear();
     setupActionView(
-            this->m_gcGameCtrl,     srcX,  srcY,  trgX,  trgY,
+            giGame,   srcX,  srcY,  trgX,  trgY,
             &(this->m_prmOptions),  nullptr );
 
     this->m_bsState = BSLS_NOTHING;
