@@ -221,41 +221,6 @@ CommandInterpreter::interpretConsoleInput(
 //    For Internal Use Only.
 //
 
-
-std::ostream  &
-CommandInterpreter::displayActionView(
-        const  ActionView   &actView,
-        const  int          flgName,
-        std::ostream        &outStr)
-{
-    if ( actView.hpiDrop == Common::HAND_EMPTY_PIECE ) {
-        outStr  <<  (actView.xDispOldCol)   <<  (actView.yDispOldRow)
-                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow);
-        if ( (actView.fpAfter) != (actView.fpMoved) ) {
-            outStr  <<  '+';
-        } else {
-            outStr  <<  ' ';
-        }
-    } else {
-        outStr  <<  (s_tblHandName[actView.hpiDrop])
-                <<  '*'
-                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow)
-                <<  "  ";
-    }
-    if ( flgName ) {
-        outStr  <<  (s_tblPieceName[actView.fpMoved])  <<  ' ';
-        if ( (actView.fpCatch) != Common::FIELD_EMPTY_SQUARE )  {
-           outStr   <<  "(x"
-                    <<  s_tblPieceName[actView.fpCatch]
-                    <<   ") ";
-        } else {
-            outStr  <<  "(x--) ";
-        }
-    }
-
-    return ( outStr );
-}
-
 //----------------------------------------------------------------
 //    コマンドを実行する。
 //
