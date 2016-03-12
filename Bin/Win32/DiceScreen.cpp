@@ -94,7 +94,7 @@ ErrCode
 DiceScreen::setupBitmapImages(
         const  std::string  &imgDice)
 {
-    return ( Super::setupBitmapImages(imgDice, 3, 2) );
+    return ( Super::setupBitmapImages(imgDice, 6, 2) );
 }
 
 //========================================================================
@@ -122,7 +122,8 @@ DiceScreen::getUserSelect()  const
 //
 
 ErrCode
-DiceScreen::setSelectionList()
+DiceScreen::setSelectionList(
+        const  PlayerIndex  piTurn)
 {
     OptionArray     vOpts;
 
@@ -130,7 +131,7 @@ DiceScreen::setSelectionList()
 
     vOpts.clear();
     for ( ChoiceIndex i = 0; i < 6; ++ i ) {
-        vOpts.push_back(i);
+        vOpts.push_back(piTurn * 6 + i);
     }
 
     return ( Super::setChoiceList(vOpts) );

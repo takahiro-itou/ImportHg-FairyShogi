@@ -188,19 +188,18 @@ onLButtonUp(
 
     Interface::ScreenLayer::EventResult
             evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
+    Interface::BoardScreen::GameInterface  &
+            giGame  =  g_scrBoard.getGameController();
 
+    //  ダイス選択中。  //
     if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
-        //  ダイス選択中。  //
         evtRet  = g_scrDice.dispatchLButtonUp(fwKeys, xPos, yPos);
 
         const  Interface::ChoiceScreen::ChoiceIndex
             pidSel  = g_scrDice.getUserSelect();
 
         if ( pidSel >= 0 ) {
-            Interface::BoardScreen::GameInterface  &
-                    giGame  =  g_scrBoard.getGameController();
-
             g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
             giGame.setConstraint(pidSel + 1);
         }
@@ -208,9 +207,9 @@ onLButtonUp(
         return ( 0 );
     }
 
+    //  成り駒選択中。  //
     if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
-        //  成り駒選択中。  //
         evtRet  = g_scrProm.dispatchLButtonUp(fwKeys, xPos, yPos);
         const  PieceIndex   pidSel  = g_scrProm.getUserSelect();
         if ( pidSel >= 0 ) {
@@ -221,19 +220,20 @@ onLButtonUp(
         return ( 0 );
     }
 
+    //  ダイス選択画面を表示する。  //
     if ( (CURRENT_DICE_LEFT <= xPos) && (xPos < CURRENT_DICE_RIGHT)
             && (CURRENT_DICE_TOP <= yPos) && (yPos < CURRENT_DICE_BOTTOM) )
     {
-        //  ダイスを選択。  //
+        g_scrDice.setSelectionList(giGame.getCurrentPlayer());
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
         ::InvalidateRect(hWnd, NULL, FALSE);
         return ( 0 );
     }
 
+    //  思考エンジン起動。  //
     if (      (START_ENGINE_LEFT <= xPos) && (xPos < START_ENGINE_RIGHT)
             && (START_ENGINE_TOP <= yPos) && (yPos < START_ENGINE_BOTTOM) )
     {
-        //  思考エンジン起動。  //
         Common::ActionView  actData;
         Interface::BoardScreen::GameInterface  &
                 giGame  =  g_scrBoard.getGameController();
@@ -335,6 +335,8 @@ onPaint(
     {
         const  Interface::BoardScreen::GameInterface  &
             giGame  =  g_scrBoard.getGameController();
+        const  PlayerIndex  curTurn = giGame.getCurrentPlayer();
+
         int     curDice = giGame.getConstraint() - 1;
         if ( (curDice < 0) || (6 <= curDice) ) {
             curDice = 5;
@@ -343,8 +345,8 @@ onPaint(
                 CURRENT_DICE_LEFT,  CURRENT_DICE_TOP,
                 DICE_WIDTH,         DICE_HEIGHT,
                 g_imgDice,
-                ((curDice % 3) * DICE_WIDTH),
-                ((curDice / 3) * DICE_HEIGHT) );
+                (curDice * DICE_WIDTH),
+                (curTurn * DICE_HEIGHT) );
     }
 
     //  現在のエンジンを表示する。  //
@@ -584,7 +586,7 @@ WinMain(
     g_scrProm.setWidth (SQUARE_WIDTH * 10);
     g_scrProm.setHeight(SQUARE_HEIGHT * 2);
 
-    g_scrDice.setSelectionList();
+    g_scrDice.setSelectionList(Common::PLAYER_BLACK);
     g_scrDice.setLeft( (WINDOW_WIDTH  - DICE_SCREEN_WIDTH)  / 2 );
     g_scrDice.setTop ( (WINDOW_HEIGHT - DICE_SCREEN_HEIGHT) / 2 );
     g_scrDice.setWidth (DICE_SCREEN_WIDTH);
