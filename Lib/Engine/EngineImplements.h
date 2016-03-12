@@ -20,6 +20,7 @@
 
 #include    "FairyShogi/Engine/EngineBase.h"
 
+#include    "FairyShogi/Common/FairyShogiConst.h"
 #include    "FairyShogi/Game/BoardState.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -97,7 +98,19 @@ protected:
     typedef     BoardState::TBitBoard           TBitBoard;
 
     typedef     int                             ActionCount;
-    typedef     ActionCount                     TCountArray [6];
+
+    /**   ダイスの目をインデックスとする整数値配列型。  **/
+    typedef     ActionCount     TCountArray [Common::DICE_MAX_VALUE];
+
+    enum  {
+        /**
+        **    任意の手を指すことができるダイスの目。
+        **
+        **    内部データでは、ゼロベースのため、壱ずれる。
+        **/
+        ENGINE_IDICE_ANY_MOVE   =  Common::DICE_ANY_MOVE - 1
+    };
+
 protected:
 
     //----------------------------------------------------------------
