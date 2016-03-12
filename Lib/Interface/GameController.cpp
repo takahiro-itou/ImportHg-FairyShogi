@@ -432,20 +432,16 @@ GameController::writeActionViewCsa(
         const  ActionView   &actView,
         std::ostream        &outStr)  const
 {
-    outStr  <<  (actView.xDispNewCol)
-            <<  (actView.yDispNewRow)
-            <<  ' '
-            <<  s_tblPieceCsaName[actView.fpAfter];
-    if ( (actView.hpiDrop) == 0 ) {
-        outStr  <<  " ("
-                <<  (actView.xDispOldCol)
-                <<  (actView.yDispOldRow)
-                <<  ")";
-        if ( (actView.fpAfter) != (actView.fpMoved) ) {
-            outStr  <<  " (PROMOTE)";
-        }
+    if ( actView.hpiDrop == Common::HAND_EMPTY_PIECE ) {
+        //  駒を移動させた時は、移動元、移動先、移動後の駒。    //
+        outStr  <<  (actView.xDispOldCol)   <<  (actView.yDispOldRow)
+                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow)
+                <<  s_tblPieceCsaName[actView.fpAfter];
     } else {
-        outStr  <<  " (PUT)";
+        //  持ち駒を打った時は、駒台(00)、移動先、移動後の駒。  //
+        outStr  <<  "00"
+                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow)
+                <<  s_tblPieceCsaName[actView.fpAfter];
     }
 
     return ( outStr );

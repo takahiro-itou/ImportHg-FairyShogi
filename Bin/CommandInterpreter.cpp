@@ -371,9 +371,10 @@ CommandInterpreter::executeForwardCommand(
         return ( ERR_INVALID_COMMAND );
     }
 
-    std::cerr   <<  "# DEBUG : ";
+    std::cerr   <<  "# DEBUG (USI) : ";
     objGame.writeActionViewSfen(actView, BOOL_TRUE, std::cerr)
             <<  std::endl;
+    std::cerr   <<  "# DEBUG (CSA) : ";
     objGame.writeActionViewCsa(actView, std::cerr)  <<  std::endl;
 
     ActionList      actList;
