@@ -33,6 +33,53 @@ FAIRYSHOGI_NAMESPACE_BEGIN
 #    define     UTL_HELP_UNUSED_ARGUMENT(var)   (void)(var)
 #endif
 
+//========================================================================
+//
+//    配列およびポインタ関連の関数。
+//
+
+//----------------------------------------------------------------
+/**   配列の要素数を取得する。
+**
+**/
+
+template  <typename  T,  size_t  N>
+size_t
+getArraySize(const  T (&)[N])
+{
+    return ( N );
+}
+
+//----------------------------------------------------------------
+/**   ポインタを別の型のポインタに変換する。
+**
+**  @tparam     T     変換する先の型。ポインタ型に限る。
+**  @param [in] ptr   ポインタ
+**  @return     指定した型に変換したポインタを返す。
+**/
+
+template  <typename  T>
+T  pointer_cast(
+        void  *  ptr)
+{
+    return ( static_cast<T>(ptr) );
+}
+
+//----------------------------------------------------------------
+/**   ポインタを別の型のポインタに変換する。
+**
+**  @tparam     T     変換する先の型。ポインタ型に限る。
+**  @param [in] ptr   ポインタ
+**  @return     指定した型に変換したポインタを返す。
+**/
+
+template  <typename  T>
+T  pointer_cast(
+        const  void  *  ptr)
+{
+    return ( static_cast<T>(ptr) );
+}
+
 FAIRYSHOGI_NAMESPACE_END
 
 #endif

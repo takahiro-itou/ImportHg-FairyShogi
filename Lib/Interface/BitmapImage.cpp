@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Interface/BitmapImage.h"
 
+#include    "FairyShogi/Common/HelperMacros.h"
+
 #include    <memory.h>
 #include    <stdio.h>
 

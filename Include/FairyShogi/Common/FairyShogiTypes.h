@@ -138,36 +138,6 @@ typedef     void  *             LpWriteBuf;
 
 typedef     size_t              FileLen;
 
-//----------------------------------------------------------------
-/**   ポインタを別の型のポインタに変換する。
-**
-**  @tparam     T     変換する先の型。ポインタ型に限る。
-**  @param [in] ptr   ポインタ
-**  @return     指定した型に変換したポインタを返す。
-**/
-
-template  <typename  T>
-T  pointer_cast(
-        void  *  ptr)
-{
-    return ( static_cast<T>(ptr) );
-}
-
-//----------------------------------------------------------------
-/**   ポインタを別の型のポインタに変換する。
-**
-**  @tparam     T     変換する先の型。ポインタ型に限る。
-**  @param [in] ptr   ポインタ
-**  @return     指定した型に変換したポインタを返す。
-**/
-
-template  <typename  T>
-T  pointer_cast(
-        const  void  *  ptr)
-{
-    return ( static_cast<T>(ptr) );
-}
-
 FAIRYSHOGI_NAMESPACE_END
 
 #endif
