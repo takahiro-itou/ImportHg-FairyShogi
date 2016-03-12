@@ -193,6 +193,12 @@ CommandInterpreter::interpretConsoleInput(
     } else if ( (vTokens[0] == "record") )  {
         vTokens.push_back("");
         pfnExecCmd  =  &(executeRecordCommand);
+    } else if ( (vTokens[0] == "comblack") ) {
+        vTokens.push_back("default");
+        pfnExecCmd  =  &(executeComBlackCommand);
+    } else if ( (vTokens[0] == "comwhite") ) {
+        vTokens.push_back("default");
+        pfnExecCmd  =  &(executeComWhiteCommand);
     }
 
     if ( pfnExecCmd == (nullptr) ) {
@@ -236,6 +242,40 @@ CommandInterpreter::executeBackwardCommand(
     executePlayerCommand("next",  objGame,  outStr,  ciClbk);
     objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
     return ( retErr );
+}
+
+//----------------------------------------------------------------
+//    コマンドを実行する。
+//
+
+ErrCode
+CommandInterpreter::executeComBlackCommand(
+        const  std::string  &strArgs,
+        ConsoleInterface    &objGame,
+        std::ostream        &outStr,
+        CallbackClass       &ciClbk)
+{
+    UTL_HELP_UNUSED_ARGUMENT(outStr);
+    UTL_HELP_UNUSED_ARGUMENT(ciClbk);
+
+    return ( objGame.setComputerEngine(Common::PLAYER_BLACK,  strArgs) );
+}
+
+//----------------------------------------------------------------
+//    コマンドを実行する。
+//
+
+ErrCode
+CommandInterpreter::executeComWhiteCommand(
+        const  std::string  &strArgs,
+        ConsoleInterface    &objGame,
+        std::ostream        &outStr,
+        CallbackClass       &ciClbk)
+{
+    UTL_HELP_UNUSED_ARGUMENT(outStr);
+    UTL_HELP_UNUSED_ARGUMENT(ciClbk);
+
+    return ( objGame.setComputerEngine(Common::PLAYER_WHITE,  strArgs) );
 }
 
 //----------------------------------------------------------------
