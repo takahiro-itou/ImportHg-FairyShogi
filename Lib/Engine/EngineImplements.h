@@ -86,15 +86,49 @@ public:
 //    Protected Member Functions.
 //
 protected:
-    typedef     Game::BoardState            BoardState;
+    typedef     Game::BoardState                BoardState;
 
-    typedef     std::vector<ActionView>     ActionViewList;
+    typedef     std::vector<ActionView>         ActionViewList;
 
-    typedef     BoardState::InternState     InternState;
-    typedef     BoardState::ActionData      ActionData;
-    typedef     BoardState::ActionList      ActionList;
+    typedef     BoardState::InternState         InternState;
+    typedef     BoardState::ActionData          ActionData;
+    typedef     BoardState::ActionList          ActionList;
+    typedef     ActionList::const_iterator      ActIter;
+    typedef     BoardState::TBitBoard           TBitBoard;
 
+    typedef     int                             ActionCount;
+    typedef     ActionCount                     TCountArray [6];
 protected:
+
+    //----------------------------------------------------------------
+    /**   相手の玉をチェックメイトできる手を検索する。
+    **
+    **  @param [in] curStat   現在の局面。
+    **  @param [in] piTurn    現在の手番のプレーヤー番号。
+    **  @param [in] actList   現在の局面の合法手リスト。
+    **  @param[out] nCounts   チェックメイトできる手の総数。
+    **      ダイスの出目ごとに集計される。
+    **  @return     チェックメイト可能な、ダイスの目の数。
+    **/
+    static  ActionCount
+    findCheckMateActions(
+            const  InternState  &curStat,
+            const  PlayerIndex  piTurn,
+            const  ActionList   &actList,
+            TCountArray         nCounts);
+
+    //----------------------------------------------------------------
+    /**   現在の局面がチェックメイトかどうかを判定する。
+    **
+    **  @param [in] curStat   現在の局面。
+    **  @param [in] piTurn    現在の手番のプレーヤー番号。
+    **  @retval     BOOL_TRUE   : チェックメイト。
+    **  @retval     BOOL_FALSE  : それ以外。
+    **/
+    static  Boolean
+    isCheckMateState(
+            const  InternState  &curStat,
+            const  PlayerIndex  piTurn);
 
     //----------------------------------------------------------------
     /**   現在の局面の合法手を列挙する。
@@ -115,10 +149,24 @@ protected:
             const  TConstraint  vCons,
             ActionViewList      &actList);
 
-//========================================================================
-//
-//    For Internal Use Only.
-//
+    //----------------------------------------------------------------
+    /**   現在の局面の合法手を列挙する。
+    **
+    **  @param [in] curStat   現在の局面。
+    **  @param [in] piTurn    現在の手番のプレーヤー番号。
+    **  @param [in] vCons     制約条件。
+    **  @param[out] actList   合法手のリストを受け取る変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    makeLegalActionList(
+            const  InternState  &curStat,
+            const  PlayerIndex  piTurn,
+            const  TConstraint  vCons,
+            ActionList          &actList);
 
 //========================================================================
 //
