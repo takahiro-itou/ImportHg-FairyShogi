@@ -132,16 +132,6 @@ private:
 private:
 
     //----------------------------------------------------------------
-    /**
-    **
-    **/
-    static  std::ostream  &
-    displayActionView(
-            const  ActionView   &actView,
-            const  int          flgName,
-            std::ostream        &outStr);
-
-    //----------------------------------------------------------------
     /**   コマンドを実行する。
     **
     **  @param [in]     strArgs   コマンドの引数。

@@ -577,7 +577,8 @@ BoardScreen::playAction(
 
     this->m_gcGameCtrl.writeActionList(actList);
     if ( this->m_ofsKifu.good() && !(actList.empty()) ) {
-        this->m_gcGameCtrl.writeActionView(actList.back(), this->m_ofsKifu);
+        this->m_gcGameCtrl.writeActionViewSfen(
+                actList.back(), BOOL_TRUE, this->m_ofsKifu);
         this->m_ofsKifu << std::endl;
         this->m_ofsKifu.flush();
     }
