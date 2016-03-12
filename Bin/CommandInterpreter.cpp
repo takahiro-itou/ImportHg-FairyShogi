@@ -635,12 +635,13 @@ CommandInterpreter::executeSfenCommand(
             const  PieceIndex   dp  = vb.fpBoard[y][x];
             outStr  <<  s_tblSfenName[dp];
         }
-
     }
 
     //  手番を表示する。    //
 //    outStr  <<  ;
-    outStr  <<  " b ";
+    outStr  <<  ' '
+            <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
+            <<  ' ';
 
     //  持ち駒を表示する。  //
     int     flg = 0;
