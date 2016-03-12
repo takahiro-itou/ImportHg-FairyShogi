@@ -221,12 +221,28 @@ public:
     //----------------------------------------------------------------
     /**   表示用棋譜データの内容をストリームに出力する。
     **
+    **  @note       棋譜データは、USI(SFEN) 形式で出力。
+    **  @param [in] actView   棋譜表示用構造体。
+    **  @param [in] flgName   移動した駒名も表示させる。
+    **  @param[out] outStr    出力ストリーム。
+    **  @return     出力後のストリームの参照を返す。
+    **/
+    virtual  std::ostream  &
+    writeActionViewSfen(
+            const  ActionView   &actView,
+            const  Boolean      flgName,
+            std::ostream        &outStr)  const;
+
+    //----------------------------------------------------------------
+    /**   表示用棋譜データの内容をストリームに出力する。
+    **
+    **  @note       棋譜データは、CSA 形式で出力。
     **  @param [in] actView   棋譜表示用構造体。
     **  @param[out] outStr    出力ストリーム。
     **  @return     出力後のストリームの参照を返す。
     **/
     virtual  std::ostream  &
-    writeActionView(
+    writeActionViewCsa(
             const  ActionView   &actView,
             std::ostream        &outStr)  const;
 
