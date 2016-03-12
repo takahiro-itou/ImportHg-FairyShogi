@@ -233,6 +233,7 @@ onLButtonUp(
     if (      (START_ENGINE_LEFT <= xPos) && (xPos < START_ENGINE_RIGHT)
             && (START_ENGINE_TOP <= yPos) && (yPos < START_ENGINE_BOTTOM) )
     {
+        //  思考エンジン起動。  //
         Common::ActionView  actData;
         Interface::BoardScreen::GameInterface  &
                 giGame  =  g_scrBoard.getGameController();
