@@ -76,6 +76,8 @@ AM_LDFLAGS              =  -L$(LIBTOPDIR)
 bin_PROGRAMS            =  \
         FairyShogi
 
+dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
+
 ##
 ##    Build Programs.
 ##
