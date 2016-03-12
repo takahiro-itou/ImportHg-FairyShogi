@@ -122,7 +122,8 @@ DiceScreen::getUserSelect()  const
 //
 
 ErrCode
-DiceScreen::setSelectionList()
+DiceScreen::setSelectionList(
+        const  PlayerIndex  piTurn)
 {
     OptionArray     vOpts;
 

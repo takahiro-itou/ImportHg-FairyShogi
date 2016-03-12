@@ -584,7 +584,7 @@ WinMain(
     g_scrProm.setWidth (SQUARE_WIDTH * 10);
     g_scrProm.setHeight(SQUARE_HEIGHT * 2);
 
-    g_scrDice.setSelectionList();
+    g_scrDice.setSelectionList(Common::PLAYER_BLACK);
     g_scrDice.setLeft( (WINDOW_WIDTH  - DICE_SCREEN_WIDTH)  / 2 );
     g_scrDice.setTop ( (WINDOW_HEIGHT - DICE_SCREEN_HEIGHT) / 2 );
     g_scrDice.setWidth (DICE_SCREEN_WIDTH);
