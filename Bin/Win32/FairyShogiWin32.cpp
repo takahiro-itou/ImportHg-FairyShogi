@@ -260,7 +260,7 @@ onLButtonUp(
                         MB_OKCANCEL) == IDOK )
         {
             giGame.playForward(actData);
-            giGame.setCurrentPlayer(giGame.getCurrentPlayer() ^ 1);
+            giGame.setPlayerToNext();
             giGame.setConstraint(6);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
