@@ -241,7 +241,23 @@ onLButtonUp(
         std::stringstream   ss;
         ss  <<  (actData.xDispOldCol)   <<  (actData.yDispOldRow)
             <<  (actData.xDispNewCol)   <<  (actData.yDispNewRow);
-        ::MessageBox(hWnd, ss.str().c_str(), "Best Move",  MB_OK);
+        ss  <<  "# DEBUG : "
+            <<  "\nxPlayOldCol = "  <<  (actData.xPlayOldCol)
+            <<  "\nyPlayOldRow = "  <<  (actData.yPlayOldRow)
+            <<  "\nxPlayNewCol = "  <<  (actData.xPlayNewCol)
+            <<  "\nyPlayNewRow = "  <<  (actData.yPlayNewRow)
+            <<  "\nfpAfter     = "  <<  (actData.fpAfter)
+            <<  "\nfpMoved     = "  <<  (actData.fpMoved)
+            <<  "\nfpCatch     = "  <<  (actData.fpCatch)
+            <<  "\nhpiDrop     = "  <<  (actData.hpiDrop);
+        if ( ::MessageBox(
+                        hWnd, ss.str().c_str(), "Best Move",
+                        MB_OKCANCEL) == IDOK )
+        {
+            giGame.playForward(actData);
+            giGame.setCurrentPlayer(giGame.getCurrentPlayer() ^ 1);
+            giGame.setConstraint(6);
+        }
         ::InvalidateRect(hWnd, NULL, FALSE);
         return ( 0 );
     }
