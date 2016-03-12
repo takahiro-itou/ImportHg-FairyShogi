@@ -755,6 +755,18 @@ BoardState::resetGameBoard(
 //
 
 //----------------------------------------------------------------
+//    現在の盤面データの内部形式のクローンを作成する。
+//
+
+ErrCode
+BoardState::cloneInternState(
+        InternState  *  stClone)  const
+{
+    ::memcpy(stClone,  &(this->m_icState),  sizeof(this->m_icState) );
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
 //    現在の盤面を取得して、表示用バッファにコピーする。
 //
 

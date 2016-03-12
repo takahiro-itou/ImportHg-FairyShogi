@@ -20,6 +20,8 @@
 
 #include    "FairyShogi/Engine/EngineBase.h"
 
+#include    "FairyShogi/Game/BoardState.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Engine  {
 
@@ -87,6 +89,10 @@ protected:
     typedef     Game::BoardState            BoardState;
 
     typedef     std::vector<ActionView>     ActionViewList;
+
+    typedef     BoardState::InternState     InternState;
+    typedef     BoardState::ActionData      ActionData;
+    typedef     BoardState::ActionList      ActionList;
 
 protected:
 
