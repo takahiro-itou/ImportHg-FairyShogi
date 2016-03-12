@@ -104,10 +104,6 @@ EngineLevel1::computeBestAction(
         const  TConstraint  vCons,
         ActionView          &actRet)
 {
-    typedef     BoardState::ActionData          ActionData;
-    typedef     std::vector<ActionData>         ActionDataList;
-    typedef     ActionDataList::const_iterator  ActIter;
-
     //  現在の局面を、内部形式に変換する。  //
     BoardState      curStat;
     ActionViewList  actList;
@@ -126,16 +122,16 @@ EngineLevel1::computeBestAction(
         return ( ERR_SUCCESS );
     }
 
-    BoardState      bsClone;
-    BoardState      bsClone2;
-    ActionData      actData;
-    ActionDataList  vActsS;
-    ActionDataList  vActsE;
+    BoardState  bsClone;
+    BoardState  bsClone2;
+    ActionData  actData;
+    ActionList  vActsS;
+    ActionList  vActsE;
 
-    int             idxMax  =  0;
-    int             idxTmr  =  -1;
-    int             scrTmr  =  -1;
-    int             scrMax  =  -10000000;
+    int         idxMax  =  0;
+    int         idxTmr  =  -1;
+    int         scrTmr  =  -1;
+    int         scrMax  =  -10000000;
 
     for ( int r = 0;  r < numAct;  ++ r ) {
         BoardState::TBitBoard   bbCheck;
@@ -190,7 +186,7 @@ EngineLevel1::computeBestAction(
                 bsClone2.cloneFrom(bsClone);
                 bsClone2.playForward(* itrS);
 
-                ActionDataList  vActsT;
+                ActionList  vActsT;
                 vActsT.clear();
                 bsClone2.makeLegalActionList(piTurn ^ 1,  0,  vActsT);
                 if ( vActsT.empty() ) {
@@ -210,10 +206,10 @@ EngineLevel1::computeBestAction(
                     ++  numWinPats;
                 }
             }   //  Next  itrE
+
             if ( numWinPats > 0 ) {
                 //  詰めろを掛けられる時は掛ける。  //
                 const  int  scrCur  =  numWinDice * 1000 + numWinPats;
-////                const   double  scrCur  =  -1.0 * numRch;
                 if ( scrTmr < scrCur ) {
                     std::cerr   <<  "*SEL ";
                     idxMax  =  r;
@@ -239,8 +235,16 @@ EngineLevel1::computeBestAction(
         for ( ActIter itrE = vActsE.begin(); itrE != itrEndE; ++ itrE )
         {
             if ( (itrE->fpCatch) == 0 ) { continue; }
-            const  int  nx  =  (itrE->xNewCol);
-            const  int  sc  =  s_tblPieceScore[itrE->fpCatch];
+            const  int  nx  = (itrE->xNewCol);
+            int         sc  = s_tblPieceScore[itrE->fpCatch];
+            if ( ((actData.hpiDrop) == (BoardState::IHAND_EMPTY_PIECE))
+                    && ((itrE->xNewCol) == (actData.xNewCol))
+                    && ((itrE->yNewRow) == (actData.yNewRow))
+                    && ((actData.fpAfter) != (actData.fpMoved))
+            )
+            {
+                sc  = s_tblPieceScore[actData.fpMoved];
+            }
             if ( scrAtkMaxs[nx] < sc ) {
                 if ( scrAtkMaxs[ 5] < sc ) {
                     scrAtkMaxs[ 5]  =  sc;
@@ -275,7 +279,6 @@ EngineLevel1::computeBestAction(
 
         const  int  scrCur  =  (scrCatchUp - scrCatchMe)
             +  ((cntLegSelf - cntLegOppn)) + sbProm;
-////        const   double  scrCur  =  (cntLegs) * (dblRnd + 8);
         if ( scrMax < scrCur ) {
             std::cerr   <<  "*SEL ";
             idxMax  =  r;
