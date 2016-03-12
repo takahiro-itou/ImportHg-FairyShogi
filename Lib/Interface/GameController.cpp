@@ -111,7 +111,7 @@ GameController::GameController()
       m_gResult(Common::GAME_RESULT_DRAW)
 {
     for ( PlayerIndex pi = 0; pi < Common::NUM_PLAYERS; ++ pi ) {
-        this->m_ptrEngines[pi]  =  TEngineBase::createEngine("");
+        this->m_ptrEngines[pi]  =  TEngineBase::createEngine("default");
     }
 }
 
@@ -326,6 +326,25 @@ GameController::resetGame()
     this->m_gResult         =  Common::GAME_RESULT_DRAW;
 
     return ( retErr );
+}
+
+//----------------------------------------------------------------
+//    コンピュータの思考エンジンを指定する。
+//
+
+ErrCode
+GameController::setComputerEngine(
+        const  PlayerIndex  pIndex,
+        const  std::string  &engName)
+{
+    TEngineBase::destroyEngine( this->m_ptrEngines[pIndex] );
+    this->m_ptrEngines[pIndex]  =  TEngineBase::createEngine(engName);
+
+    if ( (this->m_ptrEngines[pIndex]) == (nullptr) ) {
+        return ( ERR_FAILURE );
+    }
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
@@ -606,6 +625,16 @@ GameStateFlags
 GameController::getGameStateFlags()  const
 {
     return ( this->m_fStatus );
+}
+
+//----------------------------------------------------------------
+//    手番を次のプレーヤーに設定する。
+//
+
+PlayerIndex
+GameController::setPlayerToNext()
+{
+    return ( (this->m_curTurn) ^= Common::PLAYER_OPPOSITE );
 }
 
 //----------------------------------------------------------------
