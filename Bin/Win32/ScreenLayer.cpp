@@ -17,6 +17,8 @@
 
 #include    "ScreenLayer.h"
 
+#include    "FairyShogi/Common/HelperMacros.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
 

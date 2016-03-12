@@ -18,6 +18,7 @@
 #include    "BoardScreen.h"
 
 #include    "FairyShogi/Common/ActionView.h"
+#include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
