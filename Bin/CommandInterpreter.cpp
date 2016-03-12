@@ -488,15 +488,14 @@ CommandInterpreter::executePlayerCommand(
         CallbackClass       &ciClbk)
 {
     if ( strArgs == "next" ) {
-        const  PlayerIndex  pi  =  objGame.getCurrentPlayer();
-        objGame.setCurrentPlayer(pi ^ 1);
-        std::cerr   <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
-                    <<  std::endl;
+        objGame.setPlayerToNext();
+        outStr  <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
+                <<  std::endl;
         return ( ERR_SUCCESS );
     }
     if ( strArgs == "get" ) {
-        std::cout   <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
-                    <<  std::endl;
+        outStr  <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
+                <<  std::endl;
         return ( ERR_SUCCESS );
     }
 
@@ -504,6 +503,8 @@ CommandInterpreter::executePlayerCommand(
         if ( (strArgs[0] == '0' + i) || (strArgs[0] == s_tblPlayerName[i]) )
         {
             objGame.setCurrentPlayer(i);
+            outStr  <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
+                    <<  std::endl;
             return ( ERR_SUCCESS );
         }
     }
