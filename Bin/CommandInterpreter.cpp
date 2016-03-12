@@ -372,7 +372,9 @@ CommandInterpreter::executeForwardCommand(
     }
 
     std::cerr   <<  "# DEBUG : ";
-    displayActionView(actView, 1, std::cerr)    <<  std::endl;
+    objGame.writeActionViewSfen(actView, BOOL_TRUE, std::cerr)
+            <<  std::endl;
+    objGame.writeActionViewCsa(actView, std::cerr)  <<  std::endl;
 
     ActionList      actList;
     objGame.makeLegalActionList(0, -1, actList);
@@ -396,7 +398,8 @@ CommandInterpreter::executeForwardCommand(
     ciClbk.m_outStrSwap  <<  "dice "
                         <<  objGame.getConstraint()
                         <<  "\nfwd ";
-    displayActionView(actView,  1,  ciClbk.m_outStrSwap);
+    objGame.writeActionViewSfen(
+            actView,  BOOL_TRUE,  ciClbk.m_outStrSwap);
     if ( flgLeg != Common::ALF_LEGAL_ACTION ) {
         ciClbk.m_outStrSwap  <<  '!';
     }
@@ -432,9 +435,13 @@ CommandInterpreter::executeGoCommand(
     }
 
     outStr      <<  "bestmove ";
-    displayActionView(actData,  0,  outStr)     <<  std::endl;
-    std::cerr   <<  "#  COM : ";
-    displayActionView(actData,  1,  std::cerr)  <<  std::endl;
+    objGame.writeActionViewSfen(actData,  BOOL_FALSE,  outStr)
+            <<  std::endl;
+    std::cerr   <<  "#  COM (USI) : ";
+    objGame.writeActionViewSfen(actData,  BOOL_TRUE,  std::cerr)
+            <<  std::endl;
+    std::cerr   <<  "#  COM (CSA) : ";
+    objGame.writeActionViewCsa(actData, std::cerr)  <<  std::endl;
 
     return ( ERR_SUCCESS );
 }
@@ -474,7 +481,7 @@ CommandInterpreter::executeListCommand(
 
     for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr )
     {
-        displayActionView( (* itr), 1, outStr );
+        objGame.writeActionViewSfen( (* itr), BOOL_TRUE, outStr );
         if ( (itr->fLegals) != Common::ALF_LEGAL_ACTION ) {
             ++  cntBad;
             outStr  <<  '!';
@@ -587,7 +594,8 @@ CommandInterpreter::executeRecordCommand(
     const  ActIter  itrEnd  =  actList.end();
     for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr )
     {
-        displayActionView( * itr, 1,  * pOutStr )   <<  std::endl;
+        objGame.writeActionViewSfen( * itr, BOOL_TRUE,  * pOutStr )
+                <<  std::endl;
     }
 
     return ( ERR_SUCCESS );
