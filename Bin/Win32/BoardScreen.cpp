@@ -564,7 +564,7 @@ BoardScreen::playAction(
     actView.fpAfter = iPrm;
     giGame.playForward(actView);
     giGame.setPlayerToNext();
-    giGame.setConstraint(6);
+    giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
 
     this->m_bcSrcX  = -1;
     this->m_bcSrcY  = -1;

@@ -234,7 +234,7 @@ CommandInterpreter::executeBackwardCommand(
 {
     const  ErrCode  retErr  =  objGame.playBackward();
     executePlayerCommand("next",  objGame,  outStr,  ciClbk);
-    objGame.setConstraint(6);
+    objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
     return ( retErr );
 }
 
@@ -256,11 +256,11 @@ CommandInterpreter::executeDiceCommand(
         numChk  = bsCur.isCheckState(objGame.getCurrentPlayer(), bbFrom);
     if ( numChk == 1 ) {
         std::cerr   <<  "* CHECK!"  <<  std::endl;
-        objGame.setConstraint(6);
+        objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
         return ( ERR_SUCCESS );
     } else if ( numChk >= 2 ) {
         std::cerr   <<  "** DOUBLE CHECK!"  <<  std::endl;
-        objGame.setConstraint(6);
+        objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
         return ( ERR_SUCCESS );
     }
 
@@ -272,14 +272,14 @@ CommandInterpreter::executeDiceCommand(
     }
 
     if ( strArgs[0] == 'r' ) {
-        const  int  rn  =  ((std::rand() >> 8) % 6) + 1;
+        const  int  rn  =  ((std::rand() >> 8) % Common::DICE_MAX_VALUE) + 1;
         std::cout   <<  rn  <<  std::endl;
         objGame.setConstraint(rn);
         return ( ERR_SUCCESS );
     }
 
     const  int  dr  =  strArgs[0] - '0';
-    if ( (dr < 0) || (6 < dr) ) {
+    if ( (dr < 0) || (Common::DICE_MAX_VALUE < dr) ) {
         outStr  <<  "# ERROR : Invalid Arguments."  <<  std::endl;
         return ( ERR_INVALID_COMMAND );
     }
@@ -374,7 +374,7 @@ CommandInterpreter::executeForwardCommand(
     objGame.playForward(actView);
 
     executePlayerCommand("next",  objGame,  outStr,  ciClbk);
-    objGame.setConstraint(6);
+    objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
 
     return ( ERR_SUCCESS );
 }
@@ -423,9 +423,9 @@ CommandInterpreter::executeListCommand(
         std::ostream        &outStr,
         CallbackClass       &ciClbk)
 {
-    int     dc  =  objGame.getConstraint();
+    TDiceValue  dc  =  objGame.getConstraint();
     if ( strArgs[0] == 'a' ) {
-        dc  =  6;
+        dc  =  Common::DICE_ANY_MOVE;
     } else if ( ('0' <= strArgs[0]) && (strArgs[0] <= '6') ) {
         dc  =  strArgs[0] - '0';
     }
