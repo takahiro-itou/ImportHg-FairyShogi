@@ -37,6 +37,7 @@ INCLIBHEADERS           =  \
         $(INCLIBDIR)/FairyShogiConst.h     \
         $(INCLIBDIR)/FairyShogiSettings.h  \
         $(INCLIBDIR)/FairyShogiTypes.h     \
+        $(INCLIBDIR)/HelperMacros.h        \
         $(INCLIBDIR)/ViewBuffer.h          \
         $(EXTRALIBHEADERS)
 
