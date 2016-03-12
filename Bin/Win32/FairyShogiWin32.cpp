@@ -335,6 +335,8 @@ onPaint(
     {
         const  Interface::BoardScreen::GameInterface  &
             giGame  =  g_scrBoard.getGameController();
+        const  PlayerIndex  curTurn = giGame.getCurrentPlayer();
+
         int     curDice = giGame.getConstraint() - 1;
         if ( (curDice < 0) || (6 <= curDice) ) {
             curDice = 5;
@@ -343,8 +345,8 @@ onPaint(
                 CURRENT_DICE_LEFT,  CURRENT_DICE_TOP,
                 DICE_WIDTH,         DICE_HEIGHT,
                 g_imgDice,
-                ((curDice % 3) * DICE_WIDTH),
-                ((curDice / 3) * DICE_HEIGHT) );
+                (curDice * DICE_WIDTH),
+                (curTurn * DICE_HEIGHT) );
     }
 
     //  現在のエンジンを表示する。  //
