@@ -563,7 +563,7 @@ BoardScreen::playAction(
             &plDummy,   &actView );
     actView.fpAfter = iPrm;
     giGame.playForward(actView);
-    giGame.setCurrentPlayer( giGame.getCurrentPlayer() ^ 1 );
+    giGame.setPlayerToNext();
     giGame.setConstraint(6);
 
     this->m_bcSrcX  = -1;
