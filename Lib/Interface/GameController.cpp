@@ -677,7 +677,9 @@ GameController::convertConstraintCoord(
     if ( (flgShow) & SCF_FLIP_COLUMNS ) {
         //  水平方向の座標を反転させる。ただし六を除く。    //
         //  つまり、123456 -> 543216 となるように変換する。 //
-        return ( vCons < 6 ? (6 - vCons) : 6 );
+        return ( vCons < Common::DICE_ANY_MOVE
+                 ?  (Common::DICE_MAX_VALUE - vCons)
+                 :  Common::DICE_ANY_MOVE );
     }
 
     //  水平方向の座標をそのまま使う。      //

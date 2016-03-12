@@ -17,6 +17,7 @@
 
 #include    "DiceScreen.h"
 
+#include    "FairyShogi/Common/FairyShogiConst.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -94,7 +95,7 @@ ErrCode
 DiceScreen::setupBitmapImages(
         const  std::string  &imgDice)
 {
-    return ( Super::setupBitmapImages(imgDice, 6, 2) );
+    return ( Super::setupBitmapImages(imgDice, Common::DICE_MAX_VALUE, 2) );
 }
 
 //========================================================================
@@ -130,8 +131,8 @@ DiceScreen::setSelectionList(
     setupChoiceDisplay(3, 2, 128, 128);
 
     vOpts.clear();
-    for ( ChoiceIndex i = 0; i < 6; ++ i ) {
-        vOpts.push_back(piTurn * 6 + i);
+    for ( ChoiceIndex i = 0; i < Common::DICE_MAX_VALUE; ++ i ) {
+        vOpts.push_back(piTurn * Common::DICE_MAX_VALUE + i);
     }
 
     return ( Super::setChoiceList(vOpts) );

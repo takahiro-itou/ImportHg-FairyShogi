@@ -261,7 +261,7 @@ onLButtonUp(
         {
             giGame.playForward(actData);
             giGame.setPlayerToNext();
-            giGame.setConstraint(6);
+            giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
         return ( 0 );
@@ -359,8 +359,8 @@ onPaint(
         const  PlayerIndex  curTurn = giGame.getCurrentPlayer();
 
         int     curDice = giGame.getConstraint() - 1;
-        if ( (curDice < 0) || (6 <= curDice) ) {
-            curDice = 5;
+        if ( (curDice < 0) || (Common::DICE_MAX_VALUE <= curDice) ) {
+            curDice = Common::DICE_DEFAULT_VALUE;
         }
         g_imgScreen.copyRectangle(
                 CURRENT_DICE_LEFT,  CURRENT_DICE_TOP,
