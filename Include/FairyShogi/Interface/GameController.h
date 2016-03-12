@@ -71,7 +71,7 @@ public:
     typedef     std::vector<ActionView>         ActionViewList;
 
     /**   制約条件（ダイスの目）を表す型。  **/
-    typedef     int     TConstraint;
+    typedef     TDiceValue      TConstraint;
 
     /**   座標の表示関係のフラグ。  **/
     enum  ShowCoordFlagValues

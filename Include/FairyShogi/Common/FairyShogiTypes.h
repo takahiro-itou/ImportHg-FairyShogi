@@ -131,6 +131,13 @@ typedef     int     GameStateFlags;
 typedef     int     GameResultVals;
 
 //----------------------------------------------------------------
+/**
+**    ダイスの目を示す型。
+**/
+
+typedef     int     TDiceValue;
+
+//----------------------------------------------------------------
 
 typedef     const   void  *     LpcReadBuf;
 
