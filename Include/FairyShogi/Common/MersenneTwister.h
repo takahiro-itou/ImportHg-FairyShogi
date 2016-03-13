@@ -94,7 +94,8 @@ public:
     **  （デストラクタ）。
     **
     **/
-    ~MersenneTwister();
+    ~MersenneTwister()
+    { }
 
 //========================================================================
 //
@@ -141,9 +142,6 @@ private:
         TEMPERING_SHR_L     =  18
     };
 
-    static  CONSTEXPR_VAR   TSeedValue
-    s_tblMag[2] =  { 0,  MATRIX_A };
-
 public:
 
     //----------------------------------------------------------------
@@ -174,6 +172,9 @@ public:
     TResultInt
     getNext()
     {
+        static  CONSTEXPR_VAR   TSeedValue
+                s_tblMag[2]  =  { 0,  MATRIX_A };
+
         TSeedValue  *  const    vS  =  (this->m_vSeeds);
         int         idxCur  = (this->m_sIndex);
         TSeedValue  vt      = 0;
