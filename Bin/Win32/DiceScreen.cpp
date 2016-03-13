@@ -128,12 +128,13 @@ DiceScreen::setSelectionList(
 {
     OptionArray     vOpts;
 
-    setupChoiceDisplay(3, 2, 128, 128);
+    setupChoiceDisplay(3, 3, 128, 128);
 
     vOpts.clear();
     for ( ChoiceIndex i = 0; i < Common::DICE_MAX_VALUE; ++ i ) {
         vOpts.push_back(piTurn * Common::DICE_MAX_VALUE + i);
     }
+    vOpts.push_back(DICE_USE_RANDOM);
 
     return ( Super::setChoiceList(vOpts) );
 }
