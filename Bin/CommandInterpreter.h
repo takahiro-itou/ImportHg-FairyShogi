@@ -20,6 +20,7 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Common/MersenneTwister.h"
 #include    "FairyShogi/Interface/ConsoleInterface.h"
 
 #include    <fstream>
@@ -128,6 +129,13 @@ private:
             CallbackClass       &ciClbk);
 
     typedef     std::vector< std::string >          TokenArray;
+
+    typedef     Common::MersenneTwister             RandomGenerator;
+
+    typedef     RandomGenerator::TResultInt         RandResult;
+
+    static  CONSTEXPR_VAR   RandResult
+    RANDOM_MAX_VALUE    = RandomGenerator::MaxValue<28>::VALUE;
 
 private:
 
@@ -441,6 +449,8 @@ private:
     ConsoleInterface    m_ciGameCtrl;
 
     std::ofstream       m_outStrSwap;
+
+    RandomGenerator     m_rndGen;
 
 //========================================================================
 //

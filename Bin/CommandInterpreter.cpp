@@ -90,7 +90,8 @@ s_tblPlayerName[2]  = { 'b', 'w' };
 
 CommandInterpreter::CommandInterpreter()
     : m_ciGameCtrl(),
-      m_outStrSwap()
+      m_outStrSwap(),
+      m_rndGen()
 {
     //  ゲームをリセットする。  //
     this->m_ciGameCtrl.resetGame();
@@ -102,6 +103,9 @@ CommandInterpreter::CommandInterpreter()
     executeSfenCommand(
             "",  this->m_ciGameCtrl,  this->m_outStrSwap,  * this);
     this->m_outStrSwap  <<  "\n#  Command History"  <<  std::endl;
+
+    //  乱数系列を初期化する。  //
+    this->m_rndGen.setSeedValue(13579);
 }
 
 //----------------------------------------------------------------
@@ -312,7 +316,10 @@ CommandInterpreter::executeDiceCommand(
     }
 
     if ( strArgs[0] == 'r' ) {
-        const  int  rn  =  ((std::rand() >> 8) % Common::DICE_MAX_VALUE) + 1;
+        const  uint32_t
+            rv  =  (ciClbk.m_rndGen.getNext() & RANDOM_MAX_VALUE);
+        const  int  rn
+            =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1) + 1;
         std::cout   <<  rn  <<  std::endl;
         objGame.setConstraint(rn);
         return ( ERR_SUCCESS );
@@ -647,7 +654,12 @@ CommandInterpreter::executeSeedCommand(
     UTL_HELP_UNUSED_ARGUMENT(outStr);
     UTL_HELP_UNUSED_ARGUMENT(ciClbk);
 
-    std::srand( time(nullptr) );
+    if ( strArgs.empty() ) {
+        ciClbk.m_rndGen.setSeedValue( time(nullptr) );
+    } else {
+        const  int  vS  =  std::atol(strArgs.c_str());
+        ciClbk.m_rndGen.setSeedValue(vS ? vS : 13579);
+    }
 
     return ( ERR_SUCCESS );
 }
