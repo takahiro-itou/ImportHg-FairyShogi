@@ -22,6 +22,7 @@
 #include    "PromotionScreen.h"
 
 #include    "FairyShogi/Common/ActionView.h"
+#include    "FairyShogi/Common/MersenneTwister.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
 
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
@@ -127,6 +128,18 @@ Interface::BitmapImage      g_imgWork;
 Interface::BitmapImage      g_imgBoard;
 Interface::BitmapImage      g_imgPromote;
 
+//
+//  乱数。
+//
+
+typedef     Common::MersenneTwister             RandomGenerator;
+typedef     RandomGenerator::TResultInt         RandResult;
+
+static  CONSTEXPR_VAR   RandResult
+RANDOM_MAX_VALUE    = RandomGenerator::MaxValue<28>::VALUE;
+
+RandomGenerator             g_rndGen;
+
 }   //  End of (Unnamed) namespace.
 
 //----------------------------------------------------------------
@@ -176,6 +189,36 @@ onLButtonDown(
 **/
 
 LRESULT
+onLButtonUpInDiceScreen()
+{
+    Interface::BoardScreen::GameInterface  &
+            giGame  =  g_scrBoard.getGameController();
+
+    const  Interface::ChoiceScreen::ChoiceIndex
+        pidSel  = g_scrDice.getUserSelect();
+
+    if ( pidSel >= 6 ) {
+        //  乱数を使う。    //
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        const  uint32_t
+            rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
+        const  int  rn
+            =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);
+        giGame.setConstraint(rn + 1);
+    } else if ( pidSel >= 0 ) {
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        giGame.setConstraint(pidSel + 1);
+    }
+
+    return ( 0 );
+}
+
+//----------------------------------------------------------------
+/**   マウスボタンを離した時のイベントハンドラ。
+**
+**/
+
+LRESULT
 onLButtonUp(
         const   HWND    hWnd,
         const   DWORD   fwKeys,
@@ -196,18 +239,7 @@ onLButtonUp(
     if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
         evtRet  = g_scrDice.dispatchLButtonUp(fwKeys, xPos, yPos);
-
-        const  Interface::ChoiceScreen::ChoiceIndex
-            pidSel  = g_scrDice.getUserSelect();
-
-        if ( pidSel >= 6 ) {
-            //  乱数を使う。    //
-            g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-            giGame.setConstraint( ((std::rand() >> 4) % 6) + 1 );
-        } else if ( pidSel >= 0 ) {
-            g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-            giGame.setConstraint(pidSel + 1);
-        }
+        onLButtonUpInDiceScreen();
         ::InvalidateRect(hWnd, NULL, FALSE);
         return ( 0 );
     }
@@ -602,6 +634,8 @@ WinMain(
     ::ReleaseDC(hWnd, hDC);
 
     //  グローバル変数を初期化する。    //
+    g_rndGen.setSeedValue(13579);
+
     g_scrBoard.setLeft  (VIEW_BOARD_LEFT);
     g_scrBoard.setTop   (VIEW_BOARD_TOP);
     g_scrBoard.setWidth (VIEW_BOARD_WIDTH);
