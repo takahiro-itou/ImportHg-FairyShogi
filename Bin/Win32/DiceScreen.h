@@ -34,6 +34,13 @@ namespace  Interface  {
 class  DiceScreen : public  ChoiceScreen
 {
 
+    enum  {
+        /**
+        **    乱数を使う場合に指定する番号。
+        **/
+        DICE_USE_RANDOM     =  12
+    };
+
 //========================================================================
 //
 //    Constructor(s) and Destructor.

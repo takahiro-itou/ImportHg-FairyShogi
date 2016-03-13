@@ -40,6 +40,7 @@
 #    define     UTL_HELP_UNUSED_ARGUMENT(var)   (void)(var)
 #endif
 
+#include    <cstdlib>
 #include    <fstream>
 #include    <sstream>
 
@@ -199,7 +200,11 @@ onLButtonUp(
         const  Interface::ChoiceScreen::ChoiceIndex
             pidSel  = g_scrDice.getUserSelect();
 
-        if ( pidSel >= 0 ) {
+        if ( pidSel >= 6 ) {
+            //  乱数を使う。    //
+            g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+            giGame.setConstraint( ((std::rand() >> 4) % 6) + 1 );
+        } else if ( pidSel >= 0 ) {
             g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
             giGame.setConstraint(pidSel + 1);
         }
