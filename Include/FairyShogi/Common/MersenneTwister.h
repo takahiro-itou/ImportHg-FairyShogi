@@ -40,10 +40,22 @@ namespace  Common  {
 class  MersenneTwister
 {
 
-private:
+//========================================================================
+//
+//    Internal Type Definitions.
+//
+public:
 
     typedef     uint32_t        TSeedValue;
+
     typedef     uint32_t        TResultInt;
+
+    template  <int  N>
+    struct  MaxValue
+    {
+        static  CONSTEXPR_VAR   TResultInt
+        VALUE   =  (static_cast<uint64_t>(1) << N) - 1;
+    };
 
 //========================================================================
 //
@@ -72,7 +84,7 @@ public:
     MersenneTwister(
             const  TSeedValue   uSeed)
         : m_vSeeds(),
-          m_sIndex(0),
+          m_sIndex(0)
     {
         setSeedValue(uSeed);
     }
