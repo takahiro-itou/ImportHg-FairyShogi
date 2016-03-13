@@ -105,7 +105,7 @@ GameController::GameController()
       m_actList(),
       m_flgShow(SCF_NORMAL_SHOW),
       m_curTurn(0),
-      m_curDice(0),
+      m_curDice(Common::DICE_DEFAULT_VALUE),
       m_ptrEngines(),
       m_fStatus(Common::GAME_IS_RUNNING),
       m_gResult(Common::GAME_RESULT_DRAW)

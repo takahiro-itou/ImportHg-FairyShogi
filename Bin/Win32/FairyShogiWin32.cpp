@@ -246,7 +246,7 @@ onLButtonUp(
         }
         ss  <<  (actData.xDispOldCol)   <<  (actData.yDispOldRow)
             <<  (actData.xDispNewCol)   <<  (actData.yDispNewRow);
-        ss  <<  "# DEBUG : "
+        ss  <<  "\n# DEBUG : "
             <<  "\nxPlayOldCol = "  <<  (actData.xPlayOldCol)
             <<  "\nyPlayOldRow = "  <<  (actData.yPlayOldRow)
             <<  "\nxPlayNewCol = "  <<  (actData.xPlayNewCol)
