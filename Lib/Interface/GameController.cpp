@@ -173,6 +173,23 @@ GameController::computeBestAction(
 }
 
 //----------------------------------------------------------------
+//    王手が掛かっているかどうかを判定する。
+//
+
+Boolean
+GameController::isCheckState(
+        const  PlayerIndex  dPlayer)  const
+{
+    Game::BoardState::TBitBoard     bbFrom;
+    const  size_t
+        numChk  = this->m_gcBoard.isCheckState(dPlayer, bbFrom);
+    if ( numChk >= 1 ) {
+        return ( BOOL_TRUE );
+    }
+    return ( BOOL_FALSE );
+}
+
+//----------------------------------------------------------------
 //    現在の局面の合法手を列挙する。
 //
 

@@ -144,6 +144,17 @@ public:
             ActionView  &actRet);
 
     //----------------------------------------------------------------
+    /**   王手が掛かっているかどうかを判定する。
+    **
+    **  @param [in] dPlayer   判定を行うプレーヤー。
+    **  @retval     BOOL_TRUE   : 王手が掛かっている。
+    **  @retval     BOOL_FALSE  : それ以外。
+    **/
+    Boolean
+    isCheckState(
+            const  PlayerIndex  dPlayer)  const;
+
+    //----------------------------------------------------------------
     /**   現在の局面の合法手を列挙する。
     **
     **  @param [in] fLegals   合法判定フラグ。
