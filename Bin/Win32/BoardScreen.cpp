@@ -320,17 +320,27 @@ BoardScreen::onLButtonUp(
     const  BoardCoord   my  = ((int)(yPos) - TOP_MARGIN) / SQUARE_HEIGHT;
 
     //  画面の範囲外でマウスボタンを離した場合は、キャンセルする。  //
-    if ( (mx < BOARD_LEFT_OFFSET) || (my < BOARD_TOP_OFFSET)
+    if ( (mx < BOARD_LEFT_OFFSET) || (my < 0)
             || (POS_NUM_COLS + BOARD_LEFT_OFFSET <= mx)
-            || (POS_NUM_ROWS + BOARD_TOP_OFFSET  <= my) )
+            || (VIEW_NUM_ROWS <= my) )
     {
         clearSelection();
         return ( EH_RESULT_REDRAW );
     }
+    if ( (my == 0) || (my == (POS_NUM_ROWS + BOARD_TOP_OFFSET)) ) {
+        //  持ち駒の表示エリアの場合。  //
+        if ( (this->m_ddMode) != DDM_SELECT_SOURCE ) {
+            clearSelection();
+            return ( EH_RESULT_REDRAW );
+        }
+    }
 
     //  クリックモードになっている場合は、移動先を指定する。    //
     if ( (this->m_ddMode) == DDM_CLICKS ) {
-        if ( (this->m_bcMovX == mx) && (this->m_bcMovY == my) ) {
+        if ( (this->m_bcSelX == mx) && (this->m_bcSelY == my) ) {
+            //  移動元と同じ場所を選択した場合は、キャンセル。  //
+            clearSelection();
+        } else if ( (this->m_bcMovX == mx) && (this->m_bcMovY == my) ) {
             //  同じ場所を二回クリックしたので処理を確定する。  //
             setActionInput(this->m_bcSelX, this->m_bcSelY, mx, my);
             clearSelection();
