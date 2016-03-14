@@ -105,13 +105,16 @@ EngineLevel1::computeBestAction(
         ActionView          &actRet)
 {
     //  現在の局面を、内部形式に変換する。  //
-    BoardState      curStat;
+    BoardState      bsCur;
+    InternState     curStat;
     ActionViewList  actList;
+    ActViewIter     itrView;
 
-    curStat.encodeFromViewBuffer(vbCur);
+    bsCur.encodeFromViewBuffer(vbCur);
+    bsCur.cloneInternState(&curStat);
 
     actList.clear();
-    makeLegalActionList(curStat,  piTurn,  vCons,  actList);
+    makeLegalActionList(bsCur,  piTurn,  vCons,  actList);
 
     const  int  numAct  =  actList.size();
     if ( numAct == 0 ) {
@@ -133,10 +136,17 @@ EngineLevel1::computeBestAction(
     int         scrTmr  =  -1;
     int         scrMax  =  -10000000;
 
+    if ( findCheckMateAction(curStat, piTurn, actList, &itrView) ) {
+        //  チェックメイトを発見したので、それを選択して終了。  //
+        std::cerr   <<  "CHECK MATE."   <<  std::endl;
+        actRet  =  (* itrView);
+        return ( ERR_SUCCESS );
+    }
+
     for ( int r = 0;  r < numAct;  ++ r ) {
         BoardState::TBitBoard   bbCheck;
 
-        bsClone.cloneFrom(curStat);
+        bsClone.cloneFrom(bsCur);
         BoardState::encodeActionData(actList[r], &actData);
         bsClone.playForward(actData);
 
