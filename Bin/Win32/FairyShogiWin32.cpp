@@ -261,6 +261,13 @@ onLButtonUp(
     if ( (CURRENT_DICE_LEFT <= xPos) && (xPos < CURRENT_DICE_RIGHT)
             && (CURRENT_DICE_TOP <= yPos) && (yPos < CURRENT_DICE_BOTTOM) )
     {
+        if ( giGame.isCheckState(giGame.getCurrentPlayer()) ) {
+            giGame.setConstraint(Common::DICE_ANY_MOVE);
+            ::InvalidateRect(hWnd, NULL, FALSE);
+            ::MessageBox(hWnd, "CHECK", NULL, MB_OK);
+            return ( 0 );
+        }
+
         g_scrDice.setSelectionList(giGame.getCurrentPlayer());
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
         ::InvalidateRect(hWnd, NULL, FALSE);
