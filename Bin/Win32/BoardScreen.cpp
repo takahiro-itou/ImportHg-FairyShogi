@@ -600,6 +600,11 @@ BoardScreen::setActionInput(
     Interface::BoardScreen::GameInterface  &
             giGame  =  this->getGameController();
 
+    if ( (srcX == trgX) && (srcY == trgY) ) {
+        //  移動元と移動先が同じ場合はエラー。  //
+        return ( ERR_FAILURE );
+    }
+
     this->m_bcSrcX  = srcX;
     this->m_bcSrcY  = srcY;
     this->m_bcTrgX  = trgX;
