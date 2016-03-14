@@ -21,6 +21,8 @@
 #include    "FairyShogi/Common/FairyShogiConst.h"
 #include    "FairyShogi/Game/BoardState.h"
 
+#include    <memory.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Engine  {
 
@@ -130,6 +132,38 @@ EngineImplements::findCheckMateActions(
     }
 
     return ( retCnt );
+}
+
+//----------------------------------------------------------------
+//    相手の玉をチェックメイトできる手を検索する。
+//
+
+Boolean
+EngineImplements::findCheckMateAction(
+        const  InternState      &curStat,
+        const  PlayerIndex      piTurn,
+        const  ActionViewList   &actList,
+        ActViewIter  *          itrRet)
+{
+    InternState     stClone;
+    ActionData      actData;
+
+    const  ActViewIter  itrEnd  = actList.end();
+    for ( ActViewIter itr = actList.begin(); itr != itrEnd; ++ itr )
+    {
+        ::memcpy( &stClone, &curStat, sizeof(stClone) );
+        BoardState::encodeActionData((* itr), &actData);
+        BoardState::playForward(actData, stClone);
+        if ( isCheckMateState(stClone, piTurn ^ Common::PLAYER_OPPOSITE) )
+        {
+            //  チェックメイトを発見。  //
+            (* itrRet)  = itr;
+            return ( BOOL_TRUE );
+        }
+    }
+
+    (* itrRet)  = itrEnd;
+    return ( BOOL_FALSE );
 }
 
 //----------------------------------------------------------------
