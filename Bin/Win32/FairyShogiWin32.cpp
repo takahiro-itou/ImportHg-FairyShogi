@@ -308,9 +308,7 @@ onLButtonUp(
                         hWnd, ss.str().c_str(), "Best Move",
                         MB_OKCANCEL) == IDOK )
         {
-            giGame.playForward(actData);
-            giGame.setPlayerToNext();
-            giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
+            g_scrBoard.playForward(actData);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
         return ( 0 );
