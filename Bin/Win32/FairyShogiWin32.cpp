@@ -191,8 +191,9 @@ onLButtonDown(
 LRESULT
 onLButtonUpInDiceScreen()
 {
+    Interface::BoardScreen  & scrBoard  = g_scrBoard;
     Interface::BoardScreen::GameInterface  &
-            giGame  =  g_scrBoard.getGameController();
+            giGame  = scrBoard.getGameController();
 
     const  Interface::ChoiceScreen::ChoiceIndex
         pidSel  = g_scrDice.getUserSelect();
@@ -209,6 +210,8 @@ onLButtonUpInDiceScreen()
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
         giGame.setConstraint(pidSel + 1);
     }
+
+    scrBoard.updateHighLightInfo();
 
     return ( 0 );
 }

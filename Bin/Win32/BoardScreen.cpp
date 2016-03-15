@@ -189,6 +189,21 @@ BoardScreen::drawScreenLayer(
         }
     }
 
+    //  移動できるマスを強調表示する。  //
+    for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
+        for ( int x = 0; x < POS_NUM_COLS; ++ x ) {
+            if ( this->m_tblHighLight[y][x] == BOOL_TRUE ) {
+                continue;
+            }
+            dx  = (x * SQUARE_WIDTH) + LEFT_MARGIN;
+            dy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
+
+            bmpTrg->drawTransparentRectangle(
+                    dx,  dy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
+                    0,  0,  0,  64);
+        }
+    }
+
     //  選択しているマスがあれば強調表示。  //
     if ( (this->m_bcSelX >= 0) && (this->m_bcSelY >= 0) ) {
         sx  = ((this->m_bcSelX) * SQUARE_WIDTH) + LEFT_MARGIN;
@@ -437,7 +452,9 @@ ErrCode
 BoardScreen::resetGame()
 {
     clearSelection();
-    return ( this->m_gcGameCtrl.resetGame() );
+    ErrCode     retErr  =  this->m_gcGameCtrl.resetGame();
+    updateHighLightInfo();
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
@@ -501,7 +518,33 @@ ErrCode
 BoardScreen::playForward(
         const  ActionView   &actFwd)
 {
-    return ( ERR_FAILURE );
+    Interface::BoardScreen::GameInterface  &
+            giGame  =  this->getGameController();
+
+    giGame.playForward(actFwd);
+    giGame.setPlayerToNext();
+    giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
+
+    this->m_bcSrcX  = -1;
+    this->m_bcSrcY  = -1;
+    this->m_bcTrgX  = -1;
+    this->m_bcTrgY  = -1;
+    clearSelection();
+
+    //  最後の指し手を棋譜ファイルに書き込む。  //
+    Interface::GameController::ActionViewList   actList;
+
+    this->m_gcGameCtrl.writeActionList(actList);
+    if ( this->m_ofsKifu.good() && !(actList.empty()) ) {
+        this->m_gcGameCtrl.writeActionViewSfen(
+                actList.back(), BOOL_TRUE, this->m_ofsKifu);
+        this->m_ofsKifu << std::endl;
+        this->m_ofsKifu.flush();
+    }
+
+    updateHighLightInfo();
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
@@ -630,28 +673,8 @@ BoardScreen::playAction(
             giGame,     srcX,  srcY,  trgX,  trgY,
             &plDummy,   &actView );
     actView.fpAfter = iPrm;
-    giGame.playForward(actView);
-    giGame.setPlayerToNext();
-    giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
 
-    this->m_bcSrcX  = -1;
-    this->m_bcSrcY  = -1;
-    this->m_bcTrgX  = -1;
-    this->m_bcTrgY  = -1;
-    clearSelection();
-
-    //  最後の指し手を棋譜ファイルに書き込む。  //
-    Interface::GameController::ActionViewList   actList;
-
-    this->m_gcGameCtrl.writeActionList(actList);
-    if ( this->m_ofsKifu.good() && !(actList.empty()) ) {
-        this->m_gcGameCtrl.writeActionViewSfen(
-                actList.back(), BOOL_TRUE, this->m_ofsKifu);
-        this->m_ofsKifu << std::endl;
-        this->m_ofsKifu.flush();
-    }
-
-    return ( ERR_SUCCESS );
+    return ( playForward(actView) );
 }
 
 //----------------------------------------------------------------
