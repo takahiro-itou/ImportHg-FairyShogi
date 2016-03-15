@@ -318,9 +318,13 @@ private:
 
     typedef     GameInterface::PromoteList          PromoteList;
 
+    typedef     std::vector<ActionView>             ActionViewList;
 
     /**   盤上のマスの座標を表す型。    **/
     typedef     int     BoardCoord;
+
+    typedef     Boolean
+    THighLight[Common::MAX_FIELD_ROWS][Common::MAX_FIELD_COLS];
 
 private:
 
@@ -530,6 +534,11 @@ private:
     **  各種座標を保管しておくための変数。
     **/
     BoardCoord          m_bcTrgY;
+
+    /**
+    **    ハイライト情報。
+    **/
+    THighLight          m_tblHighLight;
 
     /**   成り駒の選択肢。      **/
     OptionArray         m_prmOptions;

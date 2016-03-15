@@ -75,6 +75,7 @@ BoardScreen::BoardScreen()
       m_bcSrcY(-1),
       m_bcTrgX(-1),
       m_bcTrgY(-1),
+      m_tblHighLight(),
       m_prmOptions(),
       m_biBack (nullptr),
       m_biPiece(nullptr),
@@ -527,6 +528,32 @@ BoardScreen::setPromotionOption(
 ErrCode
 BoardScreen::updateHighLightInfo()
 {
+    typedef     ActionViewList::const_iterator      ActIter;
+
+    for ( PosRow y = 0; y < POS_NUM_ROWS; ++ y ) {
+        for ( PosCol x = 0; x < POS_NUM_COLS; ++ x ) {
+            this->m_tblHighLight[y][x]  = BOOL_FALSE;
+        }
+    }
+
+    ActionViewList  actList;
+    const  GameInterface  & giGame  = (this->m_gcGameCtrl);
+    giGame.makeLegalActionList(
+            Common::ALF_LEGAL_ACTION, giGame.getConstraint(), actList);
+
+    const  ActIter  itrEnd  = actList.end();
+    for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
+        const  int  cNx = (POS_NUM_COLS - itr->xPlayNewCol);
+        const  int  rNy = (itr->yPlayNewRow - 1);
+        const  int  cOx = (POS_NUM_COLS - itr->xPlayOldCol);
+        const  int  rOy = (itr->yPlayOldRow - 1);
+
+        if ( (cOx < POS_NUM_COLS) && (0 <= rOy) ) {
+            this->m_tblHighLight[rOy][cOx]  = BOOL_TRUE;
+        }
+        this->m_tblHighLight[rNy][cNx]  = BOOL_TRUE;
+    }
+
     return ( ERR_FAILURE );
 }
 
