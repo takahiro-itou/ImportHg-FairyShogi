@@ -67,7 +67,9 @@ public:
     };
 
     /**   ユーザーに示す成り駒選択肢の型。  **/
-    typedef     std::vector<PieceIndex>     OptionArray;
+    typedef     std::vector<PieceIndex>             OptionArray;
+
+    typedef     Common::ActionView                  ActionView;
 
 //========================================================================
 //
@@ -225,6 +227,28 @@ public:
     clearSelection();
 
     //----------------------------------------------------------------
+    /**   最後に入力した指し手で盤面を戻す。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    playBackward();
+
+    //----------------------------------------------------------------
+    /**   指定した指し手で盤面を進める。
+    **
+    **  @param [in] actFwd    指し手データの表示用形式。
+    **  @retval     ERR_SUCCESS           合法手。
+    **  @retval     ERR_ILLEGAL_ACTION    非合法。
+    **/
+    ErrCode
+    playForward(
+            const  ActionView   &actFwd);
+
+    //----------------------------------------------------------------
     /**   ユーザーが選択した成り駒を指定する。
     **
     **  @param [in] idxSel    ユーザーが選んだ選択肢の番号。
@@ -236,6 +260,17 @@ public:
     ErrCode
     setPromotionOption(
             const  PieceIndex   idxSel);
+
+    //----------------------------------------------------------------
+    /**   ハイライト表示用の情報を更新する。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    updateHighLightInfo();
 
 //========================================================================
 //
@@ -280,8 +315,6 @@ public:
 //    For Internal Use Only.
 //
 private:
-
-    typedef     Common::ActionView                  ActionView;
 
     typedef     GameInterface::PromoteList          PromoteList;
 

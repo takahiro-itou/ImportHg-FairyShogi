@@ -483,6 +483,27 @@ BoardScreen::clearSelection()
 }
 
 //----------------------------------------------------------------
+//    最後に入力した指し手で盤面を戻す。
+//
+
+ErrCode
+BoardScreen::playBackward()
+{
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    指定した指し手で盤面を進める。
+//
+
+ErrCode
+BoardScreen::playForward(
+        const  ActionView   &actFwd)
+{
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
 //    ユーザーが選択した成り駒を指定する。
 //
 
@@ -497,6 +518,16 @@ BoardScreen::setPromotionOption(
     return ( playAction(
                      this->m_bcSrcX,  this->m_bcSrcY,
                      this->m_bcTrgX,  this->m_bcTrgY,  pidSel) );
+}
+
+//----------------------------------------------------------------
+//    ハイライト表示用の情報を更新する。
+//
+
+ErrCode
+BoardScreen::updateHighLightInfo()
+{
+    return ( ERR_FAILURE );
 }
 
 //========================================================================
