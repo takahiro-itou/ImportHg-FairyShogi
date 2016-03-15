@@ -75,6 +75,7 @@ BoardScreen::BoardScreen()
       m_bcSrcY(-1),
       m_bcTrgX(-1),
       m_bcTrgY(-1),
+      m_tblHighLight(),
       m_prmOptions(),
       m_biBack (nullptr),
       m_biPiece(nullptr),
@@ -188,6 +189,21 @@ BoardScreen::drawScreenLayer(
         }
     }
 
+    //  移動できるマスを強調表示する。  //
+    for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
+        for ( int x = 0; x < POS_NUM_COLS; ++ x ) {
+            if ( this->m_tblHighLight[y][x] == BOOL_TRUE ) {
+                continue;
+            }
+            dx  = (x * SQUARE_WIDTH) + LEFT_MARGIN;
+            dy  = ((y + BOARD_TOP_OFFSET) * SQUARE_HEIGHT) + TOP_MARGIN;
+
+            bmpTrg->drawTransparentRectangle(
+                    dx,  dy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
+                    0,  0,  0,  64);
+        }
+    }
+
     //  選択しているマスがあれば強調表示。  //
     if ( (this->m_bcSelX >= 0) && (this->m_bcSelY >= 0) ) {
         sx  = ((this->m_bcSelX) * SQUARE_WIDTH) + LEFT_MARGIN;
@@ -293,6 +309,7 @@ BoardScreen::onLButtonDown(
 
     if ( (this->m_ddMode) == DDM_NOT_START ) {
         this->m_ddMode  = DDM_SELECT_SOURCE;
+        updateHighLightInfo();
     }
 
     return ( EH_RESULT_REDRAW );
@@ -342,7 +359,9 @@ BoardScreen::onLButtonUp(
             clearSelection();
         } else if ( (this->m_bcMovX == mx) && (this->m_bcMovY == my) ) {
             //  同じ場所を二回クリックしたので処理を確定する。  //
-            setActionInput(this->m_bcSelX, this->m_bcSelY, mx, my);
+            setActionInput(
+                    this->m_bcSelX, this->m_bcSelY, mx, my,
+                    Common::ALF_LEGAL_ACTION);
             clearSelection();
         } else {
             //  違う場所をクリックしたので、その場所を強調。    //
@@ -361,7 +380,9 @@ BoardScreen::onLButtonUp(
     }
 
     if ( (this->m_ddMode) == DDM_DRAG_AND_DROP ) {
-        setActionInput(this->m_bcSelX, this->m_bcSelY, mx, my);
+        setActionInput(
+                this->m_bcSelX, this->m_bcSelY, mx, my,
+                Common::ALF_LEGAL_ACTION);
         clearSelection();
     }
 
@@ -436,7 +457,9 @@ ErrCode
 BoardScreen::resetGame()
 {
     clearSelection();
-    return ( this->m_gcGameCtrl.resetGame() );
+    ErrCode     retErr  =  this->m_gcGameCtrl.resetGame();
+    updateHighLightInfo();
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
@@ -479,6 +502,55 @@ BoardScreen::clearSelection()
     this->m_bcMovY  = -1;
     this->m_ddMode  = DDM_NOT_START;
 
+    updateHighLightInfo();
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    最後に入力した指し手で盤面を戻す。
+//
+
+ErrCode
+BoardScreen::playBackward()
+{
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    指定した指し手で盤面を進める。
+//
+
+ErrCode
+BoardScreen::playForward(
+        const  ActionView   &actFwd)
+{
+    Interface::BoardScreen::GameInterface  &
+            giGame  =  this->getGameController();
+
+    giGame.playForward(actFwd);
+    giGame.setPlayerToNext();
+    giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
+
+    this->m_bcSrcX  = -1;
+    this->m_bcSrcY  = -1;
+    this->m_bcTrgX  = -1;
+    this->m_bcTrgY  = -1;
+    clearSelection();
+
+    //  最後の指し手を棋譜ファイルに書き込む。  //
+    Interface::GameController::ActionViewList   actList;
+
+    this->m_gcGameCtrl.writeActionList(actList);
+    if ( this->m_ofsKifu.good() && !(actList.empty()) ) {
+        this->m_gcGameCtrl.writeActionViewSfen(
+                actList.back(), BOOL_TRUE, this->m_ofsKifu);
+        this->m_ofsKifu << std::endl;
+        this->m_ofsKifu.flush();
+    }
+
+    updateHighLightInfo();
+
     return ( ERR_SUCCESS );
 }
 
@@ -497,6 +569,55 @@ BoardScreen::setPromotionOption(
     return ( playAction(
                      this->m_bcSrcX,  this->m_bcSrcY,
                      this->m_bcTrgX,  this->m_bcTrgY,  pidSel) );
+}
+
+//----------------------------------------------------------------
+//    ハイライト表示用の情報を更新する。
+//
+
+ErrCode
+BoardScreen::updateHighLightInfo()
+{
+    for ( PosRow y = 0; y < POS_NUM_ROWS; ++ y ) {
+        for ( PosCol x = 0; x < POS_NUM_COLS; ++ x ) {
+            this->m_tblHighLight[y][x]  = BOOL_FALSE;
+        }
+    }
+
+    ActionViewList  actList;
+    const  GameInterface  & giGame  = (this->m_gcGameCtrl);
+    giGame.makeLegalActionList(
+            Common::ALF_LEGAL_ACTION, giGame.getConstraint(), actList);
+
+    int    cSx  =  (-1);
+    int    rSy  =  (-1);
+    if ( (this->m_ddMode) != DDM_NOT_START ) {
+        ActionView      actSrc;
+        PromoteList     plDummy;
+        setupActionView(
+                giGame, this->m_bcSelX, this->m_bcSelY, 1, 1,
+                &plDummy,   &actSrc);
+        cSx = actSrc.xPlayOldCol;
+        rSy = actSrc.yPlayOldRow;
+    }
+
+    const  ActIter  itrEnd  = actList.end();
+    for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
+        if ( (cSx >= 0) && ((itr->xPlayOldCol) != cSx) ) { continue; }
+        if ( (rSy >= 0) && ((itr->yPlayOldRow) != rSy) ) { continue; }
+
+        const  int  cNx = (POS_NUM_COLS - itr->xPlayNewCol);
+        const  int  rNy = (itr->yPlayNewRow - 1);
+        const  int  cOx = (POS_NUM_COLS - itr->xPlayOldCol);
+        const  int  rOy = (itr->yPlayOldRow - 1);
+
+        if ( (cOx < POS_NUM_COLS) && (0 <= rOy) ) {
+            this->m_tblHighLight[rOy][cOx]  = BOOL_TRUE;
+        }
+        this->m_tblHighLight[rNy][cNx]  = BOOL_TRUE;
+    }
+
+    return ( ERR_FAILURE );
 }
 
 //========================================================================
@@ -570,30 +691,10 @@ BoardScreen::playAction(
 
     setupActionView(
             giGame,     srcX,  srcY,  trgX,  trgY,
-            &plDummy,   &actView );
+            &plDummy,   &actView);
     actView.fpAfter = iPrm;
-    giGame.playForward(actView);
-    giGame.setPlayerToNext();
-    giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
 
-    this->m_bcSrcX  = -1;
-    this->m_bcSrcY  = -1;
-    this->m_bcTrgX  = -1;
-    this->m_bcTrgY  = -1;
-    clearSelection();
-
-    //  最後の指し手を棋譜ファイルに書き込む。  //
-    Interface::GameController::ActionViewList   actList;
-
-    this->m_gcGameCtrl.writeActionList(actList);
-    if ( this->m_ofsKifu.good() && !(actList.empty()) ) {
-        this->m_gcGameCtrl.writeActionViewSfen(
-                actList.back(), BOOL_TRUE, this->m_ofsKifu);
-        this->m_ofsKifu << std::endl;
-        this->m_ofsKifu.flush();
-    }
-
-    return ( ERR_SUCCESS );
+    return ( playForward(actView) );
 }
 
 //----------------------------------------------------------------
@@ -605,7 +706,8 @@ BoardScreen::setActionInput(
         const  BoardCoord   srcX,
         const  BoardCoord   srcY,
         const  BoardCoord   trgX,
-        const  BoardCoord   trgY)
+        const  BoardCoord   trgY,
+        const  ActionFlag   fLeg)
 {
     Interface::BoardScreen::GameInterface  &
             giGame  =  this->getGameController();
@@ -620,10 +722,30 @@ BoardScreen::setActionInput(
     this->m_bcTrgX  = trgX;
     this->m_bcTrgY  = trgY;
 
+    ActionView  actView;
+
     this->m_prmOptions.clear();
     setupActionView(
             giGame,   srcX,  srcY,  trgX,  trgY,
-            &(this->m_prmOptions),  nullptr );
+            &(this->m_prmOptions),  &actView);
+
+    //  合法手のリストを取得して比較する。  //
+    ActionViewList  actList;
+    giGame.makeLegalActionList(fLeg, giGame.getConstraint(), actList);
+
+    this->m_prmOptions.clear();
+    const  ActIter  itrEnd  = actList.end();
+    for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
+        if (       ( (actView.xPlayNewCol) != (itr->xPlayNewCol) )
+                || ( (actView.yPlayNewRow) != (itr->yPlayNewRow) )
+                || ( (actView.xPlayOldCol) != (itr->xPlayOldCol) )
+                || ( (actView.yPlayOldRow) != (itr->yPlayOldRow) )
+                || ( (actView.hpiDrop)     != (itr->hpiDrop)     ) )
+        {
+            continue;
+        }
+        this->m_prmOptions.push_back(itr->fpAfter);
+    }
 
     this->m_bsState = BSLS_NOTHING;
     const  size_t   numOpt  = this->m_prmOptions.size();

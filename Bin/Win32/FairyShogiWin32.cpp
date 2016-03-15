@@ -191,8 +191,9 @@ onLButtonDown(
 LRESULT
 onLButtonUpInDiceScreen()
 {
+    Interface::BoardScreen  & scrBoard  = g_scrBoard;
     Interface::BoardScreen::GameInterface  &
-            giGame  =  g_scrBoard.getGameController();
+            giGame  = scrBoard.getGameController();
 
     const  Interface::ChoiceScreen::ChoiceIndex
         pidSel  = g_scrDice.getUserSelect();
@@ -209,6 +210,8 @@ onLButtonUpInDiceScreen()
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
         giGame.setConstraint(pidSel + 1);
     }
+
+    scrBoard.updateHighLightInfo();
 
     return ( 0 );
 }
@@ -281,6 +284,8 @@ onLButtonUp(
         Common::ActionView  actData;
         std::stringstream   ss;
 
+        g_scrBoard.clearSelection();
+
         Interface::BoardScreen::GameInterface  &
                 giGame  =  g_scrBoard.getGameController();
         if ( giGame.computeBestAction(actData) != ERR_SUCCESS ) {
@@ -303,9 +308,7 @@ onLButtonUp(
                         hWnd, ss.str().c_str(), "Best Move",
                         MB_OKCANCEL) == IDOK )
         {
-            giGame.playForward(actData);
-            giGame.setPlayerToNext();
-            giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
+            g_scrBoard.playForward(actData);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
         return ( 0 );

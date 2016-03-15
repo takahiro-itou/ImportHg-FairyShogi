@@ -67,7 +67,9 @@ public:
     };
 
     /**   ユーザーに示す成り駒選択肢の型。  **/
-    typedef     std::vector<PieceIndex>     OptionArray;
+    typedef     std::vector<PieceIndex>             OptionArray;
+
+    typedef     Common::ActionView                  ActionView;
 
 //========================================================================
 //
@@ -225,6 +227,28 @@ public:
     clearSelection();
 
     //----------------------------------------------------------------
+    /**   最後に入力した指し手で盤面を戻す。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    playBackward();
+
+    //----------------------------------------------------------------
+    /**   指定した指し手で盤面を進める。
+    **
+    **  @param [in] actFwd    指し手データの表示用形式。
+    **  @retval     ERR_SUCCESS           合法手。
+    **  @retval     ERR_ILLEGAL_ACTION    非合法。
+    **/
+    ErrCode
+    playForward(
+            const  ActionView   &actFwd);
+
+    //----------------------------------------------------------------
     /**   ユーザーが選択した成り駒を指定する。
     **
     **  @param [in] idxSel    ユーザーが選んだ選択肢の番号。
@@ -236,6 +260,17 @@ public:
     ErrCode
     setPromotionOption(
             const  PieceIndex   idxSel);
+
+    //----------------------------------------------------------------
+    /**   ハイライト表示用の情報を更新する。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    updateHighLightInfo();
 
 //========================================================================
 //
@@ -281,13 +316,16 @@ public:
 //
 private:
 
-    typedef     Common::ActionView                  ActionView;
-
     typedef     GameInterface::PromoteList          PromoteList;
 
+    typedef     std::vector<ActionView>             ActionViewList;
+    typedef     ActionViewList::const_iterator      ActIter;
 
     /**   盤上のマスの座標を表す型。    **/
     typedef     int     BoardCoord;
+
+    typedef     Boolean
+    THighLight[Common::MAX_FIELD_ROWS][Common::MAX_FIELD_COLS];
 
 private:
 
@@ -397,6 +435,9 @@ private:
     **  @param [in] srcY    移動先の垂直座標。
     **  @param [in] trgX    移動先の水平座標。
     **  @param [in] trgY    移動先の垂直座標。
+    **  @param [in] fLeg    合法判定フラグ。
+    **      このフラグで指定した非合法手も許可する。
+    **      ゼロを指定すると合法手のみ許可する。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -407,7 +448,8 @@ private:
             const  BoardCoord   srcX,
             const  BoardCoord   srcY,
             const  BoardCoord   trgX,
-            const  BoardCoord   trgY);
+            const  BoardCoord   trgY,
+            const  ActionFlag   fLeg);
 
     //----------------------------------------------------------------
     /**   移動元と移動先から、指し手データを構築する。
@@ -420,7 +462,6 @@ private:
     **  @param [in] srcY      移動先の垂直座標。
     **  @param [in] trgX      移動先の水平座標。
     **  @param [in] trgY      移動先の垂直座標。
-    **
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -497,6 +538,11 @@ private:
     **  各種座標を保管しておくための変数。
     **/
     BoardCoord          m_bcTrgY;
+
+    /**
+    **    ハイライト情報。
+    **/
+    THighLight          m_tblHighLight;
 
     /**   成り駒の選択肢。      **/
     OptionArray         m_prmOptions;
