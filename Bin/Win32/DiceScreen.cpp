@@ -135,6 +135,7 @@ DiceScreen::setSelectionList(
         vOpts.push_back(piTurn * Common::DICE_MAX_VALUE + i);
     }
     vOpts.push_back(DICE_USE_RANDOM);
+    vOpts.push_back(DICE_SET_SEED);
 
     return ( Super::setChoiceList(vOpts) );
 }

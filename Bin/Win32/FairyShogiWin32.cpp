@@ -178,6 +178,7 @@ onLButtonDown(
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
     }
 
     return ( 0 );
@@ -197,6 +198,12 @@ onLButtonUpInDiceScreen()
 
     const  Interface::ChoiceScreen::ChoiceIndex
         pidSel  = g_scrDice.getUserSelect();
+
+    if ( pidSel == 7 ) {
+        //  乱数を初期化する。  //
+        g_rndGen.setSeedValue(::time(nullptr));
+        ::MessageBox(NULL,  "Set Random Seed By Current Time", "OK", MB_OK);
+    }
 
     if ( pidSel >= 6 ) {
         //  乱数を使う。    //
@@ -244,6 +251,7 @@ onLButtonUp(
         evtRet  = g_scrDice.dispatchLButtonUp(fwKeys, xPos, yPos);
         onLButtonUpInDiceScreen();
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
         return ( 0 );
     }
 
@@ -257,6 +265,7 @@ onLButtonUp(
             g_scrBoard.setPromotionOption(pidSel);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
         return ( 0 );
     }
 
@@ -267,6 +276,7 @@ onLButtonUp(
         if ( giGame.isCheckState(giGame.getCurrentPlayer()) ) {
             giGame.setConstraint(Common::DICE_ANY_MOVE);
             ::InvalidateRect(hWnd, NULL, FALSE);
+            ::UpdateWindow(hWnd);
             ::MessageBox(hWnd, "CHECK", NULL, MB_OK);
             return ( 0 );
         }
@@ -274,6 +284,7 @@ onLButtonUp(
         g_scrDice.setSelectionList(giGame.getCurrentPlayer());
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
         return ( 0 );
     }
 
@@ -311,6 +322,7 @@ onLButtonUp(
             g_scrBoard.playForward(actData);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
         return ( 0 );
     }
 
@@ -329,6 +341,7 @@ onLButtonUp(
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
     }
 
     return ( 0 );
@@ -361,6 +374,7 @@ onMouseMove(
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
     }
 
     return ( 0 );
