@@ -309,6 +309,7 @@ BoardScreen::onLButtonDown(
 
     if ( (this->m_ddMode) == DDM_NOT_START ) {
         this->m_ddMode  = DDM_SELECT_SOURCE;
+        updateHighLightInfo();
     }
 
     return ( EH_RESULT_REDRAW );
@@ -501,6 +502,8 @@ BoardScreen::clearSelection()
     this->m_bcMovY  = -1;
     this->m_ddMode  = DDM_NOT_START;
 
+    updateHighLightInfo();
+
     return ( ERR_SUCCESS );
 }
 
@@ -586,8 +589,23 @@ BoardScreen::updateHighLightInfo()
     giGame.makeLegalActionList(
             Common::ALF_LEGAL_ACTION, giGame.getConstraint(), actList);
 
+    int    cSx  =  (-1);
+    int    rSy  =  (-1);
+    if ( (this->m_ddMode) != DDM_NOT_START ) {
+        ActionView      actSrc;
+        PromoteList     plDummy;
+        setupActionView(
+                giGame, this->m_bcSelX, this->m_bcSelY, 1, 1,
+                &plDummy,   &actSrc);
+        cSx = actSrc.xPlayOldCol;
+        rSy = actSrc.yPlayOldRow;
+    }
+
     const  ActIter  itrEnd  = actList.end();
     for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
+        if ( (cSx >= 0) && ((itr->xPlayOldCol) != cSx) ) { continue; }
+        if ( (rSy >= 0) && ((itr->yPlayOldRow) != rSy) ) { continue; }
+
         const  int  cNx = (POS_NUM_COLS - itr->xPlayNewCol);
         const  int  rNy = (itr->yPlayNewRow - 1);
         const  int  cOx = (POS_NUM_COLS - itr->xPlayOldCol);
