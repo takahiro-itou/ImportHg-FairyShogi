@@ -423,8 +423,8 @@ onPaint(
                 START_ENGINE_LEFT,  START_ENGINE_TOP,
                 DICE_WIDTH,         DICE_HEIGHT,
                 g_imgDice,
-                ((8 % 3) * DICE_WIDTH),
-                ((8 / 3) * DICE_HEIGHT) );
+                ((14 % 6) * DICE_WIDTH),
+                ((14 / 6) * DICE_HEIGHT) );
     }
 
     //  ダイス選択画面を表示する。  //
