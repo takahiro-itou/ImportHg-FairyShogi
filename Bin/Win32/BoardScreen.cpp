@@ -21,6 +21,8 @@
 #include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
 
+#include    <iostream>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
 
