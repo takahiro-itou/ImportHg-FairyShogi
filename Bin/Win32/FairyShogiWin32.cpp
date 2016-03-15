@@ -281,6 +281,8 @@ onLButtonUp(
         Common::ActionView  actData;
         std::stringstream   ss;
 
+        g_scrBoard.clearSelection();
+
         Interface::BoardScreen::GameInterface  &
                 giGame  =  g_scrBoard.getGameController();
         if ( giGame.computeBestAction(actData) != ERR_SUCCESS ) {
