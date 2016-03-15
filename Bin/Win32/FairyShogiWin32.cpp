@@ -44,6 +44,7 @@
 #include    <cstdlib>
 #include    <fstream>
 #include    <sstream>
+#include    <time.h>
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
 
@@ -218,6 +219,7 @@ onLButtonUpInDiceScreen()
         giGame.setConstraint(pidSel + 1);
     }
 
+    scrBoard.clearSelection();
     scrBoard.updateHighLightInfo();
 
     return ( 0 );

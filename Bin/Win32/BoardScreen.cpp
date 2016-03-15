@@ -589,6 +589,11 @@ BoardScreen::updateHighLightInfo()
     giGame.makeLegalActionList(
             Common::ALF_LEGAL_ACTION, giGame.getConstraint(), actList);
 
+    if ( actList.empty() ) {
+        std::cerr   <<  "# DEBUG : Update HighLight : No Legal."
+                    <<  std::endl;
+    }
+
     int    cSx  =  (-1);
     int    rSy  =  (-1);
     if ( (this->m_ddMode) != DDM_NOT_START ) {
