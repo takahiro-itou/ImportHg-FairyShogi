@@ -358,7 +358,9 @@ BoardScreen::onLButtonUp(
             clearSelection();
         } else if ( (this->m_bcMovX == mx) && (this->m_bcMovY == my) ) {
             //  同じ場所を二回クリックしたので処理を確定する。  //
-            setActionInput(this->m_bcSelX, this->m_bcSelY, mx, my);
+            setActionInput(
+                    this->m_bcSelX, this->m_bcSelY, mx, my,
+                    Common::ALF_LEGAL_ACTION);
             clearSelection();
         } else {
             //  違う場所をクリックしたので、その場所を強調。    //
@@ -377,7 +379,9 @@ BoardScreen::onLButtonUp(
     }
 
     if ( (this->m_ddMode) == DDM_DRAG_AND_DROP ) {
-        setActionInput(this->m_bcSelX, this->m_bcSelY, mx, my);
+        setActionInput(
+                this->m_bcSelX, this->m_bcSelY, mx, my,
+                Common::ALF_LEGAL_ACTION);
         clearSelection();
     }
 
@@ -571,8 +575,6 @@ BoardScreen::setPromotionOption(
 ErrCode
 BoardScreen::updateHighLightInfo()
 {
-    typedef     ActionViewList::const_iterator      ActIter;
-
     for ( PosRow y = 0; y < POS_NUM_ROWS; ++ y ) {
         for ( PosCol x = 0; x < POS_NUM_COLS; ++ x ) {
             this->m_tblHighLight[y][x]  = BOOL_FALSE;
@@ -671,7 +673,7 @@ BoardScreen::playAction(
 
     setupActionView(
             giGame,     srcX,  srcY,  trgX,  trgY,
-            &plDummy,   &actView );
+            &plDummy,   &actView);
     actView.fpAfter = iPrm;
 
     return ( playForward(actView) );
@@ -686,7 +688,8 @@ BoardScreen::setActionInput(
         const  BoardCoord   srcX,
         const  BoardCoord   srcY,
         const  BoardCoord   trgX,
-        const  BoardCoord   trgY)
+        const  BoardCoord   trgY,
+        const  ActionFlag   fLeg)
 {
     Interface::BoardScreen::GameInterface  &
             giGame  =  this->getGameController();
@@ -701,10 +704,30 @@ BoardScreen::setActionInput(
     this->m_bcTrgX  = trgX;
     this->m_bcTrgY  = trgY;
 
+    ActionView  actView;
+
     this->m_prmOptions.clear();
     setupActionView(
             giGame,   srcX,  srcY,  trgX,  trgY,
-            &(this->m_prmOptions),  nullptr );
+            &(this->m_prmOptions),  &actView);
+
+    //  合法手のリストを取得して比較する。  //
+    ActionViewList  actList;
+    giGame.makeLegalActionList(fLeg, giGame.getConstraint(), actList);
+
+    this->m_prmOptions.clear();
+    const  ActIter  itrEnd  = actList.end();
+    for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
+        if (       ( (actView.xPlayNewCol) != (itr->xPlayNewCol) )
+                || ( (actView.yPlayNewRow) != (itr->yPlayNewRow) )
+                || ( (actView.xPlayOldCol) != (itr->xPlayOldCol) )
+                || ( (actView.yPlayOldRow) != (itr->yPlayOldRow) )
+                || ( (actView.hpiDrop)     != (itr->hpiDrop)     ) )
+        {
+            continue;
+        }
+        this->m_prmOptions.push_back(itr->fpAfter);
+    }
 
     this->m_bsState = BSLS_NOTHING;
     const  size_t   numOpt  = this->m_prmOptions.size();

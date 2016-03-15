@@ -319,6 +319,7 @@ private:
     typedef     GameInterface::PromoteList          PromoteList;
 
     typedef     std::vector<ActionView>             ActionViewList;
+    typedef     ActionViewList::const_iterator      ActIter;
 
     /**   盤上のマスの座標を表す型。    **/
     typedef     int     BoardCoord;
@@ -434,6 +435,9 @@ private:
     **  @param [in] srcY    移動先の垂直座標。
     **  @param [in] trgX    移動先の水平座標。
     **  @param [in] trgY    移動先の垂直座標。
+    **  @param [in] fLeg    合法判定フラグ。
+    **      このフラグで指定した非合法手も許可する。
+    **      ゼロを指定すると合法手のみ許可する。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -444,7 +448,8 @@ private:
             const  BoardCoord   srcX,
             const  BoardCoord   srcY,
             const  BoardCoord   trgX,
-            const  BoardCoord   trgY);
+            const  BoardCoord   trgY,
+            const  ActionFlag   fLeg);
 
     //----------------------------------------------------------------
     /**   移動元と移動先から、指し手データを構築する。
@@ -457,7 +462,6 @@ private:
     **  @param [in] srcY      移動先の垂直座標。
     **  @param [in] trgX      移動先の水平座標。
     **  @param [in] trgY      移動先の垂直座標。
-    **
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
