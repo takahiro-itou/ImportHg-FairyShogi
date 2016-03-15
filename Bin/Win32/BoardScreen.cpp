@@ -277,7 +277,7 @@ BoardScreen::onLButtonDown(
 
     if ( (my == 0) || (my == (POS_NUM_ROWS + BOARD_TOP_OFFSET)) ) {
         //  持ち駒の表示エリアの場合。  //
-        if ( (HANDS_WHITE_KING - HANDS_WHITE_PAWN + 1) <= mx ) {
+        if ( 5 /* (HANDS_WHITE_KING - HANDS_WHITE_PAWN + 1)*/  <= mx ) {
             clearSelection();
             return ( EH_RESULT_REDRAW );
         } else {
