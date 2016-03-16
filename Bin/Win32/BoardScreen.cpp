@@ -48,6 +48,20 @@ s_tblHandEncWhite[] = {
     Common::HAND_WHITE_KING
 };
 
+CONSTEXPR_VAR   BoardScreen::BoardCoord
+s_tblHandSelX[Common::NUM_HAND_TYPES]  =  {
+    -1,
+    0, -1, -1, 1, 2, 3, 4, 5,
+    0, -1, -1, 1, 2, 3, 4, 5
+};
+
+CONSTEXPR_VAR   BoardScreen::BoardCoord
+s_tblHandSelY[Common::NUM_HAND_TYPES]  =  {
+    -1,
+    6, -1, -1, 6, 6, 6, 6, 6,
+    0, -1, -1, 0, 0, 0, 0, 0
+};
+
 }   //  End of (Unnamed) namespace.
 
 //========================================================================
@@ -78,6 +92,10 @@ BoardScreen::BoardScreen()
       m_bcTrgX(-1),
       m_bcTrgY(-1),
       m_tblHighLight(),
+      m_bcLastSrcX(-1),
+      m_bcLastSrcY(-1),
+      m_bcLastTrgX(-1),
+      m_bcLastTrgY(-1),
       m_prmOptions(),
       m_biBack (nullptr),
       m_biPiece(nullptr),
@@ -107,6 +125,11 @@ BoardScreen::BoardScreen(
       m_bcSrcY(-1),
       m_bcTrgX(-1),
       m_bcTrgY(-1),
+      m_tblHighLight(),
+      m_bcLastSrcX(-1),
+      m_bcLastSrcY(-1),
+      m_bcLastTrgX(-1),
+      m_bcLastTrgY(-1),
       m_prmOptions(),
       m_biBack (nullptr),
       m_biPiece(nullptr),
@@ -150,6 +173,26 @@ BoardScreen::drawScreenLayer(
     memset(&vb, 0, sizeof(vb));
     this->m_gcGameCtrl.writeToViewBuffer(vb);
 
+    //  直前の着手を表示する。  //
+    if ( (this->m_bcLastSrcX >= 0) && (this->m_bcLastSrcY >= 0) ) {
+        sx  = ((this->m_bcLastSrcX) * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = ((this->m_bcLastSrcY) * SQUARE_HEIGHT) + TOP_MARGIN;
+
+        bmpTrg->drawRectangle(
+                sx + 2,  sy + 2,
+                SQUARE_WIDTH - 4,  SQUARE_HEIGHT - 4,
+                255, 0, 0);
+    }
+    if ( (this->m_bcLastTrgX >= 0) && (this->m_bcLastTrgY >= 0) ) {
+        sx  = ((this->m_bcLastTrgX) * SQUARE_WIDTH) + LEFT_MARGIN;
+        sy  = ((this->m_bcLastTrgY) * SQUARE_HEIGHT) + TOP_MARGIN;
+
+        bmpTrg->drawRectangle(
+                sx + 2,  sy + 2,
+                SQUARE_WIDTH - 3,  SQUARE_HEIGHT - 3,
+                255, 0, 0);
+    }
+
     //  盤上にある駒を表示する。    //
     for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
         for ( int x = 0; x < POS_NUM_COLS; ++ x ) {
@@ -160,9 +203,10 @@ BoardScreen::drawScreenLayer(
 
             sx  = ((dp - 1) % 14) * SQUARE_WIDTH;
             sy  = ((dp - 1) / 14) * SQUARE_HEIGHT;
-            bmpTrg->copyRectangle(
+            bmpTrg->copyRectangleWithTransparentColor(
                     dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
-                    *(this->m_biPiece), sx, sy);
+                    *(this->m_biPiece), sx, sy,
+                    255, 255, 255);
         }
     }
 
@@ -202,7 +246,7 @@ BoardScreen::drawScreenLayer(
 
             bmpTrg->drawTransparentRectangle(
                     dx,  dy,  SQUARE_WIDTH,  SQUARE_HEIGHT,
-                    0,  0,  0,  64);
+                    0,  0,  0,  128);
         }
     }
 
@@ -552,6 +596,9 @@ BoardScreen::playForward(
     }
 
     updateHighLightInfo();
+    if ( !(actList.empty()) ) {
+        updateLastActionHighLights(actList.back());
+    }
 
     return ( ERR_SUCCESS );
 }
@@ -625,6 +672,28 @@ BoardScreen::updateHighLightInfo()
     }
 
     return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    直前の指し手を強調表示するための情報を更新する。
+//
+
+ErrCode
+BoardScreen::updateLastActionHighLights(
+        const  ActionView   &actView)
+{
+    if ( (actView.hpiDrop) == Common::HAND_EMPTY_PIECE ) {
+        this->m_bcLastSrcX  = (POS_NUM_COLS - actView.xPlayOldCol);
+        this->m_bcLastSrcY  = actView.yPlayOldRow;
+    } else {
+        this->m_bcLastSrcX  = s_tblHandSelX[actView.hpiDrop];
+        this->m_bcLastSrcY  = s_tblHandSelY[actView.hpiDrop];
+    }
+
+    this->m_bcLastTrgX  = (POS_NUM_COLS - actView.xPlayNewCol);
+    this->m_bcLastTrgY  = actView.yPlayNewRow;
+
+    return ( ERR_SUCCESS );
 }
 
 //========================================================================

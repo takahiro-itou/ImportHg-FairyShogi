@@ -71,6 +71,9 @@ public:
 
     typedef     Common::ActionView                  ActionView;
 
+    /**   盤上のマスの座標を表す型。    **/
+    typedef     int     BoardCoord;
+
 //========================================================================
 //
 //    Constructor(s) and Destructor.
@@ -272,6 +275,19 @@ public:
     ErrCode
     updateHighLightInfo();
 
+    //----------------------------------------------------------------
+    /**   直前の指し手を強調表示するための情報を更新する。
+    **
+    **  @param [in] actView   直前の指し手データ。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    updateLastActionHighLights(
+            const  ActionView   &actView);
+
 //========================================================================
 //
 //    Accessors.
@@ -320,9 +336,6 @@ private:
 
     typedef     std::vector<ActionView>             ActionViewList;
     typedef     ActionViewList::const_iterator      ActIter;
-
-    /**   盤上のマスの座標を表す型。    **/
-    typedef     int     BoardCoord;
 
     typedef     Boolean
     THighLight[Common::MAX_FIELD_ROWS][Common::MAX_FIELD_COLS];
@@ -543,6 +556,18 @@ private:
     **    ハイライト情報。
     **/
     THighLight          m_tblHighLight;
+
+    /**   直前の着手の移動元（水平方向）。  **/
+    BoardCoord          m_bcLastSrcX;
+
+    /**   直前の着手の移動元（垂直方向）。  **/
+    BoardCoord          m_bcLastSrcY;
+
+    /**   直前の着手の移動先（水平方向）。  **/
+    BoardCoord          m_bcLastTrgX;
+
+    /**   直前の着手の移動先（垂直方向）。  **/
+    BoardCoord          m_bcLastTrgY;
 
     /**   成り駒の選択肢。      **/
     OptionArray         m_prmOptions;
