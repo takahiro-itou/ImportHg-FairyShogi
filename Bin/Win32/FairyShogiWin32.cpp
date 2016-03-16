@@ -200,12 +200,17 @@ onLButtonUpInDiceScreen()
     const  Interface::ChoiceScreen::ChoiceIndex
         pidSel  = g_scrDice.getUserSelect();
 
+    if ( pidSel == 8 ) {
+        //  待ったをする。  //
+        scrBoard.playBackward();
+        return ( 0 );
+    }
+
     if ( pidSel == 7 ) {
         //  乱数を初期化する。  //
         g_rndGen.setSeedValue(::time(nullptr));
         ::MessageBox(NULL,  "Set Random Seed By Current Time", "OK", MB_OK);
     }
-
     if ( pidSel >= 6 ) {
         //  乱数を使う。    //
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
