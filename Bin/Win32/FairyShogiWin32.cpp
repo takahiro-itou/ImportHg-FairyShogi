@@ -219,10 +219,10 @@ onLButtonUpInDiceScreen()
             rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
         const  int  rn
             =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);
-        giGame.setConstraint(rn + 1);
+        scrBoard.setConstraint(rn + 1);
     } else if ( pidSel >= 0 ) {
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-        giGame.setConstraint(pidSel + 1);
+        scrBoard.setConstraint(pidSel + 1);
     }
 
     scrBoard.clearSelection();
