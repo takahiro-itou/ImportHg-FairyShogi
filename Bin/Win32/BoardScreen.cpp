@@ -741,10 +741,25 @@ BoardScreen::updateLastActionHighLights(
 //    合法手の制約を取得する。
 //
 
-BoardScreen::GameInterface::TConstraint
+BoardScreen::TConstraint
 BoardScreen::getConstraint()  const
 {
     return ( this->m_gcGameCtrl.getConstraint() );
+}
+
+//----------------------------------------------------------------
+//    合法手の制約を指定する。
+//
+
+ErrCode
+BoardScreen::setConstraint(
+        const  TConstraint  vCons)
+{
+    GameInterface  &
+            giGame  =  this->getGameController();
+    this->m_flgDiceRoll = DICE_ROLLED;
+
+    return ( giGame.setConstraint(vCons) );
 }
 
 //----------------------------------------------------------------

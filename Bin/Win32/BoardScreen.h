@@ -53,6 +53,8 @@ public:
 
     typedef     Interface::GraphicalInterface       GameInterface;
 
+    typedef     GameInterface::TConstraint          TConstraint;
+
     /**
     **    現在の状態を管理する列挙型。
     **/
@@ -251,6 +253,7 @@ public:
     playForward(
             const  ActionView   &actFwd);
 
+
     //----------------------------------------------------------------
     /**   ユーザーが選択した成り駒を指定する。
     **
@@ -299,8 +302,21 @@ public:
     **
     **  @return     制約条件を返す。
     **/
-    GameInterface::TConstraint
+    TConstraint
     getConstraint()  const;
+
+    //----------------------------------------------------------------
+    /**   合法手の制約を指定する。
+    **
+    **  @param [in] vCons   制約条件。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setConstraint(
+            const  TConstraint  vCons);
 
     //----------------------------------------------------------------
     /**   現在の状態を示すフラグを取得する。
