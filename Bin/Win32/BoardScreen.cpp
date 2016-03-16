@@ -100,6 +100,7 @@ BoardScreen::BoardScreen()
       m_biBack (nullptr),
       m_biPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
+      m_flgDiceRoll(DICE_NOT_ROLLED),
       m_ddMode(DDM_NOT_START)
 {
 }
@@ -134,6 +135,7 @@ BoardScreen::BoardScreen(
       m_biBack (nullptr),
       m_biPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
+      m_flgDiceRoll(DICE_NOT_ROLLED),
       m_ddMode(DDM_NOT_START)
 {
 }
@@ -570,6 +572,7 @@ BoardScreen::playBackward()
         giGame.setPlayerToNext();
     }
     giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
+    this->m_flgDiceRoll = DICE_NOT_ROLLED;
 
     this->m_bcSrcX  = -1;
     this->m_bcSrcY  = -1;
@@ -608,6 +611,7 @@ BoardScreen::playForward(
     giGame.playForward(actFwd);
     giGame.setPlayerToNext();
     giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
+    this->m_flgDiceRoll = DICE_NOT_ROLLED;
 
     this->m_bcSrcX  = -1;
     this->m_bcSrcY  = -1;
@@ -734,6 +738,16 @@ BoardScreen::updateLastActionHighLights(
 //
 
 //----------------------------------------------------------------
+//    合法手の制約を取得する。
+//
+
+BoardScreen::GameInterface::TConstraint
+BoardScreen::getConstraint()  const
+{
+    return ( this->m_gcGameCtrl.getConstraint() );
+}
+
+//----------------------------------------------------------------
 //    現在の状態を示すフラグを取得する。
 //
 
@@ -741,6 +755,45 @@ BoardScreen::ScreenState
 BoardScreen::getCurrentState()  const
 {
     return ( this->m_bsState );
+}
+
+//----------------------------------------------------------------
+//    現在のダイスを表示するためのアイコンを取得する。
+//
+
+ErrCode
+BoardScreen::getDiceDisplayIndex(
+        int  *  const   pColIdx,
+        int  *  const   pRowIdx)  const
+
+{
+    if ( (this->m_flgDiceRoll) == DICE_NOT_ROLLED ) {
+        (*pColIdx)  = (15 % 6);
+        (*pRowIdx)  = (15 / 6);
+        return ( ERR_SUCCESS );
+    }
+
+    const   GameInterface    &  giGame  = getGameController();
+    GameInterface::TConstraint  ccDice  = getConstraint() - 1;
+
+    if ( (ccDice < 0) || (Common::DICE_MAX_VALUE <= ccDice) ) {
+        ccDice  = Common::DICE_DEFAULT_VALUE;
+    }
+    (*pColIdx)  = ccDice;
+    (*pRowIdx)  = giGame.getCurrentPlayer();
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    現在のターンで、ダイスが振られたか否かを取得する。
+//
+
+Boolean
+BoardScreen::isDiceRolled()  const
+{
+    return ( (this->m_flgDiceRoll == DICE_ROLLED)
+             ? BOOL_TRUE : BOOL_FALSE );
 }
 
 //----------------------------------------------------------------
