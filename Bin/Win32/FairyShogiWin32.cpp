@@ -219,10 +219,10 @@ onLButtonUpInDiceScreen()
             rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
         const  int  rn
             =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);
-        giGame.setConstraint(rn + 1);
+        scrBoard.setConstraint(rn + 1);
     } else if ( pidSel >= 0 ) {
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-        giGame.setConstraint(pidSel + 1);
+        scrBoard.setConstraint(pidSel + 1);
     }
 
     scrBoard.clearSelection();
@@ -408,6 +408,11 @@ onPaint(
         }
     }
 
+    g_imgScreen.drawRectangle(
+            0, 0,
+            WINDOW_WIDTH, WINDOW_HEIGHT,
+            0, 0, 0);
+
     //  メイン画面を描画する。  //
     {
         Interface::BitmapImage  &  imgWork  =  g_imgBoard;
@@ -423,6 +428,9 @@ onPaint(
 
     //  現在のダイスを表示する。    //
     {
+        int     idxCol, idxRow;
+        g_scrBoard.getDiceDisplayIndex(&idxCol, &idxRow);
+#if 0
         const  Interface::BoardScreen::GameInterface  &
             giGame  =  g_scrBoard.getGameController();
         const  PlayerIndex  curTurn = giGame.getCurrentPlayer();
@@ -431,12 +439,13 @@ onPaint(
         if ( (curDice < 0) || (Common::DICE_MAX_VALUE <= curDice) ) {
             curDice = Common::DICE_DEFAULT_VALUE;
         }
+#endif
         g_imgScreen.copyRectangle(
                 CURRENT_DICE_LEFT,  CURRENT_DICE_TOP,
                 DICE_WIDTH,         DICE_HEIGHT,
                 g_imgDice,
-                (curDice * DICE_WIDTH),
-                (curTurn * DICE_HEIGHT) );
+                (idxCol * DICE_WIDTH),
+                (idxRow * DICE_HEIGHT) );
     }
 
     //  現在のエンジンを表示する。  //

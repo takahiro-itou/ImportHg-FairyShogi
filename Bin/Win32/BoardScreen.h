@@ -53,6 +53,8 @@ public:
 
     typedef     Interface::GraphicalInterface       GameInterface;
 
+    typedef     GameInterface::TConstraint          TConstraint;
+
     /**
     **    現在の状態を管理する列挙型。
     **/
@@ -251,6 +253,7 @@ public:
     playForward(
             const  ActionView   &actFwd);
 
+
     //----------------------------------------------------------------
     /**   ユーザーが選択した成り駒を指定する。
     **
@@ -295,12 +298,57 @@ public:
 public:
 
     //----------------------------------------------------------------
+    /**   合法手の制約を取得する。
+    **
+    **  @return     制約条件を返す。
+    **/
+    TConstraint
+    getConstraint()  const;
+
+    //----------------------------------------------------------------
+    /**   合法手の制約を指定する。
+    **
+    **  @param [in] vCons   制約条件。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setConstraint(
+            const  TConstraint  vCons);
+
+    //----------------------------------------------------------------
     /**   現在の状態を示すフラグを取得する。
     **
     **  @return     状態フラグを返す。
     **/
     ScreenState
     getCurrentState()  const;
+
+    //----------------------------------------------------------------
+    /**   現在のダイスを表示するためのアイコンを取得する。
+    **
+    **  @param[out] pColIdx   ダイスアイコンのリソース番号。
+    **  @param[out] pRowIdx   ダイスアイコンのリソース番号。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    getDiceDisplayIndex(
+            int  *  const   pColIdx,
+            int  *  const   pRowIdx)  const;
+
+    //----------------------------------------------------------------
+    /**   現在のターンで、ダイスが振られたか否かを取得する。
+    **
+    **  @retval     BOOL_TRUE   : 既にダイスを振った。
+    **  @retval     BOOL_FALSE  : それ以外。
+    **/
+    Boolean
+    isDiceRolled()  const;
 
     //----------------------------------------------------------------
     /**   ゲームコントローラのインスタンスを取得する。
@@ -416,6 +464,12 @@ private:
         **    移動元をクリックし、その後移動先を二回クリックする。
         **/
         DDM_CLICKS
+    };
+
+    enum  DiceRolled
+    {
+        DICE_NOT_ROLLED,
+        DICE_ROLLED
     };
 
 private:
@@ -580,6 +634,8 @@ private:
 
     /**   @todo     暫定処理。後で消す。    **/
     std::ofstream       m_ofsKifu;
+
+    DiceRolled          m_flgDiceRoll;
 
     /**   駒の移動方法の選択。  **/
     DragDropMode        m_ddMode;
