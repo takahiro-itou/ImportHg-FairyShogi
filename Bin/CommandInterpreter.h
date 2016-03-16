@@ -20,6 +20,7 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Common/MersenneTwister.h"
 #include    "FairyShogi/Interface/ConsoleInterface.h"
 
 #include    <fstream>
@@ -129,17 +130,14 @@ private:
 
     typedef     std::vector< std::string >          TokenArray;
 
-private:
+    typedef     Common::MersenneTwister             RandomGenerator;
 
-    //----------------------------------------------------------------
-    /**
-    **
-    **/
-    static  std::ostream  &
-    displayActionView(
-            const  ActionView   &actView,
-            const  int          flgName,
-            std::ostream        &outStr);
+    typedef     RandomGenerator::TResultInt         RandResult;
+
+    static  CONSTEXPR_VAR   RandResult
+    RANDOM_MAX_VALUE    = RandomGenerator::MaxValue<28>::VALUE;
+
+private:
 
     //----------------------------------------------------------------
     /**   コマンドを実行する。
@@ -155,6 +153,44 @@ private:
     **/
     static  ErrCode
     executeBackwardCommand(
+            const  std::string  &strArgs,
+            ConsoleInterface    &objGame,
+            std::ostream        &outStr,
+            CallbackClass       &ciClbk);
+
+    //----------------------------------------------------------------
+    /**   コマンドを実行する。
+    **
+    **  @param [in]     strArgs   コマンドの引数。
+    **  @param [in,out] objGame   ゲーム管理インスタンス。
+    **  @param    [out] outStr    出力ストリーム。
+    **  @param [in,out] ciClbk    コールバックインスタンス。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    executeComBlackCommand(
+            const  std::string  &strArgs,
+            ConsoleInterface    &objGame,
+            std::ostream        &outStr,
+            CallbackClass       &ciClbk);
+
+    //----------------------------------------------------------------
+    /**   コマンドを実行する。
+    **
+    **  @param [in]     strArgs   コマンドの引数。
+    **  @param [in,out] objGame   ゲーム管理インスタンス。
+    **  @param    [out] outStr    出力ストリーム。
+    **  @param [in,out] ciClbk    コールバックインスタンス。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    static  ErrCode
+    executeComWhiteCommand(
             const  std::string  &strArgs,
             ConsoleInterface    &objGame,
             std::ostream        &outStr,
@@ -413,6 +449,8 @@ private:
     ConsoleInterface    m_ciGameCtrl;
 
     std::ofstream       m_outStrSwap;
+
+    RandomGenerator     m_rndGen;
 
 //========================================================================
 //

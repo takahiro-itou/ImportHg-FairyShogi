@@ -38,6 +38,7 @@ INCLIBHEADERS           =  \
         $(INCLIBDIR)/FairyShogiSettings.h  \
         $(INCLIBDIR)/FairyShogiTypes.h     \
         $(INCLIBDIR)/HelperMacros.h        \
+        $(INCLIBDIR)/MersenneTwister.h     \
         $(INCLIBDIR)/ViewBuffer.h          \
         $(EXTRALIBHEADERS)
 

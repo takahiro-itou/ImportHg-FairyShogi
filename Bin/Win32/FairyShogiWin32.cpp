@@ -22,6 +22,7 @@
 #include    "PromotionScreen.h"
 
 #include    "FairyShogi/Common/ActionView.h"
+#include    "FairyShogi/Common/MersenneTwister.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
 
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
@@ -40,8 +41,10 @@
 #    define     UTL_HELP_UNUSED_ARGUMENT(var)   (void)(var)
 #endif
 
+#include    <cstdlib>
 #include    <fstream>
 #include    <sstream>
+#include    <time.h>
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
 
@@ -119,12 +122,27 @@ START_ENGINE_RIGHT      =  START_ENGINE_LEFT + DICE_WIDTH;
 CONSTEXPR_VAR   int
 START_ENGINE_BOTTOM     =  START_ENGINE_TOP + DICE_HEIGHT;
 
+CONSTEXPR_VAR   int
+RESOURCE_ID_RUN_ENGINE  =  16;
+
 Interface::BitmapImage      g_imgScreen;
 Interface::BitmapImage      g_imgDice;
 Interface::BitmapImage      g_imgWork;
 
 Interface::BitmapImage      g_imgBoard;
 Interface::BitmapImage      g_imgPromote;
+
+//
+//  乱数。
+//
+
+typedef     Common::MersenneTwister             RandomGenerator;
+typedef     RandomGenerator::TResultInt         RandResult;
+
+static  CONSTEXPR_VAR   RandResult
+RANDOM_MAX_VALUE    = RandomGenerator::MaxValue<28>::VALUE;
+
+RandomGenerator             g_rndGen;
 
 }   //  End of (Unnamed) namespace.
 
@@ -164,7 +182,54 @@ onLButtonDown(
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
     }
+
+    return ( 0 );
+}
+
+//----------------------------------------------------------------
+/**   マウスボタンを離した時のイベントハンドラ。
+**
+**/
+
+LRESULT
+onLButtonUpInDiceScreen()
+{
+    Interface::BoardScreen  & scrBoard  = g_scrBoard;
+    Interface::BoardScreen::GameInterface  &
+            giGame  = scrBoard.getGameController();
+
+    const  Interface::ChoiceScreen::ChoiceIndex
+        pidSel  = g_scrDice.getUserSelect();
+
+    if ( pidSel == 8 ) {
+        //  待ったをする。  //
+        scrBoard.playBackward();
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        return ( 0 );
+    }
+
+    if ( pidSel == 7 ) {
+        //  乱数を初期化する。  //
+        g_rndGen.setSeedValue(::time(nullptr));
+        ::MessageBox(NULL,  "Set Random Seed By Current Time", "OK", MB_OK);
+    }
+    if ( pidSel >= 6 ) {
+        //  乱数を使う。    //
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        const  uint32_t
+            rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
+        const  int  rn
+            =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);
+        scrBoard.setConstraint(rn + 1);
+    } else if ( pidSel >= 0 ) {
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        scrBoard.setConstraint(pidSel + 1);
+    }
+
+    scrBoard.clearSelection();
+    scrBoard.updateHighLightInfo();
 
     return ( 0 );
 }
@@ -195,15 +260,9 @@ onLButtonUp(
     if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
         evtRet  = g_scrDice.dispatchLButtonUp(fwKeys, xPos, yPos);
-
-        const  Interface::ChoiceScreen::ChoiceIndex
-            pidSel  = g_scrDice.getUserSelect();
-
-        if ( pidSel >= 0 ) {
-            g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-            giGame.setConstraint(pidSel + 1);
-        }
+        onLButtonUpInDiceScreen();
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
         return ( 0 );
     }
 
@@ -217,6 +276,7 @@ onLButtonUp(
             g_scrBoard.setPromotionOption(pidSel);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
         return ( 0 );
     }
 
@@ -224,9 +284,18 @@ onLButtonUp(
     if ( (CURRENT_DICE_LEFT <= xPos) && (xPos < CURRENT_DICE_RIGHT)
             && (CURRENT_DICE_TOP <= yPos) && (yPos < CURRENT_DICE_BOTTOM) )
     {
+        if ( giGame.isCheckState(giGame.getCurrentPlayer()) ) {
+            giGame.setConstraint(Common::DICE_ANY_MOVE);
+            ::InvalidateRect(hWnd, NULL, FALSE);
+            ::UpdateWindow(hWnd);
+            ::MessageBox(hWnd, "CHECK", NULL, MB_OK);
+            return ( 0 );
+        }
+
         g_scrDice.setSelectionList(giGame.getCurrentPlayer());
         g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
         return ( 0 );
     }
 
@@ -237,6 +306,8 @@ onLButtonUp(
         Common::ActionView  actData;
         std::stringstream   ss;
 
+        g_scrBoard.clearSelection();
+
         Interface::BoardScreen::GameInterface  &
                 giGame  =  g_scrBoard.getGameController();
         if ( giGame.computeBestAction(actData) != ERR_SUCCESS ) {
@@ -246,7 +317,7 @@ onLButtonUp(
         }
         ss  <<  (actData.xDispOldCol)   <<  (actData.yDispOldRow)
             <<  (actData.xDispNewCol)   <<  (actData.yDispNewRow);
-        ss  <<  "# DEBUG : "
+        ss  <<  "\n# DEBUG : "
             <<  "\nxPlayOldCol = "  <<  (actData.xPlayOldCol)
             <<  "\nyPlayOldRow = "  <<  (actData.yPlayOldRow)
             <<  "\nxPlayNewCol = "  <<  (actData.xPlayNewCol)
@@ -259,11 +330,10 @@ onLButtonUp(
                         hWnd, ss.str().c_str(), "Best Move",
                         MB_OKCANCEL) == IDOK )
         {
-            giGame.playForward(actData);
-            giGame.setCurrentPlayer(giGame.getCurrentPlayer() ^ 1);
-            giGame.setConstraint(6);
+            g_scrBoard.playForward(actData);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
         return ( 0 );
     }
 
@@ -282,6 +352,7 @@ onLButtonUp(
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
     }
 
     return ( 0 );
@@ -314,6 +385,7 @@ onMouseMove(
     if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
     }
 
     return ( 0 );
@@ -339,6 +411,11 @@ onPaint(
         }
     }
 
+    g_imgScreen.drawRectangle(
+            0, 0,
+            WINDOW_WIDTH, WINDOW_HEIGHT,
+            0, 0, 0);
+
     //  メイン画面を描画する。  //
     {
         Interface::BitmapImage  &  imgWork  =  g_imgBoard;
@@ -354,20 +431,24 @@ onPaint(
 
     //  現在のダイスを表示する。    //
     {
+        int     idxCol, idxRow;
+        g_scrBoard.getDiceDisplayIndex(&idxCol, &idxRow);
+#if 0
         const  Interface::BoardScreen::GameInterface  &
             giGame  =  g_scrBoard.getGameController();
         const  PlayerIndex  curTurn = giGame.getCurrentPlayer();
 
         int     curDice = giGame.getConstraint() - 1;
-        if ( (curDice < 0) || (6 <= curDice) ) {
-            curDice = 5;
+        if ( (curDice < 0) || (Common::DICE_MAX_VALUE <= curDice) ) {
+            curDice = Common::DICE_DEFAULT_VALUE;
         }
+#endif
         g_imgScreen.copyRectangle(
                 CURRENT_DICE_LEFT,  CURRENT_DICE_TOP,
                 DICE_WIDTH,         DICE_HEIGHT,
                 g_imgDice,
-                (curDice * DICE_WIDTH),
-                (curTurn * DICE_HEIGHT) );
+                (idxCol * DICE_WIDTH),
+                (idxRow * DICE_HEIGHT) );
     }
 
     //  現在のエンジンを表示する。  //
@@ -376,8 +457,8 @@ onPaint(
                 START_ENGINE_LEFT,  START_ENGINE_TOP,
                 DICE_WIDTH,         DICE_HEIGHT,
                 g_imgDice,
-                ((8 % 3) * DICE_WIDTH),
-                ((8 / 3) * DICE_HEIGHT) );
+                ((RESOURCE_ID_RUN_ENGINE % 6) * DICE_WIDTH),
+                ((RESOURCE_ID_RUN_ENGINE / 6) * DICE_HEIGHT) );
     }
 
     //  ダイス選択画面を表示する。  //
@@ -597,6 +678,8 @@ WinMain(
     ::ReleaseDC(hWnd, hDC);
 
     //  グローバル変数を初期化する。    //
+    g_rndGen.setSeedValue(13579);
+
     g_scrBoard.setLeft  (VIEW_BOARD_LEFT);
     g_scrBoard.setTop   (VIEW_BOARD_TOP);
     g_scrBoard.setWidth (VIEW_BOARD_WIDTH);

@@ -53,6 +53,8 @@ public:
 
     typedef     Interface::GraphicalInterface       GameInterface;
 
+    typedef     GameInterface::TConstraint          TConstraint;
+
     /**
     **    現在の状態を管理する列挙型。
     **/
@@ -67,7 +69,12 @@ public:
     };
 
     /**   ユーザーに示す成り駒選択肢の型。  **/
-    typedef     std::vector<PieceIndex>     OptionArray;
+    typedef     std::vector<PieceIndex>             OptionArray;
+
+    typedef     Common::ActionView                  ActionView;
+
+    /**   盤上のマスの座標を表す型。    **/
+    typedef     int     BoardCoord;
 
 //========================================================================
 //
@@ -225,6 +232,29 @@ public:
     clearSelection();
 
     //----------------------------------------------------------------
+    /**   最後に入力した指し手で盤面を戻す。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    playBackward();
+
+    //----------------------------------------------------------------
+    /**   指定した指し手で盤面を進める。
+    **
+    **  @param [in] actFwd    指し手データの表示用形式。
+    **  @retval     ERR_SUCCESS           合法手。
+    **  @retval     ERR_ILLEGAL_ACTION    非合法。
+    **/
+    ErrCode
+    playForward(
+            const  ActionView   &actFwd);
+
+
+    //----------------------------------------------------------------
     /**   ユーザーが選択した成り駒を指定する。
     **
     **  @param [in] idxSel    ユーザーが選んだ選択肢の番号。
@@ -237,11 +267,56 @@ public:
     setPromotionOption(
             const  PieceIndex   idxSel);
 
+    //----------------------------------------------------------------
+    /**   ハイライト表示用の情報を更新する。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    updateHighLightInfo();
+
+    //----------------------------------------------------------------
+    /**   直前の指し手を強調表示するための情報を更新する。
+    **
+    **  @param [in] actView   直前の指し手データ。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    updateLastActionHighLights(
+            const  ActionView   &actView);
+
 //========================================================================
 //
 //    Accessors.
 //
 public:
+
+    //----------------------------------------------------------------
+    /**   合法手の制約を取得する。
+    **
+    **  @return     制約条件を返す。
+    **/
+    TConstraint
+    getConstraint()  const;
+
+    //----------------------------------------------------------------
+    /**   合法手の制約を指定する。
+    **
+    **  @param [in] vCons   制約条件。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setConstraint(
+            const  TConstraint  vCons);
 
     //----------------------------------------------------------------
     /**   現在の状態を示すフラグを取得する。
@@ -250,6 +325,30 @@ public:
     **/
     ScreenState
     getCurrentState()  const;
+
+    //----------------------------------------------------------------
+    /**   現在のダイスを表示するためのアイコンを取得する。
+    **
+    **  @param[out] pColIdx   ダイスアイコンのリソース番号。
+    **  @param[out] pRowIdx   ダイスアイコンのリソース番号。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    getDiceDisplayIndex(
+            int  *  const   pColIdx,
+            int  *  const   pRowIdx)  const;
+
+    //----------------------------------------------------------------
+    /**   現在のターンで、ダイスが振られたか否かを取得する。
+    **
+    **  @retval     BOOL_TRUE   : 既にダイスを振った。
+    **  @retval     BOOL_FALSE  : それ以外。
+    **/
+    Boolean
+    isDiceRolled()  const;
 
     //----------------------------------------------------------------
     /**   ゲームコントローラのインスタンスを取得する。
@@ -281,13 +380,13 @@ public:
 //
 private:
 
-    typedef     Common::ActionView                  ActionView;
-
     typedef     GameInterface::PromoteList          PromoteList;
 
+    typedef     std::vector<ActionView>             ActionViewList;
+    typedef     ActionViewList::const_iterator      ActIter;
 
-    /**   盤上のマスの座標を表す型。    **/
-    typedef     int     BoardCoord;
+    typedef     Boolean
+    THighLight[Common::MAX_FIELD_ROWS][Common::MAX_FIELD_COLS];
 
 private:
 
@@ -367,6 +466,12 @@ private:
         DDM_CLICKS
     };
 
+    enum  DiceRolled
+    {
+        DICE_NOT_ROLLED,
+        DICE_ROLLED
+    };
+
 private:
 
     //----------------------------------------------------------------
@@ -397,6 +502,9 @@ private:
     **  @param [in] srcY    移動先の垂直座標。
     **  @param [in] trgX    移動先の水平座標。
     **  @param [in] trgY    移動先の垂直座標。
+    **  @param [in] fLeg    合法判定フラグ。
+    **      このフラグで指定した非合法手も許可する。
+    **      ゼロを指定すると合法手のみ許可する。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -407,7 +515,8 @@ private:
             const  BoardCoord   srcX,
             const  BoardCoord   srcY,
             const  BoardCoord   trgX,
-            const  BoardCoord   trgY);
+            const  BoardCoord   trgY,
+            const  ActionFlag   fLeg);
 
     //----------------------------------------------------------------
     /**   移動元と移動先から、指し手データを構築する。
@@ -420,7 +529,6 @@ private:
     **  @param [in] srcY      移動先の垂直座標。
     **  @param [in] trgX      移動先の水平座標。
     **  @param [in] trgY      移動先の垂直座標。
-    **
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -498,6 +606,23 @@ private:
     **/
     BoardCoord          m_bcTrgY;
 
+    /**
+    **    ハイライト情報。
+    **/
+    THighLight          m_tblHighLight;
+
+    /**   直前の着手の移動元（水平方向）。  **/
+    BoardCoord          m_bcLastSrcX;
+
+    /**   直前の着手の移動元（垂直方向）。  **/
+    BoardCoord          m_bcLastSrcY;
+
+    /**   直前の着手の移動先（水平方向）。  **/
+    BoardCoord          m_bcLastTrgX;
+
+    /**   直前の着手の移動先（垂直方向）。  **/
+    BoardCoord          m_bcLastTrgY;
+
     /**   成り駒の選択肢。      **/
     OptionArray         m_prmOptions;
 
@@ -509,6 +634,8 @@ private:
 
     /**   @todo     暫定処理。後で消す。    **/
     std::ofstream       m_ofsKifu;
+
+    DiceRolled          m_flgDiceRoll;
 
     /**   駒の移動方法の選択。  **/
     DragDropMode        m_ddMode;

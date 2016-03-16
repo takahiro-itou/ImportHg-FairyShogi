@@ -35,7 +35,7 @@ namespace  {
 **/
 
 CONSTEXPR_VAR   const   char  *
-s_tblPieceName[Common::NUM_FIELD_PIECE_TYPES]  =  {
+s_tblPieceCsaName[Common::NUM_FIELD_PIECE_TYPES]   =  {
     "",
     "FU",  "KY",  "KE",  "GI",  "KI",  "KA",  "HI",  "OU",
     "TO",  "NY",  "NK",  "NG",  "UM",  "RY",
@@ -50,6 +50,13 @@ s_tblPieceSfenName[Common::NUM_FIELD_PIECE_TYPES]  =  {
     "+P",  "+L",  "+N",  "+S",         "+B",  "+R",
     " p",  " l",  " n",  " s",  " g",  " b",  " r",  " k",
     "+p",  "+l",  "+n",  "+s",         "+b",  "+r"
+};
+
+CONSTEXPR_VAR   const   char  *
+s_tblHandSfenName [Common::NUM_HAND_TYPES]  =  {
+    "WALL",
+    "P", "L", "N", "S", "G", "B", "R", "K",
+    "p", "l", "n", "s", "g", "b", "r", "k"
 };
 
 }   //  End of (Unnamed) namespace.
@@ -98,13 +105,13 @@ GameController::GameController()
       m_actList(),
       m_flgShow(SCF_NORMAL_SHOW),
       m_curTurn(0),
-      m_curDice(0),
+      m_curDice(Common::DICE_DEFAULT_VALUE),
       m_ptrEngines(),
       m_fStatus(Common::GAME_IS_RUNNING),
       m_gResult(Common::GAME_RESULT_DRAW)
 {
     for ( PlayerIndex pi = 0; pi < Common::NUM_PLAYERS; ++ pi ) {
-        this->m_ptrEngines[pi]  =  TEngineBase::createEngine("");
+        this->m_ptrEngines[pi]  =  TEngineBase::createEngine("default");
     }
 }
 
@@ -163,6 +170,23 @@ GameController::computeBestAction(
     setupActionDisplayCoord( this->m_flgShow, &actRet );
 
     return ( retErr );
+}
+
+//----------------------------------------------------------------
+//    王手が掛かっているかどうかを判定する。
+//
+
+Boolean
+GameController::isCheckState(
+        const  PlayerIndex  dPlayer)  const
+{
+    Game::BoardState::TBitBoard     bbFrom;
+    const  size_t
+        numChk  = this->m_gcBoard.isCheckState(dPlayer, bbFrom);
+    if ( numChk >= 1 ) {
+        return ( BOOL_TRUE );
+    }
+    return ( BOOL_FALSE );
 }
 
 //----------------------------------------------------------------
@@ -322,6 +346,25 @@ GameController::resetGame()
 }
 
 //----------------------------------------------------------------
+//    コンピュータの思考エンジンを指定する。
+//
+
+ErrCode
+GameController::setComputerEngine(
+        const  PlayerIndex  pIndex,
+        const  std::string  &engName)
+{
+    TEngineBase::destroyEngine( this->m_ptrEngines[pIndex] );
+    this->m_ptrEngines[pIndex]  =  TEngineBase::createEngine(engName);
+
+    if ( (this->m_ptrEngines[pIndex]) == (nullptr) ) {
+        return ( ERR_FAILURE );
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
 //    ゲームの状態と勝敗を判定する。
 //
 
@@ -379,24 +422,62 @@ GameController::testGameStateResult()
 //
 
 std::ostream  &
-GameController::writeActionView(
+GameController::writeActionViewSfen(
+        const  ActionView   &actView,
+        const  Boolean      flgName,
+        std::ostream        &outStr)  const
+{
+    if ( actView.hpiDrop == Common::HAND_EMPTY_PIECE ) {
+        //  駒を移動させた時は、移動元、移動先の座標。  //
+        outStr  <<  (actView.xDispOldCol)   <<  (actView.yDispOldRow)
+                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow);
+        if ( (actView.fpAfter) != (actView.fpMoved) ) {
+            outStr  <<  '+';
+        } else {
+            outStr  <<  ' ';
+        }
+    } else {
+        //  持ち駒を打った時は、持ち駒、移動先の座標。  //
+        outStr  <<  (s_tblHandSfenName[actView.hpiDrop])
+                <<  '*'
+                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow)
+                <<  ' ';
+    }
+
+    //  移動した駒を表示する。  //
+    if ( flgName ) {
+        outStr  <<  (s_tblPieceSfenName[actView.fpMoved])   <<  ' ';
+        if ( (actView.fpCatch) != Common::FIELD_EMPTY_SQUARE )  {
+           outStr   <<  "(x"
+                    <<  s_tblPieceSfenName[actView.fpCatch]
+                    <<   ") ";
+        } else {
+            outStr  <<  "(x--) ";
+        }
+    }
+
+    return ( outStr );
+}
+
+//----------------------------------------------------------------
+//    表示用棋譜データの内容をストリームに出力する。
+//
+
+std::ostream  &
+GameController::writeActionViewCsa(
         const  ActionView   &actView,
         std::ostream        &outStr)  const
 {
-    outStr  <<  (actView.xDispNewCol)
-            <<  (actView.yDispNewRow)
-            <<  ' '
-            <<  s_tblPieceName[actView.fpAfter];
-    if ( (actView.hpiDrop) == 0 ) {
-        outStr  <<  " ("
-                <<  (actView.xDispOldCol)
-                <<  (actView.yDispOldRow)
-                <<  ")";
-        if ( (actView.fpAfter) != (actView.fpMoved) ) {
-            outStr  <<  " (PROMOTE)";
-        }
+    if ( actView.hpiDrop == Common::HAND_EMPTY_PIECE ) {
+        //  駒を移動させた時は、移動元、移動先、移動後の駒。    //
+        outStr  <<  (actView.xDispOldCol)   <<  (actView.yDispOldRow)
+                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow)
+                <<  s_tblPieceCsaName[actView.fpAfter];
     } else {
-        outStr  <<  " (PUT)";
+        //  持ち駒を打った時は、駒台(00)、移動先、移動後の駒。  //
+        outStr  <<  "00"
+                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow)
+                <<  s_tblPieceCsaName[actView.fpAfter];
     }
 
     return ( outStr );
@@ -564,6 +645,16 @@ GameController::getGameStateFlags()  const
 }
 
 //----------------------------------------------------------------
+//    手番を次のプレーヤーに設定する。
+//
+
+PlayerIndex
+GameController::setPlayerToNext()
+{
+    return ( (this->m_curTurn) ^= Common::PLAYER_OPPOSITE );
+}
+
+//----------------------------------------------------------------
 //    現在の盤面の表示フラグを取得する。
 //
 
@@ -603,7 +694,9 @@ GameController::convertConstraintCoord(
     if ( (flgShow) & SCF_FLIP_COLUMNS ) {
         //  水平方向の座標を反転させる。ただし六を除く。    //
         //  つまり、123456 -> 543216 となるように変換する。 //
-        return ( vCons < 6 ? (6 - vCons) : 6 );
+        return ( vCons < Common::DICE_ANY_MOVE
+                 ?  (Common::DICE_MAX_VALUE - vCons)
+                 :  Common::DICE_ANY_MOVE );
     }
 
     //  水平方向の座標をそのまま使う。      //

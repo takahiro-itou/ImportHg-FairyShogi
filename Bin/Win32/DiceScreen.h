@@ -34,6 +34,25 @@ namespace  Interface  {
 class  DiceScreen : public  ChoiceScreen
 {
 
+public:
+
+    enum  {
+        /**
+        **    乱数を使う場合に指定する番号。
+        **/
+        DICE_USE_RANDOM     =  12,
+
+        /**
+        **    乱数のシードを設定する場合に指定する番号。
+        **/
+        DICE_SET_SEED       =  13,
+
+        /**
+        **    元に戻すボタンの番号。
+        **/
+        DICE_BACK_COMMAND   =  14
+    };
+
 //========================================================================
 //
 //    Constructor(s) and Destructor.

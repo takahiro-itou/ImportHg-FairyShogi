@@ -21,6 +21,8 @@
 #include    "FairyShogi/Common/FairyShogiConst.h"
 #include    "FairyShogi/Game/BoardState.h"
 
+#include    <memory.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Engine  {
 
@@ -96,10 +98,10 @@ EngineImplements::findCheckMateActions(
 {
     const  PlayerIndex  piEnemy = piTurn ^ Common::PLAYER_OPPOSITE;
 
-    for ( int i = 0; i < 6; ++ i ) {
+    for ( int i = 0; i < Common::DICE_MAX_VALUE; ++ i ) {
         nCounts[i]  =  -1;
     }
-    nCounts[5]  =  0;
+    nCounts[ENGINE_IDICE_ANY_MOVE]  =  0;
 
     InternState     stClone;
     const  ActIter  itrEnd  = actList.end();
@@ -115,14 +117,14 @@ EngineImplements::findCheckMateActions(
             continue;
         }
         ++  nCounts[nx];
-        ++  nCounts[ 5];
+        ++  nCounts[ENGINE_IDICE_ANY_MOVE];
     }
 
     ActionCount     retCnt  = 0;
     for ( int i = 0; i < 6; ++ i ) {
         if ( nCounts[i] < 0 ) {
             //  この目では合法手が無いので、六として扱う。  //
-            nCounts[i]  = nCounts[5];
+            nCounts[i]  = nCounts[ENGINE_IDICE_ANY_MOVE];
         }
         if ( nCounts[i] > 0 ) {
             ++  retCnt;
@@ -130,6 +132,38 @@ EngineImplements::findCheckMateActions(
     }
 
     return ( retCnt );
+}
+
+//----------------------------------------------------------------
+//    相手の玉をチェックメイトできる手を検索する。
+//
+
+Boolean
+EngineImplements::findCheckMateAction(
+        const  InternState      &curStat,
+        const  PlayerIndex      piTurn,
+        const  ActionViewList   &actList,
+        ActViewIter  *          itrRet)
+{
+    InternState     stClone;
+    ActionData      actData;
+
+    const  ActViewIter  itrEnd  = actList.end();
+    for ( ActViewIter itr = actList.begin(); itr != itrEnd; ++ itr )
+    {
+        ::memcpy( &stClone, &curStat, sizeof(stClone) );
+        BoardState::encodeActionData((* itr), &actData);
+        BoardState::playForward(actData, stClone);
+        if ( isCheckMateState(stClone, piTurn ^ Common::PLAYER_OPPOSITE) )
+        {
+            //  チェックメイトを発見。  //
+            (* itrRet)  = itr;
+            return ( BOOL_TRUE );
+        }
+    }
+
+    (* itrRet)  = itrEnd;
+    return ( BOOL_FALSE );
 }
 
 //----------------------------------------------------------------
@@ -233,7 +267,7 @@ EngineImplements::makeLegalActionList(
     ActionList  vActs;
     ErrCode     retErr  =  ERR_SUCCESS;
 
-    if ( (vCons < 0) || (5 <= vCons) ) {
+    if ( (vCons < 0) || (ENGINE_IDICE_ANY_MOVE <= vCons) ) {
         retErr  =  BoardState::makeLegalActionList(
                         curStat,  piTurn,  Common::ALF_LEGAL_ACTION,
                         actList);

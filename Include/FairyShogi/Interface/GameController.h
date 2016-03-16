@@ -71,7 +71,7 @@ public:
     typedef     std::vector<ActionView>         ActionViewList;
 
     /**   制約条件（ダイスの目）を表す型。  **/
-    typedef     int     TConstraint;
+    typedef     TDiceValue      TConstraint;
 
     /**   座標の表示関係のフラグ。  **/
     enum  ShowCoordFlagValues
@@ -144,6 +144,17 @@ public:
             ActionView  &actRet);
 
     //----------------------------------------------------------------
+    /**   王手が掛かっているかどうかを判定する。
+    **
+    **  @param [in] dPlayer   判定を行うプレーヤー。
+    **  @retval     BOOL_TRUE   : 王手が掛かっている。
+    **  @retval     BOOL_FALSE  : それ以外。
+    **/
+    Boolean
+    isCheckState(
+            const  PlayerIndex  dPlayer)  const;
+
+    //----------------------------------------------------------------
     /**   現在の局面の合法手を列挙する。
     **
     **  @param [in] fLegals   合法判定フラグ。
@@ -211,6 +222,17 @@ public:
     resetGame();
 
     //----------------------------------------------------------------
+    /**   コンピュータの思考エンジンを指定する。
+    **
+    **  @param [in] cPlayer
+    **  @param [in] engName
+    **/
+    virtual  ErrCode
+    setComputerEngine(
+            const  PlayerIndex  cPlayer,
+            const  std::string  &engName);
+
+    //----------------------------------------------------------------
     /**   ゲームの状態と勝敗を判定する。
     **
     **  @return     ゲーム状態を返す。
@@ -221,12 +243,28 @@ public:
     //----------------------------------------------------------------
     /**   表示用棋譜データの内容をストリームに出力する。
     **
+    **  @note       棋譜データは、USI(SFEN) 形式で出力。
+    **  @param [in] actView   棋譜表示用構造体。
+    **  @param [in] flgName   移動した駒名も表示させる。
+    **  @param[out] outStr    出力ストリーム。
+    **  @return     出力後のストリームの参照を返す。
+    **/
+    virtual  std::ostream  &
+    writeActionViewSfen(
+            const  ActionView   &actView,
+            const  Boolean      flgName,
+            std::ostream        &outStr)  const;
+
+    //----------------------------------------------------------------
+    /**   表示用棋譜データの内容をストリームに出力する。
+    **
+    **  @note       棋譜データは、CSA 形式で出力。
     **  @param [in] actView   棋譜表示用構造体。
     **  @param[out] outStr    出力ストリーム。
     **  @return     出力後のストリームの参照を返す。
     **/
     virtual  std::ostream  &
-    writeActionView(
+    writeActionViewCsa(
             const  ActionView   &actView,
             std::ostream        &outStr)  const;
 
@@ -357,6 +395,14 @@ public:
     **/
     GameStateFlags
     getGameStateFlags()  const;
+
+    //----------------------------------------------------------------
+    /**   手番を次のプレーヤーに設定する。
+    **
+    **  @return     新たに設定されたプレーヤー番号を返す。
+    **/
+    PlayerIndex
+    setPlayerToNext();
 
     //----------------------------------------------------------------
     /**   現在の盤面の表示フラグを取得する。

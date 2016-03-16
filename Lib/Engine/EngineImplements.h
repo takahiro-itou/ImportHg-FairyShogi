@@ -20,6 +20,7 @@
 
 #include    "FairyShogi/Engine/EngineBase.h"
 
+#include    "FairyShogi/Common/FairyShogiConst.h"
 #include    "FairyShogi/Game/BoardState.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -96,8 +97,21 @@ protected:
     typedef     ActionList::const_iterator      ActIter;
     typedef     BoardState::TBitBoard           TBitBoard;
 
+    typedef     ActionViewList::const_iterator  ActViewIter;
     typedef     int                             ActionCount;
-    typedef     ActionCount                     TCountArray [6];
+
+    /**   ダイスの目をインデックスとする整数値配列型。  **/
+    typedef     ActionCount     TCountArray [Common::DICE_MAX_VALUE];
+
+    enum  {
+        /**
+        **    任意の手を指すことができるダイスの目。
+        **
+        **    内部データでは、ゼロベースのため、壱ずれる。
+        **/
+        ENGINE_IDICE_ANY_MOVE   =  Common::DICE_ANY_MOVE - 1
+    };
+
 protected:
 
     //----------------------------------------------------------------
@@ -116,6 +130,25 @@ protected:
             const  PlayerIndex  piTurn,
             const  ActionList   &actList,
             TCountArray         nCounts);
+
+    //----------------------------------------------------------------
+    /**   相手の玉をチェックメイトできる手を検索する。
+    **
+    **  @param [in] curStat   現在の局面。
+    **  @param [in] piTurn    現在の手番のプレーヤー番号。
+    **  @param [in] actList   現在の局面の合法手リスト。
+    **  @param[out] itrRet    詰みになる手を指す反復子。
+    **      なお、複数存在する場合は、最初のものを返す。
+    **      どの手も詰みにならない場合は、未定義となる。
+    **  @retval     BOOL_TRUE   : 詰みを発見。
+    **  @retval     BOOL_FALSE  : 詰みは無かった。
+    **/
+    static  Boolean
+    findCheckMateAction(
+            const  InternState      &curStat,
+            const  PlayerIndex      piTurn,
+            const  ActionViewList   &actList,
+            ActViewIter  *          itrRet);
 
     //----------------------------------------------------------------
     /**   現在の局面がチェックメイトかどうかを判定する。

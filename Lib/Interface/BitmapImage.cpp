@@ -430,6 +430,74 @@ BitmapImage::copyRectangle(
 }
 
 //----------------------------------------------------------------
+//    別のビットマップの矩形をコピーする。
+//
+
+ErrCode
+BitmapImage::copyRectangleWithTransparentColor(
+        const  BitmapCoord  dx,
+        const  BitmapCoord  dy,
+        const  BitmapCoord  dw,
+        const  BitmapCoord  dh,
+        const  BitmapImage  &bmpSrc,
+        const  BitmapCoord  sx,
+        const  BitmapCoord  sy,
+        const  PixelValue   trColR,
+        const  PixelValue   trColG,
+        const  PixelValue   trColB)
+{
+    for ( BitmapCoord y = 0; y < dh; ++ y ) {
+        PcPixelArray    ptrSrc  = bmpSrc.getPixels(sx, sy + y);
+        PmPixelArray    ptrDst  = this->getPixels(dx, dy + y);
+        for ( BitmapCoord x = 0; x < dw; ++ x ) {
+            const  PixelValue  pvB  = *(ptrSrc++);
+            const  PixelValue  pvG  = *(ptrSrc++);
+            const  PixelValue  pvR  = *(ptrSrc++);
+
+            if ( (pvR == trColR) && (pvG == trColG) && (pvB == trColB) ) {
+                ptrDst  += 3;
+                continue;
+            }
+
+            *(ptrDst++) = pvB;
+            *(ptrDst++) = pvG;
+            *(ptrDst++) = pvR;
+        }
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    矩形を描画する。
+//
+
+ErrCode
+BitmapImage::drawRectangle(
+        const  BitmapCoord  dx,
+        const  BitmapCoord  dy,
+        const  BitmapCoord  dw,
+        const  BitmapCoord  dh,
+        const  PixelValue   colR,
+        const  PixelValue   colG,
+        const  PixelValue   colB)
+{
+    const  BitmapCoord  dx2 = std::min((this->m_xWidth),  dx + dw);
+    const  BitmapCoord  dy2 = std::min((this->m_yHeight), dy + dh);
+
+    for ( BitmapCoord y = dy; y < dy2; ++ y ) {
+        PmPixelArray    ptrDst  = this->getPixels(dx, y);
+        for ( BitmapCoord x = dx; x < dx2; ++ x ) {
+            *(ptrDst++) = colB;
+            *(ptrDst++) = colG;
+            *(ptrDst++) = colR;
+        }
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
 //    半透明の矩形を描画する。
 //
 

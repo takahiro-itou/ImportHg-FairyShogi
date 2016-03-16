@@ -48,10 +48,15 @@ EngineBase  *
 EngineBase::createEngine(
         const  std::string  &engName)
 {
-    UTL_HELP_UNUSED_ARGUMENT(engName);
-
     EngineBase  *   ptrEng  =  (nullptr);
-    ptrEng  =  new  EngineLevel1;
+
+    if ( (engName == "default") || (engName == "level1") ) {
+        ptrEng  =  new  EngineLevel1;
+    } else if ( engName == "level0" ) {
+        ptrEng  =  new  EngineLevel0;
+    } else {
+        ptrEng  =  new  EngineLevel1;
+    }
 
     return ( ptrEng );
 }

@@ -257,6 +257,63 @@ public:
             const  BitmapCoord  sy);
 
     //----------------------------------------------------------------
+    /**   別のビットマップの矩形をコピーする。
+    **
+    **  @note   コピーしない透過色を指定できる。
+    **  @param [in] dx        コピー先の水平座標。
+    **  @param [in] dy        コピー先の垂直座標。
+    **  @param [in] dw        コピーする幅。
+    **  @param [in] dh        コピーする高さ。
+    **  @param [in] bmpSrc    コピー元のビットマップ。
+    **  @param [in] sx        コピー元の水平座標。
+    **  @param [in] sy        コピー元の垂直座標。
+    **  @param [in] trColR    透過色（赤）。
+    **  @param [in] trColG    透過色（緑）。
+    **  @param [in] trColB    透過色（青）。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    copyRectangleWithTransparentColor(
+            const  BitmapCoord  dx,
+            const  BitmapCoord  dy,
+            const  BitmapCoord  dw,
+            const  BitmapCoord  dh,
+            const  BitmapImage  &bmpSrc,
+            const  BitmapCoord  sx,
+            const  BitmapCoord  sy,
+            const  PixelValue   trColR,
+            const  PixelValue   trColG,
+            const  PixelValue   trColB);
+
+    //----------------------------------------------------------------
+    /**   矩形を描画する。
+    **
+    **  @param [in] dx      描画先の水平座標。
+    **  @param [in] dy      描画先の垂直座標。
+    **  @param [in] dw      描画する幅。
+    **  @param [in] dh      描画する高さ。
+    **  @param [in] colR    描画する色（赤）。
+    **  @param [in] colG    描画する色（緑）。
+    **  @param [in] colB    描画する色（青）。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    drawRectangle(
+            const  BitmapCoord  dx,
+            const  BitmapCoord  dy,
+            const  BitmapCoord  dw,
+            const  BitmapCoord  dh,
+            const  PixelValue   colR,
+            const  PixelValue   colG,
+            const  PixelValue   colB);
+
+    //----------------------------------------------------------------
     /**   半透明の矩形を描画する。
     **
     **  @param [in] dx      描画先の水平座標。

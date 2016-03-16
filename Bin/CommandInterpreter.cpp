@@ -90,7 +90,8 @@ s_tblPlayerName[2]  = { 'b', 'w' };
 
 CommandInterpreter::CommandInterpreter()
     : m_ciGameCtrl(),
-      m_outStrSwap()
+      m_outStrSwap(),
+      m_rndGen()
 {
     //  ゲームをリセットする。  //
     this->m_ciGameCtrl.resetGame();
@@ -102,6 +103,9 @@ CommandInterpreter::CommandInterpreter()
     executeSfenCommand(
             "",  this->m_ciGameCtrl,  this->m_outStrSwap,  * this);
     this->m_outStrSwap  <<  "\n#  Command History"  <<  std::endl;
+
+    //  乱数系列を初期化する。  //
+    this->m_rndGen.setSeedValue(13579);
 }
 
 //----------------------------------------------------------------
@@ -193,6 +197,12 @@ CommandInterpreter::interpretConsoleInput(
     } else if ( (vTokens[0] == "record") )  {
         vTokens.push_back("");
         pfnExecCmd  =  &(executeRecordCommand);
+    } else if ( (vTokens[0] == "comblack") ) {
+        vTokens.push_back("default");
+        pfnExecCmd  =  &(executeComBlackCommand);
+    } else if ( (vTokens[0] == "comwhite") ) {
+        vTokens.push_back("default");
+        pfnExecCmd  =  &(executeComWhiteCommand);
     }
 
     if ( pfnExecCmd == (nullptr) ) {
@@ -221,41 +231,6 @@ CommandInterpreter::interpretConsoleInput(
 //    For Internal Use Only.
 //
 
-
-std::ostream  &
-CommandInterpreter::displayActionView(
-        const  ActionView   &actView,
-        const  int          flgName,
-        std::ostream        &outStr)
-{
-    if ( actView.hpiDrop == Common::HAND_EMPTY_PIECE ) {
-        outStr  <<  (actView.xDispOldCol)   <<  (actView.yDispOldRow)
-                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow);
-        if ( (actView.fpAfter) != (actView.fpMoved) ) {
-            outStr  <<  '+';
-        } else {
-            outStr  <<  ' ';
-        }
-    } else {
-        outStr  <<  (s_tblHandName[actView.hpiDrop])
-                <<  '*'
-                <<  (actView.xDispNewCol)   <<  (actView.yDispNewRow)
-                <<  "  ";
-    }
-    if ( flgName ) {
-        outStr  <<  (s_tblPieceName[actView.fpMoved])  <<  ' ';
-        if ( (actView.fpCatch) != Common::FIELD_EMPTY_SQUARE )  {
-           outStr   <<  "(x"
-                    <<  s_tblPieceName[actView.fpCatch]
-                    <<   ") ";
-        } else {
-            outStr  <<  "(x--) ";
-        }
-    }
-
-    return ( outStr );
-}
-
 //----------------------------------------------------------------
 //    コマンドを実行する。
 //
@@ -269,8 +244,42 @@ CommandInterpreter::executeBackwardCommand(
 {
     const  ErrCode  retErr  =  objGame.playBackward();
     executePlayerCommand("next",  objGame,  outStr,  ciClbk);
-    objGame.setConstraint(6);
+    objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
     return ( retErr );
+}
+
+//----------------------------------------------------------------
+//    コマンドを実行する。
+//
+
+ErrCode
+CommandInterpreter::executeComBlackCommand(
+        const  std::string  &strArgs,
+        ConsoleInterface    &objGame,
+        std::ostream        &outStr,
+        CallbackClass       &ciClbk)
+{
+    UTL_HELP_UNUSED_ARGUMENT(outStr);
+    UTL_HELP_UNUSED_ARGUMENT(ciClbk);
+
+    return ( objGame.setComputerEngine(Common::PLAYER_BLACK,  strArgs) );
+}
+
+//----------------------------------------------------------------
+//    コマンドを実行する。
+//
+
+ErrCode
+CommandInterpreter::executeComWhiteCommand(
+        const  std::string  &strArgs,
+        ConsoleInterface    &objGame,
+        std::ostream        &outStr,
+        CallbackClass       &ciClbk)
+{
+    UTL_HELP_UNUSED_ARGUMENT(outStr);
+    UTL_HELP_UNUSED_ARGUMENT(ciClbk);
+
+    return ( objGame.setComputerEngine(Common::PLAYER_WHITE,  strArgs) );
 }
 
 //----------------------------------------------------------------
@@ -291,11 +300,11 @@ CommandInterpreter::executeDiceCommand(
         numChk  = bsCur.isCheckState(objGame.getCurrentPlayer(), bbFrom);
     if ( numChk == 1 ) {
         std::cerr   <<  "* CHECK!"  <<  std::endl;
-        objGame.setConstraint(6);
+        objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
         return ( ERR_SUCCESS );
     } else if ( numChk >= 2 ) {
         std::cerr   <<  "** DOUBLE CHECK!"  <<  std::endl;
-        objGame.setConstraint(6);
+        objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
         return ( ERR_SUCCESS );
     }
 
@@ -307,14 +316,17 @@ CommandInterpreter::executeDiceCommand(
     }
 
     if ( strArgs[0] == 'r' ) {
-        const  int  rn  =  ((std::rand() >> 8) % 6) + 1;
+        const  uint32_t
+            rv  =  (ciClbk.m_rndGen.getNext() & RANDOM_MAX_VALUE);
+        const  int  rn
+            =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1) + 1;
         std::cout   <<  rn  <<  std::endl;
         objGame.setConstraint(rn);
         return ( ERR_SUCCESS );
     }
 
     const  int  dr  =  strArgs[0] - '0';
-    if ( (dr < 0) || (6 < dr) ) {
+    if ( (dr < 0) || (Common::DICE_MAX_VALUE < dr) ) {
         outStr  <<  "# ERROR : Invalid Arguments."  <<  std::endl;
         return ( ERR_INVALID_COMMAND );
     }
@@ -371,8 +383,11 @@ CommandInterpreter::executeForwardCommand(
         return ( ERR_INVALID_COMMAND );
     }
 
-    std::cerr   <<  "# DEBUG : ";
-    displayActionView(actView, 1, std::cerr)    <<  std::endl;
+    std::cerr   <<  "# DEBUG (USI) : ";
+    objGame.writeActionViewSfen(actView, BOOL_TRUE, std::cerr)
+            <<  std::endl;
+    std::cerr   <<  "# DEBUG (CSA) : ";
+    objGame.writeActionViewCsa(actView, std::cerr)  <<  std::endl;
 
     ActionList      actList;
     objGame.makeLegalActionList(0, -1, actList);
@@ -396,7 +411,8 @@ CommandInterpreter::executeForwardCommand(
     ciClbk.m_outStrSwap  <<  "dice "
                         <<  objGame.getConstraint()
                         <<  "\nfwd ";
-    displayActionView(actView,  1,  ciClbk.m_outStrSwap);
+    objGame.writeActionViewSfen(
+            actView,  BOOL_TRUE,  ciClbk.m_outStrSwap);
     if ( flgLeg != Common::ALF_LEGAL_ACTION ) {
         ciClbk.m_outStrSwap  <<  '!';
     }
@@ -405,7 +421,7 @@ CommandInterpreter::executeForwardCommand(
     objGame.playForward(actView);
 
     executePlayerCommand("next",  objGame,  outStr,  ciClbk);
-    objGame.setConstraint(6);
+    objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
 
     return ( ERR_SUCCESS );
 }
@@ -432,9 +448,13 @@ CommandInterpreter::executeGoCommand(
     }
 
     outStr      <<  "bestmove ";
-    displayActionView(actData,  0,  outStr)     <<  std::endl;
-    std::cerr   <<  "#  COM : ";
-    displayActionView(actData,  1,  std::cerr)  <<  std::endl;
+    objGame.writeActionViewSfen(actData,  BOOL_FALSE,  outStr)
+            <<  std::endl;
+    std::cerr   <<  "#  COM (USI) : ";
+    objGame.writeActionViewSfen(actData,  BOOL_TRUE,  std::cerr)
+            <<  std::endl;
+    std::cerr   <<  "#  COM (CSA) : ";
+    objGame.writeActionViewCsa(actData, std::cerr)  <<  std::endl;
 
     return ( ERR_SUCCESS );
 }
@@ -450,9 +470,9 @@ CommandInterpreter::executeListCommand(
         std::ostream        &outStr,
         CallbackClass       &ciClbk)
 {
-    int     dc  =  objGame.getConstraint();
+    TDiceValue  dc  =  objGame.getConstraint();
     if ( strArgs[0] == 'a' ) {
-        dc  =  6;
+        dc  =  Common::DICE_ANY_MOVE;
     } else if ( ('0' <= strArgs[0]) && (strArgs[0] <= '6') ) {
         dc  =  strArgs[0] - '0';
     }
@@ -474,7 +494,7 @@ CommandInterpreter::executeListCommand(
 
     for ( ActIter itr = vActs.begin(); itr != itrEnd; ++ itr )
     {
-        displayActionView( (* itr), 1, outStr );
+        objGame.writeActionViewSfen( (* itr), BOOL_TRUE, outStr );
         if ( (itr->fLegals) != Common::ALF_LEGAL_ACTION ) {
             ++  cntBad;
             outStr  <<  '!';
@@ -515,15 +535,14 @@ CommandInterpreter::executePlayerCommand(
         CallbackClass       &ciClbk)
 {
     if ( strArgs == "next" ) {
-        const  PlayerIndex  pi  =  objGame.getCurrentPlayer();
-        objGame.setCurrentPlayer(pi ^ 1);
-        std::cerr   <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
-                    <<  std::endl;
+        objGame.setPlayerToNext();
+        outStr  <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
+                <<  std::endl;
         return ( ERR_SUCCESS );
     }
     if ( strArgs == "get" ) {
-        std::cout   <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
-                    <<  std::endl;
+        outStr  <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
+                <<  std::endl;
         return ( ERR_SUCCESS );
     }
 
@@ -531,6 +550,8 @@ CommandInterpreter::executePlayerCommand(
         if ( (strArgs[0] == '0' + i) || (strArgs[0] == s_tblPlayerName[i]) )
         {
             objGame.setCurrentPlayer(i);
+            outStr  <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
+                    <<  std::endl;
             return ( ERR_SUCCESS );
         }
     }
@@ -587,7 +608,8 @@ CommandInterpreter::executeRecordCommand(
     const  ActIter  itrEnd  =  actList.end();
     for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr )
     {
-        displayActionView( * itr, 1,  * pOutStr )   <<  std::endl;
+        objGame.writeActionViewSfen( * itr, BOOL_TRUE,  * pOutStr )
+                <<  std::endl;
     }
 
     return ( ERR_SUCCESS );
@@ -632,7 +654,12 @@ CommandInterpreter::executeSeedCommand(
     UTL_HELP_UNUSED_ARGUMENT(outStr);
     UTL_HELP_UNUSED_ARGUMENT(ciClbk);
 
-    std::srand( time(nullptr) );
+    if ( strArgs.empty() ) {
+        ciClbk.m_rndGen.setSeedValue( time(nullptr) );
+    } else {
+        const  int  vS  =  std::atol(strArgs.c_str());
+        ciClbk.m_rndGen.setSeedValue(vS ? vS : 13579);
+    }
 
     return ( ERR_SUCCESS );
 }
@@ -661,12 +688,13 @@ CommandInterpreter::executeSfenCommand(
             const  PieceIndex   dp  = vb.fpBoard[y][x];
             outStr  <<  s_tblSfenName[dp];
         }
-
     }
 
     //  手番を表示する。    //
 //    outStr  <<  ;
-    outStr  <<  " b ";
+    outStr  <<  ' '
+            <<  s_tblPlayerName[ objGame.getCurrentPlayer() ]
+            <<  ' ';
 
     //  持ち駒を表示する。  //
     int     flg = 0;
