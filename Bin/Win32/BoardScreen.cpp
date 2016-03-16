@@ -560,7 +560,38 @@ BoardScreen::clearSelection()
 ErrCode
 BoardScreen::playBackward()
 {
-    return ( ERR_FAILURE );
+    Interface::BoardScreen::GameInterface  &
+            giGame  =  this->getGameController();
+
+    const  ErrCode  retErr  = giGame.playBackward();
+    if ( retErr != ERR_SUCCESS ) {
+        ::MessageBox(NULL,  "Cannot Rewind!",  NULL,  MB_OK);
+    } else {
+        giGame.setPlayerToNext();
+    }
+    giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
+
+    this->m_bcSrcX  = -1;
+    this->m_bcSrcY  = -1;
+    this->m_bcTrgX  = -1;
+    this->m_bcTrgY  = -1;
+    clearSelection();
+
+    //  強調表示を行うための情報を更新する。    //
+    ActionViewList  actList;
+    giGame.writeActionList(actList);
+
+    updateHighLightInfo();
+    if ( !(actList.empty()) ) {
+        updateLastActionHighLights(actList.back());
+    } else {
+        this->m_bcLastSrcX  = -1;
+        this->m_bcLastSrcY  = -1;
+        this->m_bcLastTrgX  = -1;
+        this->m_bcLastTrgY  = -1;
+    }
+
+    return ( retErr );
 }
 
 //----------------------------------------------------------------
@@ -585,16 +616,17 @@ BoardScreen::playForward(
     clearSelection();
 
     //  最後の指し手を棋譜ファイルに書き込む。  //
-    Interface::GameController::ActionViewList   actList;
+    ActionViewList  actList;
+    giGame.writeActionList(actList);
 
-    this->m_gcGameCtrl.writeActionList(actList);
     if ( this->m_ofsKifu.good() && !(actList.empty()) ) {
-        this->m_gcGameCtrl.writeActionViewSfen(
+        giGame.writeActionViewSfen(
                 actList.back(), BOOL_TRUE, this->m_ofsKifu);
         this->m_ofsKifu << std::endl;
         this->m_ofsKifu.flush();
     }
 
+    //  強調表示を行うための情報を更新する。    //
     updateHighLightInfo();
     if ( !(actList.empty()) ) {
         updateLastActionHighLights(actList.back());

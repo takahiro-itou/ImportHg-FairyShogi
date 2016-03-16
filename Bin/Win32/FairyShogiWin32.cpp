@@ -203,6 +203,7 @@ onLButtonUpInDiceScreen()
     if ( pidSel == 8 ) {
         //  待ったをする。  //
         scrBoard.playBackward();
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
         return ( 0 );
     }
 
