@@ -122,6 +122,9 @@ START_ENGINE_RIGHT      =  START_ENGINE_LEFT + DICE_WIDTH;
 CONSTEXPR_VAR   int
 START_ENGINE_BOTTOM     =  START_ENGINE_TOP + DICE_HEIGHT;
 
+CONSTEXPR_VAR   int
+RESOURCE_ID_RUN_ENGINE  =  16;
+
 Interface::BitmapImage      g_imgScreen;
 Interface::BitmapImage      g_imgDice;
 Interface::BitmapImage      g_imgWork;
@@ -454,8 +457,8 @@ onPaint(
                 START_ENGINE_LEFT,  START_ENGINE_TOP,
                 DICE_WIDTH,         DICE_HEIGHT,
                 g_imgDice,
-                ((14 % 6) * DICE_WIDTH),
-                ((14 / 6) * DICE_HEIGHT) );
+                ((RESOURCE_ID_RUN_ENGINE % 6) * DICE_WIDTH),
+                ((RESOURCE_ID_RUN_ENGINE / 6) * DICE_HEIGHT) );
     }
 
     //  ダイス選択画面を表示する。  //
