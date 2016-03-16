@@ -408,6 +408,11 @@ onPaint(
         }
     }
 
+    g_imgScreen.drawRectangle(
+            0, 0,
+            WINDOW_WIDTH, WINDOW_HEIGHT,
+            255, 255, 255);
+
     //  メイン画面を描画する。  //
     {
         Interface::BitmapImage  &  imgWork  =  g_imgBoard;
