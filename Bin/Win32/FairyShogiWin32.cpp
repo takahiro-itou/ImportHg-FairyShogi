@@ -411,7 +411,7 @@ onPaint(
     g_imgScreen.drawRectangle(
             0, 0,
             WINDOW_WIDTH, WINDOW_HEIGHT,
-            255, 255, 255);
+            0, 0, 0);
 
     //  メイン画面を描画する。  //
     {
@@ -428,6 +428,9 @@ onPaint(
 
     //  現在のダイスを表示する。    //
     {
+        int     idxCol, idxRow;
+        g_scrBoard.getDiceDisplayIndex(&idxCol, &idxRow);
+#if 0
         const  Interface::BoardScreen::GameInterface  &
             giGame  =  g_scrBoard.getGameController();
         const  PlayerIndex  curTurn = giGame.getCurrentPlayer();
@@ -436,12 +439,13 @@ onPaint(
         if ( (curDice < 0) || (Common::DICE_MAX_VALUE <= curDice) ) {
             curDice = Common::DICE_DEFAULT_VALUE;
         }
+#endif
         g_imgScreen.copyRectangle(
                 CURRENT_DICE_LEFT,  CURRENT_DICE_TOP,
                 DICE_WIDTH,         DICE_HEIGHT,
                 g_imgDice,
-                (curDice * DICE_WIDTH),
-                (curTurn * DICE_HEIGHT) );
+                (idxCol * DICE_WIDTH),
+                (idxRow * DICE_HEIGHT) );
     }
 
     //  現在のエンジンを表示する。  //
