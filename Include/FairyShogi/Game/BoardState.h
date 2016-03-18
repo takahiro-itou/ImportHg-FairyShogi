@@ -263,6 +263,30 @@ public:
             InternState                &curStat);
 
     //----------------------------------------------------------------
+    /**   現在の局面がチェックメイトかどうかを判定する。
+    **
+    **  @param [in] dPlayer   判定を行うプレーヤー。
+    **  @retval     BOOL_TRUE   : チェックメイト。
+    **  @retval     BOOL_FALSE  : それ以外。
+    **/
+    Boolean
+    isCheckMateState(
+            const  PlayerIndex  dPlayer)  const;
+
+    //----------------------------------------------------------------
+    /**   現在の局面がチェックメイトかどうかを判定する。
+    **
+    **  @param [in] curStat   現在の盤面データ。
+    **  @param [in] dPlayer   判定を行うプレーヤー。
+    **  @retval     BOOL_TRUE   : チェックメイト。
+    **  @retval     BOOL_FALSE  : それ以外。
+    **/
+    static  Boolean
+    isCheckMateState(
+            const  InternState  &curStat,
+            const  PlayerIndex  dPlayer);
+
+    //----------------------------------------------------------------
     /**   王手が掛かっているかどうかを判定する。
     **
     **  @param [in] dPlayer   判定を行うプレーヤー。

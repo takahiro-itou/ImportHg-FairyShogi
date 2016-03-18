@@ -399,6 +399,44 @@ BoardState::encodeFromViewBuffer(
 }
 
 //----------------------------------------------------------------
+//    現在の局面がチェックメイトかどうかを判定する。
+//
+
+Boolean
+BoardState::isCheckMateState(
+        const  PlayerIndex  dPlayer)  const
+{
+    return ( isCheckMateState(this->m_icState, dPlayer) );
+}
+
+//----------------------------------------------------------------
+//    現在の局面がチェックメイトかどうかを判定する。
+//
+
+Boolean
+BoardState::isCheckMateState(
+        const  InternState  &curStat,
+        const  PlayerIndex  dPlayer)
+{
+    ActionList  vActs;
+    TBitBoard   bbTemp;
+
+    if ( isCheckState(curStat, dPlayer, bbTemp) <= 0 ) {
+        //  王手が掛かっていない。  //
+        return ( BOOL_FALSE );
+    }
+
+    makeLegalActionList(
+            curStat, dPlayer, Common::ALF_LEGAL_ACTION, vActs);
+    if ( vActs.empty() ) {
+        //  王手が掛かっていて、合法手が無い。  //
+        return ( BOOL_TRUE );
+    }
+
+    return ( BOOL_FALSE );
+}
+
+//----------------------------------------------------------------
 //    王手が掛かっているかどうかを判定する。
 //
 
