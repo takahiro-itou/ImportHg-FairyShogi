@@ -313,6 +313,21 @@ public:
             TBitBoard           &bbFrom);
 
     //----------------------------------------------------------------
+    /**   打ち歩詰めを判定する。
+    **
+    **  @param [in] curStat   現在の盤面データ。
+    **  @param [in] actData   指し手データ。
+    **  @param [in] ciTurn    判定を行うプレーヤー。
+    **  @retval     BOOL_TRUE   : 打ち歩詰め。
+    **  @retval     BOOL_FALSE  : それ以外。
+    **/
+    static  Boolean
+    isUtifudumeAction(
+            const  InternState  &curStat,
+            const  ActionData   &actData,
+            const  PlayerIndex  ciTurn);
+
+    //----------------------------------------------------------------
     /**   合法手を列挙する。
     **
     **  @param [in] cPlayer   現在の手番のプレーヤーの番号。

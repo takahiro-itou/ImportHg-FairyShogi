@@ -492,6 +492,34 @@ BoardState::isCheckState(
 }
 
 //----------------------------------------------------------------
+//    打ち歩詰めを判定する。
+//
+
+Boolean
+BoardState::isUtifudumeAction(
+        const  InternState  &curStat,
+        const  ActionData   &actData,
+        const  PlayerIndex  ciTurn)
+{
+    if (       ( (actData.hpiDrop) != IHAND_BLACK_PAWN )
+            && ( (actData.hpiDrop) != IHAND_WHITE_PAWN ) )
+    {
+        //  歩を打つ手で無ければ、打つ歩詰めでは無い。  //
+        return ( BOOL_FALSE );
+    }
+
+    InternState     stClone;
+    ::memcpy( &stClone, &curStat, sizeof(stClone) );
+    playForward(actData, stClone);
+    if ( isCheckMateState(stClone, ciTurn ^ Common::PLAYER_OPPOSITE) )
+    {
+        return ( BOOL_TRUE );
+    }
+
+    return ( BOOL_FALSE );
+}
+
+//----------------------------------------------------------------
 //    合法手を列挙する。
 //
 
