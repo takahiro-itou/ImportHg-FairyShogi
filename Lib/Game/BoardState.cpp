@@ -399,6 +399,44 @@ BoardState::encodeFromViewBuffer(
 }
 
 //----------------------------------------------------------------
+//    現在の局面がチェックメイトかどうかを判定する。
+//
+
+Boolean
+BoardState::isCheckMateState(
+        const  PlayerIndex  dPlayer)  const
+{
+    return ( isCheckMateState(this->m_icState, dPlayer) );
+}
+
+//----------------------------------------------------------------
+//    現在の局面がチェックメイトかどうかを判定する。
+//
+
+Boolean
+BoardState::isCheckMateState(
+        const  InternState  &curStat,
+        const  PlayerIndex  dPlayer)
+{
+    ActionList  vActs;
+    TBitBoard   bbTemp;
+
+    if ( isCheckState(curStat, dPlayer, bbTemp) <= 0 ) {
+        //  王手が掛かっていない。  //
+        return ( BOOL_FALSE );
+    }
+
+    makeLegalActionList(
+            curStat, dPlayer, Common::ALF_LEGAL_ACTION, vActs);
+    if ( vActs.empty() ) {
+        //  王手が掛かっていて、合法手が無い。  //
+        return ( BOOL_TRUE );
+    }
+
+    return ( BOOL_FALSE );
+}
+
+//----------------------------------------------------------------
 //    王手が掛かっているかどうかを判定する。
 //
 
@@ -451,6 +489,34 @@ BoardState::isCheckState(
 
     getAttackFromList(curStat, posTrg, dPlayer ^ 1, bbFrom);
     return ( bbFrom.size() );
+}
+
+//----------------------------------------------------------------
+//    打ち歩詰めを判定する。
+//
+
+Boolean
+BoardState::isUtifudumeAction(
+        const  InternState  &curStat,
+        const  ActionData   &actData,
+        const  PlayerIndex  ciTurn)
+{
+    if (       ( (actData.hpiDrop) != IHAND_BLACK_PAWN )
+            && ( (actData.hpiDrop) != IHAND_WHITE_PAWN ) )
+    {
+        //  歩を打つ手で無ければ、打つ歩詰めでは無い。  //
+        return ( BOOL_FALSE );
+    }
+
+    InternState     stClone;
+    ::memcpy( &stClone, &curStat, sizeof(stClone) );
+    playForward(actData, stClone);
+    if ( isCheckMateState(stClone, ciTurn ^ Common::PLAYER_OPPOSITE) )
+    {
+        return ( BOOL_TRUE );
+    }
+
+    return ( BOOL_FALSE );
 }
 
 //----------------------------------------------------------------
