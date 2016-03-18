@@ -647,7 +647,10 @@ BoardState::makeLegalActionList(
             }
 
             const  PieceIndex  fpAfter  =  s_tblHandConv[k];
+            actData.hpiDrop = k;
+            actData.fpAfter = fpAfter;
             actData.fLegals = Common::ALF_LEGAL_ACTION;
+
             int     flgDps  = 0;
             if ( (k == IHAND_BLACK_PAWN) || (k == IHAND_WHITE_PAWN) ) {
                 for ( int y = 0; y < POS_NUM_ROWS; ++ y ) {
@@ -657,6 +660,12 @@ BoardState::makeLegalActionList(
                         flgDps  = 1;
                     }
                 }
+                if ( isUtifudumeAction(curStat, actData, cPlayer) ) {
+                    if ( !(fLegals & Common::ALF_DROP_PAWN_END) ) {
+                        continue;
+                    }
+                    actData.fLegals |= Common::ALF_DROP_PAWN_END;
+                }
             }
             if ( flgDps ) {
                 if ( !(fLegals & Common::ALF_DOUBLE_PAWNS) ) {
@@ -664,9 +673,6 @@ BoardState::makeLegalActionList(
                 }
                 actData.fLegals |= Common::ALF_DOUBLE_PAWNS;
             }
-
-            actData.hpiDrop = k;
-            actData.fpAfter = fpAfter;
 
             //  動かしてみて、自殺だったらスキップ。    //
             ::memcpy( &tmpStat, &curStat, sizeof(tmpStat) );
