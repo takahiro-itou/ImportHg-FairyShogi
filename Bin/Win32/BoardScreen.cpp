@@ -567,10 +567,11 @@ BoardScreen::playBackward()
 
     const  ErrCode  retErr  = giGame.playBackward();
     if ( retErr != ERR_SUCCESS ) {
-        ::MessageBox(NULL,  "Cannot Rewind!",  NULL,  MB_OK);
-    } else {
-        giGame.setPlayerToNext();
+        ::MessageBox(
+                NULL,  "Cannot Rewind!\nBut Changed Player.",
+                NULL,  MB_OK);
     }
+    giGame.setPlayerToNext();
     giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
     this->m_flgDiceRoll = DICE_NOT_ROLLED;
 
