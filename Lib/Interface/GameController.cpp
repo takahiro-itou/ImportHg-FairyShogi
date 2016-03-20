@@ -104,7 +104,7 @@ GameController::GameController()
     : m_gcBoard(),
       m_actList(),
       m_flgShow(SCF_NORMAL_SHOW),
-      m_curTurn(0),
+      m_curTurn(Common::PLAYER_BLACK),
       m_curDice(Common::DICE_DEFAULT_VALUE),
       m_ptrEngines(),
       m_fStatus(Common::GAME_IS_RUNNING),
@@ -339,6 +339,7 @@ GameController::resetGame()
 {
     const  ErrCode  retErr  =  this->m_gcBoard.resetGameBoard();
 
+    this->m_curTurn         =  Common::PLAYER_BLACK;
     this->m_fStatus         =  Common::GAME_IS_RUNNING;
     this->m_gResult         =  Common::GAME_RESULT_DRAW;
 
