@@ -96,12 +96,12 @@ setNextDice(
         GameController   & objGame,
         RandomGenerator  & rndGen)
 {
+    const  RandResult   rv  =  (rndGen.getNext() & RANDOM_MAX_VALUE);
+
     if ( objGame.isCheckState(objGame.getCurrentPlayer()) ) {
         objGame.setConstraint(Common::DICE_ANY_MOVE);
         return ( ERR_SUCCESS );
     }
-
-    const  RandResult   rv  =  (rndGen.getNext() & RANDOM_MAX_VALUE);
 
     const  int  rn
         =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1) + 1;
@@ -393,17 +393,16 @@ executeAutoMatches(
     MatchResult     amRes;
     ::memset( &amRes, 0, sizeof(amRes) );
 
-    GameController  objGame;
-    GameResultVals  retVal  =  Common::GAME_RESULT_DRAW;
+    RandomGenerator     rndGen;
+    GameController      objGame;
+    GameResultVals      retVal  =  Common::GAME_RESULT_DRAW;
 
     //  通常の対局を繰り返し行う。  //
     for ( int i = 1 ; i <= numGame; ++ i ) {
-        RandomGenerator     rndGen;
-        rndGen.setSeedValue(i);
-
         //--------------------------------------------------------------//
         //    プレーヤー１を先手、プレーヤー２を後手で対局する。        //
         //--------------------------------------------------------------//
+        rndGen.setSeedValue(i);
         outStr  <<  "Game # "   <<  i
                 <<  " (TOP) @ START.."  <<  std::endl;
 
@@ -419,6 +418,7 @@ executeAutoMatches(
         //--------------------------------------------------------------//
         //    プレーヤー１を後手、プレーヤー２を先手で対局する。        //
         //--------------------------------------------------------------//
+        rndGen.setSeedValue(i);
         outStr  <<  "Game # "   <<  i
                 <<  " (BOT) @ START.."  <<  std::endl;
 
