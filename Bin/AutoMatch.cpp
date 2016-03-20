@@ -334,8 +334,8 @@ executeAutoMatches(
         outStr  <<  "Game # "   <<  i
                 <<  " (TOP) @ START.."  <<  std::endl;
 
-        objGame.setComputerEngine(Common::PLAYER_BLACK,  engName1);
-        objGame.setComputerEngine(Common::PLAYER_WHITE,  engName2);
+        objGame.setComputerEngine(Common::PLAYER_BLACK,  engName2);
+        objGame.setComputerEngine(Common::PLAYER_WHITE,  engName1);
         objGame.resetGame();
         retVal  =  executeSingleMatch(objGame, rndGen);
         outStr  <<  "Game # "   <<  i
