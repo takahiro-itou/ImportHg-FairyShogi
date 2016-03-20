@@ -325,22 +325,24 @@ executeAutoMatches(
         objGame.resetGame();
         retVal  =  executeSingleMatch(objGame, rndGen);
         outStr  <<  "Game # "   <<  i
-                <<  " (BOT) @ END. RESULT = "   <<  retVal  <<  std::endl;
+                <<  " (TOP) @ END. RESULT = "   <<  retVal  <<  std::endl;
         countMatchResultBlackWhite(retVal,  &amRes);
+        outStr  <<  std::endl;
 
         //--------------------------------------------------------------//
         //    プレーヤー１を後手、プレーヤー２を先手で対局する。        //
         //--------------------------------------------------------------//
         outStr  <<  "Game # "   <<  i
-                <<  " (TOP) @ START.."  <<  std::endl;
+                <<  " (BOT) @ START.."  <<  std::endl;
 
         objGame.setComputerEngine(Common::PLAYER_BLACK,  engName2);
         objGame.setComputerEngine(Common::PLAYER_WHITE,  engName1);
         objGame.resetGame();
         retVal  =  executeSingleMatch(objGame, rndGen);
         outStr  <<  "Game # "   <<  i
-                <<  " (TOP) @ END. RESULT = "   <<  retVal  <<  std::endl;
+                <<  " (BOT) @ END. RESULT = "   <<  retVal  <<  std::endl;
         countMatchResultWhiteBlack(retVal,  &amRes);
+        outStr  <<  std::endl;
     }
 
     outStr  <<  "----------------------------------------\nRESULTS:\n";
