@@ -74,6 +74,7 @@ AM_LDFLAGS              =  -L$(LIBTOPDIR)
 ##
 
 bin_PROGRAMS            =  \
+        AutoMatch          \
         FairyShogi
 
 dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
@@ -82,8 +83,11 @@ dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
 ##    Build Programs.
 ##
 
+AutoMatch_SOURCES       =  AutoMatch.cpp   \
+        $(LIBCOMPILESOURCES)
+AutoMatch_LDADD         =  -lfsgInterface
+
 FairyShogi_SOURCES      =  FairyShogi.cpp  \
         $(LIBCOMPILESOURCES)
-
 FairyShogi_LDADD        =  -lfsgInterface
 

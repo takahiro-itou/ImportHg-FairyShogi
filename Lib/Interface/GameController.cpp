@@ -384,7 +384,7 @@ GameController::testGameStateResult()
             Common::PLAYER_BLACK,  Common::ALF_LEGAL_ACTION,  vActs);
     if ( vActs.empty() ) {
         //  先手に合法手が存在しない。  //
-        this->m_gcBoard.isCheckState(Common::PLAYER_WHITE,  bbCheck);
+        this->m_gcBoard.isCheckState(Common::PLAYER_BLACK,  bbCheck);
         if ( bbCheck.empty() ) {
             //  王手が掛かっていないので、ステイルメイトである。    //
             resVal  |=  Common::GAME_BLACK_WON_STALEMATE;
