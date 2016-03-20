@@ -85,7 +85,7 @@ enum
     /**
     **    後手の反則により先手の勝利。
     **/
-    GAME_BLACK_WON_W_VIOLATE    =   GAME_BLACK_WON | GAME_ENDED_VIOLATE,
+    GAME_BLACK_WON_W_VIOLATE    =  GAME_BLACK_WON | GAME_ENDED_VIOLATE,
 
     /**
     **    チェックメイトにより後手の勝利。
