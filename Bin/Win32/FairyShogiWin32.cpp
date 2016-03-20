@@ -123,7 +123,23 @@ CONSTEXPR_VAR   int
 START_ENGINE_BOTTOM     =  START_ENGINE_TOP + DICE_HEIGHT;
 
 CONSTEXPR_VAR   int
+UNDO_BUTTON_LEFT        =  CURRENT_DICE_LEFT;
+
+CONSTEXPR_VAR   int
+UNDO_BUTTON_TOP         =  CURRENT_DICE_BOTTOM + 32;
+
+CONSTEXPR_VAR   int
+UNDO_BUTTON_RIGHT       =  UNDO_BUTTON_LEFT + DICE_WIDTH;
+
+CONSTEXPR_VAR   int
+UNDO_BUTTON_BOTTOM      =  UNDO_BUTTON_TOP + DICE_HEIGHT;
+
+CONSTEXPR_VAR   int
 RESOURCE_ID_RUN_ENGINE  =  16;
+
+CONSTEXPR_VAR   int
+RESOURCE_ID_UNDO        =  14;
+
 
 Interface::BitmapImage      g_imgScreen;
 Interface::BitmapImage      g_imgDice;
@@ -253,8 +269,10 @@ onLButtonUp(
 
     Interface::ScreenLayer::EventResult
             evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
+
+    Interface::BoardScreen  & scrBoard  = g_scrBoard;
     Interface::BoardScreen::GameInterface  &
-            giGame  =  g_scrBoard.getGameController();
+            giGame  = scrBoard.getGameController();
 
     //  ダイス選択中。  //
     if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
@@ -273,7 +291,7 @@ onLButtonUp(
         const  PieceIndex   pidSel  = g_scrProm.getUserSelect();
         if ( pidSel >= 0 ) {
             g_scrProm.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-            g_scrBoard.setPromotionOption(pidSel);
+            scrBoard.setPromotionOption(pidSel);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
         ::UpdateWindow(hWnd);
@@ -306,10 +324,8 @@ onLButtonUp(
         Common::ActionView  actData;
         std::stringstream   ss;
 
-        g_scrBoard.clearSelection();
+        scrBoard.clearSelection();
 
-        Interface::BoardScreen::GameInterface  &
-                giGame  =  g_scrBoard.getGameController();
         if ( giGame.computeBestAction(actData) != ERR_SUCCESS ) {
             ::MessageBox(hWnd, "No Legal Actions", "GAME OVER", MB_OK);
             ::InvalidateRect(hWnd, NULL, FALSE);
@@ -330,21 +346,34 @@ onLButtonUp(
                         hWnd, ss.str().c_str(), "Best Move",
                         MB_OKCANCEL) == IDOK )
         {
-            g_scrBoard.playForward(actData);
+            scrBoard.playForward(actData);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
         ::UpdateWindow(hWnd);
         return ( 0 );
     }
 
-    evtRet  = g_scrBoard.onLButtonUp(fwKeys, xPos, yPos);
+
+    //  待ったボタン。  //
+    if (      (UNDO_BUTTON_LEFT <= xPos) && (xPos < UNDO_BUTTON_RIGHT)
+            && (UNDO_BUTTON_TOP <= yPos) && (yPos < UNDO_BUTTON_BOTTOM) )
+    {
+        //  待ったをする。  //
+        scrBoard.playBackward();
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
+        return ( 0 );
+    }
+
+    evtRet  = scrBoard.onLButtonUp(fwKeys, xPos, yPos);
     const   Interface::BoardScreen::ScreenState
-        bssCurStat  = g_scrBoard.getCurrentState();
+        bssCurStat  = scrBoard.getCurrentState();
 
     if ( bssCurStat == Interface::BoardScreen::BSLS_SHOW_PROMOTION )
     {
         const   Interface::BoardScreen::OptionArray
-            &vOpts  = g_scrBoard.getPromotionList();
+            &vOpts  = scrBoard.getPromotionList();
         g_scrProm.setSelectionList(vOpts);
         g_scrProm.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
     }
@@ -459,6 +488,16 @@ onPaint(
                 g_imgDice,
                 ((RESOURCE_ID_RUN_ENGINE % 6) * DICE_WIDTH),
                 ((RESOURCE_ID_RUN_ENGINE / 6) * DICE_HEIGHT) );
+    }
+
+    //  待ったボタンを表示する。    //
+    {
+        g_imgScreen.copyRectangle(
+                UNDO_BUTTON_LEFT,   UNDO_BUTTON_TOP,
+                DICE_WIDTH,         DICE_HEIGHT,
+                g_imgDice,
+                ((RESOURCE_ID_UNDO % 6) * DICE_WIDTH),
+                ((RESOURCE_ID_UNDO / 6) * DICE_HEIGHT) );
     }
 
     //  ダイス選択画面を表示する。  //
