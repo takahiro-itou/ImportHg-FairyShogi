@@ -38,6 +38,11 @@ enum  {
     MAX_TURN    = 1024
 };
 
+//========================================================================
+//
+//    Type Definitions.
+//
+
 //----------------------------------------------------------------
 /**
 **    勝利数の先手後手による内訳を管理する構造体。
@@ -84,30 +89,10 @@ struct  MatchResult
     TWinGamesDetail     wgdPlayer2;
 };
 
-//----------------------------------------------------------------
-/**   次のダイスを設定する。
-**
-**  @param [in,out] objGame
-**  @param [in,out] rndGen
-**/
-
-ErrCode
-setNextDice(
-        GameController   & objGame,
-        RandomGenerator  & rndGen)
-{
-    const  RandResult   rv  =  (rndGen.getNext() & RANDOM_MAX_VALUE);
-
-    if ( objGame.isCheckState(objGame.getCurrentPlayer()) ) {
-        objGame.setConstraint(Common::DICE_ANY_MOVE);
-        return ( ERR_SUCCESS );
-    }
-
-    const  int  rn
-        =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1) + 1;
-    objGame.setConstraint(rn);
-    return ( ERR_SUCCESS );
-}
+//========================================================================
+//
+//    Functions.
+//
 
 //----------------------------------------------------------------
 /**   対局結果を集計用の変数に加算する。
@@ -138,6 +123,67 @@ incrementWhiteWinCount(
 {
     ++  (pCount->wonWhite);
     ++  (pCount->wonTotal);
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+/**   勝率を計算する。
+**
+**  @param [in] numWon1
+**  @param [in] numWon2
+**/
+
+ErrCode
+computeWinPercent(
+        const  int  numWon1,
+        const  int  numWon2,
+        double  *   pwPoint,
+        double  *   pwMin95,
+        double  *   pwMax95,
+        double  *   pwMin99,
+        double  *   pwMax99)
+{
+    const  int  numGame = (numWon1 + numWon2);
+
+    double  chi;
+    int     nMin99  = -1,   nMax99  = -1;
+    int     nMin95  = -1,   nMax95  = -1;
+
+    for ( int i = 1; i < numGame; ++ i ) {
+        const  int  expWon1 = i;
+        const  int  expWon2 = (numGame - i);
+        chi = ((numWon1 - expWon1) * (numWon1 - expWon1)) / expWon1
+                + ((numWon2 - expWon2) * (numWon2 - expWon2)) / expWon2;
+
+        if ( chi < 3.841 ) {
+            if ( nMin95 < 0 ) {
+                nMin95  = expWon1;
+            } else {
+                nMax95  = expWon1;
+            }
+        }
+        if ( chi < 6.635 ) {
+            if ( nMin99 < 0 ) {
+                nMin99  = expWon1;
+            } else {
+                nMax99  = expWon1;
+            }
+        } else if ( nMax99 >= 0 ) {
+            break;
+        }
+    }
+
+    if ( nMin95 < 0 ) { nMin95 = 0; }
+    if ( nMin99 < 0 ) { nMin99 = 0; }
+    if ( nMax95 < 0 ) { nMax95 = numGame; }
+    if ( nMax99 < 0 ) { nMax99 = numGame; }
+
+    (* pwPoint) = (numWon1 * 100.0 / numGame);
+    (* pwMin95) = (nMin95  * 100.0 / numGame);
+    (* pwMax95) = (nMax95  * 100.0 / numGame);
+    (* pwMin99) = (nMin99  * 100.0 / numGame);
+    (* pwMax99) = (nMax99  * 100.0 / numGame);
+
     return ( ERR_SUCCESS );
 }
 
@@ -258,92 +304,64 @@ displayMatchResults(
 
     const  int  numWon1 = (amRets.wgdPlayer1.numTotalWons.wonTotal);
     const  int  numWon2 = (amRets.wgdPlayer2.numTotalWons.wonTotal);
-    const  int  numGame = (numWon1 + numWon2);
 
     //  プレーヤー１の勝率を計算する。  //
-    double  chi;
-    int     nMin99  = -1,   nMax99  = -1;
-    int     nMin95  = -1,   nMax95  = -1;
-
-    for ( int i = 1; i < numGame; ++ i ) {
-        const  int  expWon1 = i;
-        const  int  expWon2 = (numGame - i);
-        chi = ((numWon1 - expWon1) * (numWon1 - expWon1)) / expWon1
-                + ((numWon2 - expWon2) * (numWon2 - expWon2)) / expWon2;
-        if ( chi < 3.841 ) {
-            if ( nMin95 < 0 ) {
-                nMin95  = expWon1;
-            } else {
-                nMax95  = expWon1;
-            }
-        }
-        if ( chi < 6.635 ) {
-            if ( nMin99 < 0 ) {
-                nMin99  = expWon1;
-            } else {
-                nMax99  = expWon1;
-            }
-        } else if ( nMax99 >= 0 ) {
-            break;
-        }
-    }
-    if ( nMin95 < 0 ) { nMin95 = 0; }
-    if ( nMin99 < 0 ) { nMin99 = 0; }
-    if ( nMax95 < 0 ) { nMax95 = numGame; }
-    if ( nMax99 < 0 ) { nMax99 = numGame; }
+    double  dwpPoint;
+    double  dwpMin95,  dwpMax95;
+    double  dwpMin99,  dwpMax99;
+    computeWinPercent(
+            numWon1,    numWon2,
+            &dwpPoint,  &dwpMin95, &dwpMax95,  &dwpMin99, &dwpMax99);
     outStr  <<  "Player 1 Win Percent:\n"
-            <<  "(POINT)     : "    <<  (numWon1 * 100.0 / numGame)
+            <<  "(POINT)     : "    <<  (dwpPoint)
             <<  '%'     <<  std::endl
-            <<  "(95% CHI^2) : ("   <<  (nMin95 * 100.0 / numGame)
-            <<  " %, "  <<  (nMax95 * 100.0 / numGame)
+            <<  "(95% CHI^2) : ("
+            <<  (dwpMin95)  <<  " %, "  <<  (dwpMax95)
             <<  " %)"   <<  std::endl
-            <<  "(99% CHI^2) : ("   <<  (nMin99 * 100.0 / numGame)
-            <<  " %, "  <<  (nMax99 * 100.0 / numGame)
+            <<  "(99% CHI^2) : ("
+            <<  (dwpMin99)  <<  " %, "  <<  (dwpMax99)
             <<  " %)"   <<  std::endl;
 
     //  プレーヤー２の勝率を計算する。  //
-    nMin99  =  -1;
-    nMax99  =  -1;
-    nMin95  =  -1;
-    nMax95  =  -1;
-    for ( int i = 1; i < numGame; ++ i ) {
-        const  int  expWon2 = i;
-        const  int  expWon1 = (numGame - i);
-        chi = ((numWon1 - expWon1) * (numWon1 - expWon1)) / expWon1
-                + ((numWon2 - expWon2) * (numWon2 - expWon2)) / expWon2;
-        if ( chi < 3.841 ) {
-            if ( nMin95 < 0 ) {
-                nMin95  = expWon2;
-            } else {
-                nMax95  = expWon2;
-            }
-        }
-        if ( chi < 6.635 ) {
-            if ( nMin99 < 0 ) {
-                nMin99  = expWon2;
-            } else {
-                nMax99  = expWon2;
-            }
-        } else  if ( nMax99 >= 0 ) {
-            break;
-        }
-    }
-    if ( nMin95 < 0 ) { nMin95 = 0; }
-    if ( nMin99 < 0 ) { nMin99 = 0; }
-    if ( nMax95 < 0 ) { nMax95 = numGame; }
-    if ( nMax99 < 0 ) { nMax99 = numGame; }
+    computeWinPercent(
+            numWon2,    numWon1,
+            &dwpPoint,  &dwpMin95, &dwpMax95,  &dwpMin99, &dwpMax99);
     outStr  <<  "Player 2 Win Percent:\n"
-            <<  "(POINT)     : "    <<  (numWon2 * 100.0 / numGame)
+            <<  "(POINT)     : "    <<  (dwpPoint)
             <<  '%'     <<  std::endl
-            <<  "(95% CHI^2) : ("   <<  (nMin95 * 100.0 / numGame)
-            <<  " %, "  <<  (nMax95 * 100.0 / numGame)
+            <<  "(95% CHI^2) : ("
+            <<  (dwpMin95)  <<  " %, "  <<  (dwpMax95)
             <<  " %)"   <<  std::endl
-            <<  "(99% CHI^2) : ("   <<  (nMin99 * 100.0 / numGame)
-            <<  " %, "  <<  (nMax99 * 100.0 / numGame)
+            <<  "(99% CHI^2) : ("
+            <<  (dwpMin99)  <<  " %, "  <<  (dwpMax99)
             <<  " %)"   <<  std::endl;
 
-
     return ( outStr );
+}
+
+//----------------------------------------------------------------
+/**   次のダイスを設定する。
+**
+**  @param [in,out] objGame
+**  @param [in,out] rndGen
+**/
+
+ErrCode
+setNextDice(
+        GameController   & objGame,
+        RandomGenerator  & rndGen)
+{
+    const  RandResult   rv  =  (rndGen.getNext() & RANDOM_MAX_VALUE);
+
+    if ( objGame.isCheckState(objGame.getCurrentPlayer()) ) {
+        objGame.setConstraint(Common::DICE_ANY_MOVE);
+        return ( ERR_SUCCESS );
+    }
+
+    const  int  rn
+        =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1) + 1;
+    objGame.setConstraint(rn);
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
