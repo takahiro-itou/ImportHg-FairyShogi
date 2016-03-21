@@ -21,7 +21,6 @@
 #include    "FairyShogi/Game/BoardState.h"
 
 #include    <iostream>
-#include    <stdlib.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Engine  {
@@ -136,12 +135,7 @@ EngineLevel3::computeBestAction(
     int         scrTmr  =  -1;
     int         scrMax  =  -10000000;
 
-    if ( findCheckMateAction(curStat, piTurn, actList, &itrView) ) {
-        //  チェックメイトを発見したので、それを選択して終了。  //
-        std::cerr   <<  "CHECK MATE."   <<  std::endl;
-        actRet  =  (* itrView);
-        return ( ERR_SUCCESS );
-    }
+    const  PlayerIndex  piRival = piTurn ^ Common::PLAYER_OPPOSITE;
 
     for ( int r = 0;  r < numAct;  ++ r ) {
         BoardState::TBitBoard   bbCheck;
@@ -154,7 +148,7 @@ EngineLevel3::computeBestAction(
         int     cntLegSelf  =  0;
 
         vActsE.clear();
-        bsClone.makeLegalActionList(piTurn ^ 1,  0,  vActsE);
+        bsClone.makeLegalActionList(piRival,  0,  vActsE);
         cntLegOppn  =  vActsE.size();
 
         std::cerr   <<  "# INFO : "
@@ -168,7 +162,8 @@ EngineLevel3::computeBestAction(
                     <<  (actData.fpAfter)
                     <<  "...";
 
-        if ( bsClone.isCheckState(piTurn ^ 1,  bbCheck) > 0 ) {
+        if ( bsClone.isCheckState(piRival,  bbCheck) > 0 )
+        {
             if ( cntLegOppn == 0 ) {
                 //  チェックメイトなので、それを選択して勝ち。  //
                 std::cerr   <<  " CHECK MATE"   <<  std::endl;
@@ -198,7 +193,7 @@ EngineLevel3::computeBestAction(
 
                 ActionList  vActsT;
                 vActsT.clear();
-                bsClone2.makeLegalActionList(piTurn ^ 1,  0,  vActsT);
+                bsClone2.makeLegalActionList(piRival,  0,  vActsT);
                 if ( vActsT.empty() ) {
                     //  相手側の合法手が無い。勝ちの局面。  //
                     //  換言すると壱手詰めの詰めろの状態。  //
@@ -270,7 +265,7 @@ EngineLevel3::computeBestAction(
 
         //  相手の合法手の総数は既に計算済み。  //
         //  そこから期待値を算出する。          //
-        if ( bsClone.isCheckState(piTurn ^ 1, bbCheck) > 0 ) {
+        if ( bsClone.isCheckState(piRival,  bbCheck) > 0 ) {
             std::cerr   <<  "CHECK.";
             cntLegOppn  *=  3;
             scrCatchMe  =   scrAtkMaxs[5] * 6;

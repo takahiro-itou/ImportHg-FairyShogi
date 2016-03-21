@@ -20,6 +20,8 @@
 
 #include    "EngineImplements.h"
 
+#include    "FairyShogi/Common/MersenneTwister.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Engine  {
 
@@ -118,6 +120,18 @@ public:
 //
 //    Member Variables.
 //
+private:
+
+    typedef     Common::MersenneTwister         RandomGenerator;
+    typedef     RandomGenerator::TResultInt     RandResult;
+
+    enum  {
+        RANDOM_MAX_VALUE    =  RandomGenerator::MaxValue<28>::VALUE
+    };
+
+private:
+
+    RandomGenerator     m_rndGen;
 
 //========================================================================
 //

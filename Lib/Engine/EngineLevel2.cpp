@@ -21,7 +21,7 @@
 #include    "FairyShogi/Game/BoardState.h"
 
 #include    <iostream>
-#include    <stdlib.h>
+#include    <time.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Engine  {
@@ -42,8 +42,14 @@ namespace  Engine  {
 //
 
 EngineLevel2::EngineLevel2()
-    : Super()
+    : Super(),
+      m_rndGen()
 {
+#if defined( _DEBUG )
+    this->m_rndGen.setSeedValue(4357);
+#else
+    this->m_rndGen.setSeedValue( ::time(nullptr) );
+#endif
 }
 
 //----------------------------------------------------------------
@@ -118,6 +124,8 @@ EngineLevel2::computeBestAction(
     int             idxMin  =  0;
     double          scrMin  =  100000;
 
+    const  PlayerIndex  piRival = piTurn ^ Common::PLAYER_OPPOSITE;
+
     for ( int r = 0;  r < numAct;  ++ r ) {
         BoardState::TBitBoard   bbCheck;
 
@@ -126,7 +134,7 @@ EngineLevel2::computeBestAction(
         bsClone.playForward(actData);
 
         vActs.clear();
-        bsClone.makeLegalActionList(piTurn ^ 1,  0,  vActs);
+        bsClone.makeLegalActionList(piRival,  0,  vActs);
         size_t  cntLegs =  vActs.size();
 
         std::cerr   <<  "# INFO : "
@@ -139,13 +147,12 @@ EngineLevel2::computeBestAction(
                     <<  '='
                     <<  (actData.fpAfter)
                     <<  "...";
-        if ( bsClone.isCheckState(piTurn ^ 1,  bbCheck) > 0 ) {
+        if ( bsClone.isCheckState(piRival,  bbCheck) > 0 ) {
             if ( cntLegs == 0 ) {
                 //  チェックメイトなので、それを選択して勝ち。  //
                 std::cerr   <<  " CHECK MATE"   <<  std::endl;
-                idxMin  =  r;
-                scrMin  =  0;
-                break;
+                actRet  =  actList[r];
+                return ( ERR_SUCCESS );
             }
         } else {
             if ( cntLegs == 0 ) {
@@ -166,7 +173,7 @@ EngineLevel2::computeBestAction(
                 bsClone2.playForward(* itr);
 
                 vActs2.clear();
-                bsClone2.makeLegalActionList(piTurn ^ 1,  0,  vActs2);
+                bsClone2.makeLegalActionList(piRival,  0,  vActs2);
                 if ( vActs2.empty() ) {
                     //  相手側の合法手が無い。勝ちの局面。  //
                     //  換言すると壱手詰めの詰めろの状態。  //
@@ -188,13 +195,15 @@ EngineLevel2::computeBestAction(
         }
 
         //  それ以外は、相手の合法手を減らす。  //
-        if ( bsClone.isCheckState(piTurn ^ 1, bbCheck) > 0 ) {
+        if ( bsClone.isCheckState(piRival,  bbCheck) > 0 ) {
             std::cerr   <<  "CHECK.";
             cntLegs *= 3;
         }
 
-        const   double  dblRnd  =  (rand() * 4.0 / RAND_MAX);
-        const   double  scrCur  =  (cntLegs) * (dblRnd + 8);
+        const  RandResult
+            rndRet  =  (this->m_rndGen.getNext() & RANDOM_MAX_VALUE);
+        const   double  dblRnd  =  (rndRet * 4.0 / RANDOM_MAX_VALUE);
+        const   double  scrCur  =  (cntLegs) * (dblRnd + 8.0);
         if ( scrCur < scrMin ) {
             idxMin  =  r;
             scrMin  =  scrCur;
