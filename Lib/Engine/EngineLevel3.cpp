@@ -10,12 +10,12 @@
 *************************************************************************/
 
 /**
-**      An Implementation of EngineLevel1 class.
+**      An Implementation of EngineLevel3 class.
 **
-**      @file       Engine/EngineLevel1.cpp
+**      @file       Engine/EngineLevel3.cpp
 **/
 
-#include    "EngineLevel1.h"
+#include    "EngineLevel3.h"
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Game/BoardState.h"
@@ -46,7 +46,7 @@ s_tblPieceScore[21] =  {
 
 //========================================================================
 //
-//    EngineLevel1  class.
+//    EngineLevel3  class.
 //
 
 //========================================================================
@@ -59,7 +59,7 @@ s_tblPieceScore[21] =  {
 //  （デフォルトコンストラクタ）。
 //
 
-EngineLevel1::EngineLevel1()
+EngineLevel3::EngineLevel3()
     : Super()
 {
 }
@@ -69,7 +69,7 @@ EngineLevel1::EngineLevel1()
 //  （デストラクタ）。
 //
 
-EngineLevel1::~EngineLevel1()
+EngineLevel3::~EngineLevel3()
 {
 }
 
@@ -98,7 +98,7 @@ EngineLevel1::~EngineLevel1()
 //
 
 ErrCode
-EngineLevel1::computeBestAction(
+EngineLevel3::computeBestAction(
         const  ViewBuffer   &vbCur,
         const  PlayerIndex  piTurn,
         const  TConstraint  vCons,
