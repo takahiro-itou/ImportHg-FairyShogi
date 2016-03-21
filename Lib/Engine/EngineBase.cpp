@@ -17,7 +17,7 @@
 
 #include    "FairyShogi/Engine/EngineBase.h"
 
-#include    "EngineLevel0.h"
+#include    "EngineLevel2.h"
 #include    "EngineLevel1.h"
 
 #include    "FairyShogi/Common/ActionView.h"
@@ -52,8 +52,8 @@ EngineBase::createEngine(
 
     if ( (engName == "default") || (engName == "level1") ) {
         ptrEng  =  new  EngineLevel1;
-    } else if ( engName == "level0" ) {
-        ptrEng  =  new  EngineLevel0;
+    } else if ( engName == "level2" ) {
+        ptrEng  =  new  EngineLevel2;
     } else {
         ptrEng  =  new  EngineLevel1;
     }

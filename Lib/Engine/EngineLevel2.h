@@ -10,13 +10,13 @@
 *************************************************************************/
 
 /**
-**      An Interface of EngineLevel0 class.
+**      An Interface of EngineLevel2 class.
 **
-**      @file       Engine/EngineLevel0.h
+**      @file       Engine/EngineLevel2.h
 **/
 
-#if !defined( FAIRYSHOGI_ENGINE_INCLUDED_ENGINE_LEVEL_0_H )
-#    define   FAIRYSHOGI_ENGINE_INCLUDED_ENGINE_LEVEL_0_H
+#if !defined( FAIRYSHOGI_ENGINE_INCLUDED_ENGINE_LEVEL_2_H )
+#    define   FAIRYSHOGI_ENGINE_INCLUDED_ENGINE_LEVEL_2_H
 
 #include    "EngineImplements.h"
 
@@ -25,13 +25,13 @@ namespace  Engine  {
 
 //========================================================================
 //
-//    EngineLevel0  class.
+//    EngineLevel2  class.
 //
 /**
 **    思考エンジンクラス。
 **/
 
-class  EngineLevel0 : public  EngineImplements
+class  EngineLevel2 : public  EngineImplements
 {
 
 //========================================================================
@@ -45,14 +45,14 @@ public:
     **  （デフォルトコンストラクタ）。
     **
     **/
-    EngineLevel0();
+    EngineLevel2();
 
     //----------------------------------------------------------------
     /**   インスタンスを破棄する
     **  （デストラクタ）。
     **
     **/
-    virtual  ~EngineLevel0();
+    virtual  ~EngineLevel2();
 
 //========================================================================
 //
@@ -128,12 +128,12 @@ private:
     typedef     EngineImplements    Super;
 
 private:
-    typedef     EngineLevel0        This;
-    EngineLevel0        (const  This  &);
+    typedef     EngineLevel2        This;
+    EngineLevel2        (const  This  &);
     This &  operator =  (const  This  &);
 public:
     //  テストクラス。  //
-    friend  class   EngineLevel0Test;
+    friend  class   EngineLevel2Test;
 };
 
 }   //  End of namespace  Engine

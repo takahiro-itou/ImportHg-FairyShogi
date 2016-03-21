@@ -10,12 +10,12 @@
 *************************************************************************/
 
 /**
-**      An Implementation of EngineLevel0 class.
+**      An Implementation of EngineLevel2 class.
 **
-**      @file       Engine/EngineLevel0.cpp
+**      @file       Engine/EngineLevel2.cpp
 **/
 
-#include    "EngineLevel0.h"
+#include    "EngineLevel2.h"
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Game/BoardState.h"
@@ -28,7 +28,7 @@ namespace  Engine  {
 
 //========================================================================
 //
-//    EngineLevel0  class.
+//    EngineLevel2  class.
 //
 
 //========================================================================
@@ -41,7 +41,7 @@ namespace  Engine  {
 //  （デフォルトコンストラクタ）。
 //
 
-EngineLevel0::EngineLevel0()
+EngineLevel2::EngineLevel2()
     : Super()
 {
 }
@@ -51,7 +51,7 @@ EngineLevel0::EngineLevel0()
 //  （デストラクタ）。
 //
 
-EngineLevel0::~EngineLevel0()
+EngineLevel2::~EngineLevel2()
 {
 }
 
@@ -80,7 +80,7 @@ EngineLevel0::~EngineLevel0()
 //
 
 ErrCode
-EngineLevel0::computeBestAction(
+EngineLevel2::computeBestAction(
         const  ViewBuffer   &vbCur,
         const  PlayerIndex  piTurn,
         const  TConstraint  vCons,
