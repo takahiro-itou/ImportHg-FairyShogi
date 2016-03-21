@@ -526,7 +526,7 @@ executeAutoMatches(
     }
 
     outStr  <<  "----------------------------------------"
-            <<  "\nSTANDAED MATCH RESULTS:\n";
+            <<  "\nSTANDARD MATCH RESULTS:\n";
     displayMatchResults( amRes1,  outStr );
 
     outStr  <<  "\n\nRANDOM OPENING MATCH RESULTS:\n";
