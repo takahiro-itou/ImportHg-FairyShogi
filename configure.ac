@@ -44,8 +44,8 @@ dnl
 dnl   デフォルトのコンパイルオプション
 dnl
 
-: ${CFLAGS:='-O0  -g'}
-: ${CXXFLAGS:='-O0  -g'}
+: ${CFLAGS:='-O0  -g  -D_DEBUG'}
+: ${CXXFLAGS:='-O0  -g  -D_DEBUG'}
 
 CFLAGS="${CFLAGS}  -std=c++11  -Wall"
 CXXFLAGS="${CXXFLAGS}  -std=c++11  -Wall  -Weffc++"
