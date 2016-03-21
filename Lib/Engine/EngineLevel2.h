@@ -10,13 +10,13 @@
 *************************************************************************/
 
 /**
-**      An Interface of EngineLevel1 class.
+**      An Interface of EngineLevel2 class.
 **
-**      @file       Engine/EngineLevel1.h
+**      @file       Engine/EngineLevel2.h
 **/
 
-#if !defined( FAIRYSHOGI_ENGINE_INCLUDED_ENGINE_LEVEL_1_H )
-#    define   FAIRYSHOGI_ENGINE_INCLUDED_ENGINE_LEVEL_1_H
+#if !defined( FAIRYSHOGI_ENGINE_INCLUDED_ENGINE_LEVEL_2_H )
+#    define   FAIRYSHOGI_ENGINE_INCLUDED_ENGINE_LEVEL_2_H
 
 #include    "EngineImplements.h"
 
@@ -25,13 +25,13 @@ namespace  Engine  {
 
 //========================================================================
 //
-//    EngineLevel1  class.
+//    EngineLevel2  class.
 //
 /**
 **    思考エンジンクラス。
 **/
 
-class  EngineLevel1 : public  EngineImplements
+class  EngineLevel2 : public  EngineImplements
 {
 
 //========================================================================
@@ -45,14 +45,14 @@ public:
     **  （デフォルトコンストラクタ）。
     **
     **/
-    EngineLevel1();
+    EngineLevel2();
 
     //----------------------------------------------------------------
     /**   インスタンスを破棄する
     **  （デストラクタ）。
     **
     **/
-    virtual  ~EngineLevel1();
+    virtual  ~EngineLevel2();
 
 //========================================================================
 //
@@ -111,6 +111,11 @@ public:
 
 //========================================================================
 //
+//    For Internal Use Only.
+//
+
+//========================================================================
+//
 //    Member Variables.
 //
 
@@ -123,12 +128,12 @@ private:
     typedef     EngineImplements    Super;
 
 private:
-    typedef     EngineLevel1        This;
-    EngineLevel1        (const  This  &);
+    typedef     EngineLevel2        This;
+    EngineLevel2        (const  This  &);
     This &  operator =  (const  This  &);
 public:
     //  テストクラス。  //
-    friend  class   EngineLevel1Test;
+    friend  class   EngineLevel2Test;
 };
 
 }   //  End of namespace  Engine
