@@ -84,8 +84,8 @@ struct  TWinGamesDetail
 **/
 struct  MatchResult
 {
-    int     numGame;
-    int     numDraw;
+    int                 numGame;
+    int                 numDraw;
     TWinGamesDetail     wgdPlayer1;
     TWinGamesDetail     wgdPlayer2;
 };
@@ -279,6 +279,49 @@ countMatchResultWhiteBlack(
 }
 
 //----------------------------------------------------------------
+/**   勝利数の勝敗条件による内訳を表示する。
+**
+**/
+
+std::ostream  &
+displayWinGameDetail(
+        const  TWinGamesDetail  &wgdRets,
+        std::ostream            &outStr)
+{
+    outStr  <<  "Total Wons  = "
+            <<  (wgdRets.numTotalWons.wonTotal)
+            <<  "( BLACK : "    <<  (wgdRets.numTotalWons.wonBlack)
+            <<  " ,  WHITE : "  <<  (wgdRets.numTotalWons.wonWhite)
+            <<  " )\n";
+
+    outStr  <<  "Check Mate  = "
+            <<  (wgdRets.numCheckMate.wonTotal)
+            <<  "( BLACK : "    <<  (wgdRets.numCheckMate.wonBlack)
+            <<  " ,  WHITE : "  <<  (wgdRets.numCheckMate.wonWhite)
+            <<  " )\n";
+
+    outStr  <<  "Stale Mate   = "
+            <<  (wgdRets.numStaleMate.wonTotal)
+            <<  "( BLACK : "    <<  (wgdRets.numStaleMate.wonBlack)
+            <<  " ,  WHITE : "  <<  (wgdRets.numStaleMate.wonWhite)
+            <<  " )\n";
+
+    outStr  <<  "Rival Resign = "
+            <<  (wgdRets.numOppResign.wonTotal)
+            <<  "( BLACK : "    <<  (wgdRets.numOppResign.wonBlack)
+            <<  " ,  WHITE : "  <<  (wgdRets.numOppResign.wonWhite)
+            <<  " )\n";
+
+    outStr  <<  "Rival Fouls  = "
+            <<  (wgdRets.numViolation.wonTotal)
+            <<  "( BLACK : "    <<  (wgdRets.numViolation.wonBlack)
+            <<  " ,  WHITE : "  <<  (wgdRets.numViolation.wonWhite)
+            <<  " )\n";
+
+    return ( outStr );
+}
+
+//----------------------------------------------------------------
 /**   自動対局の集計結果を表示する。
 **
 **/
@@ -337,6 +380,15 @@ displayMatchResults(
             <<  "(CHI^2 99% TEST) : ("
             <<  (dwpMin99)  <<  " %, "  <<  (dwpMax99)
             <<  " %)"   <<  std::endl;
+
+    //  勝敗の内訳を詳細表示する。  //
+    outStr  <<  "\nPlayer 1 Win Details:\n";
+    displayWinGameDetail(amRets.wgdPlayer1,  outStr);
+
+    outStr  <<  "\nPlayer 2 Win Details:\n";
+    displayWinGameDetail(amRets.wgdPlayer2,  outStr);
+
+    outStr  <<  std::endl;
 
     return ( outStr );
 }
