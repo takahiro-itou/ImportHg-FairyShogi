@@ -462,6 +462,7 @@ executeAutoMatches(
         outStr  <<  "Random Opening Game # "    <<  i
                 <<  " (TOP) @ START.."  <<  std::endl;
 
+        objGame.resetGame();
         for ( int j = 0 ; j < 4; ++ j ) {
             objGame.makeLegalActionList(
                     Common::ALF_LEGAL_ACTION,  Common::DICE_ANY_MOVE,
@@ -487,6 +488,7 @@ executeAutoMatches(
         outStr  <<  "Random Opening Game # "    <<  i
                 <<  " (BOT) @ START.."  <<  std::endl;
 
+        objGame.resetGame();
         for ( int j = 0 ; j < 4; ++ j ) {
             objGame.makeLegalActionList(
                     Common::ALF_LEGAL_ACTION,  Common::DICE_ANY_MOVE,
