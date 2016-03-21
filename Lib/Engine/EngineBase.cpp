@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Engine/EngineBase.h"
 
+#include    "EngineLevel0.h"
+#include    "EngineLevel1.h"
 #include    "EngineLevel2.h"
 #include    "EngineLevel3.h"
 
@@ -25,6 +27,8 @@
 #include    "FairyShogi/Game/BoardState.h"
 
 #include    <iostream>
+#include    <sstream>
+#include    <stdexcept>
 #include    <stdlib.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -54,8 +58,17 @@ EngineBase::createEngine(
         ptrEng  =  new  EngineLevel3;
     } else if ( engName == "level2" ) {
         ptrEng  =  new  EngineLevel2;
+    } else if ( engName == "level1" ) {
+        ptrEng  =  new  EngineLevel1;
+    } else if ( engName == "level0" ) {
+        ptrEng  =  new  EngineLevel0;
     } else {
-        ptrEng  =  new  EngineLevel3;
+        std::stringstream   ss;
+        ss  <<  "Invalid Engine Name ["
+            <<  engName
+            <<  ']';
+        std::cerr  << ss.str()  <<  std::endl;
+        throw  std::runtime_error(ss.str());
     }
 
     return ( ptrEng );

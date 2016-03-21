@@ -45,7 +45,11 @@ EngineLevel0::EngineLevel0()
     : Super(),
       m_rndGen()
 {
+#if defined( _DEBUG )
+    this->m_rndGen.setSeedValue(4357);
+#else
     this->m_rndGen.setSeedValue( ::time(nullptr) );
+#endif
 }
 
 //----------------------------------------------------------------
