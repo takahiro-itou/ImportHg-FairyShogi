@@ -388,11 +388,10 @@ executeSingleMatch(
         }
         objGame.playForward(actData);
         objGame.setPlayerToNext();
-        outStr  <<  "\r# INFO : Turn "  <<  tc;
     }
 
-    outStr  <<  "\r# INFO : Game Finished : "   <<  tc
-            <<  std::endl;
+    outStr  <<  "# INFO : Game Finished: "  <<  tc
+            <<  "  Turns."  <<  std::endl;
 
     objGame.testGameStateResult();
     return ( objGame.getGameResult() );
