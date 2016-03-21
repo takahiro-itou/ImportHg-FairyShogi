@@ -388,10 +388,11 @@ executeSingleMatch(
         }
         objGame.playForward(actData);
         objGame.setPlayerToNext();
+        outStr  <<  "\r# INFO : Turn "  <<  tc;
     }
 
-    outStr  <<  "# INFO : Game Finished: "  <<  tc
-            <<  "  Turns."  <<  std::endl;
+    outStr  <<  "\r# INFO : Game Finished : "
+            <<  tc  <<  "  Turns."  <<  std::endl;
 
     objGame.testGameStateResult();
     return ( objGame.getGameResult() );
@@ -467,7 +468,10 @@ executeAutoMatches(
         outStr  <<  "Random Opening Game # "    <<  i
                 <<  " (TOP) @ START.."  <<  std::endl;
 
+        objGame.setComputerEngine(Common::PLAYER_BLACK,  engName1);
+        objGame.setComputerEngine(Common::PLAYER_WHITE,  engName2);
         objGame.resetGame();
+
         for ( int j = 0 ; j < 4; ++ j ) {
             objGame.makeLegalActionList(
                     Common::ALF_LEGAL_ACTION,  Common::DICE_ANY_MOVE,
@@ -477,9 +481,7 @@ executeAutoMatches(
             objGame.playForward(actList[iRndSel]);
         }
 
-        objGame.setComputerEngine(Common::PLAYER_BLACK,  engName1);
-        objGame.setComputerEngine(Common::PLAYER_WHITE,  engName2);
-
+        outStr  <<  "# INFO : Randomize Finished."  <<  std::endl;
         retVal  =  executeSingleMatch(objGame, rndGen, outStr);
         outStr  <<  "Random Opening Game # "    <<  i
                 <<  " (TOP) @ END. RESULT = "   <<  retVal  <<  std::endl;
@@ -493,7 +495,10 @@ executeAutoMatches(
         outStr  <<  "Random Opening Game # "    <<  i
                 <<  " (BOT) @ START.."  <<  std::endl;
 
+        objGame.setComputerEngine(Common::PLAYER_BLACK,  engName2);
+        objGame.setComputerEngine(Common::PLAYER_WHITE,  engName1);
         objGame.resetGame();
+
         for ( int j = 0 ; j < 4; ++ j ) {
             objGame.makeLegalActionList(
                     Common::ALF_LEGAL_ACTION,  Common::DICE_ANY_MOVE,
@@ -503,9 +508,7 @@ executeAutoMatches(
             objGame.playForward(actList[iRndSel]);
         }
 
-        objGame.setComputerEngine(Common::PLAYER_BLACK,  engName2);
-        objGame.setComputerEngine(Common::PLAYER_WHITE,  engName1);
-        objGame.resetGame();
+        outStr  <<  "# INFO : Randomize Finished."  <<  std::endl;
         retVal  =  executeSingleMatch(objGame, rndGen, outStr);
         outStr  <<  "Random Opening Game # "    <<  i
                 <<  " (BOT) @ END. RESULT = "   <<  retVal  <<  std::endl;
