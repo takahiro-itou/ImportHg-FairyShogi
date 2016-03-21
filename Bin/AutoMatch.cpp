@@ -210,6 +210,7 @@ countMatchResult(
     } else {
         ++  (pMatch->numDraw);
     }
+    ++  (pMatch->numGame);
 
     if ( retVal == Common::GAME_BLACK_WON_CHECKMATE ) {
         incrementBlackWinCount( &(pBlack->numCheckMate) );
@@ -314,12 +315,12 @@ displayMatchResults(
             numWon1,    numWon2,
             &dwpPoint,  &dwpMin95, &dwpMax95,  &dwpMin99, &dwpMax99);
     outStr  <<  "Player 1 Win Percent:\n"
-            <<  "(POINT)     : "    <<  (dwpPoint)
+            <<  "(POINT ESTIMATE) : "   <<  (dwpPoint)
             <<  '%'     <<  std::endl
-            <<  "(95% CHI^2) : ("
+            <<  "(CHI^2 95% TEST) : ("
             <<  (dwpMin95)  <<  " %, "  <<  (dwpMax95)
             <<  " %)"   <<  std::endl
-            <<  "(99% CHI^2) : ("
+            <<  "(CHI^2 99% TEST) : ("
             <<  (dwpMin99)  <<  " %, "  <<  (dwpMax99)
             <<  " %)"   <<  std::endl;
 
@@ -328,12 +329,12 @@ displayMatchResults(
             numWon2,    numWon1,
             &dwpPoint,  &dwpMin95, &dwpMax95,  &dwpMin99, &dwpMax99);
     outStr  <<  "Player 2 Win Percent:\n"
-            <<  "(POINT)     : "    <<  (dwpPoint)
+            <<  "(POINT ESTIMATE) : "   <<  (dwpPoint)
             <<  '%'     <<  std::endl
-            <<  "(95% CHI^2) : ("
+            <<  "(CHI^2 95% TEST) : ("
             <<  (dwpMin95)  <<  " %, "  <<  (dwpMax95)
             <<  " %)"   <<  std::endl
-            <<  "(99% CHI^2) : ("
+            <<  "(CHI^2 99% TEST) : ("
             <<  (dwpMin99)  <<  " %, "  <<  (dwpMax99)
             <<  " %)"   <<  std::endl;
 
