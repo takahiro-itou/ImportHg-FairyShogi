@@ -408,8 +408,10 @@ executeAutoMatches(
         const  int          numGame,
         std::ostream        &outStr)
 {
-    MatchResult     amRes;
-    ::memset( &amRes, 0, sizeof(amRes) );
+    MatchResult     amRes1;
+    MatchResult     amRes2;
+    ::memset( &amRes1, 0, sizeof(amRes1) );
+    ::memset( &amRes2, 0, sizeof(amRes2) );
 
     RandomGenerator     rndGen;
     GameController      objGame;
@@ -430,7 +432,7 @@ executeAutoMatches(
         retVal  =  executeSingleMatch(objGame, rndGen);
         outStr  <<  "Game # "   <<  i
                 <<  " (TOP) @ END. RESULT = "   <<  retVal  <<  std::endl;
-        countMatchResultBlackWhite(retVal,  &amRes);
+        countMatchResultBlackWhite(retVal,  &amRes1);
         outStr  <<  std::endl;
 
         //--------------------------------------------------------------//
@@ -446,12 +448,71 @@ executeAutoMatches(
         retVal  =  executeSingleMatch(objGame, rndGen);
         outStr  <<  "Game # "   <<  i
                 <<  " (BOT) @ END. RESULT = "   <<  retVal  <<  std::endl;
-        countMatchResultWhiteBlack(retVal,  &amRes);
+        countMatchResultWhiteBlack(retVal,  &amRes1);
         outStr  <<  std::endl;
     }
 
-    outStr  <<  "----------------------------------------\nRESULTS:\n";
-    displayMatchResults(amRes, outStr)  <<  std::endl;
+    //  ランダムオープニングの対局を繰り返し行う。  //
+    GameController::ActionViewList  actList;
+    for ( int i = 1 ; i <= numGame; ++ i ) {
+        //--------------------------------------------------------------//
+        //    プレーヤー１を先手、プレーヤー２を後手で対局する。        //
+        //--------------------------------------------------------------//
+        rndGen.setSeedValue(i);
+        outStr  <<  "Random Opening Game # "    <<  i
+                <<  " (TOP) @ START.."  <<  std::endl;
+
+        for ( int j = 0 ; j < 4; ++ j ) {
+            objGame.makeLegalActionList(
+                    Common::ALF_LEGAL_ACTION,  Common::DICE_ANY_MOVE,
+                    actList);
+            const  size_t  numActs  = actList.size();
+            const  int     iRndSel  = rndGen.getNext() % numActs;
+            objGame.playForward(actList[iRndSel]);
+        }
+
+        objGame.setComputerEngine(Common::PLAYER_BLACK,  engName1);
+        objGame.setComputerEngine(Common::PLAYER_WHITE,  engName2);
+
+        retVal  =  executeSingleMatch(objGame, rndGen);
+        outStr  <<  "Random Opening Game # "    <<  i
+                <<  " (TOP) @ END. RESULT = "   <<  retVal  <<  std::endl;
+        countMatchResultBlackWhite(retVal,  &amRes1);
+        outStr  <<  std::endl;
+
+        //--------------------------------------------------------------//
+        //    プレーヤー１を後手、プレーヤー２を先手で対局する。        //
+        //--------------------------------------------------------------//
+        rndGen.setSeedValue(i);
+        outStr  <<  "Random Opening Game # "    <<  i
+                <<  " (BOT) @ START.."  <<  std::endl;
+
+        for ( int j = 0 ; j < 4; ++ j ) {
+            objGame.makeLegalActionList(
+                    Common::ALF_LEGAL_ACTION,  Common::DICE_ANY_MOVE,
+                    actList);
+            const  size_t  numActs  = actList.size();
+            const  int     iRndSel  = rndGen.getNext() % numActs;
+            objGame.playForward(actList[iRndSel]);
+        }
+
+        objGame.setComputerEngine(Common::PLAYER_BLACK,  engName2);
+        objGame.setComputerEngine(Common::PLAYER_WHITE,  engName1);
+        objGame.resetGame();
+        retVal  =  executeSingleMatch(objGame, rndGen);
+        outStr  <<  "Random Opening Game # "    <<  i
+                <<  " (BOT) @ END. RESULT = "   <<  retVal  <<  std::endl;
+        countMatchResultWhiteBlack(retVal,  &amRes1);
+        outStr  <<  std::endl;
+    }
+
+    outStr  <<  "----------------------------------------"
+            <<  "\nSTANDAED MATCH RESULTS:\n";
+    displayMatchResults( amRes1,  outStr );
+
+    outStr  <<  "\n\nRANDOM OPENING MATCH RESULTS:\n";
+    displayMatchResults( amRes2,  outStr );
+    outStr  <<  "----------------------------------------"  <<  std::endl;
 
     return ( BOOL_TRUE );
 }
