@@ -374,19 +374,25 @@ setNextDice(
 
 GameResultVals
 executeSingleMatch(
-        GameController   & objGame,
-        RandomGenerator  & rndGen)
+        GameController   &  objGame,
+        RandomGenerator  &  rndGen,
+        std::ostream     &  outStr)
 {
     Common::ActionView  actData;
+    int                 tc;
 
-    for ( int i = 0; i < MAX_TURN; ++ i ) {
+    for ( tc = 0; tc < MAX_TURN; ++ tc ) {
         setNextDice(objGame, rndGen);
         if ( objGame.computeBestAction(actData) != ERR_SUCCESS ) {
             break;
         }
         objGame.playForward(actData);
         objGame.setPlayerToNext();
+        outStr  <<  "\r# INFO : Turn "  <<  tc;
     }
+
+    outStr  <<  "\r# INFO : Game Finished : "   <<  tc
+            <<  std::endl;
 
     objGame.testGameStateResult();
     return ( objGame.getGameResult() );
@@ -429,7 +435,7 @@ executeAutoMatches(
         objGame.setComputerEngine(Common::PLAYER_BLACK,  engName1);
         objGame.setComputerEngine(Common::PLAYER_WHITE,  engName2);
         objGame.resetGame();
-        retVal  =  executeSingleMatch(objGame, rndGen);
+        retVal  =  executeSingleMatch(objGame, rndGen, outStr);
         outStr  <<  "Game # "   <<  i
                 <<  " (TOP) @ END. RESULT = "   <<  retVal  <<  std::endl;
         countMatchResultBlackWhite(retVal,  &amRes1);
@@ -445,7 +451,7 @@ executeAutoMatches(
         objGame.setComputerEngine(Common::PLAYER_BLACK,  engName2);
         objGame.setComputerEngine(Common::PLAYER_WHITE,  engName1);
         objGame.resetGame();
-        retVal  =  executeSingleMatch(objGame, rndGen);
+        retVal  =  executeSingleMatch(objGame, rndGen, outStr);
         outStr  <<  "Game # "   <<  i
                 <<  " (BOT) @ END. RESULT = "   <<  retVal  <<  std::endl;
         countMatchResultWhiteBlack(retVal,  &amRes1);
@@ -475,10 +481,10 @@ executeAutoMatches(
         objGame.setComputerEngine(Common::PLAYER_BLACK,  engName1);
         objGame.setComputerEngine(Common::PLAYER_WHITE,  engName2);
 
-        retVal  =  executeSingleMatch(objGame, rndGen);
+        retVal  =  executeSingleMatch(objGame, rndGen, outStr);
         outStr  <<  "Random Opening Game # "    <<  i
                 <<  " (TOP) @ END. RESULT = "   <<  retVal  <<  std::endl;
-        countMatchResultBlackWhite(retVal,  &amRes1);
+        countMatchResultBlackWhite(retVal,  &amRes2);
         outStr  <<  std::endl;
 
         //--------------------------------------------------------------//
@@ -501,10 +507,10 @@ executeAutoMatches(
         objGame.setComputerEngine(Common::PLAYER_BLACK,  engName2);
         objGame.setComputerEngine(Common::PLAYER_WHITE,  engName1);
         objGame.resetGame();
-        retVal  =  executeSingleMatch(objGame, rndGen);
+        retVal  =  executeSingleMatch(objGame, rndGen, outStr);
         outStr  <<  "Random Opening Game # "    <<  i
                 <<  " (BOT) @ END. RESULT = "   <<  retVal  <<  std::endl;
-        countMatchResultWhiteBlack(retVal,  &amRes1);
+        countMatchResultWhiteBlack(retVal,  &amRes2);
         outStr  <<  std::endl;
     }
 
