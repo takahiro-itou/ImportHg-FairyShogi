@@ -26,10 +26,11 @@
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
 
-typedef     Interface::GameController       GameController;
+typedef     Interface::GameController           GameController;
+typedef     GameController::ActionViewList      ActionViewList;
 
-typedef     Common::MersenneTwister         RandomGenerator;
-typedef     RandomGenerator::TResultInt     RandResult;
+typedef     Common::MersenneTwister             RandomGenerator;
+typedef     RandomGenerator::TResultInt         RandResult;
 
 static  CONSTEXPR_VAR   RandResult
 RANDOM_MAX_VALUE    =  RandomGenerator::MaxValue<28>::VALUE;
@@ -379,16 +380,24 @@ executeSingleMatch(
         std::ostream     &  outStr)
 {
     Common::ActionView  actData;
+    ActionViewList      actList;
     int                 tc;
 
     for ( tc = 0; tc < MAX_TURN; ++ tc ) {
         setNextDice(objGame, rndGen);
+
+        objGame.makeLegalActionList(
+                Common::ALF_LEGAL_ACTION,
+                objGame.getConstraint(),
+                actList);
+        outStr  <<  "\r# INFO : Turn "  <<  (tc+1)  <<  " @ "
+                <<  (actList.size())    <<  " Legals.";
+
         if ( objGame.computeBestAction(actData) != ERR_SUCCESS ) {
             break;
         }
         objGame.playForward(actData);
         objGame.setPlayerToNext();
-        outStr  <<  "\r# INFO : Turn "  <<  tc;
     }
 
     outStr  <<  "\r# INFO : Game Finished : "
