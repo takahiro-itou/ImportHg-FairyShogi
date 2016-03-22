@@ -121,7 +121,7 @@ EngineImplements::findCheckMateActions(
     }
 
     ActionCount     retCnt  = 0;
-    for ( int i = 0; i < 6; ++ i ) {
+    for ( int i = 0; i < Common::DICE_MAX_VALUE; ++ i ) {
         if ( nCounts[i] < 0 ) {
             //  この目では合法手が無いので、六として扱う。  //
             nCounts[i]  = nCounts[ENGINE_IDICE_ANY_MOVE];

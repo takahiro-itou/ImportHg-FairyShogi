@@ -213,8 +213,6 @@ LRESULT
 onLButtonUpInDiceScreen()
 {
     Interface::BoardScreen  & scrBoard  = g_scrBoard;
-    Interface::BoardScreen::GameInterface  &
-            giGame  = scrBoard.getGameController();
 
     const  Interface::ChoiceScreen::ChoiceIndex
         pidSel  = g_scrDice.getUserSelect();
