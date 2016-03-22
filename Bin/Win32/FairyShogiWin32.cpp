@@ -20,8 +20,10 @@
 #include    "BoardScreen.h"
 #include    "DiceScreen.h"
 #include    "PromotionScreen.h"
+#include    "Resources.h"
 
 #include    "FairyShogi/Common/ActionView.h"
+#include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Common/MersenneTwister.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
 
@@ -35,10 +37,6 @@
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINGDI_H )
 #    include    <Wingdi.h>
 #    define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINGDI_H
-#endif
-
-#if !defined( UTL_HELP_UNUSED_ARGUMENT )
-#    define     UTL_HELP_UNUSED_ARGUMENT(var)   (void)(var)
 #endif
 
 #include    <cstdlib>
@@ -635,6 +633,10 @@ WinMain(
         return ( 0 );
     }
 
+    //  メニューを作成する。    //
+    HMENU   hmMain  =  createMainMenu();
+
+    //  ウィンドウ作成情報。    //
     CREATESTRUCT    cs;
     cs.dwExStyle    =   WS_EX_CLIENTEDGE;
     cs.style        =   WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
@@ -645,16 +647,13 @@ WinMain(
     cs.cx           =   WINDOW_WIDTH;
     cs.cy           =   WINDOW_HEIGHT;
 
-    //  メニューを作成する。    //
-    HMENU   hMenu   = (NULL);
-
     //  ウィンドウを作成する。  //
     hWnd    = ::CreateWindowEx(
                     cs.dwExStyle,
                     wcEx.lpszClassName,  "Fairy Shogi (WIN32)",
                     cs.style,
-                    cs.x,  cs.y,   cs.cx,  cs.cy,
-                    NULL,  hMenu,  hInst,  NULL);
+                    cs.x,  cs.y,    cs.cx,  cs.cy,
+                    NULL,  hmMain,  hInst,  NULL);
 
     if ( hWnd == 0 ) {
         return ( 0 );
