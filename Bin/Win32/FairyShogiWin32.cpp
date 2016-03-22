@@ -647,6 +647,14 @@ WinMain(
     cs.cx           =   WINDOW_WIDTH;
     cs.cy           =   WINDOW_HEIGHT;
 
+    //  ウィンドウのサイズを調整する。  //
+    RECT    recWnd  =  { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
+    ::AdjustWindowRectEx(&recWnd,  cs.style,  TRUE,  cs.dwExStyle);
+    const  int  mw  =  (recWnd.right - recWnd.left);
+    const  int  mh  =  (recWnd.bottom - recWnd.top);
+    cs.cx           =  mw;
+    cs.cy           =  mh;
+
     //  ウィンドウを作成する。  //
     hWnd    = ::CreateWindowEx(
                     cs.dwExStyle,
