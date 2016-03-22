@@ -70,5 +70,55 @@ createMainMenu()
     insertMenuItem(
             "&Turn",    MENU_ID_TURN,   hMenuTurn,  0, FALSE, hMenu);
 
+    insertMenuItem(
+            "E&xit",    MENU_ID_FILE_EXIT,
+            NULL,  0,   FALSE,  hMenuFile);
+
+    insertMenuItem(
+            "&Manual",  MENU_ID_DICE_MANUAL,
+            NULL,  0,   FALSE,  hMenuDice);
+    insertMenuItem(
+            "&Auto",    MENU_ID_DICE_AUTO,
+            NULL,  0,   FALSE,  hMenuDice);
+
+    insertMenuItem(
+            "&Man",     MENU_ID_BLACK_MAN,
+            NULL,  0,   FALSE,  hMenuBlack);
+    insertMenuItem(
+            "Level &0", MENU_ID_BLACK_FIRST + 0,
+            NULL,  0,   FALSE,  hMenuBlack);
+    insertMenuItem(
+            "Level &1", MENU_ID_BLACK_FIRST + 1,
+            NULL,  0,   FALSE,  hMenuBlack);
+    insertMenuItem(
+            "Level &2", MENU_ID_BLACK_FIRST + 2,
+            NULL,  0,   FALSE,  hMenuBlack);
+    insertMenuItem(
+            "Level &3", MENU_ID_BLACK_FIRST + 3,
+            NULL,  0,   FALSE,  hMenuBlack);
+
+    insertMenuItem(
+            "&Man",     MENU_ID_WHITE_MAN,
+            NULL,  0,   FALSE,  hMenuWhite);
+    insertMenuItem(
+            "Level &0", MENU_ID_WHITE_FIRST + 0,
+            NULL,  0,   FALSE,  hMenuWhite);
+    insertMenuItem(
+            "Level &1", MENU_ID_WHITE_FIRST + 1,
+            NULL,  0,   FALSE,  hMenuWhite);
+    insertMenuItem(
+            "Level &2", MENU_ID_WHITE_FIRST + 2,
+            NULL,  0,   FALSE,  hMenuWhite);
+    insertMenuItem(
+            "Level &3", MENU_ID_WHITE_FIRST + 3,
+            NULL,  0,   FALSE,  hMenuWhite);
+
+    insertMenuItem(
+            "&Black",   MENU_ID_TURN_BLACK,
+            NULL,  0,   FALSE,  hMenuTurn);
+    insertMenuItem(
+            "&White",   MENU_ID_TURN_WHITE,
+            NULL,  0,   FALSE,  hMenuTurn);
+
     return ( hMenu );
 }
