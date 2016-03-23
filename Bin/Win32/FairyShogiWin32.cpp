@@ -161,6 +161,60 @@ RandomGenerator             g_rndGen;
 }   //  End of (Unnamed) namespace.
 
 //----------------------------------------------------------------
+/**   メニュー項目を選択した時のイベントハンドラ。
+**
+**/
+
+LRESULT
+onCommandMenuClick(
+        const   HWND    hWnd,
+        const   UINT    wID,
+        const   UINT    wNotify)
+{
+    switch ( wID ) {
+    case  MENU_ID_FILE_EXIT:
+        if ( ::MessageBox(
+                        hWnd,
+                        "Exit OK?", NULL,
+                        MB_YESNO | MB_ICONQUESTION) == IDYES )
+        {
+            ::PostQuitMessage(0);
+        }
+        break;
+
+    case  MENU_ID_DICE_MANUAL:
+        break;
+    case  MENU_ID_DICE_AUTO:
+        break;
+
+    case  MENU_ID_BLACK_MAN:
+        break;
+    case  MENU_ID_BLACK_FIRST + 0:
+    case  MENU_ID_BLACK_FIRST + 1:
+    case  MENU_ID_BLACK_FIRST + 2:
+    case  MENU_ID_BLACK_FIRST + 3:
+    case  MENU_ID_BLACK_FIRST + 4:
+        break;
+
+    case  MENU_ID_WHITE_MAN:
+        break;
+    case  MENU_ID_WHITE_FIRST + 0:
+    case  MENU_ID_WHITE_FIRST + 1:
+    case  MENU_ID_WHITE_FIRST + 2:
+    case  MENU_ID_WHITE_FIRST + 3:
+    case  MENU_ID_WHITE_FIRST + 4:
+        break;
+
+    case  MENU_ID_TURN_BLACK:
+        break;
+    case  MENU_ID_TURN_WHITE:
+        break;
+    }
+
+    return ( 0 );
+}
+
+//----------------------------------------------------------------
 /**   マウスボタンを押した時のイベントハンドラ。
 **
 **/
@@ -569,6 +623,13 @@ WindowProc(
         LPARAM  lParam)
 {
     switch ( uMsg ) {
+    case  WM_CLOSE:
+        if ( lParam == 0 ) {
+            return ( onCommandMenuClick(
+                             hWnd, LOWORD(wParam), HIWORD(wParam)) );
+        }
+        break;
+
     case  WM_DESTROY:
         //  ウィンドウを閉じた場合の処理。  //
         //  メインウィンドウを閉じたら、    //
