@@ -55,6 +55,8 @@ public:
 
     typedef     GameInterface::TConstraint          TConstraint;
 
+    typedef     int                                 EngineLevel;
+
     /**
     **    現在の状態を管理する列挙型。
     **/
@@ -296,6 +298,31 @@ public:
 //    Accessors.
 //
 public:
+
+    //----------------------------------------------------------------
+    /**   思考エンジンの番号を取得する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @return     思考エンジンの番号。
+    **/
+    EngineLevel
+    getComputerLevel(
+            const  PlayerIndex  cPlayer)  const;
+
+    //----------------------------------------------------------------
+    /**   思考エンジンの番号を設定する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @param [in] eLevel    エンジンレベル。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setComputerLevel(
+            const  PlayerIndex  cPlayer,
+            const  EngineLevel  eLevel);
 
     //----------------------------------------------------------------
     /**   合法手の制約を取得する。
@@ -635,6 +662,10 @@ private:
     /**   @todo     暫定処理。後で消す。    **/
     std::ofstream       m_ofsKifu;
 
+    /**   思考エンジンの設定配列。  **/
+    EngineLevel         m_engLevels[Common::NUM_PLAYERS];
+
+    /**   ダイスロール済みフラグ。  **/
     DiceRolled          m_flgDiceRoll;
 
     /**   駒の移動方法の選択。  **/

@@ -28,6 +28,11 @@ namespace  Interface  {
 
 namespace  {
 
+CONSTEXPR_VAR   const  char  *
+s_tblEngineNames[]  =  {
+    "level0",   "level1",   "level2",   "level3"
+};
+
 CONSTEXPR_VAR   Common::EHandPiece
 s_tblHandEncBlack[] = {
     Common::HAND_BLACK_PAWN,
@@ -732,6 +737,41 @@ BoardScreen::updateLastActionHighLights(
 //
 //    Accessors.
 //
+
+//----------------------------------------------------------------
+//    思考エンジンの番号を取得する。
+//
+
+BoardScreen::EngineLevel
+BoardScreen::getComputerLevel(
+        const  PlayerIndex  cPlayer)  const
+{
+    return ( this->m_engLevels[cPlayer] );
+}
+
+//----------------------------------------------------------------
+//    思考エンジンの番号を設定する。
+//
+
+ErrCode
+BoardScreen::setComputerLevel(
+        const  PlayerIndex  cPlayer,
+        const  EngineLevel  eLevel)
+{
+    CONSTEXPR_VAR   EngineLevel
+            NUM_ENGINES = getArraySize(s_tblEngineNames);
+    if ( (eLevel < 0) || (NUM_ENGINES <= eLevel) )
+    {
+        return ( ERR_FAILURE );
+    }
+
+    this->m_engLevels[cPlayer]  =  eLevel;
+    ErrCode     retErr  = ERR_SUCCESS;
+
+    retErr  = this->m_gcGameCtrl.setComputerEngine(
+                    cPlayer,  s_tblEngineNames[eLevel]);
+    return ( retErr );
+}
 
 //----------------------------------------------------------------
 //    合法手の制約を取得する。

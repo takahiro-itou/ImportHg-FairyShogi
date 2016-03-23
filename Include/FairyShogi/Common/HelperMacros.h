@@ -44,7 +44,7 @@ FAIRYSHOGI_NAMESPACE_BEGIN
 **/
 
 template  <typename  T,  size_t  N>
-size_t
+CONSTEXPR_FUNC  size_t
 getArraySize(const  T (&)[N])
 {
     return ( N );
