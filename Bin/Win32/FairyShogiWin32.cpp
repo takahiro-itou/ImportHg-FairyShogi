@@ -171,6 +171,8 @@ onCommandMenuClick(
         const   UINT    wID,
         const   UINT    wNotify)
 {
+    Interface::BoardScreen  & scrBoard  = g_scrBoard;
+
     switch ( wID ) {
     case  MENU_ID_FILE_EXIT:
         if ( ::MessageBox(
@@ -194,6 +196,8 @@ onCommandMenuClick(
     case  MENU_ID_BLACK_FIRST + 2:
     case  MENU_ID_BLACK_FIRST + 3:
     case  MENU_ID_BLACK_FIRST + 4:
+        scrBoard.setComputerLevel(
+                Common::PLAYER_BLACK,   wID - MENU_ID_BLACK_FIRST);
         break;
 
     case  MENU_ID_WHITE_MAN:
@@ -203,6 +207,8 @@ onCommandMenuClick(
     case  MENU_ID_WHITE_FIRST + 2:
     case  MENU_ID_WHITE_FIRST + 3:
     case  MENU_ID_WHITE_FIRST + 4:
+        scrBoard.setComputerLevel(
+                Common::PLAYER_WHITE,   wID - MENU_ID_WHITE_FIRST);
         break;
 
     case  MENU_ID_TURN_BLACK:
@@ -623,7 +629,7 @@ WindowProc(
         LPARAM  lParam)
 {
     switch ( uMsg ) {
-    case  WM_CLOSE:
+    case  WM_COMMAND:
         if ( lParam == 0 ) {
             return ( onCommandMenuClick(
                              hWnd, LOWORD(wParam), HIWORD(wParam)) );
