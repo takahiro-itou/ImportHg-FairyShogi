@@ -80,17 +80,17 @@ AM_CXXFLAGS             =
 ##    List of Installs.
 ##
 
-fshogi_includedir                 =  $(includedir)/FairyShogi
-fshogi_libdir                     =  $(libdir)
-fshogi_interface_includedir       =  $(fshogi_includedir)/Engine
-fshogi_interface_libdir           =  $(fshogi_libdir)/Engine
+fshogi_includedir              =  $(includedir)/FairyShogi
+fshogi_libdir                  =  $(libdir)
+fshogi_engine_includedir       =  $(fshogi_includedir)/Engine
+fshogi_engine_libdir           =  $(fshogi_libdir)/Engine
 
-fshogi_interface_include_HEADERS  =  $(INCLIBHEADERS)
+fshogi_engine_include_HEADERS  =  $(INCLIBHEADERS)
 
-dist_noinst_HEADERS               =  $(LIBNOINSTHEADERS)
+dist_noinst_HEADERS            =  $(LIBNOINSTHEADERS)
 
-fshogi_interface_lib_LTLIBRARIES  =  $(LIB_SHARED)
-fshogi_interface_lib_LIBRARIES    =  $(LIB_STATIC)
+fshogi_engine_lib_LTLIBRARIES  =  $(LIB_SHARED)
+fshogi_engine_lib_LIBRARIES    =  $(LIB_STATIC)
 
 ##
 ##    Build Libraries.
