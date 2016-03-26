@@ -161,6 +161,39 @@ RandomGenerator             g_rndGen;
 }   //  End of (Unnamed) namespace.
 
 //----------------------------------------------------------------
+/**   ダイアログプロシージャ。
+**
+**/
+
+LRESULT  CALLBACK
+DialogProc(
+        HWND    hDlgWnd,
+        UINT    uMsg,
+        WPARAM  wParam,
+        LPARAM  lParam)
+{
+    switch ( uMsg )
+    {
+    case  WM_COMMAND:
+        switch ( LOWORD(wParam) ) {
+        case  IDOK:
+            ::EndDialog(hDlgWnd, IDOK);
+            break;
+        case  IDCANCEL:
+            ::EndDialog(hDlgWnd, IDCANCEL);
+            break;
+        default:
+            return ( FALSE );
+        }
+        break;
+    default:
+        return ( FALSE );
+    }
+
+    return ( TRUE );
+}
+
+//----------------------------------------------------------------
 /**   メニュー項目を選択した時のイベントハンドラ。
 **
 **/
@@ -172,6 +205,7 @@ onCommandMenuClick(
         const   UINT    wNotify)
 {
     Interface::BoardScreen  & scrBoard  = g_scrBoard;
+    HINSTANCE   hInstance   = (NULL);
 
     switch ( wID ) {
     case  IDM_FILE_EXIT:
@@ -182,6 +216,16 @@ onCommandMenuClick(
         {
             ::PostQuitMessage(0);
         }
+        break;
+
+    case  IDM_MATCH:
+        hInstance   =  (HINSTANCE)::GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+        ::DialogBox(
+                hInstance,
+                MAKEINTRESOURCE(IDD_MATCH_DIALOG),
+                hWnd,
+                (DLGPROC)DialogProc);
+        ::InvalidateRect(hWnd, NULL, TRUE);
         break;
 
     case  IDM_DICE_MANUAL:
@@ -621,7 +665,7 @@ callPaintHandler(
 **
 **/
 
-LRESULT CALLBACK
+LRESULT  CALLBACK
 WindowProc(
         HWND    hWnd,
         UINT    uMsg,
