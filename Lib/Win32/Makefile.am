@@ -23,6 +23,7 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
+        DialogWindow.cpp    \
         $(EXTRALIBSOURCES)
 
 LIBINSTANTIATIONS       =
@@ -32,6 +33,7 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
+        $(INCLIBDIR)/DialogWindow.h  \
         $(EXTRALIBHEADERS)
 
 LIBNODISTHEADERS        =
