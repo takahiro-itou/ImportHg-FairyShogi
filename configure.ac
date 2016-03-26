@@ -149,6 +149,7 @@ AC_CONFIG_FILES([
     Lib/Engine/Makefile
     Lib/Game/Makefile
     Lib/Interface/Makefile
+    Lib/Win32/Makefile
 ])
 
 AC_CONFIG_FILES([
@@ -158,6 +159,7 @@ AC_CONFIG_FILES([
 AC_CONFIG_FILES([Lib/libfsgEngine.a:Lib/.LinkerScript/fsgEngine.in])
 AC_CONFIG_FILES([Lib/libfsgGame.a:Lib/.LinkerScript/fsgGame.in])
 AC_CONFIG_FILES([Lib/libfsgInterface.a:Lib/.LinkerScript/fsgInterface.in])
+AC_CONFIG_FILES([Lib/libfsgWin32.a:Lib/.LinkerScript/fsgWin32.in])
 
 dnl
 dnl   Test Festures.
@@ -169,6 +171,7 @@ AC_CONFIG_FILES([
     Lib/Game/Tests/Makefile
     Lib/Interface/Tests/Makefile
     Lib/Tests/Makefile
+    Lib/Win32/Tests/Makefile
 ])
 
 dnl
