@@ -18,58 +18,35 @@
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_RESOURCES_H )
 #    define   FAIRYSHOGI_WIN32_INCLUDED_RESOURCES_H
 
-#include    "FairyShogi/Common/FairyShogiTypes.h"
-
-#if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
-#    define     STRICT
-#    define     WIN32_LEAN_AND_MEAN
-#    include    <windows.h>
-#    define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H
-#endif
-
 //========================================================================
 //
 //    メニューリソース。
 //
 
-//----------------------------------------------------------------
-/**
-**    リソース ID の定義。
-**/
+#define     IDM_FILE                10000
+#define     IDM_FILE_EXIT           10001
 
-enum  MainMenuResource
-{
-    MENU_ID_FILE            =  10000,
-    MENU_ID_FILE_EXIT       =  10001,
+#define     IDM_MATCH               10100
+#define     IDM_MATCH_START         10101
 
-    MENU_ID_OPTION          =  10100,
+#define     IDM_ID_OPTION           10200
 
-    MENU_ID_DICE            =  10200,
-    MENU_ID_DICE_MANUAL     =  10201,
-    MENU_ID_DICE_AUTO       =  10202,
+#define     IDM_DICE                10300
+#define     IDM_DICE_MANUAL         10301
+#define     IDM_DICE_AUTO           10302
 
-    MENU_ID_BLACK           =  10300,
-    MENU_ID_BLACK_MAN       =  10301,
-    MENU_ID_BLACK_FIRST     =  10302,
-    MENU_ID_BLACK_LAST      =  MENU_ID_BLACK_FIRST + 4,
+#define     IDM_BLACK               10400
+#define     IDM_BLACK_MAN           10401
+#define     IDM_BLACK_FIRST         10402
+#define     IDM_BLACK_LAST          MENU_ID_BLACK_FIRST + 4,
 
-    MENU_ID_WHITE           =  10400,
-    MENU_ID_WHITE_MAN       =  10401,
-    MENU_ID_WHITE_FIRST     =  10402,
-    MENU_ID_WHITE_LAST      =  MENU_ID_WHITE_FIRST + 4,
+#define     IDM_WHITE               10500
+#define     IDM_WHITE_MAN           10501
+#define     IDM_WHITE_FIRST         10502
+#define     IDM_WHITE_LAST          MENU_ID_WHITE_FIRST + 4
 
-    MENU_ID_TURN            =  10500,
-    MENU_ID_TURN_BLACK      =  10501,
-    MENU_ID_TURN_WHITE      =  10502,
-};
-
-//----------------------------------------------------------------
-/**   メインウィンドウのメニューを作成する。
-**
-**  @return     作成したメニューのハンドル。
-**/
-
-HMENU
-createMainMenu();
+#define     IDM_TURN                10600
+#define     IDM_TURN_BLACK          10601
+#define     IDM_TURN_WHITE          10602
 
 #endif

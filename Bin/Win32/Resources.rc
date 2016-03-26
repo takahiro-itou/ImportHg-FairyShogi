@@ -1,0 +1,54 @@
+//  -*-  coding: utf-8; mode: fundamental  -*-  //
+/*************************************************************************
+**                                                                      **
+**                      ---  Fairy Shogi Game  ---                      **
+**                                                                      **
+**                                                                      **
+**          Copyright (C), 2015-2016, Takahiro Itou                     **
+**          All Rights Reserved.                                        **
+**                                                                      **
+*************************************************************************/
+
+/**
+**      リソース定義。
+**
+**      @file       Bin/Win32/Resources.rc
+**/
+
+#include    "Resources.h"
+
+//LANGUAGE    LANG_JAPANESE,  SUBLANG_DEFAULT
+#pragma     code_page(65001)
+
+IDM_MAIN_MENU   MENU    DISCARDABLE
+BEGIN
+    POPUP   "ファイル(&F)"
+    BEGIN
+        MENUITEM    "終了(&Q)",         IDM_FILE_EXIT
+    END
+
+    POPUP   "ダイス(&D)"
+    BEGIN
+        MENUITEM    "手動(&M)",         IDM_DICE_MANUAL
+        MENUITEM    "自動(&A)",         IDM_DICE_AUTO
+    END
+
+    POPUP   "先手(&B)"
+    BEGIN
+        MENUITEM    "人間(&M)",         IDM_BLACK_MAN
+        MENUITEM    "Level &0",         IDM_BLACK_FIRST + 0
+    END
+
+    POPUP   "後手(&W)"
+    BEGIN
+        MENUITEM    "人間(&M)",         IDM_WHITE_MAN
+        MENUITEM    "Level &0",         IDM_WHITE_FIRST + 0
+    END
+
+    POPUP   "手番(&T)"
+    BEGIN
+        MENUITEM    "先手/黒番(&B)",    IDM_TURN_BLACK
+        MENUITEM    "後手/白番(&W)",    IDM_TURN_WHITE
+    END
+END
+
