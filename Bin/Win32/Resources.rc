@@ -1,0 +1,24 @@
+//  -*-  coding: utf-8; mode: c++  -*-  //
+/*************************************************************************
+**                                                                      **
+**                      ---  Fairy Shogi Game  ---                      **
+**                                                                      **
+**                                                                      **
+**          Copyright (C), 2015-2016, Takahiro Itou                     **
+**          All Rights Reserved.                                        **
+**                                                                      **
+*************************************************************************/
+
+/**
+**      リソース定義。
+**
+**      @file       Bin/Win32/Resources.rc
+**/
+
+#include    "Resources.h"
+
+IDM_MAIN_MENU   MENU    DISCARDABLE
+BEGIN
+    MENUITEM  "ファイル(&F)",   10000
+END
+

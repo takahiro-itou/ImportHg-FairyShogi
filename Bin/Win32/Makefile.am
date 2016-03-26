@@ -30,6 +30,7 @@ LIBCXXSOURCEFILES       =  \
         DiceScreen.cpp       \
         EngineProcess.cpp    \
         PromotionScreen.cpp  \
+        Resources.rc         \
         ScreenLayer.cpp      \
         $(EXTRALIBSOURCES)
 
@@ -53,6 +54,15 @@ LIBNODISTHEADERS        =
 
 LIBINSTALLSOURCES       =
 LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+
+##
+##    Suffix Rules.
+##
+
+SUFFIXES  =  .rc
+
+.rc.o :
+	windres  -i $<  -o $@
 
 ##
 ##    List of Libraries.
