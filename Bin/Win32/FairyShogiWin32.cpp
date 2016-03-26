@@ -174,7 +174,7 @@ onCommandMenuClick(
     Interface::BoardScreen  & scrBoard  = g_scrBoard;
 
     switch ( wID ) {
-    case  MENU_ID_FILE_EXIT:
+    case  IDM_FILE_EXIT:
         if ( ::MessageBox(
                         hWnd,
                         "Exit OK?", NULL,
@@ -184,36 +184,36 @@ onCommandMenuClick(
         }
         break;
 
-    case  MENU_ID_DICE_MANUAL:
+    case  IDM_DICE_MANUAL:
         break;
-    case  MENU_ID_DICE_AUTO:
+    case  IDM_DICE_AUTO:
         break;
 
-    case  MENU_ID_BLACK_MAN:
+    case  IDM_BLACK_MAN:
         break;
-    case  MENU_ID_BLACK_FIRST + 0:
-    case  MENU_ID_BLACK_FIRST + 1:
-    case  MENU_ID_BLACK_FIRST + 2:
-    case  MENU_ID_BLACK_FIRST + 3:
-    case  MENU_ID_BLACK_FIRST + 4:
+    case  IDM_BLACK_FIRST + 0:
+    case  IDM_BLACK_FIRST + 1:
+    case  IDM_BLACK_FIRST + 2:
+    case  IDM_BLACK_FIRST + 3:
+    case  IDM_BLACK_FIRST + 4:
         scrBoard.setComputerLevel(
-                Common::PLAYER_BLACK,   wID - MENU_ID_BLACK_FIRST);
+                Common::PLAYER_BLACK,   wID - IDM_BLACK_FIRST);
         break;
 
-    case  MENU_ID_WHITE_MAN:
+    case  IDM_WHITE_MAN:
         break;
-    case  MENU_ID_WHITE_FIRST + 0:
-    case  MENU_ID_WHITE_FIRST + 1:
-    case  MENU_ID_WHITE_FIRST + 2:
-    case  MENU_ID_WHITE_FIRST + 3:
-    case  MENU_ID_WHITE_FIRST + 4:
+    case  IDM_WHITE_FIRST + 0:
+    case  IDM_WHITE_FIRST + 1:
+    case  IDM_WHITE_FIRST + 2:
+    case  IDM_WHITE_FIRST + 3:
+    case  IDM_WHITE_FIRST + 4:
         scrBoard.setComputerLevel(
-                Common::PLAYER_WHITE,   wID - MENU_ID_WHITE_FIRST);
+                Common::PLAYER_WHITE,   wID - IDM_WHITE_FIRST);
         break;
 
-    case  MENU_ID_TURN_BLACK:
+    case  IDM_TURN_BLACK:
         break;
-    case  MENU_ID_TURN_WHITE:
+    case  IDM_TURN_WHITE:
         break;
     }
 
@@ -692,7 +692,7 @@ WinMain(
     wcEx.hIcon          = NULL;
     wcEx.hCursor        = ::LoadCursor(NULL, IDC_ARROW);
     wcEx.hbrBackground  = (HBRUSH)(COLOR_WINDOW + 1);
-    wcEx.lpszMenuName   = NULL;
+    wcEx.lpszMenuName   = "IDM_MAIN_MENU";
     wcEx.lpszClassName  = g_szClassName;
     wcEx.hIconSm        = 0;
 
