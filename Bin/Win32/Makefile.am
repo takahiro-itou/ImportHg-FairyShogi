@@ -108,7 +108,7 @@ dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
 FairyShogiWin32_SOURCES   =  FairyShogiWin32.cpp  \
         $(LIBCOMPILESOURCES)
 
-FairyShogiWin32_LDADD     =  -lfsgInterface  -lGdi32
+FairyShogiWin32_LDADD     =  -lfsgInterface  -lfsgWin32  -lGdi32
 
 ##
 ##    Resource Files.
