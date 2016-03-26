@@ -30,7 +30,6 @@ LIBCXXSOURCEFILES       =  \
         DiceScreen.cpp       \
         EngineProcess.cpp    \
         PromotionScreen.cpp  \
-        Resources.cpp        \
         ScreenLayer.cpp      \
         $(EXTRALIBSOURCES)
 

@@ -701,7 +701,7 @@ WinMain(
     }
 
     //  メニューを作成する。    //
-    HMENU   hmMain  =  createMainMenu();
+    HMENU   hmMain  =  (NULL);  //createMainMenu();
 
     //  ウィンドウ作成情報。    //
     CREATESTRUCT    cs;
