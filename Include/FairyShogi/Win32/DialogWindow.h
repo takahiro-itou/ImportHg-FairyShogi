@@ -46,6 +46,8 @@ class  DialogWindow
 //    Internal Type Definitions.
 //
 
+    typedef     int     TDialogResult;
+
 //========================================================================
 //
 //    Constructor(s) and Destructor.
@@ -90,6 +92,20 @@ public:
 //
 //    Public Member Functions.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   モーダルダイアログを表示する。
+    **
+    **  @param [in] idRes     ダイアログリソースの識別子。
+    **  @param [in] hParent   ダイアログを所有するウィンドウ。
+    **  @return     ダイアログボックスを終了するための、
+    **      EndDialog 関数の呼び出しで指定された値を返す。
+    **/
+    TDialogResult
+    showModalDialog(
+            const   UINT    idRes,
+            const   HWND    hParent);
 
 //========================================================================
 //

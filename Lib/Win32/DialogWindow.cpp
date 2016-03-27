@@ -81,6 +81,25 @@ DialogWindow::~DialogWindow()
 //    Public Member Functions.
 //
 
+//----------------------------------------------------------------
+//    モーダルダイアログを表示する。
+//
+
+DialogWindow::TDialogResult
+DialogWindow::showModalDialog(
+        const   UINT    idRes,
+        const   HWND    hParent)
+{
+    HINSTANCE   hInstance   =  reinterpret_cast<HINSTANCE>(
+            ::GetWindowLongPtr(hParent, GWLP_HINSTANCE) );
+
+    return ( ::DialogBoxParam(
+                     hInstance,  MAKEINTRESOURCE(idRes),
+                     hParent,
+                     reinterpret_cast<DLGPROC>(& dialogProcStatic),
+                     reinterpret_cast<LPARAM>(this)) );
+}
+
 //========================================================================
 //
 //    Accessors.
