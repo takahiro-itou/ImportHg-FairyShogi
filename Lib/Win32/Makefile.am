@@ -71,7 +71,7 @@ AM_CXXFLAGS             =
 fshogi_includedir             =  $(includedir)/FairyShogi
 fshogi_libdir                 =  $(libdir)
 fshogi_win32_includedir       =  $(fshogi_includedir)/Win32
-fshogi_win32_libdir           =  $(fshogi_libdir)/Engine
+fshogi_win32_libdir           =  $(fshogi_libdir)/Win32
 
 fshogi_win32_include_HEADERS  =  $(INCLIBHEADERS)
 
