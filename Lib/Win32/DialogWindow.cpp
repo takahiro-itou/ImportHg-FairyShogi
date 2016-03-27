@@ -41,6 +41,7 @@ namespace  Win32  {
 //
 
 DialogWindow::DialogWindow()
+    : m_hDlgWnd(NULL)
 {
 }
 
@@ -83,10 +84,63 @@ DialogWindow::~DialogWindow()
 //    Accessors.
 //
 
+//----------------------------------------------------------------
+//    ダイアログボックスのハンドルを取得する。
+//
+
+HWND
+DialogWindow::getWindowHandle()  const
+{
+    return ( this->m_hDlgWnd );
+}
+
+//========================================================================
+//
+//    Protected Member Functions (Virtual Functions).
+//
+
+//----------------------------------------------------------------
+//    ダイアログプロシージャ。
+//
+
+BOOL
+DialogWindow::dialogProc(
+        const   UINT    uiMsg,
+        const   WPARAM  wParam,
+        const   LPARAM  lParam)
+{
+    return ( FALSE );
+}
+
 //========================================================================
 //
 //    For Internal Use Only.
 //
+
+//----------------------------------------------------------------
+//    ダイアログプロシージャ。
+//
+
+BOOL    CALLBACK
+DialogWindow::dialogProcStatic(
+        HWND    hDlgWnd,
+        UINT    uiMsg,
+        WPARAM  wParam,
+        LPARAM  lParam)
+{
+    DialogWindow  *  ptrDlg = reinterpret_cast<DialogWindow *>(
+            ::GetWindowLongPtr(hDlgWnd,  DWLP_USER));
+    if ( uiMsg == WM_INITDIALOG ) {
+        ptrDlg  = reinterpret_cast<DialogWindow *>(lParam);
+        ptrDlg->m_hDlgWnd   =  hDlgWnd;
+        ::SetWindowLongPtr(hDlgWnd,  DWLP_USER,  lParam);
+    } else if ( ptrDlg == (nullptr) ) {
+        return ( FALSE );
+    }
+
+    return ( ptrDlg->dialogProc(uiMsg, wParam, lParam) );
+}
+
 
 }   //  End of namespace  Win32
 FAIRYSHOGI_NAMESPACE_END

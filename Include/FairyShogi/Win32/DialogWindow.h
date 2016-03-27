@@ -95,16 +95,69 @@ public:
 //
 //    Accessors.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   ダイアログボックスのハンドルを取得する。
+    **
+    **  @return     ダイアログのウィンドウハンドル。
+    **/
+    HWND
+    getWindowHandle()  const;
+
+//========================================================================
+//
+//    Protected Member Functions (Virtual Functions).
+//
+protected:
+
+    //----------------------------------------------------------------
+    /**   ダイアログプロシージャ。
+    **
+    **  @param [in] hDlgWnd   ダイアログボックスのハンドル。
+    **  @param [in] uiMsg     メッセージ。
+    **  @param [in] wParam    パラメータ。
+    **  @param [in] lParam    パラメータ。
+    **  @return     メッセージを処理した場合は TRUE を返す。
+    **      メッセージを処理しなかった場合は FALSE  を返す。
+    **/
+    virtual  BOOL
+    dialogProc(
+            const   UINT    uiMsg,
+            const   WPARAM  wParam,
+            const   LPARAM  lParam);
 
 //========================================================================
 //
 //    For Internal Use Only.
 //
+private:
+
+    //----------------------------------------------------------------
+    /**   ダイアログプロシージャ。
+    **
+    **  @param [in] hDlgWnd   ダイアログボックスのハンドル。
+    **  @param [in] uiMsg     メッセージ。
+    **  @param [in] wParam    パラメータ。
+    **  @param [in] lParam    パラメータ。
+    **  @return     メッセージを処理した場合は TRUE を返す。
+    **      メッセージを処理しなかった場合は FALSE  を返す。
+    **/
+    static  BOOL    CALLBACK
+    dialogProcStatic(
+            HWND    hDlgWnd,
+            UINT    uiMsg,
+            WPARAM  wParam,
+            LPARAM  lParam);
 
 //========================================================================
 //
 //    Member Variables.
 //
+protected:
+
+    /**   ダイアログボックスのウィンドウハンドル。  **/
+    HWND        m_hDlgWnd;
 
 //========================================================================
 //

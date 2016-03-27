@@ -57,12 +57,18 @@ BEGIN
     BEGIN
         MENUITEM    "人間 (&Man)",          IDM_BLACK_MAN
         MENUITEM    "Level &0",             IDM_BLACK_FIRST + 0
+        MENUITEM    "Level &1",             IDM_BLACK_FIRST + 1
+        MENUITEM    "Level &2",             IDM_BLACK_FIRST + 2
+        MENUITEM    "Level &3",             IDM_BLACK_FIRST + 3
     END
 
     POPUP   "後手(&White)"
     BEGIN
         MENUITEM    "人間(&M)",             IDM_WHITE_MAN
         MENUITEM    "Level &0",             IDM_WHITE_FIRST + 0
+        MENUITEM    "Level &1",             IDM_WHITE_FIRST + 1
+        MENUITEM    "Level &2",             IDM_WHITE_FIRST + 2
+        MENUITEM    "Level &3",             IDM_WHITE_FIRST + 3
     END
 
     POPUP   "手番(&Turn)"
