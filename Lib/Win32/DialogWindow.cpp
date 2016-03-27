@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Win32/DialogWindow.h"
 
+#include    "FairyShogi/Common/HelperMacros.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
@@ -109,6 +111,10 @@ DialogWindow::dialogProc(
         const   WPARAM  wParam,
         const   LPARAM  lParam)
 {
+    UTL_HELP_UNUSED_ARGUMENT(uiMsg);
+    UTL_HELP_UNUSED_ARGUMENT(wParam);
+    UTL_HELP_UNUSED_ARGUMENT(lParam);
+
     return ( FALSE );
 }
 
