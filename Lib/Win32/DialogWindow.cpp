@@ -82,6 +82,34 @@ DialogWindow::~DialogWindow()
 //
 
 //----------------------------------------------------------------
+//    ダイアログ内のアイテムのハンドルを取得する。
+//
+
+HWND
+DialogWindow::getDialogItem(
+        const  ComponentID  idItem)
+{
+    return ( ::GetDlgItem(this->m_hDlgWnd,  idItem) );
+}
+
+//----------------------------------------------------------------
+//    ダイアログ内のアイテムにメッセージを送信する。
+//
+
+LONG
+DialogWindow::sendDialogItemMessage(
+        const  ComponentID  idItem,
+        const  UINT         uiMsg,
+        const  WPARAM       wParam,
+        const  LPARAM       lParam)
+{
+    return ( ::SendDlgItemMessage(
+                     this->m_hDlgWnd, idItem,
+                     uiMsg,  wParam,  lParam)
+    );
+}
+
+//----------------------------------------------------------------
 //    モーダルダイアログを表示する。
 //
 
