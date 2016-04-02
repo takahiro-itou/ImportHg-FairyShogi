@@ -147,8 +147,8 @@ public:
     /**   王手が掛かっているかどうかを判定する。
     **
     **  @param [in] dPlayer   判定を行うプレーヤー。
-    **  @retval     BOOL_TRUE   : 王手が掛かっている。
-    **  @retval     BOOL_FALSE  : それ以外。
+    **  @retval     BOOL_TRUE     王手が掛かっている。
+    **  @retval     BOOL_FALSE    それ以外。
     **/
     Boolean
     isCheckState(
