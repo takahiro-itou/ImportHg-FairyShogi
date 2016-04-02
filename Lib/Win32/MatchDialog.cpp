@@ -89,23 +89,23 @@ BOOL
 MatchDialog::initializeDialog()
 {
     setupAutoManualOptions(
-            IDD_RADIO_BLACK_DICE_AUTO,
             IDD_RADIO_BLACK_DICE_MANUAL,
+            IDD_RADIO_BLACK_DICE_AUTO,
             this->m_fDiceRoll[Common::PLAYER_BLACK]);
 
     setupAutoManualOptions(
-            IDD_RADIO_WHITE_DICE_AUTO,
             IDD_RADIO_WHITE_DICE_MANUAL,
+            IDD_RADIO_WHITE_DICE_AUTO,
             this->m_fDiceRoll[Common::PLAYER_WHITE]);
 
     setupAutoManualOptions(
-            IDD_RADIO_BLACK_THINK_AUTO,
             IDD_RADIO_BLACK_THINK_MANUAL,
+            IDD_RADIO_BLACK_THINK_AUTO,
             this->m_fEngStart[Common::PLAYER_BLACK]);
 
     setupAutoManualOptions(
-            IDD_RADIO_WHITE_THINK_AUTO,
             IDD_RADIO_WHITE_THINK_MANUAL,
+            IDD_RADIO_WHITE_THINK_AUTO,
             this->m_fEngStart[Common::PLAYER_WHITE]);
 
     return ( TRUE );
@@ -224,12 +224,44 @@ MatchDialog::dialogProc(
     return ( TRUE );
 }
 
+//----------------------------------------------------------------
+//    ダイアログの内容を変数に保存する。
+//
+
+Boolean
+MatchDialog::saveDialogItems()
+{
+    this->m_fDiceRoll[Common::PLAYER_BLACK] = readAutoManualOption(
+            IDD_RADIO_BLACK_DICE_MANUAL,
+            IDD_RADIO_BLACK_DICE_AUTO,
+            this->m_fDiceRoll[Common::PLAYER_BLACK]);
+
+    this->m_fDiceRoll[Common::PLAYER_WHITE] = readAutoManualOption(
+            IDD_RADIO_WHITE_DICE_MANUAL,
+            IDD_RADIO_WHITE_DICE_AUTO,
+            this->m_fDiceRoll[Common::PLAYER_WHITE]);
+
+    this->m_fEngStart[Common::PLAYER_BLACK] = readAutoManualOption(
+            IDD_RADIO_BLACK_THINK_MANUAL,
+            IDD_RADIO_BLACK_THINK_AUTO,
+            this->m_fEngStart[Common::PLAYER_BLACK]);
+
+    this->m_fEngStart[Common::PLAYER_WHITE] = readAutoManualOption(
+            IDD_RADIO_WHITE_THINK_MANUAL,
+            IDD_RADIO_WHITE_THINK_AUTO,
+            this->m_fEngStart[Common::PLAYER_WHITE]);
+
+    return ( BOOL_TRUE );
+}
+
 //========================================================================
 //
 //    Protected Member Functions (Virtual Functions).
 //
 
 //----------------------------------------------------------------
+//    ボタンをクリックした時のイベントハンドラ。
+//
 
 BOOL
 MatchDialog::onCommand(
@@ -239,6 +271,7 @@ MatchDialog::onCommand(
 {
     switch ( wID ) {
     case  IDOK:
+        saveDialogItems();
         ::EndDialog(this->m_hDlgWnd,  IDOK);
         break;
     case  IDCANCEL:
@@ -255,6 +288,29 @@ MatchDialog::onCommand(
 //
 //    For Internal Use Only.
 //
+
+//----------------------------------------------------------------
+//    ラジオボタンの設定内容を取得する。
+//
+
+MatchDialog::AutoManual
+MatchDialog::readAutoManualOption(
+        const  ComponentID  idManual,
+        const  ComponentID  idAuto,
+        const  AutoManual   defVal)
+{
+    if ( sendDialogItemMessage(
+                    idManual,   BM_GETCHECK, 0, 0) == BST_CHECKED )
+    {
+        return ( OPERATION_MANUAL );
+    }
+    if ( sendDialogItemMessage(
+                    idAuto,     BM_GETCHECK, 0, 0) == BST_CHECKED )
+    {
+        return ( OPERATION_AUTO );
+    }
+    return ( defVal );
+}
 
 //----------------------------------------------------------------
 //    設定をラジオボタンに反映する。
@@ -279,12 +335,12 @@ MatchDialog::setupAutoManualOption(
 
 Boolean
 MatchDialog::setupAutoManualOptions(
+        const  ComponentID  idManual,
         const  ComponentID  idAuto,
-        const  ComponentID  idMan,
         const  AutoManual   curVal)
 {
-    setupAutoManualOption(idAuto, curVal, OPERATION_AUTO);
-    setupAutoManualOption(idMan,  curVal, OPERATION_MANUAL);
+    setupAutoManualOption(idManual,  curVal,  OPERATION_MANUAL);
+    setupAutoManualOption(idAuto,    curVal,  OPERATION_AUTO  );
     return ( BOOL_TRUE );
 }
 

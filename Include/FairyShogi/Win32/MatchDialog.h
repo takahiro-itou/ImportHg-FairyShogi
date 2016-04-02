@@ -48,11 +48,11 @@ public:
     **    操作を自動化するオプション。
     **/
     enum  AutoManual  {
-        /**   操作を自動実行する。  **/
-        OPERATION_AUTO      =  0,
-
         /**   操作は手動で行う。    **/
-        OPERATION_MANUAL    =  1
+        OPERATION_MANUAL    =  0,
+
+        /**   操作を自動実行する。  **/
+        OPERATION_AUTO      =  1
     };
 
 //========================================================================
@@ -213,12 +213,32 @@ protected:
             const   WPARAM  wParam,
             const   LPARAM  lParam)  OVERRIDE;
 
+    //----------------------------------------------------------------
+    /**   ダイアログの内容を変数に保存する。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  Boolean
+    saveDialogItems();
+
 //========================================================================
 //
 //    Protected Member Functions (Virtual Functions).
 //
 protected:
 
+    //----------------------------------------------------------------
+    /**   ボタンをクリックした時のイベントハンドラ。
+    **
+    **  @param [in] wID
+    **  @param [in] wNotifyCode
+    **  @param [in] hWndControl
+    **  @return     メッセージを処理した場合は TRUE を返す。
+    **      メッセージを処理しなかった場合は FALSE  を返す。
+    **/
     virtual  BOOL
     onCommand(
             const   UINT    wID,
@@ -230,6 +250,20 @@ protected:
 //    For Internal Use Only.
 //
 private:
+
+    //----------------------------------------------------------------
+    /**   ラジオボタンの設定内容を取得する。
+    **
+    **  @param [in] idManual    手動ボタンの識別子。
+    **  @param [in] idAuto      自動ボタンの識別子。
+    **  @param [in] defVal      デフォルトの設定値。
+    **  @return     現在の設定値を返す。
+    **/
+    AutoManual
+    readAutoManualOption(
+            const  ComponentID  idManual,
+            const  ComponentID  idAuto,
+            const  AutoManual   defVal);
 
     //----------------------------------------------------------------
     /**   設定をラジオボタンに反映する。
@@ -249,16 +283,16 @@ private:
     //----------------------------------------------------------------
     /**   設定をラジオボタンに反映する。
     **
-    **  @param [in] idAuto    自動ボタンの識別子。
-    **  @param [in] idMan     手動ボタンの識別子。
-    **  @param [in] curVal    現在の設定値。
+    **  @param [in] idManual    手動ボタンの識別子。
+    **  @param [in] idAuto      自動ボタンの識別子。
+    **  @param [in] curVal      現在の設定値。
     **  @retval     BOOL_TRUE   : 正常終了。
     **  @retval     BOOL_FALSE  : 異常終了。
     **/
     Boolean
     setupAutoManualOptions(
+            const  ComponentID  idManual,
             const  ComponentID  idAuto,
-            const  ComponentID  idMan,
             const  AutoManual   curVal);
 
 //========================================================================
