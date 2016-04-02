@@ -371,8 +371,8 @@ public:
     //----------------------------------------------------------------
     /**   現在のターンで、ダイスが振られたか否かを取得する。
     **
-    **  @retval     BOOL_TRUE   : 既にダイスを振った。
-    **  @retval     BOOL_FALSE  : それ以外。
+    **  @retval     BOOL_TRUE     既にダイスを振った。
+    **  @retval     BOOL_FALSE    それ以外。
     **/
     Boolean
     isDiceRolled()  const;

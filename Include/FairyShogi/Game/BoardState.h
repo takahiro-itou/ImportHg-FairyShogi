@@ -266,8 +266,8 @@ public:
     /**   現在の局面がチェックメイトかどうかを判定する。
     **
     **  @param [in] dPlayer   判定を行うプレーヤー。
-    **  @retval     BOOL_TRUE   : チェックメイト。
-    **  @retval     BOOL_FALSE  : それ以外。
+    **  @retval     BOOL_TRUE     チェックメイト。
+    **  @retval     BOOL_FALSE    それ以外。
     **/
     Boolean
     isCheckMateState(
@@ -278,8 +278,8 @@ public:
     **
     **  @param [in] curStat   現在の盤面データ。
     **  @param [in] dPlayer   判定を行うプレーヤー。
-    **  @retval     BOOL_TRUE   : チェックメイト。
-    **  @retval     BOOL_FALSE  : それ以外。
+    **  @retval     BOOL_TRUE     チェックメイト。
+    **  @retval     BOOL_FALSE    それ以外。
     **/
     static  Boolean
     isCheckMateState(
@@ -318,8 +318,8 @@ public:
     **  @param [in] curStat   現在の盤面データ。
     **  @param [in] actData   指し手データ。
     **  @param [in] ciTurn    判定を行うプレーヤー。
-    **  @retval     BOOL_TRUE   : 打ち歩詰め。
-    **  @retval     BOOL_FALSE  : それ以外。
+    **  @retval     BOOL_TRUE     打ち歩詰め。
+    **  @retval     BOOL_FALSE    それ以外。
     **/
     static  Boolean
     isUtifudumeAction(
