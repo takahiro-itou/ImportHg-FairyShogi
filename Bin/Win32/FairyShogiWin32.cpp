@@ -56,6 +56,12 @@ Interface::BoardScreen      g_scrBoard;
 Interface::DiceScreen       g_scrDice;
 Interface::PromotionScreen  g_scrProm;
 
+//
+//    ダイアログボックス。
+//
+
+Win32::MatchDialog          g_dlgMatch;
+
 /**   マウスのキャプチャフラグ。    **/
 HWND                    g_hCapture;
 
@@ -173,7 +179,6 @@ onCommandMenuClick(
         const   UINT    wNotify)
 {
     Interface::BoardScreen  & scrBoard  = g_scrBoard;
-    Win32::MatchDialog  dlgMatch;
 
     switch ( wID ) {
     case  IDM_FILE_EXIT:
@@ -187,7 +192,7 @@ onCommandMenuClick(
         break;
 
     case  IDM_MATCH:
-        dlgMatch.showModalDialog(IDD_MATCH_DIALOG,  hWnd);
+        g_dlgMatch.showModalDialog(IDD_MATCH_DIALOG,  hWnd);
         ::InvalidateRect(hWnd, NULL, TRUE);
         break;
 
