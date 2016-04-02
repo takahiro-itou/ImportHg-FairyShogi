@@ -45,7 +45,7 @@ class  DialogWindow
 //
 //    Internal Type Definitions.
 //
-private:
+public:
 
     typedef     int     TDialogResult;
 

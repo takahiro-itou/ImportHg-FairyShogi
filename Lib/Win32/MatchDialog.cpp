@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Win32/MatchDialog.h"
 
+#include    "FairyShogi/Win32/CommonResources.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
@@ -86,7 +88,16 @@ MatchDialog::~MatchDialog()
 BOOL
 MatchDialog::initializeDialog()
 {
-    return ( FALSE );
+    setupAutoManualOptions(
+            IDD_RADIO_BLACK_DICE_AUTO,
+            IDD_RADIO_BLACK_DICE_MANUAL,
+            this->m_fDiceRoll[Common::PLAYER_BLACK]);
+    setupAutoManualOptions(
+            IDD_RADIO_WHITE_DICE_AUTO,
+            IDD_RADIO_WHITE_DICE_MANUAL,
+            this->m_fDiceRoll[Common::PLAYER_WHITE]);
+
+    return ( TRUE );
 }
 
 //========================================================================
@@ -233,6 +244,38 @@ MatchDialog::onCommand(
 //
 //    For Internal Use Only.
 //
+
+//----------------------------------------------------------------
+//    設定をラジオボタンに反映する。
+//
+
+Boolean
+MatchDialog::setupAutoManualOption(
+        const  ComponentID  idItem,
+        const  AutoManual   curVal,
+        const  AutoManual   btnVal)
+{
+    sendDialogItemMessage(
+            idItem,     BM_SETCHECK,
+            ((curVal == btnVal) ? BST_CHECKED : BST_UNCHECKED),
+            0);
+    return ( BOOL_TRUE );
+}
+
+//----------------------------------------------------------------
+//    ダイスの設定をラジオボタンに反映する。
+//
+
+Boolean
+MatchDialog::setupAutoManualOptions(
+        const  ComponentID  idAuto,
+        const  ComponentID  idMan,
+        const  AutoManual   curVal)
+{
+    setupAutoManualOption(idAuto, curVal, OPERATION_AUTO);
+    setupAutoManualOption(idMan,  curVal, OPERATION_MANUAL);
+    return ( BOOL_TRUE );
+}
 
 }   //  End of namespace  Win32
 FAIRYSHOGI_NAMESPACE_END

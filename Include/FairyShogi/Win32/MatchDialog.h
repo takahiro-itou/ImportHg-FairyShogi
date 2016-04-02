@@ -229,6 +229,37 @@ protected:
 //
 //    For Internal Use Only.
 //
+private:
+
+    //----------------------------------------------------------------
+    /**   設定をラジオボタンに反映する。
+    **
+    **  @param [in] idItem    ボタンの識別子。
+    **  @param [in] curVal    現在の設定値。
+    **  @param [in] btnVal    ボタンの設定値。
+    **  @retval     BOOL_TRUE   : 正常終了。
+    **  @retval     BOOL_FALSE  : 異常終了。
+    **/
+    Boolean
+    setupAutoManualOption(
+            const  ComponentID  idItem,
+            const  AutoManual   curVal,
+            const  AutoManual   btnVal);
+
+    //----------------------------------------------------------------
+    /**   設定をラジオボタンに反映する。
+    **
+    **  @param [in] idAuto    自動ボタンの識別子。
+    **  @param [in] idMan     手動ボタンの識別子。
+    **  @param [in] curVal    現在の設定値。
+    **  @retval     BOOL_TRUE   : 正常終了。
+    **  @retval     BOOL_FALSE  : 異常終了。
+    **/
+    Boolean
+    setupAutoManualOptions(
+            const  ComponentID  idAuto,
+            const  ComponentID  idMan,
+            const  AutoManual   curVal);
 
 //========================================================================
 //
