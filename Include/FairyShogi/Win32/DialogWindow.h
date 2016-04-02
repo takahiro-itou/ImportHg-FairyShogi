@@ -45,8 +45,11 @@ class  DialogWindow
 //
 //    Internal Type Definitions.
 //
+public:
 
     typedef     int     TDialogResult;
+
+    typedef     int     ComponentID;
 
 //========================================================================
 //
@@ -93,6 +96,31 @@ public:
 //    Public Member Functions.
 //
 public:
+
+    //----------------------------------------------------------------
+    /**   ダイアログ内のアイテムのハンドルを取得する。
+    **
+    **  @param [in] idItem    アイテムの識別子。
+    **  @return     指定したアイテムのハンドル。
+    **/
+    HWND
+    getDialogItem(
+            const  ComponentID  idItem);
+
+    //----------------------------------------------------------------
+    /**   ダイアログ内のアイテムにメッセージを送信する。
+    **
+    **  @param [in] idItem    アイテムの識別子。
+    **  @param [in] uiMsg     メッセージ。
+    **  @param [in] wParam    パラメータ。
+    **  @param [in] lParam    パラメータ。
+    **/
+    LONG
+    sendDialogItemMessage(
+            const  ComponentID  idItem,
+            const  UINT         uiMsg,
+            const  WPARAM       wParam,
+            const  LPARAM       lParam);
 
     //----------------------------------------------------------------
     /**   モーダルダイアログを表示する。

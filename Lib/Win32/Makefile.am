@@ -34,14 +34,25 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
-        $(INCLIBDIR)/DialogWindow.h  \
-        $(INCLIBDIR)/MatchDialog.h   \
+        $(INCLIBDIR)/CommonResources.h   \
+        $(INCLIBDIR)/CommonResources.rc  \
+        $(INCLIBDIR)/DialogWindow.h      \
+        $(INCLIBDIR)/MatchDialog.h       \
         $(EXTRALIBHEADERS)
 
 LIBNODISTHEADERS        =
 
 LIBINSTALLSOURCES       =
 LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+
+##
+##    Suffix Rules.
+##
+
+SUFFIXES  =  .rc
+
+.rc.o :
+	windres  -i $<  -o $@  -I$(INCTOPDIR)
 
 ##
 ##    List of Libraries.

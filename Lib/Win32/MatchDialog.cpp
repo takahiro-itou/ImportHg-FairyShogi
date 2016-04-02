@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Win32/MatchDialog.h"
 
+#include    "FairyShogi/Win32/CommonResources.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
@@ -36,8 +38,18 @@ namespace  Win32  {
 //
 
 MatchDialog::MatchDialog()
-    : Super()
+    : Super(),
+      m_playTypes(),
+      m_fDiceRoll(),
+      m_fEngStart()
 {
+    //  デフォルトの設定値を用意する。  //
+    this->m_playTypes[Common::PLAYER_BLACK] = 0;
+    this->m_playTypes[Common::PLAYER_WHITE] = 3;
+    this->m_fDiceRoll[Common::PLAYER_BLACK] = OPERATION_AUTO;
+    this->m_fDiceRoll[Common::PLAYER_WHITE] = OPERATION_AUTO;
+    this->m_fEngStart[Common::PLAYER_BLACK] = OPERATION_MANUAL;
+    this->m_fEngStart[Common::PLAYER_WHITE] = OPERATION_AUTO;
 }
 
 //----------------------------------------------------------------
@@ -69,6 +81,25 @@ MatchDialog::~MatchDialog()
 //    Public Member Functions (Virtual Functions).
 //
 
+//----------------------------------------------------------------
+//    ダイアログを初期化する。
+//
+
+BOOL
+MatchDialog::initializeDialog()
+{
+    setupAutoManualOptions(
+            IDD_RADIO_BLACK_DICE_AUTO,
+            IDD_RADIO_BLACK_DICE_MANUAL,
+            this->m_fDiceRoll[Common::PLAYER_BLACK]);
+    setupAutoManualOptions(
+            IDD_RADIO_WHITE_DICE_AUTO,
+            IDD_RADIO_WHITE_DICE_MANUAL,
+            this->m_fDiceRoll[Common::PLAYER_WHITE]);
+
+    return ( TRUE );
+}
+
 //========================================================================
 //
 //    Public Member Functions.
@@ -78,6 +109,78 @@ MatchDialog::~MatchDialog()
 //
 //    Accessors.
 //
+
+//----------------------------------------------------------------
+//    ダイスの自動／手動フラグを取得する。
+//
+
+MatchDialog::AutoManual
+MatchDialog::getDiceRollMode(
+        const  PlayerIndex  cPlayer)  const
+{
+    return ( this->m_fDiceRoll[cPlayer] );
+}
+
+//----------------------------------------------------------------
+//    ダイスの自動／手動フラグを設定する。
+//
+
+ErrCode
+MatchDialog::setDiceRollMode(
+        const  PlayerIndex  cPlayer,
+        const  AutoManual   valNew)
+{
+    this->m_fDiceRoll[cPlayer]  = valNew;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    エンジン思考開始の自動／手動フラグを取得する。
+//
+
+MatchDialog::AutoManual
+MatchDialog::getEngineStart(
+        const  PlayerIndex  cPlayer)  const
+{
+    return ( this->m_fEngStart[cPlayer] );
+}
+
+//----------------------------------------------------------------
+//    エンジン思考開始の自動／手動フラグを設定する。
+//
+
+ErrCode
+MatchDialog::setEngineStart(
+        const  PlayerIndex  cPlayer,
+        const  AutoManual   valNew)
+{
+    this->m_fEngStart[cPlayer]  = valNew;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    プレーヤーのタイプを取得する。
+//
+
+MatchDialog::PlayerType
+MatchDialog::getPlayerType(
+        const  PlayerIndex  cPlayer)  const
+{
+    return ( this->m_playTypes[cPlayer] );
+}
+
+//----------------------------------------------------------------
+//    プレーヤーのタイプを設定する。
+//
+
+ErrCode
+MatchDialog::setPlayerType(
+        const  PlayerIndex  cPlayer,
+        const  PlayerType   valNew)
+{
+    this->m_playTypes[cPlayer]  = valNew;
+    return ( ERR_SUCCESS );
+}
 
 //========================================================================
 //
@@ -101,6 +204,8 @@ MatchDialog::dialogProc(
                          HIWORD(wParam),
                          reinterpret_cast<HWND>(lParam)) );
         break;
+    case  WM_INITDIALOG:
+        return ( initializeDialog() );
     default:
         return ( FALSE );
     }
@@ -139,6 +244,38 @@ MatchDialog::onCommand(
 //
 //    For Internal Use Only.
 //
+
+//----------------------------------------------------------------
+//    設定をラジオボタンに反映する。
+//
+
+Boolean
+MatchDialog::setupAutoManualOption(
+        const  ComponentID  idItem,
+        const  AutoManual   curVal,
+        const  AutoManual   btnVal)
+{
+    sendDialogItemMessage(
+            idItem,     BM_SETCHECK,
+            ((curVal == btnVal) ? BST_CHECKED : BST_UNCHECKED),
+            0);
+    return ( BOOL_TRUE );
+}
+
+//----------------------------------------------------------------
+//    ダイスの設定をラジオボタンに反映する。
+//
+
+Boolean
+MatchDialog::setupAutoManualOptions(
+        const  ComponentID  idAuto,
+        const  ComponentID  idMan,
+        const  AutoManual   curVal)
+{
+    setupAutoManualOption(idAuto, curVal, OPERATION_AUTO);
+    setupAutoManualOption(idMan,  curVal, OPERATION_MANUAL);
+    return ( BOOL_TRUE );
+}
 
 }   //  End of namespace  Win32
 FAIRYSHOGI_NAMESPACE_END

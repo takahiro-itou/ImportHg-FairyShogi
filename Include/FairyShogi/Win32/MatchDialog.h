@@ -20,6 +20,8 @@
 
 #include    "FairyShogi/Win32/DialogWindow.h"
 
+#include    "FairyShogi/Common/FairyShogiConst.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
@@ -38,6 +40,20 @@ class  MatchDialog : public  DialogWindow
 //
 //    Internal Type Definitions.
 //
+public:
+
+    typedef     int     PlayerType;
+
+    /**
+    **    操作を自動化するオプション。
+    **/
+    enum  AutoManual  {
+        /**   操作を自動実行する。  **/
+        OPERATION_AUTO      =  0,
+
+        /**   操作は手動で行う。    **/
+        OPERATION_MANUAL    =  1
+    };
 
 //========================================================================
 //
@@ -78,6 +94,16 @@ public:
 //
 //    Public Member Functions (Virtual Functions).
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   ダイアログを初期化する。
+    **
+    **  @return     メッセージを処理した場合は TRUE を返す。
+    **      メッセージを処理しなかった場合は FALSE  を返す。
+    **/
+    virtual  BOOL
+    initializeDialog();
 
 //========================================================================
 //
@@ -88,6 +114,82 @@ public:
 //
 //    Accessors.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   ダイスの自動／手動フラグを取得する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @return     ダイスの自動／手動フラグ。
+    **/
+    AutoManual
+    getDiceRollMode(
+            const  PlayerIndex  cPlayer)  const;
+
+    //----------------------------------------------------------------
+    /**   ダイスの自動／手動フラグを設定する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @param [in] valNew    設定する値。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setDiceRollMode(
+            const  PlayerIndex  cPlayer,
+            const  AutoManual   valNew);
+
+    //----------------------------------------------------------------
+    /**   エンジン思考開始の自動／手動フラグを取得する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @return     ダイスの自動／手動フラグ。
+    **/
+    AutoManual
+    getEngineStart(
+            const  PlayerIndex  cPlayer)  const;
+
+    //----------------------------------------------------------------
+    /**   エンジン思考開始の自動／手動フラグを設定する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @param [in] valNew    設定する値。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setEngineStart(
+            const  PlayerIndex  cPlayer,
+            const  AutoManual   valNew);
+
+    //----------------------------------------------------------------
+    /**   プレーヤーのタイプを取得する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @return     プレーヤータイプ。
+    **/
+    PlayerType
+    getPlayerType(
+            const  PlayerIndex  cPlayer)  const;
+
+    //----------------------------------------------------------------
+    /**   プレーヤーのタイプを設定する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @param [in] valNew    設定する値。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setPlayerType(
+            const  PlayerIndex  cPlayer,
+            const  PlayerType   valNew);
 
 //========================================================================
 //
@@ -127,11 +229,52 @@ protected:
 //
 //    For Internal Use Only.
 //
+private:
+
+    //----------------------------------------------------------------
+    /**   設定をラジオボタンに反映する。
+    **
+    **  @param [in] idItem    ボタンの識別子。
+    **  @param [in] curVal    現在の設定値。
+    **  @param [in] btnVal    ボタンの設定値。
+    **  @retval     BOOL_TRUE   : 正常終了。
+    **  @retval     BOOL_FALSE  : 異常終了。
+    **/
+    Boolean
+    setupAutoManualOption(
+            const  ComponentID  idItem,
+            const  AutoManual   curVal,
+            const  AutoManual   btnVal);
+
+    //----------------------------------------------------------------
+    /**   設定をラジオボタンに反映する。
+    **
+    **  @param [in] idAuto    自動ボタンの識別子。
+    **  @param [in] idMan     手動ボタンの識別子。
+    **  @param [in] curVal    現在の設定値。
+    **  @retval     BOOL_TRUE   : 正常終了。
+    **  @retval     BOOL_FALSE  : 異常終了。
+    **/
+    Boolean
+    setupAutoManualOptions(
+            const  ComponentID  idAuto,
+            const  ComponentID  idMan,
+            const  AutoManual   curVal);
 
 //========================================================================
 //
 //    Member Variables.
 //
+private:
+
+    /**   プレーヤーのタイプ。  **/
+    PlayerType      m_playTypes[Common::NUM_PLAYERS];
+
+    /**   ダイスを自動で振る。  **/
+    AutoManual      m_fDiceRoll[Common::NUM_PLAYERS];
+
+    /**   思考開始を自動開始。  **/
+    AutoManual      m_fEngStart[Common::NUM_PLAYERS];
 
 //========================================================================
 //
