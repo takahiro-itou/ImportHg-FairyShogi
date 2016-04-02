@@ -23,7 +23,6 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
-        CommonResources.rc  \
         DialogWindow.cpp    \
         MatchDialog.cpp     \
         $(EXTRALIBSOURCES)
@@ -35,9 +34,10 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
-        $(INCLIBDIR)/CommonResources.h  \
-        $(INCLIBDIR)/DialogWindow.h     \
-        $(INCLIBDIR)/MatchDialog.h      \
+        $(INCLIBDIR)/CommonResources.h   \
+        $(INCLIBDIR)/CommonResources.rc  \
+        $(INCLIBDIR)/DialogWindow.h      \
+        $(INCLIBDIR)/MatchDialog.h       \
         $(EXTRALIBHEADERS)
 
 LIBNODISTHEADERS        =
