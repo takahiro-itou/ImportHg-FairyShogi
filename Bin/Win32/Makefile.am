@@ -62,7 +62,7 @@ LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
 SUFFIXES  =  .rc
 
 .rc.o :
-	windres  -i $<  -o $@
+	windres  -i $<  -o $@  -I$(INCTOPDIR)
 
 ##
 ##    List of Libraries.
