@@ -55,7 +55,7 @@ BEGIN
 
     RTEXT       "プレーヤー :",     IDC_STATIC,      12,  20,  48,  12
     COMBOBOX    IDD_COMBO_BLACK_PLAYER,              68,  20,  88,  12,
-            CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+            CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     RTEXT       "ダイス :",         IDC_STATIC,      12,  36,  48,  12
     AUTORADIOBUTTON     "自動",
             IDD_RADIO_BLACK_DICE_AUTO,               68,  36,  40,  12,
@@ -74,7 +74,7 @@ BEGIN
             IDC_STATIC,                             176,   8, 160,  72
     RTEXT       "プレーヤー :",     IDC_STATIC,     180,  20,  48,  12
     COMBOBOX    IDD_COMBO_WHITE_PLAYER,             236,  20,  88,  12,
-            CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+            CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 
     RTEXT       "ダイス :",         IDC_STATIC,     180,  36,  48,  12
     AUTORADIOBUTTON     "自動",
