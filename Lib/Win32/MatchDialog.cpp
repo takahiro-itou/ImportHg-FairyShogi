@@ -299,14 +299,10 @@ MatchDialog::readAutoManualOption(
         const  ComponentID  idAuto,
         const  AutoManual   defVal)
 {
-    if ( sendDialogItemMessage(
-                    idManual,   BM_GETCHECK, 0, 0) == BST_CHECKED )
-    {
+    if ( isButtonChecked(idManual) == BST_CHECKED ) {
         return ( OPERATION_MANUAL );
     }
-    if ( sendDialogItemMessage(
-                    idAuto,     BM_GETCHECK, 0, 0) == BST_CHECKED )
-    {
+    if ( isButtonChecked(idAuto)   == BST_CHECKED ) {
         return ( OPERATION_AUTO );
     }
     return ( defVal );
