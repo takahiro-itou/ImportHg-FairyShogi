@@ -92,10 +92,21 @@ MatchDialog::initializeDialog()
             IDD_RADIO_BLACK_DICE_AUTO,
             IDD_RADIO_BLACK_DICE_MANUAL,
             this->m_fDiceRoll[Common::PLAYER_BLACK]);
+
     setupAutoManualOptions(
             IDD_RADIO_WHITE_DICE_AUTO,
             IDD_RADIO_WHITE_DICE_MANUAL,
             this->m_fDiceRoll[Common::PLAYER_WHITE]);
+
+    setupAutoManualOptions(
+            IDD_RADIO_BLACK_THINK_AUTO,
+            IDD_RADIO_BLACK_THINK_MANUAL,
+            this->m_fEngStart[Common::PLAYER_BLACK]);
+
+    setupAutoManualOptions(
+            IDD_RADIO_WHITE_THINK_AUTO,
+            IDD_RADIO_WHITE_THINK_MANUAL,
+            this->m_fEngStart[Common::PLAYER_WHITE]);
 
     return ( TRUE );
 }
