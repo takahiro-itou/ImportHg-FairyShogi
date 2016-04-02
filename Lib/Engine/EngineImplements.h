@@ -140,8 +140,8 @@ protected:
     **  @param[out] itrRet    詰みになる手を指す反復子。
     **      なお、複数存在する場合は、最初のものを返す。
     **      どの手も詰みにならない場合は、未定義となる。
-    **  @retval     BOOL_TRUE   : 詰みを発見。
-    **  @retval     BOOL_FALSE  : 詰みは無かった。
+    **  @retval     BOOL_TRUE     詰みを発見。
+    **  @retval     BOOL_FALSE    詰みは無かった。
     **/
     static  Boolean
     findCheckMateAction(
@@ -155,8 +155,8 @@ protected:
     **
     **  @param [in] curStat   現在の局面。
     **  @param [in] piTurn    現在の手番のプレーヤー番号。
-    **  @retval     BOOL_TRUE   : チェックメイト。
-    **  @retval     BOOL_FALSE  : それ以外。
+    **  @retval     BOOL_TRUE     チェックメイト。
+    **  @retval     BOOL_FALSE    それ以外。
     **/
     static  Boolean
     isCheckMateState(

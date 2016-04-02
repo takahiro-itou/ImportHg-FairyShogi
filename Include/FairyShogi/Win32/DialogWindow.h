@@ -98,6 +98,19 @@ public:
 public:
 
     //----------------------------------------------------------------
+    /**   現在チェックされているラジオボタンを取得する。
+    **
+    **  @param [in] idFirst   グループの最初のボタン。
+    **  @param [in] idLast    グループの最後のボタン。
+    **  @return     選択されているラジオボタンの ID を返す。
+    **      何も選択されていない場合はゼロを返す。
+    **/
+    ComponentID
+    getCheckedRadioButton(
+            const  ComponentID  idFirst,
+            const  ComponentID  idLast)  const;
+
+    //----------------------------------------------------------------
     /**   ダイアログ内のアイテムのハンドルを取得する。
     **
     **  @param [in] idItem    アイテムの識別子。
@@ -105,7 +118,19 @@ public:
     **/
     HWND
     getDialogItem(
-            const  ComponentID  idItem);
+            const  ComponentID  idItem)  const;
+
+    //----------------------------------------------------------------
+    /**   ボタンコントロールのチェック状態を取得する。
+    **
+    **  @param [in] idItem    ボタンの識別子。
+    **  @retval     BST_CHECKED   ボタン
+    **  @return     選択されているラジオボタンの ID を返す。
+    **      何も選択されていない場合はゼロを返す。
+    **/
+    UINT
+    isButtonChecked(
+            const  ComponentID  idItem)  const;
 
     //----------------------------------------------------------------
     /**   ダイアログ内のアイテムにメッセージを送信する。
@@ -120,7 +145,7 @@ public:
             const  ComponentID  idItem,
             const  UINT         uiMsg,
             const  WPARAM       wParam,
-            const  LPARAM       lParam);
+            const  LPARAM       lParam)  const;
 
     //----------------------------------------------------------------
     /**   モーダルダイアログを表示する。

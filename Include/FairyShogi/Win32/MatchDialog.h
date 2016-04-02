@@ -216,10 +216,8 @@ protected:
     //----------------------------------------------------------------
     /**   ダイアログの内容を変数に保存する。
     **
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
+    **  @retval     BOOL_TRUE     正常終了。
+    **  @retval     BOOL_FALSE    異常終了。
     **/
     virtual  Boolean
     saveDialogItems();
@@ -271,8 +269,8 @@ private:
     **  @param [in] idItem    ボタンの識別子。
     **  @param [in] curVal    現在の設定値。
     **  @param [in] btnVal    ボタンの設定値。
-    **  @retval     BOOL_TRUE   : 正常終了。
-    **  @retval     BOOL_FALSE  : 異常終了。
+    **  @retval     BOOL_TRUE     正常終了。
+    **  @retval     BOOL_FALSE    異常終了。
     **/
     Boolean
     setupAutoManualOption(
@@ -286,8 +284,8 @@ private:
     **  @param [in] idManual    手動ボタンの識別子。
     **  @param [in] idAuto      自動ボタンの識別子。
     **  @param [in] curVal      現在の設定値。
-    **  @retval     BOOL_TRUE   : 正常終了。
-    **  @retval     BOOL_FALSE  : 異常終了。
+    **  @retval     BOOL_TRUE     正常終了。
+    **  @retval     BOOL_FALSE    異常終了。
     **/
     Boolean
     setupAutoManualOptions(

@@ -82,14 +82,43 @@ DialogWindow::~DialogWindow()
 //
 
 //----------------------------------------------------------------
+//    現在チェックされているラジオボタンを取得する。
+//
+
+DialogWindow::ComponentID
+DialogWindow::getCheckedRadioButton(
+        const  ComponentID  idFirst,
+        const  ComponentID  idLast)  const
+{
+    for ( ComponentID cID = idFirst; cID <= idLast; ++ cID )
+    {
+        if ( isButtonChecked(cID) == BST_CHECKED ) {
+            return ( cID );
+        }
+    }
+    return ( 0 );
+}
+
+//----------------------------------------------------------------
 //    ダイアログ内のアイテムのハンドルを取得する。
 //
 
 HWND
 DialogWindow::getDialogItem(
-        const  ComponentID  idItem)
+        const  ComponentID  idItem)  const
 {
     return ( ::GetDlgItem(this->m_hDlgWnd,  idItem) );
+}
+
+//----------------------------------------------------------------
+//    ボタンコントロールのチェック状態を取得する。
+//
+
+UINT
+DialogWindow::isButtonChecked(
+        const  ComponentID  idItem)  const
+{
+    return ( sendDialogItemMessage(idItem, BM_GETCHECK, 0, 0) );
 }
 
 //----------------------------------------------------------------
@@ -101,7 +130,7 @@ DialogWindow::sendDialogItemMessage(
         const  ComponentID  idItem,
         const  UINT         uiMsg,
         const  WPARAM       wParam,
-        const  LPARAM       lParam)
+        const  LPARAM       lParam)  const
 {
     return ( ::SendDlgItemMessage(
                      this->m_hDlgWnd, idItem,
