@@ -19,8 +19,25 @@
 
 #include    "FairyShogi/Win32/CommonResources.h"
 
+#include    "FairyShogi/Common/HelperMacros.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
+
+namespace  {
+
+CONSTEXPR_VAR   LPCTSTR     s_tblEngines[]  =  {
+    TEXT("Man"),
+    TEXT("Level 0"),
+    TEXT("Level 1"),
+    TEXT("Level 2"),
+    TEXT("Level 3")
+};
+
+CONSTEXPR_VAR   int
+NUM_ENGINE_TYPES    =  getArraySize(s_tblEngines);
+
+}   //  End of (Unnamed) namespace.
 
 //========================================================================
 //
@@ -45,7 +62,7 @@ MatchDialog::MatchDialog()
 {
     //  デフォルトの設定値を用意する。  //
     this->m_playTypes[Common::PLAYER_BLACK] = 0;
-    this->m_playTypes[Common::PLAYER_WHITE] = 3;
+    this->m_playTypes[Common::PLAYER_WHITE] = (NUM_ENGINE_TYPES - 1);
     this->m_fDiceRoll[Common::PLAYER_BLACK] = OPERATION_AUTO;
     this->m_fDiceRoll[Common::PLAYER_WHITE] = OPERATION_AUTO;
     this->m_fEngStart[Common::PLAYER_BLACK] = OPERATION_MANUAL;
@@ -88,6 +105,30 @@ MatchDialog::~MatchDialog()
 BOOL
 MatchDialog::initializeDialog()
 {
+    const   HWND    hCmbBlack   =  getDialogItem(IDD_COMBO_BLACK_PLAYER);
+    const   HWND    hCmbWhite   =  getDialogItem(IDD_COMBO_WHITE_PLAYER);
+    for ( int i = 0; i < NUM_ENGINE_TYPES; ++ i ) {
+        ::SendMessage(
+                hCmbBlack,  CB_INSERTSTRING,
+                static_cast<WPARAM>(i),
+                reinterpret_cast<LPARAM>(s_tblEngines[i])
+        );
+        ::SendMessage(
+                hCmbWhite,  CB_INSERTSTRING,
+                static_cast<WPARAM>(i),
+                reinterpret_cast<LPARAM>(s_tblEngines[i])
+        );
+    }
+    ::SendMessage(
+            hCmbBlack,  CB_SETCURSEL,
+            static_cast<WPARAM>(this->m_playTypes[Common::PLAYER_BLACK]),
+            0);
+    ::SendMessage(
+            hCmbWhite,  CB_SETCURSEL,
+            static_cast<WPARAM>(this->m_playTypes[Common::PLAYER_WHITE]),
+            0);
+
+
     setupAutoManualOptions(
             IDD_RADIO_BLACK_DICE_MANUAL,
             IDD_RADIO_BLACK_DICE_AUTO,
@@ -217,6 +258,7 @@ MatchDialog::dialogProc(
         break;
     case  WM_INITDIALOG:
         return ( initializeDialog() );
+        break;
     default:
         return ( FALSE );
     }
