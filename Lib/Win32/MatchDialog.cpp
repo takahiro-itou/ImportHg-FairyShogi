@@ -220,6 +220,30 @@ MatchDialog::setDiceRollMode(
 }
 
 //----------------------------------------------------------------
+//    思考エンジンのレベルを取得する。
+//
+
+MatchDialog::EngineLevel
+MatchDialog::getEngineLevel(
+        const  PlayerIndex  cPlayer)  const
+{
+    return ( this->m_engLevels[cPlayer] );
+}
+
+//----------------------------------------------------------------
+//    思考エンジンのレベルを設定する。
+//
+
+ErrCode
+MatchDialog::setEngineLevel(
+        const  PlayerIndex  cPlayer,
+        const  EngineLevel  valNew)
+{
+    this->m_engLevels[cPlayer]  = valNew;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
 //    エンジン思考開始の自動／手動フラグを取得する。
 //
 

@@ -63,7 +63,7 @@ Interface::PromotionScreen  g_scrProm;
 Win32::MatchDialog          g_dlgMatch;
 
 /**   マウスのキャプチャフラグ。    **/
-HWND                    g_hCapture;
+HWND                        g_hCapture;
 
 //
 //    画面に関する定数。
@@ -166,6 +166,18 @@ RANDOM_MAX_VALUE    = RandomGenerator::MaxValue<28>::VALUE;
 RandomGenerator             g_rndGen;
 
 }   //  End of (Unnamed) namespace.
+
+Boolean
+loadMatchSettings(
+        const  Win32::MatchDialog   &dlgMatch,
+        Interface::BoardScreen      &scrBoard)
+{
+    for ( PlayerIndex pi = 0; pi < Common::NUM_PLAYERS; ++ pi ) {
+        scrBoard.setComputerLevel(pi, dlgMatch.getEngineLevel(pi));
+    }
+
+    return ( BOOL_TRUE );
+}
 
 //----------------------------------------------------------------
 /**   メニュー項目を選択した時のイベントハンドラ。

@@ -164,10 +164,35 @@ public:
             const  AutoManual   valNew);
 
     //----------------------------------------------------------------
+    /**   思考エンジンのレベルを取得する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @return     思考エンジンのレベル。
+    **/
+    EngineLevel
+    getEngineLevel(
+            const  PlayerIndex  cPlayer)  const;
+
+    //----------------------------------------------------------------
+    /**   思考エンジンのレベルを設定する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @param [in] valNew    設定する値。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setEngineLevel(
+            const  PlayerIndex  cPlayer,
+            const  EngineLevel  valNew);
+
+    //----------------------------------------------------------------
     /**   エンジン思考開始の自動／手動フラグを取得する。
     **
     **  @param [in] cPlayer   プレーヤー番号。
-    **  @return     ダイスの自動／手動フラグ。
+    **  @return     エンジン思考開始の自動／手動フラグ。
     **/
     AutoManual
     getEngineStart(
