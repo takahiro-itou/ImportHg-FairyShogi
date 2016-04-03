@@ -64,8 +64,8 @@ MatchDialog::MatchDialog()
     //  デフォルトの設定値を用意する。  //
     this->m_etPlayers[Common::PLAYER_BLACK] = PLAYER_TYPE_MAN;
     this->m_etPlayers[Common::PLAYER_WHITE] = PLAYER_TYPE_COM;
-    this->m_pManNames[Common::PLAYER_BLACK] = "無題";
-    this->m_pManNames[Common::PLAYER_WHITE] = "無題";
+    this->m_pManNames[Common::PLAYER_BLACK] = "No Name";
+    this->m_pManNames[Common::PLAYER_WHITE] = "No Name";
     this->m_engLevels[Common::PLAYER_BLACK] = (NUM_ENGINE_TYPES - 1);
     this->m_engLevels[Common::PLAYER_WHITE] = (NUM_ENGINE_TYPES - 1);
     this->m_fDiceRoll[Common::PLAYER_BLACK] = OPERATION_AUTO;
@@ -119,6 +119,13 @@ MatchDialog::initializeDialog()
             IDD_RADIO_WHITE_COM,
             this->m_etPlayers[Common::PLAYER_WHITE]);
 
+    setDialogItemText(
+            IDD_COMBO_BLACK_MAN,
+            this->m_pManNames[Common::PLAYER_BLACK]);
+    setDialogItemText(
+            IDD_COMBO_WHITE_MAN,
+            this->m_pManNames[Common::PLAYER_WHITE]);
+
     const   HWND    hCmbBlack   =  getDialogItem(IDD_COMBO_BLACK_COM);
     const   HWND    hCmbWhite   =  getDialogItem(IDD_COMBO_WHITE_COM);
     for ( int i = 0; i < NUM_ENGINE_TYPES; ++ i ) {
@@ -135,10 +142,10 @@ MatchDialog::initializeDialog()
     }
     setComboSelectedIndex(
             IDD_COMBO_BLACK_COM,
-            this->m_etPlayers[Common::PLAYER_BLACK]);
+            this->m_engLevels[Common::PLAYER_BLACK]);
     setComboSelectedIndex(
             IDD_COMBO_WHITE_COM,
-            this->m_etPlayers[Common::PLAYER_WHITE]);
+            this->m_engLevels[Common::PLAYER_WHITE]);
 
     setupAutoManualOptions(
             IDD_RADIO_BLACK_DICE_MANUAL,
@@ -292,6 +299,13 @@ MatchDialog::saveDialogItems()
             IDD_RADIO_WHITE_MAN,
             IDD_RADIO_WHITE_COM,
             this->m_etPlayers[Common::PLAYER_WHITE]);
+
+    getDialogItemText(
+            IDD_COMBO_BLACK_MAN,
+            this->m_pManNames[Common::PLAYER_BLACK]);
+    getDialogItemText(
+            IDD_COMBO_WHITE_MAN,
+            this->m_pManNames[Common::PLAYER_WHITE]);
 
     this->m_engLevels[Common::PLAYER_BLACK]
             = getComboSelectedIndex(IDD_COMBO_BLACK_COM);
