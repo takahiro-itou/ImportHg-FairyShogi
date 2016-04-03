@@ -51,6 +51,8 @@ public:
 
     typedef     int     ComponentID;
 
+    typedef     int     TListItemIndex;;
+
 //========================================================================
 //
 //    Constructor(s) and Destructor.
@@ -111,6 +113,16 @@ public:
             const  ComponentID  idLast)  const;
 
     //----------------------------------------------------------------
+    /**   コンボボックスの選択項目を取得する。
+    **
+    **  @param [in] idItem    アイテムの識別子。
+    **  @return     選択されている項目のインデックス。
+    **/
+    TListItemIndex
+    getComboSelectedIndex(
+            const  ComponentID  idItem)  const;
+
+    //----------------------------------------------------------------
     /**   ダイアログ内のアイテムのハンドルを取得する。
     **
     **  @param [in] idItem    アイテムの識別子。
@@ -146,6 +158,19 @@ public:
             const  UINT         uiMsg,
             const  WPARAM       wParam,
             const  LPARAM       lParam)  const;
+
+    //----------------------------------------------------------------
+    /**   コンボボックスの選択項目を設定する。
+    **
+    **  @param [in] idItem    アイテムの識別子。
+    **  @param [in] idxSel    選択する項目のインデックス。
+    **  @retval     BOOL_TRUE     正常終了。
+    **  @retval     BOOL_FALSE    異常終了。
+    **/
+    Boolean
+    setComboSelectedIndex(
+            const  ComponentID      idItem,
+            const  TListItemIndex   idxSel);
 
     //----------------------------------------------------------------
     /**   モーダルダイアログを表示する。

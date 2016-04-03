@@ -100,6 +100,17 @@ DialogWindow::getCheckedRadioButton(
 }
 
 //----------------------------------------------------------------
+//    コンボボックスの選択項目を取得する。
+//
+
+DialogWindow::TListItemIndex
+DialogWindow::getComboSelectedIndex(
+        const  ComponentID  idItem)  const
+{
+    return ( sendDialogItemMessage(idItem, CB_GETCURSEL, 0, 0) );
+}
+
+//----------------------------------------------------------------
 //    ダイアログ内のアイテムのハンドルを取得する。
 //
 
@@ -136,6 +147,19 @@ DialogWindow::sendDialogItemMessage(
                      this->m_hDlgWnd, idItem,
                      uiMsg,  wParam,  lParam)
     );
+}
+
+//----------------------------------------------------------------
+//    コンボボックスの選択項目を設定する。
+//
+
+Boolean
+DialogWindow::setComboSelectedIndex(
+        const  ComponentID      idItem,
+        const  TListItemIndex   idxSel)
+{
+    sendDialogItemMessage(idItem, CB_SETCURSEL, idxSel, 0);
+    return ( BOOL_TRUE );
 }
 
 //----------------------------------------------------------------

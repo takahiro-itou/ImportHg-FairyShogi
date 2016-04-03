@@ -119,15 +119,12 @@ MatchDialog::initializeDialog()
                 reinterpret_cast<LPARAM>(s_tblEngines[i])
         );
     }
-    ::SendMessage(
-            hCmbBlack,  CB_SETCURSEL,
-            static_cast<WPARAM>(this->m_playTypes[Common::PLAYER_BLACK]),
-            0);
-    ::SendMessage(
-            hCmbWhite,  CB_SETCURSEL,
-            static_cast<WPARAM>(this->m_playTypes[Common::PLAYER_WHITE]),
-            0);
-
+    setComboSelectedIndex(
+            IDD_COMBO_BLACK_PLAYER,
+            this->m_playTypes[Common::PLAYER_BLACK]);
+    setComboSelectedIndex(
+            IDD_COMBO_WHITE_PLAYER,
+            this->m_playTypes[Common::PLAYER_WHITE]);
 
     setupAutoManualOptions(
             IDD_RADIO_BLACK_DICE_MANUAL,
@@ -273,6 +270,11 @@ MatchDialog::dialogProc(
 Boolean
 MatchDialog::saveDialogItems()
 {
+    this->m_playTypes[Common::PLAYER_BLACK]
+            = getComboSelectedIndex(IDD_COMBO_BLACK_PLAYER);
+    this->m_playTypes[Common::PLAYER_WHITE]
+            = getComboSelectedIndex(IDD_COMBO_WHITE_PLAYER);
+
     this->m_fDiceRoll[Common::PLAYER_BLACK] = readAutoManualOption(
             IDD_RADIO_BLACK_DICE_MANUAL,
             IDD_RADIO_BLACK_DICE_AUTO,
