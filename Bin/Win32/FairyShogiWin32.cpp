@@ -185,45 +185,6 @@ loadMatchSettings(
 }
 
 //----------------------------------------------------------------
-/**   ダイスを振る。
-**
-**/
-
-Boolean
-rollDice(
-        const  HWND     hWnd,
-        const  int      pidSel)
-{
-    Interface::BoardScreen  & scrBoard  = g_scrBoard;
-
-    if ( pidSel == 7 ) {
-        //  乱数を初期化する。  //
-        g_rndGen.setSeedValue(::time(nullptr));
-        ::MessageBox(NULL,  "Set Random Seed By Current Time", "OK", MB_OK);
-    }
-    if ( pidSel >= 6 ) {
-        //  乱数を使う。    //
-        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-        const  uint32_t
-            rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
-        const  int  rn
-            =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);
-        scrBoard.setConstraint(rn + 1);
-    } else if ( pidSel >= 0 ) {
-        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-        scrBoard.setConstraint(pidSel + 1);
-    }
-
-    scrBoard.clearSelection();
-    scrBoard.updateHighLightInfo();
-
-    ::InvalidateRect(hWnd, NULL, FALSE);
-    ::UpdateWindow(hWnd);
-
-    return ( BOOL_TRUE );
-}
-
-//----------------------------------------------------------------
 /**   思考エンジンを起動する。
 **
 **/
@@ -273,6 +234,56 @@ startComputerEngine(
     return ( BOOL_TRUE );
 }
 
+//----------------------------------------------------------------
+/**   ダイスを振る。
+**
+**/
+
+Boolean
+rollDice(
+        const  HWND     hWnd,
+        const  int      pidSel)
+{
+    Interface::BoardScreen  & scrBoard  = g_scrBoard;
+    Interface::BoardScreen::GameInterface  &
+            giGame  = scrBoard.getGameController();
+
+    if ( giGame.isCheckState(giGame.getCurrentPlayer()) ) {
+        scrBoard.setConstraint(Common::DICE_ANY_MOVE);
+        ::InvalidateRect(hWnd, NULL, FALSE);
+        ::UpdateWindow(hWnd);
+        ::MessageBox(hWnd, "CHECK", NULL, MB_OK);
+    } else if ( pidSel == 7 ) {
+        //  乱数を初期化する。  //
+        g_rndGen.setSeedValue(::time(nullptr));
+        ::MessageBox(NULL,  "Set Random Seed By Current Time", "OK", MB_OK);
+    } else if ( pidSel >= 6 ) {
+        //  乱数を使う。    //
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        const  uint32_t
+            rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
+        const  int  rn
+            =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);
+        scrBoard.setConstraint(rn + 1);
+    } else if ( pidSel >= 0 ) {
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        scrBoard.setConstraint(pidSel + 1);
+    }
+
+    scrBoard.clearSelection();
+    scrBoard.updateHighLightInfo();
+
+    ::InvalidateRect(hWnd, NULL, FALSE);
+    ::UpdateWindow(hWnd);
+
+    if ( g_dlgMatch.getEngineStart(giGame.getCurrentPlayer())
+            ==  Win32::MatchDialog::OPERATION_AUTO )
+    {
+        startComputerEngine(hWnd,  BOOL_TRUE);
+    }
+
+    return ( BOOL_TRUE );
+}
 
 //----------------------------------------------------------------
 /**   メニュー項目を選択した時のイベントハンドラ。
@@ -301,6 +312,7 @@ onCommandMenuClick(
     case  IDM_MATCH:
         g_dlgMatch.showModalDialog(IDD_MATCH_DIALOG,  hWnd);
         ::InvalidateRect(hWnd, NULL, TRUE);
+        ::UpdateWindow(hWnd);
         break;
 
     case  IDM_DICE_MANUAL:
@@ -887,6 +899,8 @@ WinMain(
     //  ウィンドウを表示する。  //
     ::ShowWindow(hWnd, nCmdShow);
     ::UpdateWindow(hWnd);
+
+    onCommandMenuClick(hWnd,  IDM_MATCH,  0);
 
     int     ret;
     MSG     msg;
