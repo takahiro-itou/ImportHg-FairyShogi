@@ -167,6 +167,11 @@ RandomGenerator             g_rndGen;
 
 }   //  End of (Unnamed) namespace.
 
+//----------------------------------------------------------------
+/**   対局設定をロードする。
+**
+**/
+
 Boolean
 loadMatchSettings(
         const  Win32::MatchDialog   &dlgMatch,
@@ -178,6 +183,96 @@ loadMatchSettings(
 
     return ( BOOL_TRUE );
 }
+
+//----------------------------------------------------------------
+/**   ダイスを振る。
+**
+**/
+
+Boolean
+rollDice(
+        const  HWND     hWnd,
+        const  int      pidSel)
+{
+    Interface::BoardScreen  & scrBoard  = g_scrBoard;
+
+    if ( pidSel == 7 ) {
+        //  乱数を初期化する。  //
+        g_rndGen.setSeedValue(::time(nullptr));
+        ::MessageBox(NULL,  "Set Random Seed By Current Time", "OK", MB_OK);
+    }
+    if ( pidSel >= 6 ) {
+        //  乱数を使う。    //
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        const  uint32_t
+            rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
+        const  int  rn
+            =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);
+        scrBoard.setConstraint(rn + 1);
+    } else if ( pidSel >= 0 ) {
+        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        scrBoard.setConstraint(pidSel + 1);
+    }
+
+    scrBoard.clearSelection();
+    scrBoard.updateHighLightInfo();
+
+    ::InvalidateRect(hWnd, NULL, FALSE);
+    ::UpdateWindow(hWnd);
+
+    return ( BOOL_TRUE );
+}
+
+//----------------------------------------------------------------
+/**   思考エンジンを起動する。
+**
+**/
+
+Boolean
+startComputerEngine(
+        const  HWND     hWnd,
+        const  Boolean  fAuto)
+{
+    Interface::BoardScreen  & scrBoard  = g_scrBoard;
+    Interface::BoardScreen::GameInterface  &
+            giGame  = scrBoard.getGameController();
+
+    Common::ActionView  actData;
+    std::stringstream   ss;
+
+    scrBoard.clearSelection();
+
+    if ( giGame.computeBestAction(actData) != ERR_SUCCESS ) {
+        ::MessageBox(hWnd, "CHECK MATE", "GAME OVER", MB_OK);
+        ::InvalidateRect(hWnd, NULL, FALSE);
+        return ( BOOL_FALSE );
+    }
+    if ( fAuto ) {
+        scrBoard.playForward(actData);
+    } else {
+        ss  <<  (actData.xDispOldCol)   <<  (actData.yDispOldRow)
+            <<  (actData.xDispNewCol)   <<  (actData.yDispNewRow);
+        ss  <<  "\n# DEBUG : "
+            <<  "\nxPlayOldCol = "  <<  (actData.xPlayOldCol)
+            <<  "\nyPlayOldRow = "  <<  (actData.yPlayOldRow)
+            <<  "\nxPlayNewCol = "  <<  (actData.xPlayNewCol)
+            <<  "\nyPlayNewRow = "  <<  (actData.yPlayNewRow)
+            <<  "\nfpAfter     = "  <<  (actData.fpAfter)
+            <<  "\nfpMoved     = "  <<  (actData.fpMoved)
+            <<  "\nfpCatch     = "  <<  (actData.fpCatch)
+            <<  "\nhpiDrop     = "  <<  (actData.hpiDrop);
+        if ( ::MessageBox(
+                        hWnd, ss.str().c_str(), "Best Move",
+                        MB_OKCANCEL) == IDOK )
+        {
+            scrBoard.playForward(actData);
+        }
+    }
+    ::InvalidateRect(hWnd, NULL, FALSE);
+    ::UpdateWindow(hWnd);
+    return ( BOOL_TRUE );
+}
+
 
 //----------------------------------------------------------------
 /**   メニュー項目を選択した時のイベントハンドラ。
@@ -292,7 +387,8 @@ onLButtonDown(
 **/
 
 LRESULT
-onLButtonUpInDiceScreen()
+onLButtonUpInDiceScreen(
+        const   HWND    hWnd)
 {
     Interface::BoardScreen  & scrBoard  = g_scrBoard;
 
@@ -306,27 +402,7 @@ onLButtonUpInDiceScreen()
         return ( 0 );
     }
 
-    if ( pidSel == 7 ) {
-        //  乱数を初期化する。  //
-        g_rndGen.setSeedValue(::time(nullptr));
-        ::MessageBox(NULL,  "Set Random Seed By Current Time", "OK", MB_OK);
-    }
-    if ( pidSel >= 6 ) {
-        //  乱数を使う。    //
-        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-        const  uint32_t
-            rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
-        const  int  rn
-            =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);
-        scrBoard.setConstraint(rn + 1);
-    } else if ( pidSel >= 0 ) {
-        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
-        scrBoard.setConstraint(pidSel + 1);
-    }
-
-    scrBoard.clearSelection();
-    scrBoard.updateHighLightInfo();
-
+    rollDice(hWnd,  pidSel);
     return ( 0 );
 }
 
@@ -358,7 +434,7 @@ onLButtonUp(
     if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
     {
         evtRet  = g_scrDice.dispatchLButtonUp(fwKeys, xPos, yPos);
-        onLButtonUpInDiceScreen();
+        onLButtonUpInDiceScreen(hWnd);
         ::InvalidateRect(hWnd, NULL, FALSE);
         ::UpdateWindow(hWnd);
         return ( 0 );
@@ -401,35 +477,7 @@ onLButtonUp(
     if (      (START_ENGINE_LEFT <= xPos) && (xPos < START_ENGINE_RIGHT)
             && (START_ENGINE_TOP <= yPos) && (yPos < START_ENGINE_BOTTOM) )
     {
-        Common::ActionView  actData;
-        std::stringstream   ss;
-
-        scrBoard.clearSelection();
-
-        if ( giGame.computeBestAction(actData) != ERR_SUCCESS ) {
-            ::MessageBox(hWnd, "No Legal Actions", "GAME OVER", MB_OK);
-            ::InvalidateRect(hWnd, NULL, FALSE);
-            return ( 0 );
-        }
-        ss  <<  (actData.xDispOldCol)   <<  (actData.yDispOldRow)
-            <<  (actData.xDispNewCol)   <<  (actData.yDispNewRow);
-        ss  <<  "\n# DEBUG : "
-            <<  "\nxPlayOldCol = "  <<  (actData.xPlayOldCol)
-            <<  "\nyPlayOldRow = "  <<  (actData.yPlayOldRow)
-            <<  "\nxPlayNewCol = "  <<  (actData.xPlayNewCol)
-            <<  "\nyPlayNewRow = "  <<  (actData.yPlayNewRow)
-            <<  "\nfpAfter     = "  <<  (actData.fpAfter)
-            <<  "\nfpMoved     = "  <<  (actData.fpMoved)
-            <<  "\nfpCatch     = "  <<  (actData.fpCatch)
-            <<  "\nhpiDrop     = "  <<  (actData.hpiDrop);
-        if ( ::MessageBox(
-                        hWnd, ss.str().c_str(), "Best Move",
-                        MB_OKCANCEL) == IDOK )
-        {
-            scrBoard.playForward(actData);
-        }
-        ::InvalidateRect(hWnd, NULL, FALSE);
-        ::UpdateWindow(hWnd);
+        startComputerEngine(hWnd,  BOOL_FALSE);
         return ( 0 );
     }
 
@@ -510,13 +558,17 @@ onPaint(
         const   HWND    hWnd,
         const   HDC     hDC)
 {
+    Interface::BoardScreen  & scrBoard  = g_scrBoard;
+    const  Interface::BoardScreen::GameInterface  &
+            giGame  = scrBoard.getGameController();
+
     //  何らかの理由で、マウスボタンが離された事実が、  //
     //  メインウィンドウに通知されなかった時の処理。    //
     //  例えば、マウスボタンを押して、AlT+Tab キーで    //
     //  別のウィンドウに切り替え、ボタンを離した等。    //
     if ( (g_hCapture) == hWnd ) {
         if ( ::GetCapture() != g_hCapture ) {
-            g_scrBoard.clearSelection();
+            scrBoard.clearSelection();
         }
     }
 
@@ -528,12 +580,12 @@ onPaint(
     //  メイン画面を描画する。  //
     {
         Interface::BitmapImage  &  imgWork  =  g_imgBoard;
-        g_scrBoard.drawScreenLayer( & imgWork );
+        scrBoard.drawScreenLayer( & imgWork );
         g_imgScreen.copyRectangle(
-                g_scrBoard.getLeft(),
-                g_scrBoard.getTop(),
-                g_scrBoard.getWidth(),
-                g_scrBoard.getHeight(),
+                scrBoard.getLeft(),
+                scrBoard.getTop(),
+                scrBoard.getWidth(),
+                scrBoard.getHeight(),
                 imgWork,
                 0, 0);
     }
@@ -541,17 +593,15 @@ onPaint(
     //  現在のダイスを表示する。    //
     {
         int     idxCol, idxRow;
-        g_scrBoard.getDiceDisplayIndex(&idxCol, &idxRow);
-#if 0
-        const  Interface::BoardScreen::GameInterface  &
-            giGame  =  g_scrBoard.getGameController();
-        const  PlayerIndex  curTurn = giGame.getCurrentPlayer();
-
-        int     curDice = giGame.getConstraint() - 1;
-        if ( (curDice < 0) || (Common::DICE_MAX_VALUE <= curDice) ) {
-            curDice = Common::DICE_DEFAULT_VALUE;
+        if ( g_dlgMatch.getDiceRollMode(giGame.getCurrentPlayer())
+                ==  Win32::MatchDialog::OPERATION_AUTO )
+        {
+            if ( ! scrBoard.isDiceRolled() ) {
+                rollDice(hWnd,  6);
+            }
         }
-#endif
+
+        scrBoard.getDiceDisplayIndex(&idxCol, &idxRow);
         g_imgScreen.copyRectangle(
                 CURRENT_DICE_LEFT,  CURRENT_DICE_TOP,
                 DICE_WIDTH,         DICE_HEIGHT,
