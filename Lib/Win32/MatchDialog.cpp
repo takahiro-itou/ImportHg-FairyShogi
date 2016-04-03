@@ -36,6 +36,8 @@ CONSTEXPR_VAR   LPCTSTR     s_tblEngines[]  =  {
 CONSTEXPR_VAR   int
 NUM_ENGINE_TYPES    =  getArraySize(s_tblEngines);
 
+CONSTEXPR_VAR   LPCTSTR     s_manNullName   =  "";
+
 }   //  End of (Unnamed) namespace.
 
 //========================================================================
@@ -59,7 +61,8 @@ MatchDialog::MatchDialog()
       m_pManNames(),
       m_engLevels(),
       m_fDiceRoll(),
-      m_fEngStart()
+      m_fEngStart(),
+      m_strComment()
 {
     //  デフォルトの設定値を用意する。  //
     this->m_etPlayers[Common::PLAYER_BLACK] = PLAYER_TYPE_MAN;
@@ -72,6 +75,7 @@ MatchDialog::MatchDialog()
     this->m_fDiceRoll[Common::PLAYER_WHITE] = OPERATION_AUTO;
     this->m_fEngStart[Common::PLAYER_BLACK] = OPERATION_MANUAL;
     this->m_fEngStart[Common::PLAYER_WHITE] = OPERATION_AUTO;
+    this->m_strComment  =  "";
 }
 
 //----------------------------------------------------------------
@@ -118,6 +122,17 @@ MatchDialog::initializeDialog()
             IDD_RADIO_WHITE_MAN,
             IDD_RADIO_WHITE_COM,
             this->m_etPlayers[Common::PLAYER_WHITE]);
+
+    sendDialogItemMessage(
+            IDD_COMBO_BLACK_MAN,
+            CB_INSERTSTRING,
+            0,
+            reinterpret_cast<LPARAM>(s_manNullName));
+    sendDialogItemMessage(
+            IDD_COMBO_WHITE_MAN,
+            CB_INSERTSTRING,
+            0,
+            reinterpret_cast<LPARAM>(s_manNullName));
 
     setDialogItemText(
             IDD_COMBO_BLACK_MAN,
@@ -225,6 +240,52 @@ MatchDialog::setEngineStart(
         const  AutoManual   valNew)
 {
     this->m_fEngStart[cPlayer]  = valNew;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    対局のコメントを取得する。
+//
+
+const  std::string  &
+MatchDialog::getMatchComment()  const
+{
+    return ( this->m_strComment );
+}
+
+//----------------------------------------------------------------
+//    対局のコメントを設定する。
+//
+
+ErrCode
+MatchDialog::setMatchComment(
+        const  std::string  &valNew)
+{
+    this->m_strComment  = valNew;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    プレーヤーの名前を取得する。
+//
+
+const  std::string  &
+MatchDialog::getPlayerName(
+        const  PlayerIndex  cPlayer)  const
+{
+    return ( this->m_pManNames[cPlayer] );
+}
+
+//----------------------------------------------------------------
+//    プレーヤーの名前を設定する。
+//
+
+ErrCode
+MatchDialog::setPlayerName(
+        const  PlayerIndex  cPlayer,
+        const  std::string  &valNew)
+{
+    this->m_pManNames[cPlayer]  = valNew;
     return ( ERR_SUCCESS );
 }
 

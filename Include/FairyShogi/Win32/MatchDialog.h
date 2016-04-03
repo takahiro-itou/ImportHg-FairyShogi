@@ -189,6 +189,52 @@ public:
             const  AutoManual   valNew);
 
     //----------------------------------------------------------------
+    /**   対局のコメントを取得する。
+    **
+    **  @return     コメント文字列を返す。
+    **/
+    const  std::string  &
+    getMatchComment()  const;
+
+    //----------------------------------------------------------------
+    /**   対局のコメントを設定する。
+    **
+    **  @param [in] valNew    設定する値。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setMatchComment(
+            const  std::string  &valNew);
+
+    //----------------------------------------------------------------
+    /**   プレーヤーの名前を取得する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @return     プレーヤーの名前。
+    **/
+    const  std::string  &
+    getPlayerName(
+            const  PlayerIndex  cPlayer)  const;
+
+    //----------------------------------------------------------------
+    /**   プレーヤーの名前を設定する。
+    **
+    **  @param [in] cPlayer   プレーヤー番号。
+    **  @param [in] valNew    設定する値。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setPlayerName(
+            const  PlayerIndex  cPlayer,
+            const  std::string  &valNew);
+
+    //----------------------------------------------------------------
     /**   プレーヤーのタイプを取得する。
     **
     **  @param [in] cPlayer   プレーヤー番号。
@@ -354,7 +400,7 @@ private:
     /**   プレーヤーのタイプ。  **/
     PlayerType      m_etPlayers[Common::NUM_PLAYERS];
 
-    /**   プレーヤーの名前。    **/
+    /**   人プレーヤーの名前。  **/
     std::string     m_pManNames[Common::NUM_PLAYERS];
 
     /**   思考エンジンレベル。  **/
@@ -365,6 +411,9 @@ private:
 
     /**   思考開始を自動開始。  **/
     AutoManual      m_fEngStart[Common::NUM_PLAYERS];
+
+    /**   対局の追加コメント。  **/
+    std::string     m_strComment;
 
 //========================================================================
 //
