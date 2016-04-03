@@ -20,6 +20,11 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#if !defined( FAIRYSHOGI_SYS_INCLUDED_STL_STRING )
+#    include    <string>
+#    define     FAIRYSHOGI_SYS_INCLUDED_STL_STRING
+#endif
+
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
 #    define     STRICT
 #    define     WIN32_LEAN_AND_MEAN
@@ -133,6 +138,18 @@ public:
             const  ComponentID  idItem)  const;
 
     //----------------------------------------------------------------
+    /**   ダイアログ内のアイテムのテキストを取得する。
+    **
+    **  @param [in] idItem    アイテムの識別子。
+    **  @param[out] rText     テキストを受け取る変数。
+    **  @return     実際の文字数を返す。
+    **/
+    size_t
+    getDialogItemText(
+            const  ComponentID  idItem,
+            std::string         &rText)  const;
+
+    //----------------------------------------------------------------
     /**   ボタンコントロールのチェック状態を取得する。
     **
     **  @param [in] idItem    ボタンの識別子。
@@ -171,6 +188,19 @@ public:
     setComboSelectedIndex(
             const  ComponentID      idItem,
             const  TListItemIndex   idxSel);
+
+    //----------------------------------------------------------------
+    /**   ダイアログ内のアイテムのテキストを設定する。
+    **
+    **  @param [in] idItem    アイテムの識別子。
+    **  @param [in] sText     設定するテキスト。
+    **  @retval     BOOL_TRUE     正常終了。
+    **  @retval     BOOL_FALSE    異常終了。
+    **/
+    Boolean
+    setDialogItemText(
+            const  ComponentID  idItem,
+            const  std::string  &sText);
 
     //----------------------------------------------------------------
     /**   モーダルダイアログを表示する。

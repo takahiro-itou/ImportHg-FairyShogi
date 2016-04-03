@@ -122,6 +122,22 @@ DialogWindow::getDialogItem(
 }
 
 //----------------------------------------------------------------
+//    ダイアログ内のアイテムのテキストを取得する。
+//
+
+size_t
+DialogWindow::getDialogItemText(
+        const  ComponentID  idItem,
+        std::string         &rText)  const
+{
+    TCHAR   szBuf[256];
+    const   UINT    retLen  =  ::GetDlgItemText(
+            this->m_hDlgWnd, idItem, szBuf, sizeof(szBuf));
+    rText.assign(szBuf, retLen);
+    return ( retLen );
+}
+
+//----------------------------------------------------------------
 //    ボタンコントロールのチェック状態を取得する。
 //
 
@@ -159,6 +175,22 @@ DialogWindow::setComboSelectedIndex(
         const  TListItemIndex   idxSel)
 {
     sendDialogItemMessage(idItem, CB_SETCURSEL, idxSel, 0);
+    return ( BOOL_TRUE );
+}
+
+//----------------------------------------------------------------
+//    ダイアログ内のアイテムのテキストを設定する。
+//
+
+Boolean
+DialogWindow::setDialogItemText(
+        const  ComponentID  idItem,
+        const  std::string  &sText)
+{
+    if ( ! ::SetDlgItemText(this->m_hDlgWnd, idItem, sText.c_str()) )
+    {
+        return ( BOOL_FALSE );
+    }
     return ( BOOL_TRUE );
 }
 
