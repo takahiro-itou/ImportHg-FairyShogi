@@ -22,6 +22,16 @@
 
 #include    "FairyShogi/Common/FairyShogiConst.h"
 
+#if !defined( FAIRYSHOGI_SYS_INCLUDED_STL_STRING )
+#    include    <string>
+#    define     FAIRYSHOGI_SYS_INCLUDED_STL_STRING
+#endif
+
+#if !defined( FAIRYSHOGI_SYS_INCLUDED_STL_VECTOR )
+#    include    <vector>
+#    define     FAIRYSHOGI_SYS_INCLUDED_STL_VECTOR
+#endif
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
@@ -42,8 +52,6 @@ class  MatchDialog : public  DialogWindow
 //
 public:
 
-    typedef     int     PlayerType;
-
     /**
     **    操作を自動化するオプション。
     **/
@@ -54,6 +62,20 @@ public:
         /**   操作を自動実行する。  **/
         OPERATION_AUTO      =  1
     };
+
+    /**
+    **    プレーヤーの種類。
+    **/
+    enum  PlayerType
+    {
+        PLAYER_TYPE_MAN     =  0,
+        PLAYER_TYPE_COM     =  1
+    };
+
+    /**
+    **    思考エンジンのレベル。
+    **/
+    typedef     int     EngineLevel;
 
 //========================================================================
 //
@@ -264,6 +286,20 @@ private:
             const  AutoManual   defVal);
 
     //----------------------------------------------------------------
+    /**   ラジオボタンの設定内容を取得する。
+    **
+    **  @param [in] idMan     人間ボタンの識別子。
+    **  @param [in] idCom     エンジンボタンの識別子。
+    **  @param [in] defVal    デフォルトの設定値。
+    **  @return     現在の設定値を返す。
+    **/
+    PlayerType
+    readPlayerTypeOption(
+            const  ComponentID  idMan,
+            const  ComponentID  idCom,
+            const  PlayerType   defVal);
+
+    //----------------------------------------------------------------
     /**   設定をラジオボタンに反映する。
     **
     **  @param [in] idItem    ボタンの識別子。
@@ -272,11 +308,12 @@ private:
     **  @retval     BOOL_TRUE     正常終了。
     **  @retval     BOOL_FALSE    異常終了。
     **/
-    Boolean
-    setupAutoManualOption(
+    template  <typename  TValueType>
+    inline  Boolean
+    setupRadioButton(
             const  ComponentID  idItem,
-            const  AutoManual   curVal,
-            const  AutoManual   btnVal);
+            const  TValueType   curVal,
+            const  TValueType   btnVal);
 
     //----------------------------------------------------------------
     /**   設定をラジオボタンに反映する。
@@ -293,6 +330,21 @@ private:
             const  ComponentID  idAuto,
             const  AutoManual   curVal);
 
+    //----------------------------------------------------------------
+    /**   設定をラジオボタンに反映する。
+    **
+    **  @param [in] idMan     人間ボタンの識別子。
+    **  @param [in] idCom     エンジンボタンの識別子。
+    **  @param [in] curVal    現在の設定値。
+    **  @retval     BOOL_TRUE     正常終了。
+    **  @retval     BOOL_FALSE    異常終了。
+    **/
+    Boolean
+    setupPlayerTypeOptions(
+            const  ComponentID  idMan,
+            const  ComponentID  idCom,
+            const  PlayerType   curVal);
+
 //========================================================================
 //
 //    Member Variables.
@@ -300,7 +352,13 @@ private:
 private:
 
     /**   プレーヤーのタイプ。  **/
-    PlayerType      m_playTypes[Common::NUM_PLAYERS];
+    PlayerType      m_etPlayers[Common::NUM_PLAYERS];
+
+    /**   プレーヤーの名前。    **/
+    std::string     m_pManNames[Common::NUM_PLAYERS];
+
+    /**   思考エンジンレベル。  **/
+    EngineLevel     m_engLevels[Common::NUM_PLAYERS];
 
     /**   ダイスを自動で振る。  **/
     AutoManual      m_fDiceRoll[Common::NUM_PLAYERS];

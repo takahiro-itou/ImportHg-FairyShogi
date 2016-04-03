@@ -55,13 +55,19 @@ NUM_ENGINE_TYPES    =  getArraySize(s_tblEngines);
 
 MatchDialog::MatchDialog()
     : Super(),
-      m_playTypes(),
+      m_etPlayers(),
+      m_pManNames(),
+      m_engLevels(),
       m_fDiceRoll(),
       m_fEngStart()
 {
     //  デフォルトの設定値を用意する。  //
-    this->m_playTypes[Common::PLAYER_BLACK] = 0;
-    this->m_playTypes[Common::PLAYER_WHITE] = (NUM_ENGINE_TYPES - 1);
+    this->m_etPlayers[Common::PLAYER_BLACK] = PLAYER_TYPE_MAN;
+    this->m_etPlayers[Common::PLAYER_WHITE] = PLAYER_TYPE_COM;
+    this->m_pManNames[Common::PLAYER_BLACK] = "無題";
+    this->m_pManNames[Common::PLAYER_WHITE] = "無題";
+    this->m_engLevels[Common::PLAYER_BLACK] = (NUM_ENGINE_TYPES - 1);
+    this->m_engLevels[Common::PLAYER_WHITE] = (NUM_ENGINE_TYPES - 1);
     this->m_fDiceRoll[Common::PLAYER_BLACK] = OPERATION_AUTO;
     this->m_fDiceRoll[Common::PLAYER_WHITE] = OPERATION_AUTO;
     this->m_fEngStart[Common::PLAYER_BLACK] = OPERATION_MANUAL;
@@ -104,6 +110,15 @@ MatchDialog::~MatchDialog()
 BOOL
 MatchDialog::initializeDialog()
 {
+    setupPlayerTypeOptions(
+            IDD_RADIO_BLACK_MAN,
+            IDD_RADIO_BLACK_COM,
+            this->m_etPlayers[Common::PLAYER_BLACK]);
+    setupPlayerTypeOptions(
+            IDD_RADIO_WHITE_MAN,
+            IDD_RADIO_WHITE_COM,
+            this->m_etPlayers[Common::PLAYER_WHITE]);
+
     const   HWND    hCmbBlack   =  getDialogItem(IDD_COMBO_BLACK_COM);
     const   HWND    hCmbWhite   =  getDialogItem(IDD_COMBO_WHITE_COM);
     for ( int i = 0; i < NUM_ENGINE_TYPES; ++ i ) {
@@ -120,10 +135,10 @@ MatchDialog::initializeDialog()
     }
     setComboSelectedIndex(
             IDD_COMBO_BLACK_COM,
-            this->m_playTypes[Common::PLAYER_BLACK]);
+            this->m_etPlayers[Common::PLAYER_BLACK]);
     setComboSelectedIndex(
             IDD_COMBO_WHITE_COM,
-            this->m_playTypes[Common::PLAYER_WHITE]);
+            this->m_etPlayers[Common::PLAYER_WHITE]);
 
     setupAutoManualOptions(
             IDD_RADIO_BLACK_DICE_MANUAL,
@@ -214,7 +229,7 @@ MatchDialog::PlayerType
 MatchDialog::getPlayerType(
         const  PlayerIndex  cPlayer)  const
 {
-    return ( this->m_playTypes[cPlayer] );
+    return ( this->m_etPlayers[cPlayer] );
 }
 
 //----------------------------------------------------------------
@@ -226,7 +241,7 @@ MatchDialog::setPlayerType(
         const  PlayerIndex  cPlayer,
         const  PlayerType   valNew)
 {
-    this->m_playTypes[cPlayer]  = valNew;
+    this->m_etPlayers[cPlayer]  = valNew;
     return ( ERR_SUCCESS );
 }
 
@@ -269,9 +284,18 @@ MatchDialog::dialogProc(
 Boolean
 MatchDialog::saveDialogItems()
 {
-    this->m_playTypes[Common::PLAYER_BLACK]
+    this->m_etPlayers[Common::PLAYER_BLACK] = readPlayerTypeOption(
+            IDD_RADIO_BLACK_MAN,
+            IDD_RADIO_BLACK_COM,
+            this->m_etPlayers[Common::PLAYER_BLACK]);
+    this->m_etPlayers[Common::PLAYER_WHITE] = readPlayerTypeOption(
+            IDD_RADIO_WHITE_MAN,
+            IDD_RADIO_WHITE_COM,
+            this->m_etPlayers[Common::PLAYER_WHITE]);
+
+    this->m_engLevels[Common::PLAYER_BLACK]
             = getComboSelectedIndex(IDD_COMBO_BLACK_COM);
-    this->m_playTypes[Common::PLAYER_WHITE]
+    this->m_engLevels[Common::PLAYER_WHITE]
             = getComboSelectedIndex(IDD_COMBO_WHITE_COM);
 
     this->m_fDiceRoll[Common::PLAYER_BLACK] = readAutoManualOption(
@@ -352,14 +376,34 @@ MatchDialog::readAutoManualOption(
 }
 
 //----------------------------------------------------------------
+//    ラジオボタンの設定内容を取得する。
+//
+
+MatchDialog::PlayerType
+MatchDialog::readPlayerTypeOption(
+        const  ComponentID  idMan,
+        const  ComponentID  idCom,
+        const  PlayerType   defVal)
+{
+    if ( isButtonChecked(idMan) == BST_CHECKED ) {
+        return ( PLAYER_TYPE_MAN );
+    }
+    if ( isButtonChecked(idCom) == BST_CHECKED ) {
+        return ( PLAYER_TYPE_COM );
+    }
+    return ( defVal );
+}
+
+//----------------------------------------------------------------
 //    設定をラジオボタンに反映する。
 //
 
-Boolean
-MatchDialog::setupAutoManualOption(
+template  <typename  TValueType>
+inline  Boolean
+MatchDialog::setupRadioButton(
         const  ComponentID  idItem,
-        const  AutoManual   curVal,
-        const  AutoManual   btnVal)
+        const  TValueType   curVal,
+        const  TValueType   btnVal)
 {
     sendDialogItemMessage(
             idItem,     BM_SETCHECK,
@@ -378,8 +422,23 @@ MatchDialog::setupAutoManualOptions(
         const  ComponentID  idAuto,
         const  AutoManual   curVal)
 {
-    setupAutoManualOption(idManual,  curVal,  OPERATION_MANUAL);
-    setupAutoManualOption(idAuto,    curVal,  OPERATION_AUTO  );
+    setupRadioButton(idManual,  curVal,  OPERATION_MANUAL);
+    setupRadioButton(idAuto,    curVal,  OPERATION_AUTO  );
+    return ( BOOL_TRUE );
+}
+
+//----------------------------------------------------------------
+//    設定をラジオボタンに反映する。
+//
+
+Boolean
+MatchDialog::setupPlayerTypeOptions(
+        const  ComponentID  idMan,
+        const  ComponentID  idCom,
+        const  PlayerType   curVal)
+{
+    setupRadioButton(idMan,  curVal,  PLAYER_TYPE_MAN);
+    setupRadioButton(idCom,  curVal,  PLAYER_TYPE_COM);
     return ( BOOL_TRUE );
 }
 
