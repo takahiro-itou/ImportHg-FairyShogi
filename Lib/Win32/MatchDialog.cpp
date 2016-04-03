@@ -27,7 +27,6 @@ namespace  Win32  {
 namespace  {
 
 CONSTEXPR_VAR   LPCTSTR     s_tblEngines[]  =  {
-    TEXT("Man"),
     TEXT("Level 0"),
     TEXT("Level 1"),
     TEXT("Level 2"),
@@ -105,8 +104,8 @@ MatchDialog::~MatchDialog()
 BOOL
 MatchDialog::initializeDialog()
 {
-    const   HWND    hCmbBlack   =  getDialogItem(IDD_COMBO_BLACK_PLAYER);
-    const   HWND    hCmbWhite   =  getDialogItem(IDD_COMBO_WHITE_PLAYER);
+    const   HWND    hCmbBlack   =  getDialogItem(IDD_COMBO_BLACK_COM);
+    const   HWND    hCmbWhite   =  getDialogItem(IDD_COMBO_WHITE_COM);
     for ( int i = 0; i < NUM_ENGINE_TYPES; ++ i ) {
         ::SendMessage(
                 hCmbBlack,  CB_INSERTSTRING,
@@ -120,10 +119,10 @@ MatchDialog::initializeDialog()
         );
     }
     setComboSelectedIndex(
-            IDD_COMBO_BLACK_PLAYER,
+            IDD_COMBO_BLACK_COM,
             this->m_playTypes[Common::PLAYER_BLACK]);
     setComboSelectedIndex(
-            IDD_COMBO_WHITE_PLAYER,
+            IDD_COMBO_WHITE_COM,
             this->m_playTypes[Common::PLAYER_WHITE]);
 
     setupAutoManualOptions(
@@ -271,9 +270,9 @@ Boolean
 MatchDialog::saveDialogItems()
 {
     this->m_playTypes[Common::PLAYER_BLACK]
-            = getComboSelectedIndex(IDD_COMBO_BLACK_PLAYER);
+            = getComboSelectedIndex(IDD_COMBO_BLACK_COM);
     this->m_playTypes[Common::PLAYER_WHITE]
-            = getComboSelectedIndex(IDD_COMBO_WHITE_PLAYER);
+            = getComboSelectedIndex(IDD_COMBO_WHITE_COM);
 
     this->m_fDiceRoll[Common::PLAYER_BLACK] = readAutoManualOption(
             IDD_RADIO_BLACK_DICE_MANUAL,
