@@ -279,7 +279,9 @@ rollDice(
     if ( g_dlgMatch.getEngineStart(giGame.getCurrentPlayer())
             ==  Win32::MatchDialog::OPERATION_AUTO )
     {
+        ::Sleep(500);
         startComputerEngine(hWnd,  BOOL_TRUE);
+        ::Sleep(500);
     }
 
     return ( BOOL_TRUE );
