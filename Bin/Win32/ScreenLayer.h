@@ -30,9 +30,9 @@
 FAIRYSHOGI_NAMESPACE_BEGIN
 
 //  クラスの前方宣言。  //
-namespace  Interface  {
+namespace  Win32  {
 class   BitmapImage;
-}   //  End of namespace  Interface
+}   //  End of namespace  Win32
 
 namespace  Interface  {
 
@@ -71,6 +71,9 @@ public:
         /**   正常終了。再描画が必要。  **/
         EH_RESULT_REDRAW
     };
+
+    /**   ビットマップイメージクラス。  **/
+    typedef     Win32::BitmapImage      BitmapImage;
 
 //========================================================================
 //

@@ -25,7 +25,7 @@
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Common/MersenneTwister.h"
-#include    "FairyShogi/Interface/BitmapImage.h"
+#include    "FairyShogi/Win32/BitmapImage.h"
 #include    "FairyShogi/Win32/MatchDialog.h"
 
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
@@ -51,19 +51,6 @@ namespace  {
 
 constexpr   char
 g_szClassName[] = "FairyShogiWindow";
-
-Interface::BoardScreen      g_scrBoard;
-Interface::DiceScreen       g_scrDice;
-Interface::PromotionScreen  g_scrProm;
-
-//
-//    ダイアログボックス。
-//
-
-Win32::MatchDialog          g_dlgMatch;
-
-/**   マウスのキャプチャフラグ。    **/
-HWND                        g_hCapture;
 
 //
 //    画面に関する定数。
@@ -146,12 +133,26 @@ CONSTEXPR_VAR   int
 RESOURCE_ID_UNDO        =  14;
 
 
-Interface::BitmapImage      g_imgScreen;
-Interface::BitmapImage      g_imgDice;
-Interface::BitmapImage      g_imgWork;
+Interface::BoardScreen      g_scrBoard;
+Interface::DiceScreen       g_scrDice;
+Interface::PromotionScreen  g_scrProm;
 
-Interface::BitmapImage      g_imgBoard;
-Interface::BitmapImage      g_imgPromote;
+//
+//    ダイアログボックス。
+//
+
+Win32::MatchDialog          g_dlgMatch;
+
+/**   マウスのキャプチャフラグ。    **/
+HWND                        g_hCapture;
+
+
+Win32::BitmapImage          g_imgScreen;
+Win32::BitmapImage          g_imgDice;
+Win32::BitmapImage          g_imgWork;
+
+Win32::BitmapImage          g_imgBoard;
+Win32::BitmapImage          g_imgPromote;
 
 //
 //  乱数。
@@ -592,7 +593,7 @@ onPaint(
 
     //  メイン画面を描画する。  //
     {
-        Interface::BitmapImage  &  imgWork  =  g_imgBoard;
+        Win32::BitmapImage  &  imgWork  =  g_imgBoard;
         scrBoard.drawScreenLayer( & imgWork );
         g_imgScreen.copyRectangle(
                 scrBoard.getLeft(),
@@ -646,7 +647,7 @@ onPaint(
     //  ダイス選択画面を表示する。  //
     if ( g_scrDice.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
     {
-        Interface::BitmapImage  &  imgWork  =  g_imgWork;
+        Win32::BitmapImage  &  imgWork  =  g_imgWork;
 
         g_imgScreen.drawTransparentRectangle(
                 g_scrDice.getLeft() - 4,
@@ -668,7 +669,7 @@ onPaint(
     //  成り駒選択画面を表示する。  //
     if ( g_scrProm.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
     {
-        Interface::BitmapImage  &  imgWork  =  g_imgPromote;
+        Win32::BitmapImage  &  imgWork  =  g_imgPromote;
 
         g_scrProm.drawScreenLayer( & imgWork );
         g_imgScreen.copyRectangle(
