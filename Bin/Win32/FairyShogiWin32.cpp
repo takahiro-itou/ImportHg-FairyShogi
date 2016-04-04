@@ -281,7 +281,6 @@ rollDice(
     {
         ::Sleep(500);
         startComputerEngine(hWnd,  BOOL_TRUE);
-        ::Sleep(500);
     }
 
     return ( BOOL_TRUE );
