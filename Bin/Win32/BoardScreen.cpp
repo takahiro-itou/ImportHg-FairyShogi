@@ -20,6 +20,7 @@
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Interface/BitmapImage.h"
+#include    "FairyShogi/Win32/BitmapImage.h"
 
 #include    <iostream>
 
