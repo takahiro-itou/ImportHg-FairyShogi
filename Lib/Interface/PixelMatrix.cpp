@@ -10,15 +10,16 @@
 *************************************************************************/
 
 /**
-**      An Implementation of BitmapImage class.
+**      An Implementation of PixelMatrix class.
 **
-**      @file       Interface/BitmapImage.cpp
+**      @file       Interface/PixelMatrix.cpp
 **/
 
-#include    "FairyShogi/Interface/BitmapImage.h"
+#include    "FairyShogi/Interface/PixelMatrix.h"
 
 #include    "FairyShogi/Common/HelperMacros.h"
 
+#include    <algorithm>
 #include    <memory.h>
 #include    <stdio.h>
 
@@ -29,10 +30,10 @@ namespace  Interface  {
 
 //========================================================================
 //
-//    BitmapImage::TBitmapInfoHeader  struct.
+//    PixelMatrix::TBitmapInfoHeader  struct.
 //
 
-struct  BitmapImage::TBitmapInfoHeader
+struct  PixelMatrix::TBitmapInfoHeader
 {
     DWORD   biSize;
     LONG    biWidth;
@@ -47,7 +48,7 @@ struct  BitmapImage::TBitmapInfoHeader
     DWORD   biClrImportant;
 };
 
-struct  BitmapImage::TRgbQuad
+struct  PixelMatrix::TRgbQuad
 {
     BYTE    rgbBlue;
     BYTE    rgbGreen;
@@ -55,7 +56,7 @@ struct  BitmapImage::TRgbQuad
     BYTE    rgbReserved;
 };
 
-struct  BitmapImage::TBitmapInfo
+struct  PixelMatrix::TBitmapInfo
 {
     TBitmapInfoHeader   bmiHeader;
     TRgbQuad            bmiColors[1];
@@ -69,7 +70,7 @@ enum  {
 
 //========================================================================
 //
-//    BitmapImage  class.
+//    PixelMatrix  class.
 //
 
 //========================================================================
@@ -82,16 +83,12 @@ enum  {
 //  （デフォルトコンストラクタ）。
 //
 
-BitmapImage::BitmapImage()
+PixelMatrix::PixelMatrix()
     : m_xWidth (0),
       m_yHeight(0),
       m_nDepth (0),
       m_ptrBuf (nullptr),
-      m_ptrInfo(nullptr),
       m_ptrBits(nullptr),
-#if  defined( FAIRYSHOGI_WIN32_API )
-      m_hBitmap(0),
-#endif
       m_nPixelBytes(0),
       m_nLineBytes (0)
 {
@@ -102,7 +99,7 @@ BitmapImage::BitmapImage()
 //  （デストラクタ）。
 //
 
-BitmapImage::~BitmapImage()
+PixelMatrix::~PixelMatrix()
 {
     destroyBitmap();
 }
@@ -132,7 +129,7 @@ BitmapImage::~BitmapImage()
 //
 
 ErrCode
-BitmapImage::createBitmap(
+PixelMatrix::createBitmap(
         const  BitmapCoord  cxWidth,
         const  BitmapCoord  cyHeight,
         const  BitmapDepth  bDepth)
@@ -146,253 +143,28 @@ BitmapImage::createBitmap(
     this->m_nPixelBytes = computeBytesPerPixel(bDepth);
     this->m_nLineBytes  = computeBytesPerLine (cxWidth, bDepth);
 
-    size_t  cbHead  = sizeof(TBitmapInfoHeader);
-    if ( bDepth == 8 ) {
-        cbHead  += sizeof(TRgbQuad) * 256;
-    }
-
+    const  size_t   cbHead  = 0;
     const  size_t   cbBits  = (this->m_nLineBytes) * cyHeight;
     LpBuffer        ptrBuf  = new  uint8_t [cbHead + cbBits];
-    LpBitmapInfo    ptrInfo = pointer_cast<LpBitmapInfo>(ptrBuf);
     PmPixelArray    ptrBits = (ptrBuf) + cbHead;
     this->m_ptrBuf  = (ptrBuf);
 
-    ptrInfo->bmiHeader.biSize           = sizeof(TBitmapInfoHeader);
-    ptrInfo->bmiHeader.biWidth          = cxWidth;
-    ptrInfo->bmiHeader.biHeight         = cyHeight;
-    ptrInfo->bmiHeader.biBitCount       = bDepth;
-    ptrInfo->bmiHeader.biPlanes         = 1;
-    ptrInfo->bmiHeader.biXPelsPerMeter  = 0;
-    ptrInfo->bmiHeader.biYPelsPerMeter  = 0;
-    ptrInfo->bmiHeader.biClrUsed        = 0;
-    ptrInfo->bmiHeader.biClrImportant   = 0;
-    ptrInfo->bmiHeader.biCompression    = BI_RGB;
-    ptrInfo->bmiHeader.biSizeImage      = cbBits;
-
-    this->m_ptrInfo = (ptrInfo);
     this->m_ptrBits = (ptrBits);
 
     return ( ERR_SUCCESS );
 }
-
-#if  defined( FAIRYSHOGI_WIN32_API )
-
-//----------------------------------------------------------------
-//    ビットマップイメージを生成する。
-//
-
-ErrCode
-BitmapImage::createBitmap(
-        const  BitmapCoord  cxWidth,
-        const  BitmapCoord  cyHeight,
-        const  HDC          hDC)
-{
-    destroyBitmap();
-
-    const  BitmapDepth  bDepth  = 24;
-
-    this->m_xWidth  = cxWidth;
-    this->m_yHeight = cyHeight;
-    this->m_nDepth  = bDepth;
-
-    this->m_nPixelBytes = computeBytesPerPixel(bDepth);
-    this->m_nLineBytes  = computeBytesPerLine (cxWidth, bDepth);
-
-    size_t  cbHead  = sizeof(TBitmapInfoHeader);
-    if ( bDepth == 8 ) {
-        cbHead  += sizeof(TRgbQuad) * 256;
-    }
-
-    const  size_t   cbBits  = (this->m_nLineBytes) * cyHeight;
-    LpBuffer        ptrBuf  = new  uint8_t [cbHead];
-    LpBitmapInfo    ptrInfo = pointer_cast<LpBitmapInfo>(ptrBuf);
-    this->m_ptrBuf  = (ptrBuf);
-
-    ptrInfo->bmiHeader.biSize           = sizeof(TBitmapInfoHeader);
-    ptrInfo->bmiHeader.biWidth          = cxWidth;
-    ptrInfo->bmiHeader.biHeight         = cyHeight;
-    ptrInfo->bmiHeader.biBitCount       = bDepth;
-    ptrInfo->bmiHeader.biPlanes         = 1;
-    ptrInfo->bmiHeader.biXPelsPerMeter  = 0;
-    ptrInfo->bmiHeader.biYPelsPerMeter  = 0;
-    ptrInfo->bmiHeader.biClrUsed        = 0;
-    ptrInfo->bmiHeader.biClrImportant   = 0;
-    ptrInfo->bmiHeader.biCompression    = BI_RGB;
-    ptrInfo->bmiHeader.biSizeImage      = cbBits;
-
-    PmBitsBuffer    ptrBits = (NULL);
-    this->m_hBitmap = ::CreateDIBSection(
-                            hDC, ptrInfo, DIB_RGB_COLORS,
-                            &(ptrBits), NULL, 0);
-    if ( this->m_hBitmap == 0 ) {
-        return ( ERR_FAILURE );
-    }
-
-    this->m_ptrBits = static_cast<PmPixelArray>(ptrBits);
-
-    return ( ERR_SUCCESS );
-}
-
-#endif  //  defined( FAIRYSHOGI_WIN32_API )
-
 
 //----------------------------------------------------------------
 //    ビットマップイメージを破棄する。
 //
 
 ErrCode
-BitmapImage::destroyBitmap()
+PixelMatrix::destroyBitmap()
 {
-    this->m_ptrInfo = (nullptr);
     this->m_ptrBits = (nullptr);
 
     delete  []  (this->m_ptrBuf);
     this->m_ptrBuf  = (nullptr);
-
-    return ( ERR_SUCCESS );
-}
-
-#if defined( FAIRYSHOGI_WIN32_API )
-
-//----------------------------------------------------------------
-//    ビットマップを描画する。
-//
-
-ErrCode
-BitmapImage::drawBitmap(
-        const  HDC          hDC,
-        const  BitmapCoord  dx,
-        const  BitmapCoord  dy,
-        const  BitmapCoord  w,
-        const  BitmapCoord  h,
-        const  BitmapCoord  ox,
-        const  BitmapCoord  oy)
-{
-    const  HDC      hMemDC  = ::CreateCompatibleDC(hDC);
-    const  HGDIOBJ  hOldBmp = ::SelectObject(hMemDC, this->m_hBitmap);
-    ::BitBlt(hDC, dx, dy, w, h, hMemDC, ox, oy, SRCCOPY);
-    ::GdiFlush();
-    ::SelectObject(hMemDC, hOldBmp);
-    ::DeleteDC(hMemDC);
-
-    return ( ERR_SUCCESS );
-}
-
-#endif  //  defined( FAIRYSHOGI_WIN32_API )
-
-//----------------------------------------------------------------
-//    ビットマップファイルを開いて読み込む。
-//
-
-ErrCode
-BitmapImage::openBitmapFile(
-        const  std::string  &fileName)
-{
-    FILE  *  fp = fopen(fileName.c_str(), "rb");
-    if ( fp == NULL ) {
-        return ( ERR_FILE_OPEN_ERROR );
-    }
-
-    fseek(fp, 0, SEEK_END);
-    const  FileLen  cbFile  = ftell(fp);
-    LpBuffer    ptrBuf  = new  uint8_t [cbFile];
-
-    fseek(fp, 0, SEEK_SET);
-    fread(ptrBuf, 1, cbFile, fp);
-
-    fclose(fp);
-
-    const  ErrCode  retErr  =  readBitmap(ptrBuf, cbFile);
-    return ( retErr );
-}
-
-//----------------------------------------------------------------
-//    ビットマップイメージを読み込む。
-//
-
-ErrCode
-BitmapImage::readBitmap(
-        LpcReadBuf  const   ptrBuf,
-        const  FileLen      cbLen)
-{
-    static_assert(
-            sizeof(TBitmapInfoHeader) == SIZE_OF_BITMAP_INFO_HEADER,
-            "Invalid Structure Size (BitmapInfoHeader)" );
-
-    const   WORD    fhMagic = *(pointer_cast<const  WORD  *>(ptrBuf));
-    if ( fhMagic != 0x4d42 ) {
-        return ( ERR_FAILURE );
-    }
-
-    LpBuffer  const    ptrByte  = new  uint8_t [cbLen + 2];
-    LpBuffer  const    ptrBody  = (ptrByte + 2);
-
-    ::memcpy( ptrBody, ptrBuf, cbLen );
-
-    this->m_ptrInfo = pointer_cast<LpBitmapInfo>(
-                            (ptrBody) + SIZE_OF_BITMAP_FILE_HEADER);
-
-    const  TBitmapInfoHeader  & biHead  = (this->m_ptrInfo->bmiHeader);
-
-    if ( (biHead.biSize < SIZE_OF_BITMAP_INFO_HEADER) )
-    {
-        return ( ERR_FAILURE );
-    }
-
-    const  BitmapCoord  xWidth  = biHead.biWidth;
-    const  BitmapCoord  yHeight = biHead.biHeight;
-    const  BitmapDepth  bDepth  = biHead.biBitCount;
-
-    Offset  ofsBits = SIZE_OF_BITMAP_FILE_HEADER + (biHead.biSize);
-    if ( bDepth == 8 ) {
-        ofsBits += sizeof(TRgbQuad) * 256;
-    }
-
-    this->m_xWidth  = xWidth;
-    this->m_yHeight = yHeight;
-    this->m_nDepth  = bDepth;
-
-    this->m_nPixelBytes = computeBytesPerPixel(bDepth);
-    this->m_nLineBytes  = computeBytesPerLine (xWidth, bDepth);
-
-    this->m_ptrBuf  = ptrByte;
-    this->m_ptrBits = (ptrBody) + ofsBits;
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
-//    ビットマップイメージをファイルに書き込む。
-//
-
-ErrCode
-BitmapImage::saveBitmapFile(
-        const  std::string  &fileName)  const
-{
-#if  defined(  FAIRYSHOGI_WIN32_API )
-    FILE  *  fp = fopen(fileName.c_str(),  "wb");
-    if ( fp == NULL ) {
-        return ( ERR_FILE_OPEN_ERROR );
-    }
-
-    BITMAPINFOHEADER    biHead;
-    BITMAPFILEHEADER    bfHead;
-
-    const  size_t   cbBits  = (this->m_nLineBytes) * getHeight();
-
-    ::memcpy( &biHead,  &(this->m_ptrInfo->bmiHeader),  sizeof(biHead) );
-    bfHead.bfType       =  0x4d42;
-    bfHead.bfSize       =  SIZE_OF_BITMAP_FILE_HEADER
-            + (biHead.biSize) +  cbBits;
-    bfHead.bfReserved1  =  0;
-    bfHead.bfReserved2  =  0;
-    bfHead.bfOffBits    =  SIZE_OF_BITMAP_FILE_HEADER + (biHead.biSize);
-
-    ::fwrite( &bfHead, 1, sizeof(bfHead), fp );
-    ::fwrite( &biHead, 1, sizeof(biHead), fp );
-    ::fwrite( this->m_ptrBits, 1, cbBits, fp );
-    ::fclose(fp);
-#endif
 
     return ( ERR_SUCCESS );
 }
@@ -407,12 +179,12 @@ BitmapImage::saveBitmapFile(
 //
 
 ErrCode
-BitmapImage::copyRectangle(
+PixelMatrix::copyRectangle(
         const  BitmapCoord  dx,
         const  BitmapCoord  dy,
         const  BitmapCoord  dw,
         const  BitmapCoord  dh,
-        const  BitmapImage  &bmpSrc,
+        const  PixelMatrix  &bmpSrc,
         const  BitmapCoord  sx,
         const  BitmapCoord  sy)
 {
@@ -434,12 +206,12 @@ BitmapImage::copyRectangle(
 //
 
 ErrCode
-BitmapImage::copyRectangleWithTransparentColor(
+PixelMatrix::copyRectangleWithTransparentColor(
         const  BitmapCoord  dx,
         const  BitmapCoord  dy,
         const  BitmapCoord  dw,
         const  BitmapCoord  dh,
-        const  BitmapImage  &bmpSrc,
+        const  PixelMatrix  &bmpSrc,
         const  BitmapCoord  sx,
         const  BitmapCoord  sy,
         const  PixelValue   trColR,
@@ -473,7 +245,7 @@ BitmapImage::copyRectangleWithTransparentColor(
 //
 
 ErrCode
-BitmapImage::drawRectangle(
+PixelMatrix::drawRectangle(
         const  BitmapCoord  dx,
         const  BitmapCoord  dy,
         const  BitmapCoord  dw,
@@ -502,7 +274,7 @@ BitmapImage::drawRectangle(
 //
 
 ErrCode
-BitmapImage::drawTransparentRectangle(
+PixelMatrix::drawTransparentRectangle(
         const  BitmapCoord  dx,
         const  BitmapCoord  dy,
         const  BitmapCoord  dw,
@@ -541,8 +313,8 @@ BitmapImage::drawTransparentRectangle(
 //    ビットマップの高さを取得する。
 //
 
-BitmapImage::BitmapCoord
-BitmapImage::getHeight()  const
+PixelMatrix::BitmapCoord
+PixelMatrix::getHeight()  const
 {
     return ( this->m_yHeight );
 }
@@ -551,8 +323,8 @@ BitmapImage::getHeight()  const
 //    ビットマップデータのアドレスを取得する。
 //
 
-BitmapImage::PcPixelArray
-BitmapImage::getPixels()  const
+PixelMatrix::PcPixelArray
+PixelMatrix::getPixels()  const
 {
     return ( this->m_ptrBits );
 }
@@ -561,8 +333,8 @@ BitmapImage::getPixels()  const
 //    ビットマップデータのアドレスを取得する。
 //
 
-BitmapImage::PmPixelArray
-BitmapImage::getPixels()
+PixelMatrix::PmPixelArray
+PixelMatrix::getPixels()
 {
     return ( this->m_ptrBits );
 }
@@ -571,8 +343,8 @@ BitmapImage::getPixels()
 //    ビットマップデータのアドレスを取得する。
 //
 
-BitmapImage::PcPixelArray
-BitmapImage::getPixels(
+PixelMatrix::PcPixelArray
+PixelMatrix::getPixels(
         const  int  x,
         const  int  y)  const
 {
@@ -583,8 +355,8 @@ BitmapImage::getPixels(
 //    ビットマップデータのアドレスを取得する。
 //
 
-BitmapImage::PmPixelArray
-BitmapImage::getPixels(
+PixelMatrix::PmPixelArray
+PixelMatrix::getPixels(
         const  int  x,
         const  int  y)
 {
@@ -595,8 +367,8 @@ BitmapImage::getPixels(
 //    ビットマップの幅を取得する。
 //
 
-BitmapImage::BitmapCoord
-BitmapImage::getWidth()  const
+PixelMatrix::BitmapCoord
+PixelMatrix::getWidth()  const
 {
     return ( this->m_xWidth );
 }
@@ -610,8 +382,8 @@ BitmapImage::getWidth()  const
 //    壱ピクセルに必要なバイト数を計算する。
 //
 
-inline  BitmapImage::Offset
-BitmapImage::computeBytesPerPixel(
+inline  PixelMatrix::Offset
+PixelMatrix::computeBytesPerPixel(
         const  BitmapDepth  bDepth)
 {
     return ( static_cast<Offset>((bDepth + 7) / 8) );
@@ -621,8 +393,8 @@ BitmapImage::computeBytesPerPixel(
 //    壱ラインに必要なバイト数を計算する。
 //
 
-inline  BitmapImage::Offset
-BitmapImage::computeBytesPerLine(
+inline  PixelMatrix::Offset
+PixelMatrix::computeBytesPerLine(
         const  int  cxWidth,
         const  int  bDepth)
 {
@@ -633,8 +405,8 @@ BitmapImage::computeBytesPerLine(
 //    ビットマップデータの先頭からのオフセットを計算する。
 //
 
-inline  BitmapImage::Offset
-BitmapImage::computeOffset(
+inline  PixelMatrix::Offset
+PixelMatrix::computeOffset(
         const  int  x,
         const  int  y)  const
 {
