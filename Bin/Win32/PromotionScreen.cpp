@@ -17,7 +17,6 @@
 
 #include    "PromotionScreen.h"
 
-#include    "FairyShogi/Interface/BitmapImage.h"
 #include    "FairyShogi/Win32/BitmapImage.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
