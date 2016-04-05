@@ -39,24 +39,38 @@
 
 #define     IDD_MATCH_DIALOG                20000
 
-#define     IDD_GROUP_BLACK_PLAYER          20001
-#define     IDD_RADIO_BLACK_MAN             20002
-#define     IDD_RADIO_BLACK_COM             20003
-#define     IDD_COMBO_BLACK_MAN             20004
-#define     IDD_COMBO_BLACK_COM             20005
-#define     IDD_RADIO_BLACK_DICE_AUTO       20006
-#define     IDD_RADIO_BLACK_DICE_MANUAL     20007
-#define     IDD_RADIO_BLACK_THINK_AUTO      20008
-#define     IDD_RADIO_BLACK_THINK_MANUAL    20009
+#define     IDD_GROUP_BLACK_PLAYER            101
+#define     IDD_RADIO_BLACK_MAN               102
+#define     IDD_RADIO_BLACK_COM               103
+#define     IDD_COMBO_BLACK_MAN               104
+#define     IDD_COMBO_BLACK_COM               105
+#define     IDD_RADIO_BLACK_DICE_AUTO         106
+#define     IDD_RADIO_BLACK_DICE_MANUAL       107
+#define     IDD_COMBO_BLACK_DICE_CTRL         108
+#define     IDD_RADIO_BLACK_THINK_AUTO        109
+#define     IDD_RADIO_BLACK_THINK_MANUAL      110
 
-#define     IDD_GROUP_WHITE_PLAYER          20010
-#define     IDD_RADIO_WHITE_MAN             20011
-#define     IDD_RADIO_WHITE_COM             20012
-#define     IDD_COMBO_WHITE_MAN             20013
-#define     IDD_COMBO_WHITE_COM             20014
-#define     IDD_RADIO_WHITE_DICE_AUTO       20015
-#define     IDD_RADIO_WHITE_DICE_MANUAL     20016
-#define     IDD_RADIO_WHITE_THINK_AUTO      20017
-#define     IDD_RADIO_WHITE_THINK_MANUAL    20018
+#define     IDD_GROUP_WHITE_PLAYER            111
+#define     IDD_RADIO_WHITE_MAN               112
+#define     IDD_RADIO_WHITE_COM               113
+#define     IDD_COMBO_WHITE_MAN               114
+#define     IDD_COMBO_WHITE_COM               115
+#define     IDD_RADIO_WHITE_DICE_AUTO         116
+#define     IDD_RADIO_WHITE_DICE_MANUAL       117
+#define     IDD_COMBO_WHITE_DICE_CTRL         118
+#define     IDD_RADIO_WHITE_THINK_AUTO        119
+#define     IDD_RADIO_WHITE_THINK_MANUAL      120
+
+#define     IDD_RADIO_START_INITIAL           121
+#define     IDD_RADIO_START_CURRENT           122
+#define     IDD_RADIO_START_TEXTSFEN          123
+#define     IDD_RADIO_START_TEXTCSA           124
+#define     IDD_EDIT_START_TEXT               125
+#define     IDD_RADIO_SEED_TIME               126
+#define     IDD_RADIO_SEED_MANUAL             127
+#define     IDD_EDIT_RANDOM_SEED              128
+#define     IDD_CHECK_AUTO_SAVE               129
+#define     IDD_EDIT_FILE_NAME                130
+#define     IDD_BUTTON_REF_FILE               131
 
 #endif
