@@ -101,7 +101,7 @@ PixelMatrix::PixelMatrix()
 
 PixelMatrix::~PixelMatrix()
 {
-    destroyBitmap();
+    destroyPixelMatrix();
 }
 
 //========================================================================
@@ -129,12 +129,12 @@ PixelMatrix::~PixelMatrix()
 //
 
 ErrCode
-PixelMatrix::createBitmap(
+PixelMatrix::createPixelMatrix(
         const  BitmapCoord  cxWidth,
         const  BitmapCoord  cyHeight,
         const  BitmapDepth  bDepth)
 {
-    destroyBitmap();
+    destroyPixelMatrix();
 
     this->m_xWidth  = cxWidth;
     this->m_yHeight = cyHeight;
@@ -159,7 +159,7 @@ PixelMatrix::createBitmap(
 //
 
 ErrCode
-PixelMatrix::destroyBitmap()
+PixelMatrix::destroyPixelMatrix()
 {
     this->m_ptrBits = (nullptr);
 

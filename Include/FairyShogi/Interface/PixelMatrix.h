@@ -102,7 +102,7 @@ public:
     **      -   正常終了の場合は、ゼロを返す。
     **/
     virtual  ErrCode
-    createBitmap(
+    createPixelMatrix(
             const  BitmapCoord  cxWidth,
             const  BitmapCoord  cyHeight,
             const  BitmapDepth  bDepth);
@@ -116,7 +116,7 @@ public:
     **      -   正常終了の場合は、ゼロを返す。
     **/
     virtual  ErrCode
-    destroyBitmap();
+    destroyPixelMatrix();
 
 //========================================================================
 //
