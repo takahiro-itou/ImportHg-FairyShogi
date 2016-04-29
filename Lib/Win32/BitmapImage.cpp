@@ -41,15 +41,9 @@ namespace  Win32  {
 //
 
 BitmapImage::BitmapImage()
-    : m_xWidth (0),
-      m_yHeight(0),
-      m_nDepth (0),
-      m_ptrBuf (nullptr),
+    : Super(),
       m_ptrInfo(nullptr),
-      m_ptrBits(nullptr),
-      m_hBitmap(0),
-      m_nPixelBytes(0),
-      m_nLineBytes (0)
+      m_hBitmap(0)
 {
 }
 

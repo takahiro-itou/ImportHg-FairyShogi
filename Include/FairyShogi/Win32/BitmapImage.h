@@ -20,6 +20,8 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Interface/PixelMatrix.h"
+
 #include    <string>
 
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
@@ -45,23 +47,13 @@ namespace  Win32  {
 **    ビットマップイメージを管理するクラス。
 **/
 
-class  BitmapImage
+class  BitmapImage : public  Interface::PixelMatrix
 {
 
 //========================================================================
 //
 //    Internal Type Definitions.
 //
-public:
-
-    /**   ピクセルの輝度値型。  **/
-    typedef     uint8_t     PixelValue;
-
-    /**   ピクセルの座標を指定する型。  **/
-    typedef     int         BitmapCoord;
-
-    /**   ピクセルの深さを指定する型。  **/
-    typedef     int         BitmapDepth;
 
 //========================================================================
 //
@@ -470,32 +462,23 @@ private:
     typedef     BITMAPINFOHEADER    TBitmapInfoHeader;
     typedef     RGBQUAD             TRgbQuad;
 
-    typedef     uint8_t  *          LpBuffer;
     typedef     TBitmapInfo  *      LpBitmapInfo;
     typedef     void  *             PmBitsBuffer;
 
 private:
 
-    BitmapCoord     m_xWidth;
-    BitmapCoord     m_yHeight;
-    BitmapDepth     m_nDepth;
-
-    LpBuffer        m_ptrBuf;
     LpBitmapInfo    m_ptrInfo;
-    PmPixelArray    m_ptrBits;
 
     HBITMAP         m_hBitmap;
-
-    /**   壱ピクセルあたりのバイト数。  **/
-    Offset          m_nPixelBytes;
-
-    /**   壱ラインあたりのバイト数。    **/
-    Offset          m_nLineBytes;
 
 //========================================================================
 //
 //    Other Features.
 //
+private:
+    /**   スーパークラス。  **/
+    typedef     Interface::PixelMatrix      Super;
+
 private:
     typedef     BitmapImage     This;
     BitmapImage         (const  This  &);

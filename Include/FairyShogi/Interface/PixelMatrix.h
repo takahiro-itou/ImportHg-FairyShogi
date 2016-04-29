@@ -368,11 +368,13 @@ private:
 //    Member Variables.
 //
 private:
+protected:
 
     typedef     uint8_t  *          LpBuffer;
     typedef     void  *             PmBitsBuffer;
 
 private:
+protected:
 
     BitmapCoord     m_xWidth;
     BitmapCoord     m_yHeight;
