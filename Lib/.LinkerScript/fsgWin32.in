@@ -2,5 +2,6 @@
 /*  Linker Script.  */
 INPUT( AS_NEEDED(Win32/libfsgWin32.staticd.a) )
 
+INPUT( AS_NEEDED(-lfsgInterface) )
 INPUT( AS_NEEDED(-lGdi32) )
 
