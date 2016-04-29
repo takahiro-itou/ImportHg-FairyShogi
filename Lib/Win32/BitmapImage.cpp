@@ -374,18 +374,5 @@ BitmapImage::computeBytesPerLine(
     return ( ((static_cast<Offset>(cxWidth) * bDepth + 31) / 32) * 4 );
 }
 
-//----------------------------------------------------------------
-//    ビットマップデータの先頭からのオフセットを計算する。
-//
-
-inline  BitmapImage::Offset
-BitmapImage::computeOffset(
-        const  int  x,
-        const  int  y)  const
-{
-    return ( (( (this->m_yHeight) - y - 1) * (this->m_nLineBytes))
-             + ((this->m_nPixelBytes) * x) );
-}
-
 }   //  End of namespace  Win32
 FAIRYSHOGI_NAMESPACE_END

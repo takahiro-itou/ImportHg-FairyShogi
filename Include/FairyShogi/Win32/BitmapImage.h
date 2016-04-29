@@ -222,9 +222,6 @@ public:
 //    For Internal Use Only.
 //
 private:
-    typedef     size_t              Offset;
-
-private:
 
     //----------------------------------------------------------------
     /**   壱ピクセルに必要なバイト数を計算する。
@@ -247,18 +244,6 @@ private:
     computeBytesPerLine(
             const  BitmapCoord  cxWidth,
             const  BitmapDepth  bDepth);
-
-    //----------------------------------------------------------------
-    /**   ビットマップデータの先頭からのオフセットを計算する。
-    **
-    **  @param [in] x   水平座標。
-    **  @param [in] y   垂直座標。
-    **  @return     指定した座標に対応するデータのオフセット。
-    **/
-    inline  Offset
-    computeOffset(
-            const  BitmapCoord  x,
-            const  BitmapCoord  y)  const;
 
     //----------------------------------------------------------------
     //
