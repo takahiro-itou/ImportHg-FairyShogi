@@ -49,6 +49,12 @@ public:
     /**   ピクセルの深さを指定する型。  **/
     typedef     int         BitmapDepth;
 
+    /**   輝度値の配列型。      **/
+    typedef     PixelValue  *           PmPixelArray;
+
+    /**   輝度値の配列型。      **/
+    typedef     const   PixelValue  *   PcPixelArray;
+
 //========================================================================
 //
 //    Constructor(s) and Destructor.
@@ -106,6 +112,25 @@ public:
             const  BitmapCoord  cxWidth,
             const  BitmapCoord  cyHeight,
             const  BitmapDepth  bDepth);
+
+    //----------------------------------------------------------------
+    /**   ビットマップイメージを生成する。
+    **
+    **  @param [in] cxWidth     幅。
+    **  @param [in] cyHeight    高さ。
+    **  @param [in] bDepth      深さ。
+    **  @param      ptrBits     輝度値の配列。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    createPixelMatrix(
+            const  BitmapCoord  cxWidth,
+            const  BitmapCoord  cyHeight,
+            const  BitmapDepth  bDepth,
+            PmPixelArray        ptrBits);
 
     //----------------------------------------------------------------
     /**   ビットマップイメージを破棄する。
@@ -239,11 +264,6 @@ public:
 //
 public:
 
-    typedef     PixelValue  *           PmPixelArray;
-    typedef     const   PixelValue  *   PcPixelArray;
-
-public:
-
     //----------------------------------------------------------------
     /**   ビットマップの高さを取得する。
     **
@@ -321,6 +341,23 @@ protected:
     computeOffset(
             const  BitmapCoord  x,
             const  BitmapCoord  y)  const;
+
+    //----------------------------------------------------------------
+    /**   ビットマップのパラメータを設定する。
+    **
+    **  @param [in] cxWidth     幅。
+    **  @param [in] cyHeight    高さ。
+    **  @param [in] bDepth      深さ。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setupParameters(
+            const  BitmapCoord  cxWidth,
+            const  BitmapCoord  cyHeight,
+            const  BitmapDepth  bDepth);
 
 //========================================================================
 //

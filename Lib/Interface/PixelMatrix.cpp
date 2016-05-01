@@ -135,20 +135,33 @@ PixelMatrix::createPixelMatrix(
         const  BitmapDepth  bDepth)
 {
     destroyPixelMatrix();
+    setupParameters(cxWidth, cyHeight, bDepth);
 
-    this->m_xWidth  = cxWidth;
-    this->m_yHeight = cyHeight;
-    this->m_nDepth  = bDepth;
-
-    this->m_nPixelBytes = computeBytesPerPixel(bDepth);
-    this->m_nLineBytes  = computeBytesPerLine (cxWidth, bDepth);
-
-    const  size_t   cbHead  = 0;
     const  size_t   cbBits  = (this->m_nLineBytes) * cyHeight;
-    LpBuffer        ptrBuf  = new  uint8_t [cbHead + cbBits];
-    PmPixelArray    ptrBits = (ptrBuf) + cbHead;
-    this->m_ptrBuf  = (ptrBuf);
+    LpBuffer        ptrBuf  = new  uint8_t [cbBits];
+    PmPixelArray    ptrBits = (ptrBuf);
 
+    this->m_ptrBuf  = (ptrBuf);
+    this->m_ptrBits = (ptrBits);
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    ビットマップイメージを生成する。
+//
+
+ErrCode
+PixelMatrix::createPixelMatrix(
+        const  BitmapCoord  cxWidth,
+        const  BitmapCoord  cyHeight,
+        const  BitmapDepth  bDepth,
+        PmPixelArray        ptrBits)
+{
+    destroyPixelMatrix();
+    setupParameters(cxWidth, cyHeight, bDepth);
+
+    this->m_ptrBuf  = (nullptr);
     this->m_ptrBits = (ptrBits);
 
     return ( ERR_SUCCESS );
@@ -371,6 +384,31 @@ PixelMatrix::BitmapCoord
 PixelMatrix::getWidth()  const
 {
     return ( this->m_xWidth );
+}
+
+//========================================================================
+//
+//    Protected Member Functions.
+//
+
+//----------------------------------------------------------------
+//    ビットマップのパラメータを設定する。
+//
+
+ErrCode
+PixelMatrix::setupParameters(
+        const  BitmapCoord  cxWidth,
+        const  BitmapCoord  cyHeight,
+        const  BitmapDepth  bDepth)
+{
+    this->m_xWidth  = cxWidth;
+    this->m_yHeight = cyHeight;
+    this->m_nDepth  = bDepth;
+
+    this->m_nPixelBytes = computeBytesPerPixel(bDepth);
+    this->m_nLineBytes  = computeBytesPerLine (cxWidth, bDepth);
+
+    return ( ERR_SUCCESS );
 }
 
 //========================================================================

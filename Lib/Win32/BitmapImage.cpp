@@ -88,13 +88,7 @@ BitmapImage::createBitmap(
         const  BitmapDepth  bDepth)
 {
     destroyBitmap();
-
-    this->m_xWidth  = cxWidth;
-    this->m_yHeight = cyHeight;
-    this->m_nDepth  = bDepth;
-
-    this->m_nPixelBytes = computeBytesPerPixel(bDepth);
-    this->m_nLineBytes  = computeBytesPerLine (cxWidth, bDepth);
+    setupParameters(cxWidth, cyHeight, bDepth);
 
     size_t  cbHead  = sizeof(TBitmapInfoHeader);
     if ( bDepth == 8 ) {
@@ -135,16 +129,10 @@ BitmapImage::createBitmap(
         const  BitmapCoord  cyHeight,
         const  HDC          hDC)
 {
+    CONSTEXPR_VAR  BitmapDepth  bDepth  = 24;
+
     destroyBitmap();
-
-    const  BitmapDepth  bDepth  = 24;
-
-    this->m_xWidth  = cxWidth;
-    this->m_yHeight = cyHeight;
-    this->m_nDepth  = bDepth;
-
-    this->m_nPixelBytes = computeBytesPerPixel(bDepth);
-    this->m_nLineBytes  = computeBytesPerLine (cxWidth, bDepth);
+    setupParameters(cxWidth, cyHeight, bDepth);
 
     size_t  cbHead  = sizeof(TBitmapInfoHeader);
     if ( bDepth == 8 ) {
