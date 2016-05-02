@@ -830,7 +830,7 @@ WinMain(
                     MAKEINTRESOURCE(IDB_PIECE_BITMAP)
             ) != ERR_SUCCESS )
     {
-        ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
+        ::MessageBox(hWnd,  "Graphic Resources Not Found!", NULL,  MB_OK);
         return ( 0 );
     }
 
@@ -840,9 +840,12 @@ WinMain(
         return ( 0 );
     }
 
-    if ( g_scrProm.setupBitmapImages("Pieces.bmp") != ERR_SUCCESS )
+    if ( g_scrProm.setupBitmapImages(
+                    hInst,  hDC,
+                    MAKEINTRESOURCE(IDB_PIECE_BITMAP)
+            ) != ERR_SUCCESS )
     {
-        ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
+        ::MessageBox(hWnd,  "Graphic Resources Not Found!", NULL,  MB_OK);
         return ( 0 );
     }
 
