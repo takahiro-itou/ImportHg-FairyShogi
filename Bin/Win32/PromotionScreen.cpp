@@ -17,6 +17,8 @@
 
 #include    "PromotionScreen.h"
 
+#include    "FairyShogiApp.h"
+
 #include    "FairyShogi/Win32/BitmapResource.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -133,35 +135,9 @@ PromotionScreen::drawScreenLayer(
 
 ErrCode
 PromotionScreen::setupBitmapImages(
-        const  HINSTANCE    hInstance,
-        const  HDC          hDC,
-        const  LPCTSTR      imgPiece)
+        const  FairyShogiApp  & objApp)
 {
-    this->m_brPiece = new  BitmapResource;
-    this->m_brPiece->createBitmap(896, 128, hDC);
-
-    if ( this->m_brPiece->loadBitmapResource(hInstance, hDC, imgPiece)
-            != ERR_SUCCESS )
-    {
-        return ( ERR_FAILURE );
-    }
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
-//    必要な画像データを準備する。
-//
-
-ErrCode
-PromotionScreen::setupBitmapImages(
-        const  std::string  &imgPiece)
-{
-    this->m_brPiece = new  BitmapResource;
-    if ( this->m_brPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
-        return ( ERR_FAILURE );
-    }
-
+    this->m_brPiece = &( objApp.getPieceBitmap() );
     return ( ERR_SUCCESS );
 }
 
