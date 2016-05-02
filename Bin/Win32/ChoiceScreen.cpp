@@ -265,12 +265,8 @@ ChoiceScreen::setChoiceList(
 ErrCode
 ChoiceScreen::setupChoiceDisplay(
         const  ChoiceIndex  numCols,
-        const  ChoiceIndex  numRows,
-        const  ChoiceSize   xWidth,
-        const  ChoiceSize   yHeight)
+        const  ChoiceIndex  numRows)
 {
-    this->m_xImgWidth   =  xWidth;
-    this->m_yImgHeight  =  yHeight;
     this->m_numSelCols  =  numCols;
     this->m_numSelRows  =  numRows;
 
@@ -292,6 +288,19 @@ ChoiceScreen::onLButtonUp(
         const   UINT    xPos,
         const   UINT    yPos)
 {
+    //  ウィンドウの外側だった場合は無視する。  //
+    const  WindowCoord  clkPosX = static_cast<WindowCoord>(xPos);
+    const  WindowCoord  clkPosY = static_cast<WindowCoord>(yPos);
+
+    if (       (clkPosX < 0) || (getWidth()  <= clkPosX)
+            || (clkPosY < 0) || (getHeight() <= clkPosY) )
+    {
+        this->m_xSelCol     =  -1;
+        this->m_ySelRow     =  -1;
+        this->m_psSelected  =  -1;
+        return ( EH_RESULT_REDRAW );
+    }
+
     const  ChoiceSize   xImgWidth   =  (this->m_xImgWidth);
     const  ChoiceSize   yImgHeight  =  (this->m_yImgHeight);
 
@@ -302,6 +311,7 @@ ChoiceScreen::onLButtonUp(
     const  ChoiceIndex  iSelect     =  (ySelRow * numSelCols) + (xSelCol);
     const  ChoiceIndex  nSelMax     =  (this->m_prmOptions.size());
 
+    //  範囲外を選択した場合は無視する。    //
     if ( (iSelect < 0) || (nSelMax <= iSelect) ) {
         return ( EH_RESULT_REDRAW );
     }

@@ -228,10 +228,8 @@ public:
     //----------------------------------------------------------------
     /**   選択肢の表示領域を設定する。
     **
-    **  @param [in] numCols
-    **  @param [in] numRows
-    **  @param [in] xWidth
-    **  @param [in] yHeight
+    **  @param [in] numCols     横方向に表示するアイコン数。
+    **  @param [in] numRows     縦方向に表示するアイコン数。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -240,9 +238,7 @@ public:
     ErrCode
     setupChoiceDisplay(
             const  ChoiceIndex  numCols,
-            const  ChoiceIndex  numRows,
-            const  ChoiceSize   xWidth,
-            const  ChoiceSize   yHeight);
+            const  ChoiceIndex  numRows);
 
 //========================================================================
 //

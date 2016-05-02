@@ -130,7 +130,7 @@ DiceScreen::setSelectionList(
 {
     OptionArray     vOpts;
 
-    setupChoiceDisplay(3, 3, 128, 128);
+    setupChoiceDisplay(3, 3);
 
     vOpts.clear();
     for ( ChoiceIndex i = 0; i < Common::DICE_MAX_VALUE; ++ i ) {
