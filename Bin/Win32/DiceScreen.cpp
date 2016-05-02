@@ -86,6 +86,21 @@ DiceScreen::~DiceScreen()
 //    Public Member Functions (Virtual Functions).
 //
 
+//----------------------------------------------------------------
+//    必要な画像データを準備する。
+//
+
+ErrCode
+DiceScreen::setupBitmapImages(
+        const  HINSTANCE    hInstance,
+        const  HDC          hDC,
+        const  LPCTSTR      imgDice)
+{
+    return ( Super::setupBitmapImages(
+                     hInstance,  hDC,  imgDice,
+                     Common::DICE_MAX_VALUE, 3, 128, 128)
+    );
+}
 
 //----------------------------------------------------------------
 //    必要な画像データを準備する。
@@ -96,7 +111,7 @@ DiceScreen::setupBitmapImages(
         const  std::string  &imgDice)
 {
     return ( Super::setupBitmapImages(
-                     imgDice, Common::DICE_MAX_VALUE, 2, 128, 128)
+                     imgDice, Common::DICE_MAX_VALUE, 3, 128, 128)
     );
 }
 
