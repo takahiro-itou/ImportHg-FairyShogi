@@ -32,7 +32,10 @@
 #include    <fstream>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  Interface  {
+namespace  Win32  {
+
+//  クラスの前方宣言。  //
+class   BitmapResource;
 
 //========================================================================
 //
@@ -688,7 +691,7 @@ public:
     friend  class   BoardScreenTest;
 };
 
-}   //  End of namespace  Interface
+}   //  End of namespace  Win32
 FAIRYSHOGI_NAMESPACE_END
 
 #endif

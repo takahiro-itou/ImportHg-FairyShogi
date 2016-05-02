@@ -24,7 +24,7 @@
 #include    <iostream>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  Interface  {
+namespace  Win32  {
 
 namespace  {
 
@@ -567,7 +567,7 @@ BoardScreen::clearSelection()
 ErrCode
 BoardScreen::playBackward()
 {
-    Interface::BoardScreen::GameInterface  &
+    BoardScreen::GameInterface  &
             giGame  =  this->getGameController();
 
     const  ErrCode  retErr  = giGame.playBackward();
@@ -611,7 +611,7 @@ ErrCode
 BoardScreen::playForward(
         const  ActionView   &actFwd)
 {
-    Interface::BoardScreen::GameInterface  &
+    BoardScreen::GameInterface  &
             giGame  =  this->getGameController();
 
     giGame.playForward(actFwd);
@@ -791,7 +791,7 @@ ErrCode
 BoardScreen::setConstraint(
         const  TConstraint  vCons)
 {
-    GameInterface  &
+    BoardScreen::GameInterface  &
             giGame  =  this->getGameController();
     this->m_flgDiceRoll = DICE_ROLLED;
 
@@ -895,7 +895,7 @@ BoardScreen::playAction(
         const  PieceIndex   iPrm)
 
 {
-    Interface::BoardScreen::GameInterface  &
+    BoardScreen::GameInterface  &
             giGame  =  this->getGameController();
 
     ActionView  actView;
@@ -921,7 +921,7 @@ BoardScreen::setActionInput(
         const  BoardCoord   trgY,
         const  ActionFlag   fLeg)
 {
-    Interface::BoardScreen::GameInterface  &
+    BoardScreen::GameInterface  &
             giGame  =  this->getGameController();
 
     if ( (srcX == trgX) && (srcY == trgY) ) {
@@ -1014,5 +1014,5 @@ BoardScreen::setupActionView(
     return ( ERR_SUCCESS );
 }
 
-}   //  End of namespace  Interface
+}   //  End of namespace  Win32
 FAIRYSHOGI_NAMESPACE_END

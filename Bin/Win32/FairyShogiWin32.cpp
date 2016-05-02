@@ -133,7 +133,7 @@ CONSTEXPR_VAR   int
 RESOURCE_ID_UNDO        =  14;
 
 
-Interface::BoardScreen      g_scrBoard;
+Win32::BoardScreen          g_scrBoard;
 Win32::DiceScreen           g_scrDice;
 Win32::PromotionScreen      g_scrProm;
 
@@ -176,7 +176,7 @@ RandomGenerator             g_rndGen;
 Boolean
 loadMatchSettings(
         const  Win32::MatchDialog   &dlgMatch,
-        Interface::BoardScreen      &scrBoard)
+        Win32::BoardScreen          &scrBoard)
 {
     for ( PlayerIndex pi = 0; pi < Common::NUM_PLAYERS; ++ pi ) {
         scrBoard.setComputerLevel(pi, dlgMatch.getEngineLevel(pi));
@@ -195,8 +195,8 @@ startComputerEngine(
         const  HWND     hWnd,
         const  Boolean  fAuto)
 {
-    Interface::BoardScreen  & scrBoard  = g_scrBoard;
-    Interface::BoardScreen::GameInterface  &
+    Win32::BoardScreen  & scrBoard  = g_scrBoard;
+    Win32::BoardScreen::GameInterface  &
             giGame  = scrBoard.getGameController();
 
     Common::ActionView  actData;
@@ -245,8 +245,8 @@ rollDice(
         const  HWND     hWnd,
         const  int      pidSel)
 {
-    Interface::BoardScreen  & scrBoard  = g_scrBoard;
-    Interface::BoardScreen::GameInterface  &
+    Win32::BoardScreen  & scrBoard  = g_scrBoard;
+    Win32::BoardScreen::GameInterface  &
             giGame  = scrBoard.getGameController();
 
     if ( giGame.isCheckState(giGame.getCurrentPlayer()) ) {
@@ -298,7 +298,7 @@ onCommandMenuClick(
         const   UINT    wID,
         const   UINT    wNotify)
 {
-    Interface::BoardScreen  & scrBoard  = g_scrBoard;
+    Win32::BoardScreen  & scrBoard  = g_scrBoard;
 
     switch ( wID ) {
     case  IDM_FILE_EXIT:
@@ -404,7 +404,7 @@ LRESULT
 onLButtonUpInDiceScreen(
         const   HWND    hWnd)
 {
-    Interface::BoardScreen  & scrBoard  = g_scrBoard;
+    Win32::BoardScreen  & scrBoard  = g_scrBoard;
 
     const  Interface::ChoiceScreen::ChoiceIndex
         pidSel  = g_scrDice.getUserSelect();
@@ -440,8 +440,8 @@ onLButtonUp(
     Interface::ScreenLayer::EventResult
             evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
 
-    Interface::BoardScreen  & scrBoard  = g_scrBoard;
-    Interface::BoardScreen::GameInterface  &
+    Win32::BoardScreen  & scrBoard  = g_scrBoard;
+    Win32::BoardScreen::GameInterface  &
             giGame  = scrBoard.getGameController();
 
     //  ダイス選択中。  //
@@ -509,12 +509,12 @@ onLButtonUp(
     }
 
     evtRet  = scrBoard.onLButtonUp(fwKeys, xPos, yPos);
-    const   Interface::BoardScreen::ScreenState
+    const   Win32::BoardScreen::ScreenState
         bssCurStat  = scrBoard.getCurrentState();
 
-    if ( bssCurStat == Interface::BoardScreen::BSLS_SHOW_PROMOTION )
+    if ( bssCurStat == Win32::BoardScreen::BSLS_SHOW_PROMOTION )
     {
-        const   Interface::BoardScreen::OptionArray
+        const   Win32::BoardScreen::OptionArray
             &vOpts  = scrBoard.getPromotionList();
         g_scrProm.setSelectionList(vOpts);
         g_scrProm.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
@@ -572,8 +572,8 @@ onPaint(
         const   HWND    hWnd,
         const   HDC     hDC)
 {
-    Interface::BoardScreen  & scrBoard  = g_scrBoard;
-    const  Interface::BoardScreen::GameInterface  &
+    Win32::BoardScreen  & scrBoard  = g_scrBoard;
+    const  Win32::BoardScreen::GameInterface  &
             giGame  = scrBoard.getGameController();
 
     //  何らかの理由で、マウスボタンが離された事実が、  //
