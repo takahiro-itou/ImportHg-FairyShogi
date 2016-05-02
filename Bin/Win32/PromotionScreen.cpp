@@ -17,7 +17,7 @@
 
 #include    "PromotionScreen.h"
 
-#include    "FairyShogi/Win32/BitmapImage.h"
+#include    "FairyShogi/Win32/BitmapResource.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
@@ -39,7 +39,7 @@ namespace  Win32  {
 
 PromotionScreen::PromotionScreen()
     : m_prmOptions(),
-      m_biPiece(nullptr),
+      m_brPiece(nullptr),
       m_psSelected(-1)
 {
 }
@@ -56,7 +56,7 @@ PromotionScreen::PromotionScreen(
         const  WindowCoord  wcHeight)
     : Super(wcLeft, wcTop, wcWidth, wcHeight),
       m_prmOptions(),
-      m_biPiece(nullptr),
+      m_brPiece(nullptr),
       m_psSelected(-1)
 {
 }
@@ -68,8 +68,8 @@ PromotionScreen::PromotionScreen(
 
 PromotionScreen::~PromotionScreen()
 {
-    delete  this->m_biPiece;
-    this->m_biPiece = (nullptr);
+    delete  this->m_brPiece;
+    this->m_brPiece = (nullptr);
 }
 
 //========================================================================
@@ -100,7 +100,7 @@ PromotionScreen::drawScreenLayer(
 
         bmpTrg->copyRectangle(
                 dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
-                *(this->m_biPiece), sx, sy);
+                *(this->m_brPiece), sx, sy);
 
         dx  += SQUARE_WIDTH;
         if ( wcWidth < dx + SQUARE_WIDTH ) {
@@ -133,10 +133,32 @@ PromotionScreen::drawScreenLayer(
 
 ErrCode
 PromotionScreen::setupBitmapImages(
+        const  HINSTANCE    hInstance,
+        const  HDC          hDC,
+        const  LPCTSTR      imgPiece)
+{
+    this->m_brPiece = new  BitmapResource;
+    this->m_brPiece->createBitmap(896, 128, hDC);
+
+    if ( this->m_brPiece->loadBitmapResource(hInstance, hDC, imgPiece)
+            != ERR_SUCCESS )
+    {
+        return ( ERR_FAILURE );
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    必要な画像データを準備する。
+//
+
+ErrCode
+PromotionScreen::setupBitmapImages(
         const  std::string  &imgPiece)
 {
-    this->m_biPiece = new  BitmapImage;
-    if ( this->m_biPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
+    this->m_brPiece = new  BitmapResource;
+    if ( this->m_brPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
         return ( ERR_FAILURE );
     }
 
