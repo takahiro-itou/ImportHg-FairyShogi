@@ -256,9 +256,9 @@ protected:
     **/
     virtual  EventResult
     onLButtonUp(
-            const   DWORD   fwKeys,
-            const   UINT    xPos,
-            const   UINT    yPos)  OVERRIDE;
+            const  DWORD        fwKeys,
+            const  WindowCoord  xPos,
+            const  WindowCoord  yPos)  OVERRIDE;
 
 //========================================================================
 //

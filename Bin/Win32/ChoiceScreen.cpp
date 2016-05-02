@@ -284,16 +284,13 @@ ChoiceScreen::setupChoiceDisplay(
 
 ChoiceScreen::EventResult
 ChoiceScreen::onLButtonUp(
-        const   DWORD   fwKeys,
-        const   UINT    xPos,
-        const   UINT    yPos)
+        const  DWORD        fwKeys,
+        const  WindowCoord  xPos,
+        const  WindowCoord  yPos)
 {
     //  ウィンドウの外側だった場合は無視する。  //
-    const  WindowCoord  clkPosX = static_cast<WindowCoord>(xPos);
-    const  WindowCoord  clkPosY = static_cast<WindowCoord>(yPos);
-
-    if (       (clkPosX < 0) || (getWidth()  <= clkPosX)
-            || (clkPosY < 0) || (getHeight() <= clkPosY) )
+    if (       (xPos < 0) || (getWidth()  <= xPos)
+            || (yPos < 0) || (getHeight() <= yPos) )
     {
         this->m_xSelCol     =  -1;
         this->m_ySelRow     =  -1;
