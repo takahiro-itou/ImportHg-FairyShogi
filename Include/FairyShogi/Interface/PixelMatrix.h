@@ -41,19 +41,22 @@ class  PixelMatrix
 public:
 
     /**   ピクセルの輝度値型。  **/
-    typedef     uint8_t     PixelValue;
+    typedef     uint8_t                 PixelValue;
 
     /**   ピクセルの座標を指定する型。  **/
-    typedef     int         BitmapCoord;
+    typedef     int                     BitmapCoord;
 
     /**   ピクセルの深さを指定する型。  **/
-    typedef     int         BitmapDepth;
+    typedef     int                     BitmapDepth;
 
     /**   輝度値の配列型。      **/
     typedef     PixelValue  *           PmPixelArray;
 
     /**   輝度値の配列型。      **/
     typedef     const   PixelValue  *   PcPixelArray;
+
+    /**   バッファの型。        **/
+    typedef     uint8_t  *              LpBuffer;
 
 //========================================================================
 //
@@ -331,6 +334,23 @@ protected:
 protected:
 
     //----------------------------------------------------------------
+    /**   メモリを確保する。
+    **
+    **  @param [in] bPixels   ピクセル配列を確保する。
+    **      -   真の場合は、設定済みのパラメータに基づいて、
+    **          必要な容量が自動で計算され確保される。
+    **      -   偽の場合は、ヘッダサイズだけが確保される。
+    **  @param [in] cbHead    ヘッダとして追加するサイズ。
+    **  @return     確保した領域を指すポインタ。
+    **      関数が失敗した場合は NULL を返す。
+    **  @note       確保されたメモリは自動的に破棄される。
+    **/
+    LpBuffer
+    allocateBuffer(
+            const  Boolean  bPixels,
+            const  Offset   cbHead);
+
+    //----------------------------------------------------------------
     /**   ビットマップデータの先頭からのオフセットを計算する。
     **
     **  @param [in] x   水平座標。
@@ -414,7 +434,6 @@ private:
 private:
 protected:
 
-    typedef     uint8_t  *          LpBuffer;
     typedef     void  *             PmBitsBuffer;
 
 private:

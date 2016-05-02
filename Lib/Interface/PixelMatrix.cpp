@@ -137,8 +137,7 @@ PixelMatrix::createPixelMatrix(
     destroyPixelMatrix();
     setupParameters(cxWidth, cyHeight, bDepth);
 
-    const  size_t   cbBits  = (this->m_nLineBytes) * cyHeight;
-    LpBuffer        ptrBuf  = new  uint8_t [cbBits];
+    LpBuffer        ptrBuf  = allocateBuffer(BOOL_TRUE,  0);
     PmPixelArray    ptrBits = (ptrBuf);
 
     this->m_ptrBuf  = (ptrBuf);
@@ -390,6 +389,26 @@ PixelMatrix::getWidth()  const
 //
 //    Protected Member Functions.
 //
+
+//----------------------------------------------------------------
+//    メモリを確保する。
+//
+
+PixelMatrix::LpBuffer
+PixelMatrix::allocateBuffer(
+        const  Boolean  bPixels,
+        const  Offset   cbHead)
+{
+    Offset  cbSize  =  cbHead;
+    if ( bPixels ) {
+        cbSize  +=  ((this->m_nLineBytes) * (this->m_yHeight));
+    }
+
+    LpBuffer    ptrBuf  = new  uint8_t [cbSize];
+
+    this->m_ptrBuf  = (ptrBuf);
+    return ( ptrBuf );
+}
 
 //----------------------------------------------------------------
 //    ビットマップのパラメータを設定する。
