@@ -152,52 +152,6 @@ public:
             const  ChoiceSize       xWidth,
             const  ChoiceSize       yHeight);
 
-    //----------------------------------------------------------------
-    /**   必要な画像データを準備する。
-    **
-    **  @param [in] hInstance   インスタンスハンドル。
-    **  @param [in] hDC         デバイスコンテキスト。
-    **  @param [in] imgPiece    駒の画像。
-    **  @param [in] numCols     横方向に並ぶアイコン数。
-    **  @param [in] numRows     縦方向に並ぶアイコン数。
-    **  @param [in] xWidth      アイコンの幅。
-    **  @param [in] yHeight     アイコンの高さ。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    setupBitmapImages(
-            const  HINSTANCE    hInstance,
-            const  HDC          hDC,
-            const  LPCTSTR      imgPiece,
-            const  ChoiceIndex  numCols,
-            const  ChoiceIndex  numRows,
-            const  ChoiceSize   xWidth,
-            const  ChoiceSize   yHeight);
-
-    //----------------------------------------------------------------
-    /**   必要な画像データを準備する。
-    **
-    **  @param [in] imgPiece    駒の画像。
-    **  @param [in] numCols     横方向に並ぶアイコン数。
-    **  @param [in] numRows     縦方向に並ぶアイコン数。
-    **  @param [in] xWidth      アイコンの幅。
-    **  @param [in] yHeight     アイコンの高さ。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    setupBitmapImages(
-            const  std::string  &imgPiece,
-            const  ChoiceIndex  numCols,
-            const  ChoiceIndex  numRows,
-            const  ChoiceSize   xWidth,
-            const  ChoiceSize   yHeight);
-
 //========================================================================
 //
 //    Public Member Functions.
@@ -292,11 +246,16 @@ protected:
 //
 private:
 
+    /**   ビットマップリソース型。  **/
+    typedef     const   BitmapResource  *       PcBitmapResource;
+
+private:
+
     /**   ユーザーに示す選択肢。    **/
     OptionArray         m_prmOptions;
 
     /**   選択肢の表示に使う画像。  **/
-    BitmapResource  *   m_brPiece;
+    PcBitmapResource    m_brIcons;
 
     /**   ユーザーの選択した場所。  **/
     ChoiceIndex         m_xSelCol;

@@ -39,7 +39,7 @@ namespace  Win32  {
 
 ChoiceScreen::ChoiceScreen()
     : m_prmOptions(),
-      m_brPiece(nullptr),
+      m_brIcons(nullptr),
       m_xSelCol(-1),
       m_ySelRow(-1),
       m_psSelected(-1),
@@ -64,7 +64,7 @@ ChoiceScreen::ChoiceScreen(
         const  WindowCoord  wcHeight)
     : Super(wcLeft, wcTop, wcWidth, wcHeight),
       m_prmOptions(),
-      m_brPiece(nullptr),
+      m_brIcons(nullptr),
       m_xSelCol(-1),
       m_ySelRow(-1),
       m_psSelected(-1),
@@ -84,8 +84,8 @@ ChoiceScreen::ChoiceScreen(
 
 ChoiceScreen::~ChoiceScreen()
 {
-    delete  this->m_brPiece;
-    this->m_brPiece = (nullptr);
+    delete  this->m_brIcons;
+    this->m_brIcons = (nullptr);
 }
 
 //========================================================================
@@ -120,7 +120,7 @@ ChoiceScreen::drawScreenLayer(
 
         bmpTrg->copyRectangle(
                 dx,  dy,  xImgWidth,  yImgHeight,
-                *(this->m_brPiece),   sx,  sy);
+                *(this->m_brIcons),   sx,  sy);
 
         dx  +=  xImgWidth;
         ++  ti;
@@ -162,57 +162,7 @@ ChoiceScreen::setupBitmapImages(
         const  ChoiceSize       xWidth,
         const  ChoiceSize       yHeight)
 {
-    return ( ERR_FAILURE );
-}
-
-//----------------------------------------------------------------
-//    必要な画像データを準備する。
-//
-
-ErrCode
-ChoiceScreen::setupBitmapImages(
-        const  HINSTANCE    hInstance,
-        const  HDC          hDC,
-        const  LPCTSTR      imgPiece,
-        const  ChoiceIndex  numCols,
-        const  ChoiceIndex  numRows,
-        const  ChoiceSize   xWidth,
-        const  ChoiceSize   yHeight)
-{
-    this->m_brPiece = new  BitmapResource;
-    this->m_brPiece->createBitmap(numCols * xWidth, numRows * yHeight, hDC);
-
-    if ( this->m_brPiece->loadBitmapResource(hInstance, hDC, imgPiece)
-            != ERR_SUCCESS )
-    {
-        return ( ERR_FAILURE );
-    }
-
-    this->m_numSrcCols  =  numCols;
-    this->m_numSrcRows  =  numRows;
-    this->m_xImgWidth   =  xWidth;
-    this->m_yImgHeight  =  yHeight;
-
-    return ( ERR_SUCCESS );
-
-}
-
-//----------------------------------------------------------------
-//    必要な画像データを準備する。
-//
-
-ErrCode
-ChoiceScreen::setupBitmapImages(
-        const  std::string  &imgPiece,
-        const  ChoiceIndex  numCols,
-        const  ChoiceIndex  numRows,
-        const  ChoiceSize   xWidth,
-        const  ChoiceSize   yHeight)
-{
-    this->m_brPiece = new  BitmapResource;
-    if ( this->m_brPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
-        return ( ERR_FAILURE );
-    }
+    this->m_brIcons = &bmpRes;
 
     this->m_numSrcCols  =  numCols;
     this->m_numSrcRows  =  numRows;
