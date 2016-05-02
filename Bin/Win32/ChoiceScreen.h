@@ -245,37 +245,37 @@ protected:
 private:
 
     /**   ユーザーに示す選択肢。    **/
-    OptionArray     m_prmOptions;
+    OptionArray         m_prmOptions;
 
     /**   選択肢の表示に使う画像。  **/
-    BitmapImage  *  m_biPiece;
+    BitmapResource  *   m_brPiece;
 
     /**   ユーザーの選択した場所。  **/
-    ChoiceIndex     m_xSelCol;
+    ChoiceIndex         m_xSelCol;
 
     /**   ユーザーの選択した場所。  **/
-    ChoiceIndex     m_ySelRow;
+    ChoiceIndex         m_ySelRow;
 
     /**   ユーザーの選択した場所。  **/
-    ChoiceIndex     m_psSelected;
+    ChoiceIndex         m_psSelected;
 
     /**   各選択肢を表示する幅。    **/
-    ChoiceSize      m_xImgWidth;
+    ChoiceSize          m_xImgWidth;
 
     /**   各選択肢を表示する高さ。  **/
-    ChoiceSize      m_yImgHeight;
+    ChoiceSize          m_yImgHeight;
 
     /**   選択肢画像の横方向件数。  **/
-    ChoiceIndex     m_numSrcCols;
+    ChoiceIndex         m_numSrcCols;
 
     /**   選択肢画像の横方向件数。  **/
-    ChoiceIndex     m_numSrcRows;
+    ChoiceIndex         m_numSrcRows;
 
     /**   選択肢を横に並べる枚数。  **/
-    ChoiceIndex     m_numSelCols;
+    ChoiceIndex         m_numSelCols;
 
     /**   選択肢を縦に並べる枚数。  **/
-    ChoiceIndex     m_numSelRows;
+    ChoiceIndex         m_numSelRows;
 
 //========================================================================
 //

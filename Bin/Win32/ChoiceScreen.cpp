@@ -17,7 +17,7 @@
 
 #include    "ChoiceScreen.h"
 
-#include    "FairyShogi/Win32/BitmapImage.h"
+#include    "FairyShogi/Win32/BitmapResource.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
@@ -39,7 +39,7 @@ namespace  Win32  {
 
 ChoiceScreen::ChoiceScreen()
     : m_prmOptions(),
-      m_biPiece(nullptr),
+      m_brPiece(nullptr),
       m_xSelCol(-1),
       m_ySelRow(-1),
       m_psSelected(-1),
@@ -64,7 +64,7 @@ ChoiceScreen::ChoiceScreen(
         const  WindowCoord  wcHeight)
     : Super(wcLeft, wcTop, wcWidth, wcHeight),
       m_prmOptions(),
-      m_biPiece(nullptr),
+      m_brPiece(nullptr),
       m_xSelCol(-1),
       m_ySelRow(-1),
       m_psSelected(-1),
@@ -84,8 +84,8 @@ ChoiceScreen::ChoiceScreen(
 
 ChoiceScreen::~ChoiceScreen()
 {
-    delete  this->m_biPiece;
-    this->m_biPiece = (nullptr);
+    delete  this->m_brPiece;
+    this->m_brPiece = (nullptr);
 }
 
 //========================================================================
@@ -120,7 +120,7 @@ ChoiceScreen::drawScreenLayer(
 
         bmpTrg->copyRectangle(
                 dx,  dy,  xImgWidth,  yImgHeight,
-                *(this->m_biPiece),   sx,  sy);
+                *(this->m_brPiece),   sx,  sy);
 
         dx  +=  xImgWidth;
         ++  ti;
@@ -159,8 +159,8 @@ ChoiceScreen::setupBitmapImages(
         const  ChoiceIndex  numCols,
         const  ChoiceIndex  numRows)
 {
-    this->m_biPiece = new  BitmapImage;
-    if ( this->m_biPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
+    this->m_brPiece = new  BitmapResource;
+    if ( this->m_brPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
         return ( ERR_FAILURE );
     }
 
