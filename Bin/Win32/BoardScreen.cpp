@@ -527,6 +527,7 @@ BoardScreen::setupBitmapImages(
         const   LPCTSTR     imgPiece)
 {
     this->m_brBack  = new  BitmapResource;
+    this->m_brBack->createBitmap(832, 640, 24);
     if ( this->m_brBack->loadBitmapResource(hInstance, hDC, imgBack)
             != ERR_SUCCESS )
     {
@@ -534,6 +535,7 @@ BoardScreen::setupBitmapImages(
     }
 
     this->m_brPiece = new  BitmapResource;
+    this->m_brPiece->createBitmap(896, 128, 24);
     if ( this->m_brPiece->loadBitmapResource(hInstance, hDC, imgPiece)
             != ERR_SUCCESS )
     {

@@ -80,6 +80,10 @@ BitmapResource::loadBitmapResource(
         const   LPCTSTR     bmpName)
 {
     const  HBITMAP  hBitmap = ::LoadBitmap(hInst,  bmpName);
+    if ( hBitmap == NULL ) {
+        return ( ERR_FAILURE );
+    }
+
     const  HDC      hMemDC  = ::CreateCompatibleDC(hDC);
     const  HGDIOBJ  hOldBmp = ::SelectObject(hMemDC, hBitmap);
 
