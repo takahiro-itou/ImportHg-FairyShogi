@@ -20,7 +20,7 @@
 #include    "FairyShogi/Win32/BitmapImage.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  Interface  {
+namespace  Win32  {
 
 //========================================================================
 //
@@ -213,5 +213,5 @@ PromotionScreen::onLButtonUp(
 //    For Internal Use Only.
 //
 
-}   //  End of namespace  Interface
+}   //  End of namespace  Win32
 FAIRYSHOGI_NAMESPACE_END
