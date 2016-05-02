@@ -79,7 +79,17 @@ BitmapResource::loadBitmapResource(
         const   HDC         hDC,
         const   LPCTSTR     bmpName)
 {
-    return ( ERR_FAILURE );
+    const  HBITMAP  hBitmap = ::LoadBitmap(hInst,  bmpName);
+    const  HDC      hMemDC  = ::CreateCompatibleDC(hDC);
+    const  HGDIOBJ  hOldBmp = ::SelectObject(hMemDC, hBitmap);
+
+    copyBitmap(hMemDC, 0, 0, getWidth(), getHeight(), 0, 0);
+
+    ::SelectObject(hMemDC, hOldBmp);
+    ::DeleteDC(hMemDC);
+    ::DeleteObject(hBitmap);
+
+    return ( ERR_SUCCESS );
 }
 
 //========================================================================
