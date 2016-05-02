@@ -823,8 +823,12 @@ WinMain(
     }
 
     //  この瞬間に画像を準備する。  //
-    if ( g_scrBoard.setupBitmapImages("Back.bmp", "Pieces.bmp")
-            != ERR_SUCCESS )
+    const  HDC  hDC = ::GetDC(hWnd);
+    if ( g_scrBoard.setupBitmapImages(
+                    hInst,  hDC,
+                    MAKEINTRESOURCE(IDB_BACK_BITMAP),
+                    MAKEINTRESOURCE(IDB_PIECE_BITMAP)
+            ) != ERR_SUCCESS )
     {
         ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
         return ( 0 );
@@ -850,7 +854,6 @@ WinMain(
     }
 
     //  バックバッファも準備する。  //
-    HDC hDC = ::GetDC(hWnd);
     if ( g_imgScreen.createBitmap(WINDOW_WIDTH, WINDOW_HEIGHT, hDC)
             != ERR_SUCCESS )
     {
