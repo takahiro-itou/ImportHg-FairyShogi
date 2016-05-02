@@ -21,7 +21,7 @@
 #include    "ChoiceScreen.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  Interface  {
+namespace  Win32  {
 
 //========================================================================
 //
@@ -181,7 +181,7 @@ public:
     friend  class   DiceScreenTest;
 };
 
-}   //  End of namespace  Interface
+}   //  End of namespace  Win32
 FAIRYSHOGI_NAMESPACE_END
 
 #endif

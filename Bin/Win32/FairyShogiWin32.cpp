@@ -134,7 +134,7 @@ RESOURCE_ID_UNDO        =  14;
 
 
 Interface::BoardScreen      g_scrBoard;
-Interface::DiceScreen       g_scrDice;
+Win32::DiceScreen           g_scrDice;
 Win32::PromotionScreen      g_scrProm;
 
 //
