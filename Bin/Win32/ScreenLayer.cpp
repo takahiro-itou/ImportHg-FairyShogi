@@ -20,7 +20,7 @@
 #include    "FairyShogi/Common/HelperMacros.h"
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  Interface  {
+namespace  Win32  {
 
 //========================================================================
 //
@@ -249,5 +249,5 @@ ScreenLayer::onLButtonUp(
 //    For Internal Use Only.
 //
 
-}   //  End of namespace  Interface
+}   //  End of namespace  Win32
 FAIRYSHOGI_NAMESPACE_END
