@@ -33,6 +33,9 @@
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
+//  クラスの前方宣言。  //
+class   BitmapResource;
+
 //========================================================================
 //
 //    PromotionScreen  class.

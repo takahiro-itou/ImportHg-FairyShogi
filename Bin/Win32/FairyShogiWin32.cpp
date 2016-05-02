@@ -406,7 +406,7 @@ onLButtonUpInDiceScreen(
 {
     Win32::BoardScreen  & scrBoard  = g_scrBoard;
 
-    const  Interface::ChoiceScreen::ChoiceIndex
+    const  Win32::ChoiceScreen::ChoiceIndex
         pidSel  = g_scrDice.getUserSelect();
 
     if ( pidSel == 8 ) {

@@ -33,6 +33,9 @@
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
+//  クラスの前方宣言。  //
+class   BitmapResource;
+
 //========================================================================
 //
 //    ChoiceScreen  class.
@@ -292,14 +295,6 @@ public:
 };
 
 }   //  End of namespace  Win32
-
-namespace  Interface  {
-
-/**     @todo   暫定処理。  **/
-typedef     Win32::ChoiceScreen     ChoiceScreen;
-
-}   //  End of namespace  Interface
-
 FAIRYSHOGI_NAMESPACE_END
 
 #endif
