@@ -657,10 +657,10 @@ private:
     OptionArray         m_prmOptions;
 
     /**   盤の画像イメージ。    **/
-    BitmapImage  *      m_biBack;
+    BitmapResource  *   m_brBack;
 
     /**   駒の画像イメージ。    **/
-    BitmapImage  *      m_biPiece;
+    BitmapResource  *   m_brPiece;
 
     /**   @todo     暫定処理。後で消す。    **/
     std::ofstream       m_ofsKifu;

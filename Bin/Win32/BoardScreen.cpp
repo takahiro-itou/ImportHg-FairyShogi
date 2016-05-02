@@ -19,7 +19,7 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/HelperMacros.h"
-#include    "FairyShogi/Win32/BitmapImage.h"
+#include    "FairyShogi/Win32/BitmapResource.h"
 
 #include    <iostream>
 
@@ -102,8 +102,8 @@ BoardScreen::BoardScreen()
       m_bcLastTrgX(-1),
       m_bcLastTrgY(-1),
       m_prmOptions(),
-      m_biBack (nullptr),
-      m_biPiece(nullptr),
+      m_brBack (nullptr),
+      m_brPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
       m_flgDiceRoll(DICE_NOT_ROLLED),
       m_ddMode(DDM_NOT_START)
@@ -137,8 +137,8 @@ BoardScreen::BoardScreen(
       m_bcLastTrgX(-1),
       m_bcLastTrgY(-1),
       m_prmOptions(),
-      m_biBack (nullptr),
-      m_biPiece(nullptr),
+      m_brBack (nullptr),
+      m_brPiece(nullptr),
       m_ofsKifu("Kifu.txt"),
       m_flgDiceRoll(DICE_NOT_ROLLED),
       m_ddMode(DDM_NOT_START)
@@ -172,9 +172,9 @@ BoardScreen::drawScreenLayer(
     //  背景をコピーする。      //
     bmpTrg->copyRectangle(
             0, 0,
-            this->m_biBack->getWidth(),
-            this->m_biBack->getHeight(),
-            *(this->m_biBack),  0,  0);
+            this->m_brBack->getWidth(),
+            this->m_brBack->getHeight(),
+            *(this->m_brBack),  0,  0);
 
     Common::ViewBuffer  vb;
     memset(&vb, 0, sizeof(vb));
@@ -212,7 +212,7 @@ BoardScreen::drawScreenLayer(
             sy  = ((dp - 1) / 14) * SQUARE_HEIGHT;
             bmpTrg->copyRectangleWithTransparentColor(
                     dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
-                    *(this->m_biPiece), sx, sy,
+                    *(this->m_brPiece), sx, sy,
                     255, 255, 255);
         }
     }
@@ -238,7 +238,7 @@ BoardScreen::drawScreenLayer(
             sy  = (i) * SQUARE_HEIGHT;
             bmpTrg->copyRectangle(
                     dx, dy, SQUARE_WIDTH, SQUARE_HEIGHT,
-                    *(this->m_biPiece), sx, sy);
+                    *(this->m_brPiece), sx, sy);
         }
     }
 
@@ -524,13 +524,13 @@ BoardScreen::setupBitmapImages(
         const  std::string  &imgBack,
         const  std::string  &imgPiece)
 {
-    this->m_biBack  = new  BitmapImage;
-    if ( this->m_biBack->openBitmapFile(imgBack) != ERR_SUCCESS ) {
+    this->m_brBack  = new  BitmapResource;
+    if ( this->m_brBack->openBitmapFile(imgBack) != ERR_SUCCESS ) {
         return ( ERR_FAILURE );
     }
 
-    this->m_biPiece = new  BitmapImage;
-    if ( this->m_biPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
+    this->m_brPiece = new  BitmapResource;
+    if ( this->m_brPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
         return ( ERR_FAILURE );
     }
 
