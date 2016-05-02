@@ -186,10 +186,18 @@ PromotionScreen::setSelectionList(
 
 PromotionScreen::EventResult
 PromotionScreen::onLButtonUp(
-        const   DWORD   fwKeys,
-        const   UINT    xPos,
-        const   UINT    yPos)
+        const  DWORD        fwKeys,
+        const  WindowCoord  xPos,
+        const  WindowCoord  yPos)
 {
+    //  ウィンドウの外側だった場合は無視する。  //
+    if (       (xPos < 0) || (getWidth()  <= xPos)
+            || (yPos < 0) || (getHeight() <= yPos) )
+    {
+        this->m_psSelected  =  -1;
+        return ( EH_RESULT_REDRAW );
+    }
+
     const  WindowCoord  wcWidth = getWidth();
     const  PieceIndex   numCols = wcWidth / SQUARE_WIDTH;
 
