@@ -191,30 +191,6 @@ BitmapImage::destroyBitmap()
 }
 
 //----------------------------------------------------------------
-//    ビットマップを描画する。
-//
-
-ErrCode
-BitmapImage::drawBitmap(
-        const  HDC          hDC,
-        const  BitmapCoord  dx,
-        const  BitmapCoord  dy,
-        const  BitmapCoord  w,
-        const  BitmapCoord  h,
-        const  BitmapCoord  ox,
-        const  BitmapCoord  oy)
-{
-    const  HDC      hMemDC  = ::CreateCompatibleDC(hDC);
-    const  HGDIOBJ  hOldBmp = ::SelectObject(hMemDC, this->m_hBitmap);
-    ::BitBlt(hDC, dx, dy, w, h, hMemDC, ox, oy, SRCCOPY);
-    ::GdiFlush();
-    ::SelectObject(hMemDC, hOldBmp);
-    ::DeleteDC(hMemDC);
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
 //    ビットマップファイルを開いて読み込む。
 //
 
@@ -333,6 +309,56 @@ BitmapImage::saveBitmapFile(
 //
 //    Public Member Functions.
 //
+
+//----------------------------------------------------------------
+//    別のビットマップの矩形をコピーする。
+//
+
+ErrCode
+BitmapImage::copyBitmap(
+        const  HDC          hDC,
+        const  BitmapCoord  ox,
+        const  BitmapCoord  oy,
+        const  BitmapCoord  w,
+        const  BitmapCoord  h,
+        const  BitmapCoord  dx,
+        const  BitmapCoord  dy)
+{
+    const  HDC      hMemDC  = ::CreateCompatibleDC(hDC);
+    const  HGDIOBJ  hOldBmp = ::SelectObject(hMemDC, this->m_hBitmap);
+
+    ::BitBlt(hMemDC, dx, dy, w, h, hDC, ox, oy, SRCCOPY);
+    ::GdiFlush();
+    ::SelectObject(hMemDC, hOldBmp);
+    ::DeleteDC(hMemDC);
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    ビットマップを描画する。
+//
+
+ErrCode
+BitmapImage::drawBitmap(
+        const  HDC          hDC,
+        const  BitmapCoord  dx,
+        const  BitmapCoord  dy,
+        const  BitmapCoord  w,
+        const  BitmapCoord  h,
+        const  BitmapCoord  ox,
+        const  BitmapCoord  oy)
+{
+    const  HDC      hMemDC  = ::CreateCompatibleDC(hDC);
+    const  HGDIOBJ  hOldBmp = ::SelectObject(hMemDC, this->m_hBitmap);
+
+    ::BitBlt(hDC, dx, dy, w, h, hMemDC, ox, oy, SRCCOPY);
+    ::GdiFlush();
+    ::SelectObject(hMemDC, hOldBmp);
+    ::DeleteDC(hMemDC);
+
+    return ( ERR_SUCCESS );
+}
 
 //========================================================================
 //
