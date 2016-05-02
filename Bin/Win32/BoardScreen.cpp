@@ -521,6 +521,34 @@ BoardScreen::resetGame()
 
 ErrCode
 BoardScreen::setupBitmapImages(
+        const   HINSTANCE   hInstance,
+        const   HDC         hDC,
+        const   LPCTSTR     imgBack,
+        const   LPCTSTR     imgPiece)
+{
+    this->m_brBack  = new  BitmapResource;
+    if ( this->m_brBack->loadBitmapResource(hInstance, hDC, imgBack)
+            != ERR_SUCCESS )
+    {
+        return ( ERR_FAILURE );
+    }
+
+    this->m_brPiece = new  BitmapResource;
+    if ( this->m_brPiece->loadBitmapResource(hInstance, hDC, imgPiece)
+            != ERR_SUCCESS )
+    {
+        return ( ERR_FAILURE );
+    }
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    必要な画像データを準備する。
+//
+
+ErrCode
+BoardScreen::setupBitmapImages(
         const  std::string  &imgBack,
         const  std::string  &imgPiece)
 {

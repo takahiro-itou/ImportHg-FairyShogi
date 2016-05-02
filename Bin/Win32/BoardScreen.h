@@ -207,6 +207,25 @@ public:
     //----------------------------------------------------------------
     /**   必要な画像データを準備する。
     **
+    **  @param [in] hInstance   インスタンスハンドル。
+    **  @param [in] hDC         デバイスコンテキスト。
+    **  @param [in] imgBack     盤の画像。
+    **  @param [in] imgPiece    駒の画像。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    setupBitmapImages(
+            const   HINSTANCE   hInstance,
+            const   HDC         hDC,
+            const   LPCTSTR     imgBack,
+            const   LPCTSTR     imgPiece);
+
+    //----------------------------------------------------------------
+    /**   必要な画像データを準備する。
+    **
     **  @param [in] imgBack     盤の画像。
     **  @param [in] imgPiece    駒の画像。
     **  @return     エラーコードを返す。
