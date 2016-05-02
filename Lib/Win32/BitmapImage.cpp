@@ -324,7 +324,15 @@ BitmapImage::copyBitmap(
         const  BitmapCoord  dx,
         const  BitmapCoord  dy)
 {
+    if ( (this->m_hBitmap) == (NULL) ) {
+        return ( ERR_FAILURE );
+    }
+
     const  HDC      hMemDC  = ::CreateCompatibleDC(hDC);
+    if ( hMemDC == (NULL) ) {
+        return ( ERR_FAILURE );
+    }
+
     const  HGDIOBJ  hOldBmp = ::SelectObject(hMemDC, this->m_hBitmap);
 
     ::BitBlt(hMemDC, dx, dy, w, h, hDC, ox, oy, SRCCOPY);
