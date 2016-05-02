@@ -29,6 +29,7 @@ LIBCXXSOURCEFILES       =  \
         ChoiceScreen.cpp     \
         DiceScreen.cpp       \
         EngineProcess.cpp    \
+        FairyShogiApp.cpp    \
         PromotionScreen.cpp  \
         Resources.rc         \
         ScreenLayer.cpp      \
@@ -42,6 +43,7 @@ LIBNOINSTHEADERS        =  \
         ChoiceScreen.h       \
         DiceScreen.h         \
         EngineProcess.h      \
+        FairyShogiApp.h      \
         PromotionScreen.h    \
         Resources.h          \
         ScreenLayer.h        \
