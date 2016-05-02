@@ -32,6 +32,17 @@ LANGUAGE    LANG_JAPANESE,  SUBLANG_DEFAULT
 
 //========================================================================
 //
+//    ビットマップリソース。
+//
+
+IDB_BACK_BITMAP     BITMAP  DISCARDABLE     "Back.bmp"
+
+IDB_DICE_BITMAP     BITMAP  DISCARDABLE     "Dice.bmp"
+
+IDB_PIECE_BITMAP    BITMAP  DISCARDABLE     "Pieces.bmp"
+
+//========================================================================
+//
 //    メニューリソース。
 //
 
