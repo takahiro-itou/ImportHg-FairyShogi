@@ -99,6 +99,7 @@ bin_PROGRAMS            =  \
 dist_bin_SCRIPTS        =  \
         Back.bmp           \
         Dice.bmp           \
+        Icons.bmp          \
         Pieces.bmp
 
 dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
