@@ -834,9 +834,12 @@ WinMain(
         return ( 0 );
     }
 
-    if ( g_scrDice.setupBitmapImages("Dice.bmp") != ERR_SUCCESS )
+    if ( g_scrDice.setupBitmapImages(
+                    hInst,  hDC,
+                    MAKEINTRESOURCE(IDB_DICE_BITMAP)
+            ) != ERR_SUCCESS )
     {
-        ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
+        ::MessageBox(hWnd,  "Graphic Resources Not Found!", NULL,  MB_OK);
         return ( 0 );
     }
 
