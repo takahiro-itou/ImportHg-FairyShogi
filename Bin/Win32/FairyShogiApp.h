@@ -88,6 +88,20 @@ public:
 //
 //    Public Member Functions (Virtual Functions).
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   必要な画像リソースをロードする。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    loadBitmapResources(
+            const   HINSTANCE   hInst,
+            const   HDC         hDC);
 
 //========================================================================
 //
@@ -108,6 +122,19 @@ public:
 //
 //    Member Variables.
 //
+private:
+
+    /**   盤面の画像リソース。  **/
+    BitmapResource  *   m_brBack;
+
+    /**   駒の画像リソース。    **/
+    BitmapResource  *   m_brPiece;
+
+    /**   ダイス画像リソース。  **/
+    BitmapResource  *   m_brDice;
+
+    /**   その他画像リソース。  **/
+    BitmapResource  *   m_brIcons;
 
 //========================================================================
 //

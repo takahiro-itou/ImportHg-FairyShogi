@@ -17,6 +17,10 @@
 
 #include    "FairyShogiApp.h"
 
+#include    "FairyShogi/Win32/BitmapResource.h"
+
+#include    "Resources.h"
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
@@ -36,6 +40,10 @@ namespace  Win32  {
 //
 
 FairyShogiApp::FairyShogiApp()
+    : m_brBack (nullptr),
+      m_brPiece(nullptr),
+      m_brDice (nullptr),
+      m_brIcons(nullptr)
 {
 }
 
@@ -67,6 +75,54 @@ FairyShogiApp::~FairyShogiApp()
 //
 //    Public Member Functions (Virtual Functions).
 //
+
+//----------------------------------------------------------------
+//    必要な画像リソースをロードする。
+//
+
+ErrCode
+FairyShogiApp::loadBitmapResources(
+        const   HINSTANCE   hInst,
+        const   HDC         hDC)
+{
+    this->m_brBack  = new  BitmapResource;
+    this->m_brBack->createBitmap(832, 640, hDC);
+    if ( this->m_brBack->loadBitmapResource(
+                    hInst,  hDC,
+                    MAKEINTRESOURCE(IDB_BACK_BITMAP) ) != ERR_SUCCESS )
+    {
+        return ( ERR_FAILURE );
+    }
+
+    this->m_brPiece = new  BitmapResource;
+    this->m_brPiece->createBitmap(896, 128, hDC);
+    if ( this->m_brDice->loadBitmapResource(
+                    hInst,  hDC,
+                    MAKEINTRESOURCE(IDB_PIECE_BITMAP) ) != ERR_SUCCESS )
+    {
+        return ( ERR_FAILURE );
+    }
+
+    this->m_brDice  = new  BitmapResource;
+    this->m_brDice->createBitmap(768, 384, hDC);
+    if ( this->m_brDice->loadBitmapResource(
+                    hInst,  hDC,
+                    MAKEINTRESOURCE(IDB_DICE_BITMAP) ) != ERR_SUCCESS )
+    {
+        return ( ERR_FAILURE );
+    }
+
+    this->m_brIcons = new  BitmapResource;
+    this->m_brIcons->createBitmap(320, 320, hDC);
+    if ( this->m_brIcons->loadBitmapResource(
+                    hInst,  hDC,
+                    MAKEINTRESOURCE(IDB_ICONS_BITMAP) ) != ERR_SUCCESS )
+    {
+        return ( ERR_FAILURE );
+    }
+
+    return ( ERR_SUCCESS );
+}
 
 //========================================================================
 //
