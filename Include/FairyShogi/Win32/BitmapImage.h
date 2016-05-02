@@ -142,31 +142,6 @@ public:
     destroyBitmap();
 
     //----------------------------------------------------------------
-    /**   ビットマップを描画する。
-    **
-    **  @param [in] hDC   描画先のデバイスコンテキスト。
-    **  @param [in] dx    描画先の座標。
-    **  @param [in] dy    描画先の座標。
-    **  @param [in] w     描画する幅。
-    **  @param [in] h     描画する高さ。
-    **  @param [in] ox    部分的に描画する場合、その左端座標。
-    **  @param [in] oy    部分的に描画する場合、その上端座標。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    drawBitmap(
-            const  HDC          hDC,
-            const  BitmapCoord  dx,
-            const  BitmapCoord  dy,
-            const  BitmapCoord  w,
-            const  BitmapCoord  h,
-            const  BitmapCoord  ox  = 0,
-            const  BitmapCoord  oy  = 0);
-
-    //----------------------------------------------------------------
     /**   ビットマップファイルを開いて読み込む。
     **
     **  @param [in] fileName    ファイル名。
@@ -211,6 +186,57 @@ public:
 //
 //    Public Member Functions.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   別のビットマップの矩形をコピーする。
+    **
+    **  @param [in] hDC   描画元のデバイスコンテキスト。
+    **  @param [in] ox    描画元の座標。
+    **  @param [in] oy    描画元の座標。
+    **  @param [in] w     描画する幅。
+    **  @param [in] h     描画する高さ。
+    **  @param [in] dx    描画先の座標。
+    **  @param [in] dy    描画先の座標。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    copyBitmap(
+            const  HDC          hDC,
+            const  BitmapCoord  ox,
+            const  BitmapCoord  oy,
+            const  BitmapCoord  w,
+            const  BitmapCoord  h,
+            const  BitmapCoord  dx  = 0,
+            const  BitmapCoord  dy  = 0);
+
+    //----------------------------------------------------------------
+    /**   ビットマップを描画する。
+    **
+    **  @param [in] hDC   描画先のデバイスコンテキスト。
+    **  @param [in] dx    描画先の座標。
+    **  @param [in] dy    描画先の座標。
+    **  @param [in] w     描画する幅。
+    **  @param [in] h     描画する高さ。
+    **  @param [in] ox    部分的に描画する場合、その左端座標。
+    **  @param [in] oy    部分的に描画する場合、その上端座標。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    drawBitmap(
+            const  HDC          hDC,
+            const  BitmapCoord  dx,
+            const  BitmapCoord  dy,
+            const  BitmapCoord  w,
+            const  BitmapCoord  h,
+            const  BitmapCoord  ox  = 0,
+            const  BitmapCoord  oy  = 0);
 
 //========================================================================
 //

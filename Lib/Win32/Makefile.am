@@ -24,6 +24,7 @@ EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
         BitmapImage.cpp     \
+        BitmapResource.cpp  \
         DialogWindow.cpp    \
         MatchDialog.cpp     \
         $(EXTRALIBSOURCES)
@@ -36,6 +37,7 @@ LIBNOINSTHEADERS        =  \
 
 INCLIBHEADERS           =  \
         $(INCLIBDIR)/BitmapImage.h       \
+        $(INCLIBDIR)/BitmapResource.h    \
         $(INCLIBDIR)/CommonResources.h   \
         $(INCLIBDIR)/CommonResources.rc  \
         $(INCLIBDIR)/DialogWindow.h      \
