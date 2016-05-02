@@ -21,6 +21,8 @@
 
 #include    "Resources.h"
 
+#include    <stdexcept>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
@@ -133,6 +135,58 @@ FairyShogiApp::loadBitmapResources(
 //
 //    Accessors.
 //
+
+//----------------------------------------------------------------
+//    盤面の画像リソースを取得する。
+//
+
+const   BitmapResource  &
+FairyShogiApp::getBackBitmap()  const
+{
+    if ( (this->m_brBack) == (nullptr) ) {
+        throw  std::logic_error("Null Pointer Exception.");
+    }
+    return ( *(this->m_brBack) );
+}
+
+//----------------------------------------------------------------
+//    ダイスの画像リソースを取得する。
+//
+
+const   BitmapResource  &
+FairyShogiApp::getDiceBitmap()  const
+{
+    if ( (this->m_brDice) == (nullptr) ) {
+        throw  std::logic_error("Null Pointer Exception.");
+    }
+    return ( *(this->m_brDice) );
+}
+
+//----------------------------------------------------------------
+//    その他のアイコン画像リソースを取得する。
+//
+
+const   BitmapResource  &
+FairyShogiApp::getIconsBitmap()  const
+{
+    if ( (this->m_brIcons) == (nullptr) ) {
+        throw  std::logic_error("Null Pointer Exception.");
+    }
+    return ( *(this->m_brIcons) );
+}
+
+//----------------------------------------------------------------
+//    駒の画像リソースを取得する。
+//
+
+const   BitmapResource  &
+FairyShogiApp::getPieceBitmap()  const
+{
+    if ( (this->m_brPiece) == (nullptr) ) {
+        throw  std::logic_error("Null Pointer Exception.");
+    }
+    return ( *(this->m_brPiece) );
+}
 
 //========================================================================
 //
