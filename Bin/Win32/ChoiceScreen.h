@@ -31,7 +31,7 @@
 #endif
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  Interface  {
+namespace  Win32  {
 
 //========================================================================
 //
@@ -291,7 +291,15 @@ public:
     friend  class   ChoiceScreenTest;
 };
 
+}   //  End of namespace  Win32
+
+namespace  Interface  {
+
+/**     @todo   暫定処理。  **/
+typedef     Win32::ChoiceScreen     ChoiceScreen;
+
 }   //  End of namespace  Interface
+
 FAIRYSHOGI_NAMESPACE_END
 
 #endif

@@ -28,13 +28,10 @@
 #endif
 
 FAIRYSHOGI_NAMESPACE_BEGIN
+namespace  Win32  {
 
 //  クラスの前方宣言。  //
-namespace  Win32  {
 class   BitmapImage;
-}   //  End of namespace  Win32
-
-namespace  Interface  {
 
 //========================================================================
 //
@@ -319,7 +316,15 @@ public:
     friend  class   ScreenLayerTest;
 };
 
+}   //  End of namespace  Win32
+
+namespace  Interface  {
+
+/**     @todo   暫定処理。  **/
+typedef     Win32::ScreenLayer      ScreenLayer;
+
 }   //  End of namespace  Interface
+
 FAIRYSHOGI_NAMESPACE_END
 
 #endif
