@@ -845,12 +845,7 @@ WinMain(
         return ( 0 );
     }
 
-    if ( g_scrDice.setupBitmapImages(
-                    hInst,  hDC,
-                    MAKEINTRESOURCE(IDB_DICE_BITMAP)
-            ) != ERR_SUCCESS )
-    {
-        ::MessageBox(hWnd,  "Graphic Resources Not Found!", NULL,  MB_OK);
+    if ( g_scrDice.setupBitmapImages(g_theApp) != ERR_SUCCESS ) {
         return ( 0 );
     }
 

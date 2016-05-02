@@ -17,6 +17,8 @@
 
 #include    "DiceScreen.h"
 
+#include    "FairyShogiApp.h"
+
 #include    "FairyShogi/Common/FairyShogiConst.h"
 #include    "FairyShogi/Win32/BitmapImage.h"
 
@@ -92,27 +94,11 @@ DiceScreen::~DiceScreen()
 
 ErrCode
 DiceScreen::setupBitmapImages(
-        const  HINSTANCE    hInstance,
-        const  HDC          hDC,
-        const  LPCTSTR      imgDice)
+        const  FairyShogiApp  & objApp)
 {
     return ( Super::setupBitmapImages(
-                     hInstance,  hDC,  imgDice,
-                     Common::DICE_MAX_VALUE, 3, 128, 128)
-    );
-}
-
-//----------------------------------------------------------------
-//    必要な画像データを準備する。
-//
-
-ErrCode
-DiceScreen::setupBitmapImages(
-        const  std::string  &imgDice)
-{
-    return ( Super::setupBitmapImages(
-                     imgDice, Common::DICE_MAX_VALUE, 3, 128, 128)
-    );
+                     objApp.getDiceBitmap(),
+                     Common::DICE_MAX_VALUE, 3, 128, 128) );
 }
 
 //========================================================================
