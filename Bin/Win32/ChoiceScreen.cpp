@@ -155,9 +155,43 @@ ChoiceScreen::drawScreenLayer(
 
 ErrCode
 ChoiceScreen::setupBitmapImages(
+        const  HINSTANCE    hInstance,
+        const  HDC          hDC,
+        const  LPCTSTR      imgPiece,
+        const  ChoiceIndex  numCols,
+        const  ChoiceIndex  numRows,
+        const  ChoiceSize   xWidth,
+        const  ChoiceSize   yHeight)
+{
+    this->m_brPiece = new  BitmapResource;
+    this->m_brPiece->createBitmap(numCols * xWidth, numRows * yHeight, hDC);
+
+    if ( this->m_brPiece->loadBitmapResource(hInstance, hDC, imgPiece)
+            != ERR_SUCCESS )
+    {
+        return ( ERR_FAILURE );
+    }
+
+    this->m_numSrcCols  =  numCols;
+    this->m_numSrcRows  =  numRows;
+    this->m_xImgWidth   =  xWidth;
+    this->m_yImgHeight  =  yHeight;
+
+    return ( ERR_SUCCESS );
+
+}
+
+//----------------------------------------------------------------
+//    必要な画像データを準備する。
+//
+
+ErrCode
+ChoiceScreen::setupBitmapImages(
         const  std::string  &imgPiece,
         const  ChoiceIndex  numCols,
-        const  ChoiceIndex  numRows)
+        const  ChoiceIndex  numRows,
+        const  ChoiceSize   xWidth,
+        const  ChoiceSize   yHeight)
 {
     this->m_brPiece = new  BitmapResource;
     if ( this->m_brPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
@@ -166,6 +200,8 @@ ChoiceScreen::setupBitmapImages(
 
     this->m_numSrcCols  =  numCols;
     this->m_numSrcRows  =  numRows;
+    this->m_xImgWidth   =  xWidth;
+    this->m_yImgHeight  =  yHeight;
 
     return ( ERR_SUCCESS );
 }

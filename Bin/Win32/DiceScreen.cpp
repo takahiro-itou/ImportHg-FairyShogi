@@ -95,7 +95,9 @@ ErrCode
 DiceScreen::setupBitmapImages(
         const  std::string  &imgDice)
 {
-    return ( Super::setupBitmapImages(imgDice, Common::DICE_MAX_VALUE, 2) );
+    return ( Super::setupBitmapImages(
+                     imgDice, Common::DICE_MAX_VALUE, 2, 128, 128)
+    );
 }
 
 //========================================================================
