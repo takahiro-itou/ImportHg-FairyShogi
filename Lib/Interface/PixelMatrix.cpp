@@ -411,6 +411,19 @@ PixelMatrix::allocateBuffer(
 }
 
 //----------------------------------------------------------------
+//    ビットマップデータのアドレスを設定する。
+//
+
+Boolean
+PixelMatrix::setPixels(
+        PmPixelArray    ptrBits)
+{
+    this->m_ptrBits = (ptrBits);
+
+    return ( BOOL_TRUE );
+}
+
+//----------------------------------------------------------------
 //    ビットマップのパラメータを設定する。
 //
 

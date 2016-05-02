@@ -96,10 +96,9 @@ BitmapImage::createBitmap(
     }
 
     const  size_t   cbBits  = (this->m_nLineBytes) * cyHeight;
-    LpBuffer        ptrBuf  = new  uint8_t [cbHead + cbBits];
+    LpBuffer        ptrBuf  = allocateBuffer(BOOL_TRUE,  cbHead);
     LpBitmapInfo    ptrInfo = pointer_cast<LpBitmapInfo>(ptrBuf);
     PmPixelArray    ptrBits = (ptrBuf) + cbHead;
-    this->m_ptrBuf  = (ptrBuf);
 
     ptrInfo->bmiHeader.biSize           = sizeof(TBitmapInfoHeader);
     ptrInfo->bmiHeader.biWidth          = cxWidth;
@@ -114,7 +113,11 @@ BitmapImage::createBitmap(
     ptrInfo->bmiHeader.biSizeImage      = cbBits;
 
     this->m_ptrInfo = (ptrInfo);
-    this->m_ptrBits = (ptrBits);
+
+    if ( setPixels(ptrBits) == BOOL_FALSE )
+    {
+        return ( ERR_FAILURE );
+    }
 
     return ( ERR_SUCCESS );
 }
@@ -140,9 +143,8 @@ BitmapImage::createBitmap(
     }
 
     const  size_t   cbBits  = (this->m_nLineBytes) * cyHeight;
-    LpBuffer        ptrBuf  = new  uint8_t [cbHead];
+    LpBuffer        ptrBuf  = allocateBuffer(BOOL_FALSE,  cbHead);
     LpBitmapInfo    ptrInfo = pointer_cast<LpBitmapInfo>(ptrBuf);
-    this->m_ptrBuf  = (ptrBuf);
 
     ptrInfo->bmiHeader.biSize           = sizeof(TBitmapInfoHeader);
     ptrInfo->bmiHeader.biWidth          = cxWidth;
@@ -164,7 +166,10 @@ BitmapImage::createBitmap(
         return ( ERR_FAILURE );
     }
 
-    this->m_ptrBits = static_cast<PmPixelArray>(ptrBits);
+    if ( setPixels( static_cast<PmPixelArray>(ptrBits) ) == BOOL_FALSE )
+    {
+        return ( ERR_FAILURE );
+    }
 
     return ( ERR_SUCCESS );
 }

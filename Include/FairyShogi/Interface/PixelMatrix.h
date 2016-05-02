@@ -363,6 +363,17 @@ protected:
             const  BitmapCoord  y)  const;
 
     //----------------------------------------------------------------
+    /**   ビットマップデータのアドレスを設定する。
+    **
+    **  @param [in,out] ptrBits   輝度値の配列。
+    **  @retval     BOOL_TRUE     正常終了。
+    **  @retval     BOOL_FALSE    異常終了。
+    **/
+    Boolean
+    setPixels(
+            PmPixelArray    ptrBits);
+
+    //----------------------------------------------------------------
     /**   ビットマップのパラメータを設定する。
     **
     **  @param [in] cxWidth     幅。
