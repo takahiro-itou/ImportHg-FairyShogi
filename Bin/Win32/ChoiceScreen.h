@@ -135,6 +135,10 @@ public:
     /**   必要な画像データを準備する。
     **
     **  @param [in] bmpRes    ビットマップリソース。
+    **  @param [in] numCols   横方向に並ぶアイコン数。
+    **  @param [in] numRows   縦方向に並ぶアイコン数。
+    **  @param [in] xWidth    アイコンの幅。
+    **  @param [in] yHeight   アイコンの高さ。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -142,7 +146,11 @@ public:
     **/
     virtual  ErrCode
     setupBitmapImages(
-            const   BitmapResource   &  bmpRes);
+            const  BitmapResource  &bmpRes,
+            const  ChoiceIndex      numCols,
+            const  ChoiceIndex      numRows,
+            const  ChoiceSize       xWidth,
+            const  ChoiceSize       yHeight);
 
     //----------------------------------------------------------------
     /**   必要な画像データを準備する。
