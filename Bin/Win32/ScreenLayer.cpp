@@ -103,7 +103,11 @@ ScreenLayer::dispatchLButtonUp(
         const   UINT    xPos,
         const   UINT    yPos)
 {
-    return ( onLButtonUp(fwKeys, xPos - getLeft(), yPos - getTop()) );
+    return ( onLButtonUp(
+                     fwKeys,
+                     static_cast<WindowCoord>(xPos) - getLeft(),
+                     static_cast<WindowCoord>(yPos) - getTop()
+             ) );
 }
 
 //========================================================================
@@ -232,9 +236,9 @@ ScreenLayer::setWidth(
 
 ScreenLayer::EventResult
 ScreenLayer::onLButtonUp(
-        const   DWORD   fwKeys,
-        const   UINT    xPos,
-        const   UINT    yPos)
+        const  DWORD        fwKeys,
+        const  WindowCoord  xPos,
+        const  WindowCoord  yPos)
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
     UTL_HELP_UNUSED_ARGUMENT(xPos);
