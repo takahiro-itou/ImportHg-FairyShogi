@@ -155,6 +155,17 @@ ChoiceScreen::drawScreenLayer(
 
 ErrCode
 ChoiceScreen::setupBitmapImages(
+        const   BitmapResource   &  bmpRes)
+{
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    必要な画像データを準備する。
+//
+
+ErrCode
+ChoiceScreen::setupBitmapImages(
         const  HINSTANCE    hInstance,
         const  HDC          hDC,
         const  LPCTSTR      imgPiece,
