@@ -98,7 +98,7 @@ FairyShogiApp::loadBitmapResources(
 
     this->m_brPiece = new  BitmapResource;
     this->m_brPiece->createBitmap(896, 128, hDC);
-    if ( this->m_brDice->loadBitmapResource(
+    if ( this->m_brPiece->loadBitmapResource(
                     hInst,  hDC,
                     MAKEINTRESOURCE(IDB_PIECE_BITMAP) ) != ERR_SUCCESS )
     {
