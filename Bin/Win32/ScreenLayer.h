@@ -277,26 +277,6 @@ protected:
             const  WindowCoord  xPos,
             const  WindowCoord  yPos);
 
-    //----------------------------------------------------------------
-    /**   マウスの左ボタンを離した時のイベントハンドラ。
-    **
-    **  @param [in] fwKeys
-    **  @param [in] xPos
-    **  @param [in] yPos
-    **  @return     イベントハンドラの処理結果。
-    **/
-    virtual  EventResult
-    onLButtonUp(
-            const   DWORD   fwKeys,
-            const   UINT    xPos,
-            const   UINT    yPos)
-    {
-        return ( onLButtonUp(
-                         fwKeys,
-                         static_cast<WindowCoord>(xPos),
-                         static_cast<WindowCoord>(yPos)) );
-    }
-
 //========================================================================
 //
 //    For Internal Use Only.
