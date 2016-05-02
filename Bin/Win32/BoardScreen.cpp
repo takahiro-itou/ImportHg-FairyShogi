@@ -301,9 +301,9 @@ BoardScreen::drawScreenLayer(
 
 BoardScreen::EventResult
 BoardScreen::onLButtonDown(
-        const   DWORD   fwKeys,
-        const   UINT    xPos,
-        const   UINT    yPos)
+        const  DWORD        fwKeys,
+        const  WindowCoord  xPos,
+        const  WindowCoord  yPos)
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
@@ -374,9 +374,9 @@ BoardScreen::onLButtonDown(
 
 BoardScreen::EventResult
 BoardScreen::onLButtonUp(
-        const   DWORD   fwKeys,
-        const   UINT    xPos,
-        const   UINT    yPos)
+        const  DWORD        fwKeys,
+        const  WindowCoord  xPos,
+        const  WindowCoord  yPos)
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
@@ -448,9 +448,9 @@ BoardScreen::onLButtonUp(
 
 BoardScreen::EventResult
 BoardScreen::onMouseMove(
-        const   DWORD   fwKeys,
-        const   UINT    xPos,
-        const   UINT    yPos)
+        const  DWORD        fwKeys,
+        const  WindowCoord  xPos,
+        const  WindowCoord  yPos)
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 

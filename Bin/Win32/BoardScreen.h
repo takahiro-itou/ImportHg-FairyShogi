@@ -161,9 +161,9 @@ public:
     **/
     virtual  EventResult
     onLButtonDown(
-            const   DWORD   fwKeys,
-            const   UINT    xPos,
-            const   UINT    yPos);
+            const  DWORD        fwKeys,
+            const  WindowCoord  xPos,
+            const  WindowCoord  yPos);
 
     //----------------------------------------------------------------
     /**   マウスの左ボタンを離した時のイベントハンドラ。
@@ -175,9 +175,9 @@ public:
     **/
     virtual  EventResult
     onLButtonUp(
-            const   DWORD   fwKeys,
-            const   UINT    xPos,
-            const   UINT    yPos);
+            const  DWORD        fwKeys,
+            const  WindowCoord  xPos,
+            const  WindowCoord  yPos)  OVERRIDE;
 
     //----------------------------------------------------------------
     /**   マウスを移動させた時のイベントハンドラ。
@@ -189,9 +189,9 @@ public:
     **/
     virtual  EventResult
     onMouseMove(
-        const   DWORD   fwKeys,
-        const   UINT    xPos,
-        const   UINT    yPos);
+            const  DWORD        fwKeys,
+            const  WindowCoord  xPos,
+            const  WindowCoord  yPos);
 
     //----------------------------------------------------------------
     /**   盤面を初期状態に設定する。
