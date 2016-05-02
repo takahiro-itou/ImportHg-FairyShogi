@@ -317,14 +317,6 @@ public:
 };
 
 }   //  End of namespace  Win32
-
-namespace  Interface  {
-
-/**     @todo   暫定処理。  **/
-typedef     Win32::ScreenLayer      ScreenLayer;
-
-}   //  End of namespace  Interface
-
 FAIRYSHOGI_NAMESPACE_END
 
 #endif

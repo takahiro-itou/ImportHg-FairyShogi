@@ -260,14 +260,14 @@ rollDice(
         ::MessageBox(NULL,  "Set Random Seed By Current Time", "OK", MB_OK);
     } else if ( pidSel >= 6 ) {
         //  乱数を使う。    //
-        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        g_scrDice.setVisibleFlag(Win32::ScreenLayer::LV_HIDDEN);
         const  uint32_t
             rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
         const  int  rn
             =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);
         scrBoard.setConstraint(rn + 1);
     } else if ( pidSel >= 0 ) {
-        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        g_scrDice.setVisibleFlag(Win32::ScreenLayer::LV_HIDDEN);
         scrBoard.setConstraint(pidSel + 1);
     }
 
@@ -367,16 +367,16 @@ onLButtonDown(
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
-    Interface::ScreenLayer::EventResult
-            evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
+    Win32::ScreenLayer::EventResult
+            evtRet  = Win32::ScreenLayer::EH_RESULT_SUCCESS;
 
-    if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    if ( g_scrDice.getVisibleFlag() == Win32::ScreenLayer::LV_ENABLED )
     {
         //  ダイス選択中。  //
         return ( 0 );
     }
 
-    if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    if ( g_scrProm.getVisibleFlag() == Win32::ScreenLayer::LV_ENABLED )
     {
         //  成り駒選択中。  //
         return ( 0 );
@@ -386,7 +386,7 @@ onLButtonDown(
         evtRet  = g_scrBoard.onLButtonDown(fwKeys, xPos, yPos);
     }
 
-    if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
+    if ( evtRet == Win32::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
         ::UpdateWindow(hWnd);
@@ -412,7 +412,7 @@ onLButtonUpInDiceScreen(
     if ( pidSel == 8 ) {
         //  待ったをする。  //
         scrBoard.playBackward();
-        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        g_scrDice.setVisibleFlag(Win32::ScreenLayer::LV_HIDDEN);
         return ( 0 );
     }
 
@@ -437,15 +437,15 @@ onLButtonUp(
     g_hCapture  = (NULL);
     ::ReleaseCapture();
 
-    Interface::ScreenLayer::EventResult
-            evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
+    Win32::ScreenLayer::EventResult
+            evtRet  = Win32::ScreenLayer::EH_RESULT_SUCCESS;
 
     Win32::BoardScreen  & scrBoard  = g_scrBoard;
     Win32::BoardScreen::GameInterface  &
             giGame  = scrBoard.getGameController();
 
     //  ダイス選択中。  //
-    if ( g_scrDice.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    if ( g_scrDice.getVisibleFlag() == Win32::ScreenLayer::LV_ENABLED )
     {
         evtRet  = g_scrDice.dispatchLButtonUp(fwKeys, xPos, yPos);
         onLButtonUpInDiceScreen(hWnd);
@@ -455,12 +455,12 @@ onLButtonUp(
     }
 
     //  成り駒選択中。  //
-    if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    if ( g_scrProm.getVisibleFlag() == Win32::ScreenLayer::LV_ENABLED )
     {
         evtRet  = g_scrProm.dispatchLButtonUp(fwKeys, xPos, yPos);
         const  PieceIndex   pidSel  = g_scrProm.getUserSelect();
         if ( pidSel >= 0 ) {
-            g_scrProm.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+            g_scrProm.setVisibleFlag(Win32::ScreenLayer::LV_HIDDEN);
             scrBoard.setPromotionOption(pidSel);
         }
         ::InvalidateRect(hWnd, NULL, FALSE);
@@ -481,7 +481,7 @@ onLButtonUp(
         }
 
         g_scrDice.setSelectionList(giGame.getCurrentPlayer());
-        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
+        g_scrDice.setVisibleFlag(Win32::ScreenLayer::LV_ENABLED);
         ::InvalidateRect(hWnd, NULL, FALSE);
         ::UpdateWindow(hWnd);
         return ( 0 );
@@ -502,7 +502,7 @@ onLButtonUp(
     {
         //  待ったをする。  //
         scrBoard.playBackward();
-        g_scrDice.setVisibleFlag(Interface::ScreenLayer::LV_HIDDEN);
+        g_scrDice.setVisibleFlag(Win32::ScreenLayer::LV_HIDDEN);
         ::InvalidateRect(hWnd, NULL, FALSE);
         ::UpdateWindow(hWnd);
         return ( 0 );
@@ -517,10 +517,10 @@ onLButtonUp(
         const   Win32::BoardScreen::OptionArray
             &vOpts  = scrBoard.getPromotionList();
         g_scrProm.setSelectionList(vOpts);
-        g_scrProm.setVisibleFlag(Interface::ScreenLayer::LV_ENABLED);
+        g_scrProm.setVisibleFlag(Win32::ScreenLayer::LV_ENABLED);
     }
 
-    if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
+    if ( evtRet == Win32::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
         ::UpdateWindow(hWnd);
@@ -543,17 +543,17 @@ onMouseMove(
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
-    Interface::ScreenLayer::EventResult
-            evtRet  = Interface::ScreenLayer::EH_RESULT_SUCCESS;
+    Win32::ScreenLayer::EventResult
+            evtRet  = Win32::ScreenLayer::EH_RESULT_SUCCESS;
 
-    if ( g_scrProm.getVisibleFlag() == Interface::ScreenLayer::LV_ENABLED )
+    if ( g_scrProm.getVisibleFlag() == Win32::ScreenLayer::LV_ENABLED )
     {
         //  成り駒選択中。  //
         return ( 0 );
     }
 
     evtRet  = g_scrBoard.onMouseMove(fwKeys, xPos, yPos);
-    if ( evtRet == Interface::ScreenLayer::EH_RESULT_REDRAW ) {
+    if ( evtRet == Win32::ScreenLayer::EH_RESULT_REDRAW ) {
         //  再描画を行う。  //
         ::InvalidateRect(hWnd, NULL, FALSE);
         ::UpdateWindow(hWnd);
@@ -645,7 +645,7 @@ onPaint(
     }
 
     //  ダイス選択画面を表示する。  //
-    if ( g_scrDice.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
+    if ( g_scrDice.getVisibleFlag() != Win32::ScreenLayer::LV_HIDDEN )
     {
         Win32::BitmapImage  &  imgWork  =  g_imgWork;
 
@@ -667,7 +667,7 @@ onPaint(
     }
 
     //  成り駒選択画面を表示する。  //
-    if ( g_scrProm.getVisibleFlag() != Interface::ScreenLayer::LV_HIDDEN )
+    if ( g_scrProm.getVisibleFlag() != Win32::ScreenLayer::LV_HIDDEN )
     {
         Win32::BitmapImage  &  imgWork  =  g_imgPromote;
 
