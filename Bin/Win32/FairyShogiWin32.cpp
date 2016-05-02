@@ -25,7 +25,7 @@
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Common/MersenneTwister.h"
-#include    "FairyShogi/Win32/BitmapImage.h"
+#include    "FairyShogi/Win32/BitmapResource.h"
 #include    "FairyShogi/Win32/MatchDialog.h"
 
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
@@ -146,9 +146,9 @@ Win32::MatchDialog          g_dlgMatch;
 /**   マウスのキャプチャフラグ。    **/
 HWND                        g_hCapture;
 
+Win32::BitmapResource       g_imgDice;
 
 Win32::BitmapImage          g_imgScreen;
-Win32::BitmapImage          g_imgDice;
 Win32::BitmapImage          g_imgWork;
 
 Win32::BitmapImage          g_imgBoard;
@@ -849,10 +849,13 @@ WinMain(
         return ( 0 );
     }
 
-    if ( g_imgDice.openBitmapFile("Dice.bmp")
-            != ERR_SUCCESS )
+    g_imgDice.createBitmap(768, 384, hDC);
+    if ( g_imgDice.loadBitmapResource(
+                    hInst,  hDC,
+                    MAKEINTRESOURCE(IDB_DICE_BITMAP)
+            ) != ERR_SUCCESS )
     {
-        ::MessageBox(hWnd,  "Graphic Files Not Found!", NULL,  MB_OK);
+        ::MessageBox(hWnd,  "Graphic Resources Not Found!", NULL,  MB_OK);
         return ( 0 );
     }
 
