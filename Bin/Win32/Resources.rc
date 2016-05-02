@@ -39,6 +39,8 @@ IDB_BACK_BITMAP     BITMAP  DISCARDABLE     "Back.bmp"
 
 IDB_DICE_BITMAP     BITMAP  DISCARDABLE     "Dice.bmp"
 
+IDB_ICONS_BITMAp    BITMAP  DISCARDABLE     "Icons.bmp"
+
 IDB_PIECE_BITMAP    BITMAP  DISCARDABLE     "Pieces.bmp"
 
 //========================================================================

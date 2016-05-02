@@ -31,7 +31,8 @@
 
 #define     IDB_BACK_BITMAP         11001
 #define     IDB_DICE_BITMAP         11002
-#define     IDB_PIECE_BITMAP        11003
+#define     IDB_ICONS_BITMAP        11003
+#define     IDB_PIECE_BITMAP        11004
 
 //========================================================================
 //
