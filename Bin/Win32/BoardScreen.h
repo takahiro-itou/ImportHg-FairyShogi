@@ -36,6 +36,7 @@ namespace  Win32  {
 
 //  クラスの前方宣言。  //
 class   BitmapResource;
+class   FairyShogiApp;
 
 //========================================================================
 //
@@ -207,10 +208,7 @@ public:
     //----------------------------------------------------------------
     /**   必要な画像データを準備する。
     **
-    **  @param [in] hInstance   インスタンスハンドル。
-    **  @param [in] hDC         デバイスコンテキスト。
-    **  @param [in] imgBack     盤の画像。
-    **  @param [in] imgPiece    駒の画像。
+    **  @param [in] objApp    アプリケーションインスタンス。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
@@ -218,25 +216,7 @@ public:
     **/
     virtual  ErrCode
     setupBitmapImages(
-            const   HINSTANCE   hInstance,
-            const   HDC         hDC,
-            const   LPCTSTR     imgBack,
-            const   LPCTSTR     imgPiece);
-
-    //----------------------------------------------------------------
-    /**   必要な画像データを準備する。
-    **
-    **  @param [in] imgBack     盤の画像。
-    **  @param [in] imgPiece    駒の画像。
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    setupBitmapImages(
-            const  std::string  &imgBack,
-            const  std::string  &imgPiece);
+            const  FairyShogiApp  & objApp);
 
 //========================================================================
 //
@@ -599,6 +579,11 @@ private:
 //
 private:
 
+    /**   ビットマップリソース型。  **/
+    typedef     const   BitmapResource  *       PcBitmapResource;
+
+private:
+
     /**   ゲームコントローラ。  **/
     GameInterface       m_gcGameCtrl;
 
@@ -676,10 +661,10 @@ private:
     OptionArray         m_prmOptions;
 
     /**   盤の画像イメージ。    **/
-    BitmapResource  *   m_brBack;
+    PcBitmapResource    m_brBack;
 
     /**   駒の画像イメージ。    **/
-    BitmapResource  *   m_brPiece;
+    PcBitmapResource    m_brPiece;
 
     /**   @todo     暫定処理。後で消す。    **/
     std::ofstream       m_ofsKifu;

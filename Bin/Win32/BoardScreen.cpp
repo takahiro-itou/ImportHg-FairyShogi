@@ -17,6 +17,8 @@
 
 #include    "BoardScreen.h"
 
+#include    "FairyShogiApp.h"
+
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Win32/BitmapResource.h"
@@ -521,49 +523,10 @@ BoardScreen::resetGame()
 
 ErrCode
 BoardScreen::setupBitmapImages(
-        const   HINSTANCE   hInstance,
-        const   HDC         hDC,
-        const   LPCTSTR     imgBack,
-        const   LPCTSTR     imgPiece)
+        const  FairyShogiApp  & objApp)
 {
-    this->m_brBack  = new  BitmapResource;
-    this->m_brBack->createBitmap(832, 640, hDC);
-    if ( this->m_brBack->loadBitmapResource(hInstance, hDC, imgBack)
-            != ERR_SUCCESS )
-    {
-        return ( ERR_FAILURE );
-    }
-
-    this->m_brPiece = new  BitmapResource;
-    this->m_brPiece->createBitmap(896, 128, hDC);
-    if ( this->m_brPiece->loadBitmapResource(hInstance, hDC, imgPiece)
-            != ERR_SUCCESS )
-    {
-        return ( ERR_FAILURE );
-    }
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
-//    必要な画像データを準備する。
-//
-
-ErrCode
-BoardScreen::setupBitmapImages(
-        const  std::string  &imgBack,
-        const  std::string  &imgPiece)
-{
-    this->m_brBack  = new  BitmapResource;
-    if ( this->m_brBack->openBitmapFile(imgBack) != ERR_SUCCESS ) {
-        return ( ERR_FAILURE );
-    }
-
-    this->m_brPiece = new  BitmapResource;
-    if ( this->m_brPiece->openBitmapFile(imgPiece) != ERR_SUCCESS ) {
-        return ( ERR_FAILURE );
-    }
-
+    this->m_brBack  = &( objApp.getBackBitmap()  );
+    this->m_brPiece = &( objApp.getPieceBitmap() );
     return ( ERR_SUCCESS );
 }
 

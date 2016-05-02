@@ -19,6 +19,7 @@
 
 #include    "BoardScreen.h"
 #include    "DiceScreen.h"
+#include    "FairyShogiApp.h"
 #include    "PromotionScreen.h"
 #include    "Resources.h"
 
@@ -49,7 +50,7 @@ using   namespace   FAIRYSHOGI_NAMESPACE;
 
 namespace  {
 
-constexpr   char
+CONSTEXPR_VAR   char
 g_szClassName[] = "FairyShogiWindow";
 
 //
@@ -132,6 +133,15 @@ RESOURCE_ID_RUN_ENGINE  =  16;
 CONSTEXPR_VAR   int
 RESOURCE_ID_UNDO        =  14;
 
+//
+//    アプリケーションインスタンス。
+//
+
+Win32::FairyShogiApp        g_theApp;
+
+//
+//    スクリーンレイヤー。
+//
 
 Win32::BoardScreen          g_scrBoard;
 Win32::DiceScreen           g_scrDice;
@@ -824,13 +834,14 @@ WinMain(
 
     //  この瞬間に画像を準備する。  //
     const  HDC  hDC = ::GetDC(hWnd);
-    if ( g_scrBoard.setupBitmapImages(
-                    hInst,  hDC,
-                    MAKEINTRESOURCE(IDB_BACK_BITMAP),
-                    MAKEINTRESOURCE(IDB_PIECE_BITMAP)
-            ) != ERR_SUCCESS )
+    if ( g_theApp.loadBitmapResources(hInst, hDC) != ERR_SUCCESS )
     {
-        ::MessageBox(hWnd,  "Graphic Resources Not Found!", NULL,  MB_OK);
+        ::MessageBox(hWnd, "Graphic Resources Not Found!", NULL, MB_OK);
+        return ( 0 );
+
+    }
+
+    if ( g_scrBoard.setupBitmapImages(g_theApp) != ERR_SUCCESS ) {
         return ( 0 );
     }
 
