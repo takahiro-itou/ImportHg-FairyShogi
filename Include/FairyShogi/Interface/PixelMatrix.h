@@ -445,11 +445,6 @@ private:
 private:
 protected:
 
-    typedef     void  *             PmBitsBuffer;
-
-private:
-protected:
-
     BitmapCoord     m_xWidth;
     BitmapCoord     m_yHeight;
     BitmapDepth     m_nDepth;
