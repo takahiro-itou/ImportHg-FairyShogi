@@ -19,6 +19,7 @@ INCLIBDIR               =  $(INCPKGDIR)/Common
 ##
 
 EXTRALIBSOURCES         =
+EXTRANOINSTDATA         =
 EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
@@ -28,6 +29,9 @@ LIBCXXSOURCEFILES       =  \
 LIBINSTANTIATIONS       =
 LIBCXXINLINEFILES       =
 
+LIBNOINSTDATA           =  \
+        CMakeLists.txt      \
+        $(EXTRANOINSTDATA)
 LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
@@ -81,6 +85,7 @@ fshogi_common_libdir           =  $(fshogi_libdir)/Common
 
 fshogi_common_include_HEADERS  =  $(INCLIBHEADERS)
 
+dist_noinst_DATA               =  $(LIBNOINSTDATA)
 dist_noinst_HEADERS            =  $(LIBNOINSTHEADERS)
 
 fshogi_common_lib_LTLIBRARIES  =  $(LIB_SHARED)
