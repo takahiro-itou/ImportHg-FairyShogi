@@ -79,6 +79,9 @@ bin_PROGRAMS            =  \
 
 dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
 
+dist_noinst_DATA        =  \
+        CMakeLists.txt
+
 ##
 ##    Build Programs.
 ##
