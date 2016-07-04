@@ -23,6 +23,8 @@ set (serial  "0.0.0")
 ##    プロジェクトの基本設定。
 ##
 
+set (CMAKE_C_FLAGS    "-std=c++11")
+set (CMAKE_CXX_FLAGS  "-std=c++11")
 set (FSHOGI_INCLUDE_DIR  "Include/FairyShogi")
 set (SOURCE_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/${FSHOGI_INCLUDE_DIR}")
 set (BINARY_INCLUDE_DIR  "${PROJECT_BINARY_DIR}/${FSHOGI_INCLUDE_DIR}")
@@ -32,6 +34,8 @@ set (BINARY_INCLUDE_DIR  "${PROJECT_BINARY_DIR}/${FSHOGI_INCLUDE_DIR}")
 ##
 
 set (FAIRYSHOGI_CNF_NAMESPACE  fairyshogi_ns)
+
+set (FAIRYSHOGI_CNF_WIN32_API  1)
 
 ##
 ##    設定を書き込んだファイルを生成。
