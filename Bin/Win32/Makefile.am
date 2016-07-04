@@ -102,6 +102,9 @@ dist_bin_SCRIPTS        =  \
         Icons.bmp          \
         Pieces.bmp
 
+dist_noinst_DATA        =  \
+        CMakeLists.txt
+
 dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
 
 ##

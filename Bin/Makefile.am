@@ -77,10 +77,10 @@ bin_PROGRAMS            =  \
         AutoMatch          \
         FairyShogi
 
-dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
-
 dist_noinst_DATA        =  \
         CMakeLists.txt
+
+dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
 
 ##
 ##    Build Programs.
