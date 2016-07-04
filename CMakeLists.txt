@@ -23,6 +23,8 @@ set (serial  "0.0.0")
 ##    プロジェクトの基本設定。
 ##
 
+option (ENABLE_WIN32  "Enable Win32 API."  OFF)
+
 set (CMAKE_C_FLAGS    "-std=c++11")
 set (CMAKE_CXX_FLAGS  "-std=c++11")
 set (FSHOGI_INCLUDE_DIR  "Include/FairyShogi")
@@ -35,7 +37,11 @@ set (BINARY_INCLUDE_DIR  "${PROJECT_BINARY_DIR}/${FSHOGI_INCLUDE_DIR}")
 
 set (FAIRYSHOGI_CNF_NAMESPACE  fairyshogi_ns)
 
-set (FAIRYSHOGI_CNF_WIN32_API  1)
+if ( ENABLE_WIN32 )
+  set (FAIRYSHOGI_CNF_WIN32_API  1)
+else()
+  set (FAIRYSHOGI_CNF_WIN32_API  0)
+endif()
 
 ##
 ##    設定を書き込んだファイルを生成。
