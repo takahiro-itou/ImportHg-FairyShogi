@@ -8,6 +8,7 @@ set (FSHOGI_WIN32_SOURCES
         FairyShogiWin32.cpp
         PromotionScreen.cpp
         ScreenLayer.cpp
+        Resources.rc
 )
 set (WIN32_COMMONLIBS
         fsgWin32  fsgInterface  fsgEngine  fsgGame
