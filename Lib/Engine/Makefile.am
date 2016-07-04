@@ -19,6 +19,7 @@ INCLIBDIR               =  $(INCPKGDIR)/Engine
 ##
 
 EXTRALIBSOURCES         =
+EXTRANOINSTDATA         =
 EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
@@ -35,6 +36,9 @@ LIBCXXSOURCEFILES       =  \
 LIBINSTANTIATIONS       =
 LIBCXXINLINEFILES       =
 
+LIBNOINSTDATA           =  \
+        CMakeLists.txt      \
+        $(EXTRANOINSTDATA)
 LIBNOINSTHEADERS        =  \
         EngineImplements.h     \
         EngineLevel0.h         \
@@ -87,6 +91,7 @@ fshogi_engine_libdir           =  $(fshogi_libdir)/Engine
 
 fshogi_engine_include_HEADERS  =  $(INCLIBHEADERS)
 
+dist_noinst_DATA               =  $(LIBNOINSTDATA)
 dist_noinst_HEADERS            =  $(LIBNOINSTHEADERS)
 
 fshogi_engine_lib_LTLIBRARIES  =  $(LIB_SHARED)
