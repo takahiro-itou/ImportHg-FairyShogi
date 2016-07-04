@@ -19,6 +19,7 @@ INCLIBDIR               =  $(INCPKGDIR)/Win32
 ##
 
 EXTRALIBSOURCES         =
+EXTRANOINSTDATA         =
 EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
@@ -32,6 +33,9 @@ LIBCXXSOURCEFILES       =  \
 LIBINSTANTIATIONS       =
 LIBCXXINLINEFILES       =
 
+LIBNOINSTDATA           =  \
+        CMakeLists.txt      \
+        $(EXTRANOINSTDATA)
 LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
@@ -92,6 +96,7 @@ fshogi_win32_libdir           =  $(fshogi_libdir)/Win32
 
 fshogi_win32_include_HEADERS  =  $(INCLIBHEADERS)
 
+dist_noinst_DATA              =  $(LIBNOINSTDATA)
 dist_noinst_HEADERS           =  $(LIBNOINSTHEADERS)
 
 fshogi_win32_lib_LTLIBRARIES  =  $(LIB_SHARED)

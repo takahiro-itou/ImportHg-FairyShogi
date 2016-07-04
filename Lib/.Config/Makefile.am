@@ -22,6 +22,7 @@ CNF_INCLIBDIR           =  $(CNF_INCPKGDIR)/.Config
 ##
 
 EXTRALIBSOURCES         =
+EXTRANOINSTDATA         =
 EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
@@ -31,6 +32,9 @@ LIBCXXSOURCEFILES       =  \
 LIBINSTANTIATIONS       =
 LIBCXXINLINEFILES       =
 
+LIBNOINSTDATA           =  \
+        CMakeLists.txt      \
+        $(EXTRANOINSTDATA)
 LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
@@ -72,6 +76,8 @@ fshogi_config_includedir        =  $(fshogi_includedir)/.Config
 fshogi_config_libdir            =  $(fshogi_libdir)/.Config
 
 fshogi_config_include_HEADERS   =  $(INCLIBHEADERS)
+
+dist_noinst_DATA                =  $(LIBNOINSTDATA)
 dist_noinst_HEADERS             =  $(LIBNOINSTHEADERS)
 
 fshogi_config_lib_LTLIBRARIES   =  $(LIB_SHARED)

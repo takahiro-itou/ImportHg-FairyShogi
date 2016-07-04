@@ -22,7 +22,9 @@ TESTEE_SRCDIR           =  @srcdir@/..
 ##
 
 TESTDRIVERS             =
+LIBNOINSTDATA           =
 LIBNOINSTHEADERS        =
+EXTRANOINSTDATA         =
 EXTRATESTDRIVERS        =
 LDTESTDRIVERS           =
 TESTCPPFLAGS            =
@@ -39,6 +41,7 @@ include  $(srcdir)/TestConf.mak
 ##
 
 TESTDRIVERS             +=  TestDriver.cpp
+LIBNOINSTDATA           +=  CMakeLists.txt
 LIBNOINSTHEADERS        +=  TestDriver.h
 EXTRATESTDRIVERS        +=
 LDTESTDRIVERS           +=
@@ -74,6 +77,7 @@ AM_LDFLAGS              =  \
 
 LIBTESTDRIVER           =  libTestDriver.a
 
+dist_noinst_DATA        =  $(LIBNOINSTDATA)
 dist_noinst_HEADERS     =  $(EXTRATESTDRIVERS)  $(LIBNOINSTHEADERS)
 check_PROGRAMS          =  $(TESTS)
 noinst_LIBRARIES        =  $(LIBTESTDRIVER)
