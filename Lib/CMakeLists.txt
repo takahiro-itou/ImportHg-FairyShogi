@@ -18,3 +18,7 @@ add_subdirectory (Game)
 add_subdirectory (Engine)
 add_subdirectory (Interface)
 
+if ( ENABLE_WIN32 )
+  add_subdirectory (Win32)
+endif()
+
