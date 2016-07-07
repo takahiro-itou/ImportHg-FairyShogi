@@ -1,0 +1,8 @@
+
+/**
+**  @todo   暫定処理。後で直す。
+**/
+#if ( HAVE_CONFIG_H )
+#    include    ".FairyShogi.Config.h"
+#endif
+

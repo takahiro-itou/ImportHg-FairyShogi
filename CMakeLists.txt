@@ -55,11 +55,15 @@ check_include_files (stdint.h  HAVE_STDINT_H)
 ##    設定を書き込んだファイルを生成。
 ##
 
-set (FAIRYSHOGI_CNF_EXTRA  0)
+set (FAIRYSHOGI_CNF_EXTRA  1)
 
 configure_file (
 "${SOURCE_INCLUDE_DIR}/.Config/ConfiguredFairyShogi.h.in"
 "${BINARY_INCLUDE_DIR}/.Config/ConfiguredFairyShogi.h")
+
+configure_file (
+"${SOURCE_INCLUDE_DIR}/.Config/ExtraConfig.h.cmake.in"
+"${BINARY_INCLUDE_DIR}/.Config/ExtraConfig.h")
 
 ##
 ##    インクルードパスの設定。

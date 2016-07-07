@@ -135,7 +135,7 @@ dnl   Outputs.
 dnl   出力ファイルを設定する。
 dnl
 
-FAIRYSHOGI_CNF_EXTRA=0
+FAIRYSHOGI_CNF_EXTRA=1
 AC_SUBST(FAIRYSHOGI_CNF_EXTRA)
 
 dnl
@@ -157,6 +157,10 @@ AC_CONFIG_FILES([
 
 AC_CONFIG_FILES([
     Include/FairyShogi/.Config/ConfiguredFairyShogi.h
+])
+
+AC_CONFIG_FILES([
+    Include/FairyShogi/.Config/ExtraConfig.h:Include/FairyShogi/.Config/ExtraConfig.h.autoconf.in
 ])
 
 AC_CONFIG_FILES([Lib/libfsgEngine.a:Lib/.LinkerScript/fsgEngine.in])
