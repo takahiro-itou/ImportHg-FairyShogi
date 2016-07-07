@@ -135,6 +135,9 @@ dnl   Outputs.
 dnl   出力ファイルを設定する。
 dnl
 
+FAIRYSHOGI_CNF_EXTRA=0
+AC_SUBST(FAIRYSHOGI_CNF_EXTRA)
+
 dnl
 dnl   Basic Features.
 dnl

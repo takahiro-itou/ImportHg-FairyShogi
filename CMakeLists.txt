@@ -44,8 +44,18 @@ else()
 endif()
 
 ##
+##    Check Header Files.
+##
+
+include (CheckIncludeFiles)
+check_include_files (stdint.h  HAVE_STDINT_H)
+
+##----------------------------------------------------------------
+##
 ##    設定を書き込んだファイルを生成。
 ##
+
+set (FAIRYSHOGI_CNF_EXTRA  0)
 
 configure_file (
 "${SOURCE_INCLUDE_DIR}/.Config/ConfiguredFairyShogi.h.in"

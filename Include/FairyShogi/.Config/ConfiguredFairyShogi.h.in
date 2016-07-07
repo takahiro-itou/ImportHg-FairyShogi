@@ -37,7 +37,7 @@
 //    Win32 API.
 //
 
-#if  ( @FAIRYSHOGI_CNF_WIN32_API@ )
+#if ( @FAIRYSHOGI_CNF_WIN32_API@ )
 #    define     FAIRYSHOGI_WIN32_API    @FAIRYSHOGI_CNF_WIN32_API@
 #else
 #    undef      FAIRYSHOGI_WIN32_API
@@ -51,5 +51,14 @@
 #define     CONSTEXPR_VAR       constexpr
 #define     CONSTEXPR_FUNC      constexpr
 #define     OVERRIDE            override
+
+//========================================================================
+//
+//    Extra Configuration.
+//
+
+#if ( @FAIRYSHOGI_CNF_EXTRA@ )
+#    include    "ExtraConfig.h"
+#endif
 
 #endif
