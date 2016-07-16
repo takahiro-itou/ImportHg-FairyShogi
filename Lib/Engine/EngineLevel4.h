@@ -92,7 +92,7 @@ public:
             const  ViewBuffer   &vbCur,
             const  PlayerIndex  piTurn,
             const  TConstraint  vCons,
-            ActionView          &actRet)  OVERRIDE;
+            ActionView          &actRet)  override;
 
 //========================================================================
 //

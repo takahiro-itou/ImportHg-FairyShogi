@@ -74,7 +74,6 @@
 #        define     override
 #    endif
 #endif
-#define     OVERRIDE        override
 
 //========================================================================
 //
