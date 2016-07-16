@@ -304,7 +304,7 @@ protected:
     dialogProc(
             const   UINT    uiMsg,
             const   WPARAM  wParam,
-            const   LPARAM  lParam)  OVERRIDE;
+            const   LPARAM  lParam)  override;
 
     //----------------------------------------------------------------
     /**   ダイアログの内容を変数に保存する。

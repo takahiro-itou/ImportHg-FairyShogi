@@ -190,7 +190,7 @@ protected:
     onLButtonUp(
             const  DWORD        fwKeys,
             const  WindowCoord  xPos,
-            const  WindowCoord  yPos)  OVERRIDE;
+            const  WindowCoord  yPos)  override;
 
 //========================================================================
 //
