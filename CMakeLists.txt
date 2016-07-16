@@ -56,7 +56,7 @@ check_include_files (stdint.h  HAVE_STDINT_H)
 
 include (CheckTypeSize)
 
-check_type_size (uint32_t  UINT32_T)
+check_type_size (uint8_t  UINT8_T)
 if (HAVE_UINT8_T)
   set (FAIRYSHOGI_CNF_UINT8_T  uint8_t)
 else()
@@ -67,6 +67,7 @@ else()
   message ("Set uint8_t : ${uint8_t}")
 endif()
 
+check_type_size (uint32_t  UINT32_T)
 if (HAVE_UINT32_T)
   set (FAIRYSHOGI_CNF_UINT32_T  uint32_t)
 else()

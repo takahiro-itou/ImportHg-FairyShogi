@@ -1,2 +1,2 @@
 
-#cmakedefine    HAVE_STDINT_H
+#cmakedefine    HAVE_STDINT_H   1
