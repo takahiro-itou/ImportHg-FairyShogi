@@ -85,22 +85,25 @@
 #    include    "ExtraConfig.h"
 #endif
 
-
 //========================================================================
 //
 //    Type Definitions.
 //
 
-//----------------------------------------------------------------
-/**
-**    整数（符号無し 32 ビット）型。
-**/
-
 #if ( HAVE_STDINT_H )
 #    include    <stdint.h>
 #endif
 
-typedef     @FAIRYSHOGI_CNF_UINT32_T@       FSG_UInt32;
+/**
+**    整数（符号無し  8 ビット）型。
+**/
 
+typedef     @FAIRYSHOGI_CNF_UINT8_T@        FSG_UInt8;
+
+/**
+**    整数（符号無し 32 ビット）型。
+**/
+
+typedef     @FAIRYSHOGI_CNF_UINT32_T@       FSG_UInt32;
 
 #endif

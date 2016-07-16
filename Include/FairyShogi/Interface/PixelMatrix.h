@@ -41,7 +41,7 @@ class  PixelMatrix
 public:
 
     /**   ピクセルの輝度値型。  **/
-    typedef     uint8_t                 PixelValue;
+    typedef     FSG_UInt8               PixelValue;
 
     /**   ピクセルの座標を指定する型。  **/
     typedef     int                     BitmapCoord;
@@ -56,7 +56,7 @@ public:
     typedef     const   PixelValue  *   PcPixelArray;
 
     /**   バッファの型。        **/
-    typedef     uint8_t  *              LpBuffer;
+    typedef     FSG_UInt8  *            LpBuffer;
 
 //========================================================================
 //
