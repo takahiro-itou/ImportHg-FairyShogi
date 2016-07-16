@@ -198,8 +198,8 @@ protected:
 //
 private:
 
-    static  constexpr   int     SQUARE_WIDTH        = 64;
-    static  constexpr   int     SQUARE_HEIGHT       = 64;
+    static  CONSTEXPR_VAR   int     SQUARE_WIDTH    = 64;
+    static  CONSTEXPR_VAR   int     SQUARE_HEIGHT   = 64;
 
 //========================================================================
 //

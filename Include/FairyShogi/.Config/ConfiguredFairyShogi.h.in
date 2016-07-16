@@ -49,19 +49,31 @@
 //
 
 #if ( @FAIRYSHOGI_CNF_CONSTEXPR@ )
-#    define     ENABLE_CONSTEXPR    1
+#    define     FAIRYSHOGI_ENABLE_CONSTEXPR     1
 #else
-#    undef      ENABLE_CONSTEXPR
+#    undef      FAIRYSHOGI_ENABLE_CONSTEXPR
 #endif
 
-#if ( ENABLE_CONSTEXPR )
+#if ( @FAIRYSHOGI_CNF_OVERRIDE@ )
+#    define     FAIRYSHOGI_ENABLE_OVERRIDE      1
+#else
+#    undef      FAIRYSHOGI_ENABLE_OVERRIDE
+#endif
+
+#if ( FAIRYSHOGI_ENABLE_CONSTEXPR )
 #    define     CONSTEXPR_VAR       constexpr
 #    define     CONSTEXPR_FUNC      constexpr
-#    define     OVERRIDE            override
 #else
-#    define     CONSTEXPR_VAR
+#    define     CONSTEXPR_VAR       const
 #    define     CONSTEXPR_FUNC
-#    define     OVERRIDE
+#endif
+
+#if !defined( OVERRIDE )
+#if ( FAIRYSHOGI_ENABLE_OVERRIDE )
+#        define     OVERRIDE            override
+#    else
+#        define     OVERRIDE
+#    endif
 #endif
 
 //========================================================================
