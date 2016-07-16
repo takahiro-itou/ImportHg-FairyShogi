@@ -82,7 +82,19 @@ endif()
 ##    Check Compiler Features.
 ##
 
-set (FAIRYSHOGI_CNF_CONSTEXPR  0)
+include (${PROJECT_SOURCE_DIR}/CheckConstExpr.cmake)
+if ( CNF_CXX_CONSTEXPR_ENABLED )
+  set (FAIRYSHOGI_CNF_CONSTEXPR  1)
+else()
+  set (FAIRYSHOGI_CNF_CONSTEXPR  0)
+endif()
+
+include (${PROJECT_SOURCE_DIR}/CheckOverride.cmake)
+if ( CNF_CXX_OVERRIDE_ENABLED )
+  set (FAIRYSHOGI_CNF_OVERRIDE  1)
+else()
+  set (FAIRYSHOGI_CNF_OVERRIDE  0)
+endif()
 
 ##----------------------------------------------------------------
 ##
