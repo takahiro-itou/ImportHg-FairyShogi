@@ -30,6 +30,7 @@ set (CMAKE_CXX_FLAGS  "-std=c++11")
 set (FSHOGI_INCLUDE_DIR  "Include/FairyShogi")
 set (SOURCE_INCLUDE_DIR  "${PROJECT_SOURCE_DIR}/${FSHOGI_INCLUDE_DIR}")
 set (BINARY_INCLUDE_DIR  "${PROJECT_BINARY_DIR}/${FSHOGI_INCLUDE_DIR}")
+set (SOURCE_CMAKE_DIR    "${PROJECT_SOURCE_DIR}/CMake")
 
 ##
 ##    Project Name Space.
@@ -82,14 +83,14 @@ endif()
 ##    Check Compiler Features.
 ##
 
-include (${PROJECT_SOURCE_DIR}/CheckConstExpr.cmake)
+include (${SOURCE_CMAKE_DIR}/CheckConstExpr.cmake)
 if ( CNF_CXX_CONSTEXPR_ENABLED )
   set (FAIRYSHOGI_CNF_CONSTEXPR  1)
 else()
   set (FAIRYSHOGI_CNF_CONSTEXPR  0)
 endif()
 
-include (${PROJECT_SOURCE_DIR}/CheckOverride.cmake)
+include (${SOURCE_CMAKE_DIR}/CheckOverride.cmake)
 if ( CNF_CXX_OVERRIDE_ENABLED )
   set (FAIRYSHOGI_CNF_OVERRIDE  1)
 else()
