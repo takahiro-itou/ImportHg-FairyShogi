@@ -21,7 +21,6 @@
 #include    "FairyShogiSettings.h"
 
 #include    <stddef.h>
-#include    <stdint.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 

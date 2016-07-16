@@ -48,9 +48,21 @@
 //    Compile Features.
 //
 
-#define     CONSTEXPR_VAR       constexpr
-#define     CONSTEXPR_FUNC      constexpr
-#define     OVERRIDE            override
+#if ( @FAIRYSHOGI_CNF_CONSTEXPR@ )
+#    define     ENABLE_CONSTEXPR    1
+#else
+#    undef      ENABLE_CONSTEXPR
+#endif
+
+#if ( ENABLE_CONSTEXPR )
+#    define     CONSTEXPR_VAR       constexpr
+#    define     CONSTEXPR_FUNC      constexpr
+#    define     OVERRIDE            override
+#else
+#    define     CONSTEXPR_VAR
+#    define     CONSTEXPR_FUNC
+#    define     OVERRIDE
+#endif
 
 //========================================================================
 //
@@ -60,5 +72,23 @@
 #if ( @FAIRYSHOGI_CNF_EXTRA@ )
 #    include    "ExtraConfig.h"
 #endif
+
+
+//========================================================================
+//
+//    Type Definitions.
+//
+
+//----------------------------------------------------------------
+/**
+**    整数（符号無し 32 ビット）型。
+**/
+
+#if ( HAVE_STDINT_H )
+#    include    <stdint.h>
+#endif
+
+typedef     @FAIRYSHOGI_CNF_UINT32_T@       FSG_UInt32;
+
 
 #endif
