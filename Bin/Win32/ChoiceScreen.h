@@ -113,7 +113,7 @@ public:
     **/
     virtual  ErrCode
     drawScreenLayer(
-            BitmapImage  *  bmpTrg)  const  OVERRIDE;
+            BitmapImage  *  bmpTrg)  const  override;
 
 //========================================================================
 //
@@ -233,7 +233,7 @@ protected:
     onLButtonUp(
             const  DWORD        fwKeys,
             const  WindowCoord  xPos,
-            const  WindowCoord  yPos)  OVERRIDE;
+            const  WindowCoord  yPos)  override;
 
 //========================================================================
 //

@@ -68,13 +68,13 @@
 #    define     CONSTEXPR_FUNC
 #endif
 
-#if !defined( OVERRIDE )
 #if ( FAIRYSHOGI_ENABLE_OVERRIDE )
-#        define     OVERRIDE            override
-#    else
-#        define     OVERRIDE
+#else
+#    if !defined( override )
+#        define     override
 #    endif
 #endif
+#define     OVERRIDE        override
 
 //========================================================================
 //

@@ -178,7 +178,7 @@ public:
     onLButtonUp(
             const  DWORD        fwKeys,
             const  WindowCoord  xPos,
-            const  WindowCoord  yPos)  OVERRIDE;
+            const  WindowCoord  yPos)  override;
 
     //----------------------------------------------------------------
     /**   マウスを移動させた時のイベントハンドラ。
