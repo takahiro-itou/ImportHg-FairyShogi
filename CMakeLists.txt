@@ -90,6 +90,13 @@ else()
   set (FAIRYSHOGI_CNF_CONSTEXPR  0)
 endif()
 
+include (${SOURCE_CMAKE_DIR}/CheckNullPtr.cmake)
+if ( CNF_CXX_NULLPTR_ENABLED )
+  set (FAIRYSHOGI_CNF_NULLPTR  1)
+else()
+  set (FAIRYSHOGI_CNF_NULLPTR  0)
+endif()
+
 include (${SOURCE_CMAKE_DIR}/CheckOverride.cmake)
 if ( CNF_CXX_OVERRIDE_ENABLED )
   set (FAIRYSHOGI_CNF_OVERRIDE  1)
