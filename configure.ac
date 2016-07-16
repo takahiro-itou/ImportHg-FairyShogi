@@ -94,7 +94,14 @@ dnl
 dnl   Check Types.
 dnl
 
+AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
+
+FAIRYSHOGI_CNF_UINT8_T=uint8_t
+AC_SUBST(FAIRYSHOGI_CNF_UINT8_T)
+
+FAIRYSHOGI_CNF_UINT32_T=uint32_t
+AC_SUBST(FAIRYSHOGI_CNF_UINT32_T)
 
 dnl
 dnl   Check Extra Compiler/Linker Options.
@@ -109,6 +116,13 @@ MYAC_CHECK_EXTRA_LINKER_OPTION(
 MYAC_CHECK_EXTRA_LINKER_OPTION(
     [LDFLAGS], [static-libgcc],    [-static-libgcc])
 AC_SUBST(FAIRYSHOGI_CNF_CFLAGS_MWINDOWS)
+
+dnl
+dnl   Check Compiler Features.
+dnl
+
+FAIRYSHOGI_CNF_CONSTEXPR=1
+AC_SUBST(FAIRYSHOGI_CNF_CONSTEXPR)
 
 dnl
 dnl   Project Name Space.

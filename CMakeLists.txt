@@ -50,6 +50,39 @@ endif()
 include (CheckIncludeFiles)
 check_include_files (stdint.h  HAVE_STDINT_H)
 
+##
+##    Check Types.
+##
+
+include (CheckTypeSize)
+
+check_type_size (uint32_t  UINT32_T)
+if (HAVE_UINT8_T)
+  set (FAIRYSHOGI_CNF_UINT8_T  uint8_t)
+else()
+  if (MSVC OR BORLAND)
+    set (uint8_t  "unsigned char")
+  endif()
+  set (FAIRYSHOGI_CNF_UINT8_T  ${uint8_t})
+  message ("Set uint8_t : ${uint8_t}")
+endif()
+
+if (HAVE_UINT32_T)
+  set (FAIRYSHOGI_CNF_UINT32_T  uint32_t)
+else()
+  if (MSVC OR BORLAND)
+    set (uint32_t  "unsigned int")
+  endif()
+  set (FAIRYSHOGI_CNF_UINT32_T  ${uint32_t})
+  message ("Set uint32_t : ${uint32_t}")
+endif()
+
+##
+##    Check Compiler Features.
+##
+
+set (FAIRYSHOGI_CNF_CONSTEXPR  0)
+
 ##----------------------------------------------------------------
 ##
 ##    設定を書き込んだファイルを生成。
