@@ -15,6 +15,6 @@ set (WIN32_COMMONLIBS
         Gdi32
 )
 
-add_executable (FairyShogiWin32   ${FSHOGI_WIN32_SOURCES})
+add_executable (FairyShogiWin32   WIN32  ${FSHOGI_WIN32_SOURCES})
 target_link_libraries (FairyShogiWin32  ${WIN32_COMMONLIBS})
 
