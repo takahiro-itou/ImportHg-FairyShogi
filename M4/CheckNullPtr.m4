@@ -1,6 +1,6 @@
 
 AC_TRY_COMPILE(
-   [],
+   [;],
    [void * p = nullptr;
     return ( 0 );
    ],
