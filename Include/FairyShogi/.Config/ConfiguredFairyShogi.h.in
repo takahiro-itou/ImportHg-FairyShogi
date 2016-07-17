@@ -122,4 +122,10 @@ typedef     @FAIRYSHOGI_CNF_UINT8_T@        FSG_UInt8;
 
 typedef     @FAIRYSHOGI_CNF_UINT32_T@       FSG_UInt32;
 
+/**
+**    整数（符号無し 64 ビット）型。
+**/
+
+typedef     @FAIRYSHOGI_CNF_UINT64_T@       FSG_UInt64;
+
 #endif

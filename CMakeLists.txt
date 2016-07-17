@@ -55,29 +55,7 @@ check_include_files (stdint.h  HAVE_STDINT_H)
 ##    Check Types.
 ##
 
-include (CheckTypeSize)
-
-check_type_size (uint8_t  UINT8_T)
-if (HAVE_UINT8_T)
-  set (FAIRYSHOGI_CNF_UINT8_T  uint8_t)
-else()
-  if (MSVC OR BORLAND)
-    set (uint8_t  "unsigned char")
-  endif()
-  set (FAIRYSHOGI_CNF_UINT8_T  ${uint8_t})
-  message ("Set uint8_t : ${uint8_t}")
-endif()
-
-check_type_size (uint32_t  UINT32_T)
-if (HAVE_UINT32_T)
-  set (FAIRYSHOGI_CNF_UINT32_T  uint32_t)
-else()
-  if (MSVC OR BORLAND)
-    set (uint32_t  "unsigned int")
-  endif()
-  set (FAIRYSHOGI_CNF_UINT32_T  ${uint32_t})
-  message ("Set uint32_t : ${uint32_t}")
-endif()
+include (${SOURCE_CMAKE_DIR}/CheckStdInt.cmake)
 
 ##
 ##    Check Compiler Features.
