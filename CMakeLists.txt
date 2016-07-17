@@ -82,6 +82,13 @@ else()
   set (FAIRYSHOGI_CNF_OVERRIDE  0)
 endif()
 
+include (${SOURCE_CMAKE_DIR}/CheckStaticAssert.cmake)
+if ( CNF_CXX_STATIC_ASSERT_ENABLED )
+  set (FAIRYSHOGI_CNF_STATIC_ASSERT  1)
+else()
+  set (FAIRYSHOGI_CNF_STATIC_ASSERT  0)
+endif()
+
 ##----------------------------------------------------------------
 ##
 ##    設定を書き込んだファイルを生成。
