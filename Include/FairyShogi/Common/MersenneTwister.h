@@ -54,7 +54,7 @@ public:
     struct  MaxValue
     {
         static  CONSTEXPR_VAR   TResultInt
-        VALUE   =  (static_cast<uint64_t>(1) << N) - 1;
+        VALUE   =  (static_cast<FSG_UInt64>(1) << N) - 1;
     };
 
 //========================================================================

@@ -205,7 +205,7 @@ BitmapImage::openBitmapFile(
 
     fseek(fp, 0, SEEK_END);
     const  FileLen  cbFile  = ftell(fp);
-    LpBuffer    ptrBuf  = new  uint8_t [cbFile];
+    LpBuffer    ptrBuf  = new  FSG_UInt8 [cbFile];
 
     fseek(fp, 0, SEEK_SET);
     fread(ptrBuf, 1, cbFile, fp);
