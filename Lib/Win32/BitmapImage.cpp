@@ -225,9 +225,11 @@ BitmapImage::readBitmap(
         LpcReadBuf  const   ptrBuf,
         const  FileLen      cbLen)
 {
+#if defined( FAIRYSHOGI_CNF_STATIC_ASSERT )
     static_assert(
             sizeof(TBitmapInfoHeader) == SIZE_OF_BITMAP_INFO_HEADER,
             "Invalid Structure Size (BitmapInfoHeader)" );
+#endif
 
     const   WORD    fhMagic = *(pointer_cast<const  WORD  *>(ptrBuf));
     if ( fhMagic != 0x4d42 ) {
