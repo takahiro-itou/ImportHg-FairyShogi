@@ -40,7 +40,7 @@ public:
     /**
     **    ビットボード用の型。
     **/
-    typedef     uint32_t        BitBoardVal;
+    typedef     FSG_UInt32      BitBoardVal;
 
 //========================================================================
 //

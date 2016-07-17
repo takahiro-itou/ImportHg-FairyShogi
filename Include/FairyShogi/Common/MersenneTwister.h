@@ -46,9 +46,9 @@ class  MersenneTwister
 //
 public:
 
-    typedef     uint32_t        TSeedValue;
+    typedef     FSG_UInt32      TSeedValue;
 
-    typedef     uint32_t        TResultInt;
+    typedef     FSG_UInt32      TResultInt;
 
     template  <int  N>
     struct  MaxValue

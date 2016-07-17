@@ -34,7 +34,7 @@ namespace  Game  {
 class  BitSet
 {
 private:
-    typedef     uint32_t        TBlockElem;
+    typedef     FSG_UInt32      TBlockElem;
 
 public:
     typedef     TBlockElem      ReturnType;
