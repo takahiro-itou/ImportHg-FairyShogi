@@ -271,7 +271,7 @@ rollDice(
     } else if ( pidSel >= 6 ) {
         //  乱数を使う。    //
         g_scrDice.setVisibleFlag(Win32::ScreenLayer::LV_HIDDEN);
-        const  uint32_t
+        const  FSG_UInt32
             rv  =  (g_rndGen.getNext() & RANDOM_MAX_VALUE);
         const  int  rn
             =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1);

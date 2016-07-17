@@ -316,7 +316,7 @@ CommandInterpreter::executeDiceCommand(
     }
 
     if ( strArgs[0] == 'r' ) {
-        const  uint32_t
+        const  FSG_UInt32
             rv  =  (ciClbk.m_rndGen.getNext() & RANDOM_MAX_VALUE);
         const  int  rn
             =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1) + 1;
