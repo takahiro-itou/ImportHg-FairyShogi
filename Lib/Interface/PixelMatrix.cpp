@@ -404,7 +404,7 @@ PixelMatrix::allocateBuffer(
         cbSize  +=  ((this->m_nLineBytes) * (this->m_yHeight));
     }
 
-    LpBuffer    ptrBuf  = new  uint8_t [cbSize];
+    LpBuffer    ptrBuf  = new  FSG_UInt8 [cbSize];
 
     this->m_ptrBuf  = (ptrBuf);
     return ( ptrBuf );

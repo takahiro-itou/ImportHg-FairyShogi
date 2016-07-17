@@ -929,7 +929,7 @@ BoardState::getAttackFromList(
         const  PlayerIndex  oPlayer,
         TBitBoard           &bbFrom)
 {
-    typedef     uint32_t        TablePiece[NUM_PIECE_TYPES];
+    typedef     FSG_UInt32      TablePiece[NUM_PIECE_TYPES];
 
     const  TablePiece  & tblFr  = RuleTables::s_tblMoveFrom[posTrg];
     for ( PieceIndex p = BOARD_BLACK_PAWN; p < NUM_PIECE_TYPES; ++ p )
@@ -938,7 +938,7 @@ BoardState::getAttackFromList(
         if ( s_tblPieceOwner[p] != oPlayer ) { continue; }
 
         //  可能性のある移動元を順に調べる。    //
-        const  uint32_t  tvMask = tblFr[p];
+        const   FSG_UInt32  tvMask  = tblFr[p];
         for ( FieldIndex posSrc = 0; posSrc < BOARD_SIZE; ++ posSrc )
         {
             //  対象の座標に目的の駒がない場合。    //

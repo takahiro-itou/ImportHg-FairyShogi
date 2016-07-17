@@ -236,7 +236,7 @@ BitmapImage::readBitmap(
         return ( ERR_FAILURE );
     }
 
-    LpBuffer  const    ptrByte  = new  uint8_t [cbLen + 2];
+    LpBuffer  const    ptrByte  = new  FSG_UInt8 [cbLen + 2];
     LpBuffer  const    ptrBody  = (ptrByte + 2);
 
     ::memcpy( ptrBody, ptrBuf, cbLen );
