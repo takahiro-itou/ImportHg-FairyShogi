@@ -24,7 +24,11 @@
 
 #include    "Resources.h"
 
-#include    "FairyShogi/Win32/CommonResources.rc"
+/**
+**  @todo   暫定処理。
+**/
+//#include    "FairyShogi/Win32/CommonResources.rc"
+#include    "FairyShogi/Win32/CommonResources.h"
 
 LANGUAGE    LANG_JAPANESE,  SUBLANG_DEFAULT
 
@@ -97,3 +101,104 @@ END
 //
 //    ダイアログリソース。
 //
+
+//----------------------------------------------------------------
+//
+//    対局ダイアログ。
+//
+
+IDD_MATCH_DIALOG    DIALOG  DISCARDABLE               0,   0, 344, 232
+STYLE       DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION     "対局設定"
+BEGIN
+    DEFPUSHBUTTON   "OK",       IDOK,               200, 208,  64,  16
+    PUSHBUTTON      "CANCEL",   IDCANCEL,           272, 208,  64,  16
+
+    GROUPBOX    "先手／黒番 (&Black)",
+            IDC_STATIC,                               8,   8, 160,  96
+
+    AUTORADIOBUTTON     "人間：",
+            IDD_RADIO_BLACK_MAN,                     16,  20,  52,  12,
+            WS_GROUP | BS_RIGHT
+    COMBOBOX    IDD_COMBO_BLACK_MAN,                 72,  20,  88,  60,
+            CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+
+    AUTORADIOBUTTON     "エンジン：",
+             IDD_RADIO_BLACK_COM,                    16,  36,  52,  12,
+             BS_RIGHT
+    COMBOBOX    IDD_COMBO_BLACK_COM,                 72,  36,  88,  60,
+             CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+
+    RTEXT       "ダイス：",         IDC_STATIC,      16,  52,  52,  12
+    AUTORADIOBUTTON     "自動",
+            IDD_RADIO_BLACK_DICE_AUTO,               72,  52,  40,  12,
+            WS_GROUP
+    AUTORADIOBUTTON     "手動",
+            IDD_RADIO_BLACK_DICE_MANUAL,            116,  52,  40,  12
+
+    RTEXT       "乱数制御：",       IDC_STATIC,      16,  68,  52,  12
+
+    RTEXT       "思考開始：",       IDC_STATIC,      16,  84,  52,  12
+    AUTORADIOBUTTON     "自動",
+            IDD_RADIO_BLACK_THINK_AUTO,              72,  84,  40,  12,
+            WS_GROUP
+    AUTORADIOBUTTON     "手動",
+            IDD_RADIO_BLACK_THINK_MANUAL,           116,  84,  40,  12
+
+    GROUPBOX    "後手／白番 (&White)",
+            IDC_STATIC,                             176,   8, 160,  96
+    AUTORADIOBUTTON     "人間：",
+            IDD_RADIO_WHITE_MAN,                    184,  20,  52,  12,
+            WS_GROUP | BS_RIGHT
+    COMBOBOX    IDD_COMBO_WHITE_MAN,                240,  20,  88,  60,
+            CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+
+    AUTORADIOBUTTON     "エンジン：",
+             IDD_RADIO_WHITE_COM,                   184,  36,  52,  12,
+             BS_RIGHT
+    COMBOBOX    IDD_COMBO_WHITE_COM,                240,  36,  88,  60,
+            CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+
+    RTEXT       "ダイス：",         IDC_STATIC,     184,  52,  52,  12
+    AUTORADIOBUTTON     "自動",
+            IDD_RADIO_WHITE_DICE_AUTO,              240,  52,  40,  12,
+            WS_GROUP
+    AUTORADIOBUTTON     "手動",
+            IDD_RADIO_WHITE_DICE_MANUAL,            284,  52,  40,  12
+
+    RTEXT       "乱数制御：",       IDC_STATIC,     184,  68,  52,  12
+
+    RTEXT       "思考開始：",       IDC_STATIC,     184,  84,  52,  12
+    AUTORADIOBUTTON     "自動",
+            IDD_RADIO_WHITE_THINK_AUTO,             240,  84,  40,  12,
+            WS_GROUP
+    AUTORADIOBUTTON     "手動",
+            IDD_RADIO_WHITE_THINK_MANUAL,           284,  84,  40,  12
+
+    GROUPBOX    "対局オプション (&Configurations)",
+            IDC_STATIC,                               8, 112, 328,  88
+    RTEXT       "開始局面：",       IDC_STATIC,      16, 124,  64,  12
+    AUTORADIOBUTTON     "平手",
+            IDD_RADIO_START_INITIAL,                 84, 124,  40,  12,
+            WS_GROUP
+    AUTORADIOBUTTON     "現在の局面",
+            IDD_RADIO_START_CURRENT,                128, 124,  56,  12
+    AUTORADIOBUTTON     "SFEN 指定",
+            IDD_RADIO_START_TEXTSFEN,               188, 124,  56,  12
+    AUTORADIOBUTTON     "CSA 指定",
+            IDD_RADIO_START_TEXTCSA,                244, 124,  56,  12
+    EDITTEXT    IDD_EDIT_START_TEXT,                 84, 140, 244,  12
+
+    RTEXT       "乱数シード：",     IDC_STATIC,      16, 156,  64,  12
+    AUTORADIOBUTTON     "現在時刻で初期化",
+            IDD_RADIO_SEED_TIME,                     84, 156,  80,  12,
+            WS_GROUP
+    AUTORADIOBUTTON     "右の値で初期化",
+            IDD_RADIO_SEED_MANUAL,                  172, 156,  80,  12
+    EDITTEXT    IDD_EDIT_RANDOM_SEED,               244, 156,  84,  12
+
+    AUTOCHECKBOX        "棋譜自動保存",
+                IDD_CHECK_AUTO_SAVE,                 16, 172,  64,  12
+    EDITTEXT    IDD_EDIT_FILE_NAME,                  84, 172, 212,  12
+    PUSHBUTTON  "参照",     IDD_BUTTON_REF_FILE,    304, 172,  24,  12
+END
