@@ -31,6 +31,7 @@ FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
 //  クラスの前方宣言。  //
+class   Animation;
 class   BitmapResource;
 
 //========================================================================
@@ -168,6 +169,9 @@ private:
 
     /**   その他画像リソース。  **/
     BitmapResource  *   m_brIcons;
+
+    /**   アニメーション管理。  **/
+    Animation  *        m_manAnim;
 
 //========================================================================
 //

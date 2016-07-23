@@ -17,6 +17,7 @@
 
 #include    "FairyShogiApp.h"
 
+#include    "FairyShogi/Win32/Animation.h"
 #include    "FairyShogi/Win32/BitmapResource.h"
 
 #include    "Resources.h"
@@ -45,7 +46,8 @@ FairyShogiApp::FairyShogiApp()
     : m_brBack (nullptr),
       m_brPiece(nullptr),
       m_brDice (nullptr),
-      m_brIcons(nullptr)
+      m_brIcons(nullptr),
+      m_manAnim(nullptr)
 {
 }
 
