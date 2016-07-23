@@ -17,6 +17,8 @@
 
 #include    "FairyShogi/Win32/Animation.h"
 
+#include    <memory.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
@@ -36,6 +38,8 @@ namespace  Win32  {
 //
 
 Animation::Animation()
+    : m_blnAnimFlag(BOOL_FALSE),
+      m_animFirst()
 {
 }
 
@@ -77,6 +81,50 @@ Animation::drawAnimation(
         Interface::PixelMatrix  &imgDest)
 {
     return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    アニメーションを行う指示をキューに挿入する。
+//
+
+ErrCode
+Animation::enqueueAnimation(
+        const  BitmapCoord  xFrom,
+        const  BitmapCoord  yFrom,
+        const  BitmapCoord  xTo,
+        const  BitmapCoord  yTo,
+        const  PixelMatrix  &imgSrc,
+        const  BitmapCoord  srcX,
+        const  BitmapCoord  srcY,
+        const  BitmapCoord  srcW,
+        const  BitmapCoord  srcH,
+        const  TStepCount   nSteps,
+        const  TWaitTime    msWait)
+{
+    AnimationEntry  anmEnt;
+
+    anmEnt.anmDestX = xTo;
+    anmEnt.anmDestY = yTo;
+
+    anmEnt.srcImage = &imgSrc;
+    anmEnt.srcImgX  = srcX;
+    anmEnt.srcImgY  = srcY;
+    anmEnt.srcImgW  = srcW;
+    anmEnt.srcImgH  = srcH;
+
+    anmEnt.bcScaleX = 32;
+    anmEnt.bcScaleY = 32;
+    anmEnt.bcStepX  = (xTo - xFrom) * anmEnt.bcScaleX / nSteps;
+    anmEnt.bcStepY  = (yTo - yFrom) * anmEnt.bcScaleY / nSteps;
+
+    anmEnt.anmCurX  = xFrom * anmEnt.bcScaleX;
+    anmEnt.anmCurY  = yFrom * anmEnt.bcScaleY;
+    anmEnt.cntSteps = nSteps;
+    anmEnt.msWaits  = msWait;
+
+    ::memcpy( &(this->m_animFirst), &(anmEnt), sizeof(anmEnt) );
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------

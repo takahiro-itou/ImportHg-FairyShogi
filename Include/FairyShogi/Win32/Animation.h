@@ -20,6 +20,8 @@
 
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 
+#include    "FairyShogi/Interface/PixelMatrix.h"
+
 #if !defined( FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H )
 #    define     STRICT
 #    define     WIN32_LEAN_AND_MEAN
@@ -28,12 +30,6 @@
 #endif
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-
-//  クラスの前方宣言。  //
-namespace  Interface  {
-class   PixelMatrix;
-}   //  End of namespace  Interface
-
 namespace  Win32  {
 
 //========================================================================
@@ -51,6 +47,48 @@ class  Animation
 //
 //    Internal Type Definitions.
 //
+private:
+
+    /**   ビットマップイメージクラス。  **/
+    typedef     Interface::PixelMatrix      PixelMatrix;
+
+    /**   ピクセルの座標を指定する型。  **/
+    typedef     PixelMatrix::BitmapCoord    BitmapCoord;
+
+    /**
+    **    アニメーションのステップ数をカウントする型。
+    **/
+    typedef     int                         TStepCount;
+
+    /**
+    **    アニメーションの速度を制御する型。
+    **
+    **  各ステップの間の待機時間を指定する。
+    **/
+    typedef     int                         TWaitTime;
+
+    struct  AnimationEntry
+    {
+        BitmapCoord             anmDestX;
+        BitmapCoord             anmDestY;
+
+        const   PixelMatrix  *  srcImage;
+        BitmapCoord             srcImgX;
+        BitmapCoord             srcImgY;
+        BitmapCoord             srcImgW;
+        BitmapCoord             srcImgH;
+
+        BitmapCoord             anmCurX;
+        BitmapCoord             anmCurY;
+
+        BitmapCoord             bcScaleX;
+        BitmapCoord             bcScaleY;
+        BitmapCoord             bcStepX;
+        BitmapCoord             bcStepY;
+
+        TStepCount              cntSteps;
+        TWaitTime               msWaits;
+    };
 
 //========================================================================
 //
@@ -104,7 +142,40 @@ public:
     **/
     virtual  ErrCode
     drawAnimation(
-            Interface::PixelMatrix  &imgDest);
+            PixelMatrix   & imgDest);
+
+    //----------------------------------------------------------------
+    /**   アニメーションを行う指示をキューに挿入する。
+    **
+    **  @param [in] xFrom
+    **  @param [in] yFrom
+    **  @param [in] xTo
+    **  @param [in] yTo
+    **  @param [in] imgSrc
+    **  @param [in] srcX
+    **  @param [in] srcY
+    **  @param [in] srcW
+    **  @param [in] srcH
+    **  @param [in] nSteps    アニメーションのステップ数。
+    **  @param [in] msWait    ステップ間の待機時間（ミリ秒）。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    enqueueAnimation(
+            const  BitmapCoord  xFrom,
+            const  BitmapCoord  yFrom,
+            const  BitmapCoord  xTo,
+            const  BitmapCoord  yTo,
+            const  PixelMatrix  &imgSrc,
+            const  BitmapCoord  srcX,
+            const  BitmapCoord  srcY,
+            const  BitmapCoord  srcW,
+            const  BitmapCoord  srcH,
+            const  TStepCount   nSteps,
+            const  TWaitTime    msWait);
 
     //----------------------------------------------------------------
     /**   アニメーションを行うためのループを実行する。
@@ -155,6 +226,17 @@ public:
 //
 //    Member Variables.
 //
+private:
+
+    /**
+    **    アニメーションが実行中か停止中かを示すフラグ。
+    **/
+    Boolean             m_blnAnimFlag;
+
+    /**
+    **    アニメーションの現在の状態を管理するデータ。
+    **/
+    AnimationEntry      m_animFirst;
 
 //========================================================================
 //
