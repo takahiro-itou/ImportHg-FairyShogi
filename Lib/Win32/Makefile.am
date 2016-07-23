@@ -24,6 +24,7 @@ EXTRANOINSTHEADERS      =
 EXTRALIBHEADERS         =
 
 LIBCXXSOURCEFILES       =  \
+        Animation.cpp       \
         BitmapImage.cpp     \
         BitmapResource.cpp  \
         DialogWindow.cpp    \
@@ -40,6 +41,7 @@ LIBNOINSTHEADERS        =  \
         $(EXTRANOINSTHEADERS)
 
 INCLIBHEADERS           =  \
+        $(INCLIBDIR)/Animation.h         \
         $(INCLIBDIR)/BitmapImage.h       \
         $(INCLIBDIR)/BitmapResource.h    \
         $(INCLIBDIR)/CommonResources.h   \

@@ -1,5 +1,6 @@
 
 set (LIBSOURCEFILES
+        Animation.cpp
         BitmapImage.cpp
         BitmapResource.cpp
         DialogWindow.cpp
