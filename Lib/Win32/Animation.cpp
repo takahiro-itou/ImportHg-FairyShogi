@@ -68,6 +68,37 @@ Animation::~Animation()
 //    Public Member Functions (Virtual Functions).
 //
 
+//----------------------------------------------------------------
+//    アニメーションの壱ステップを描画する。
+//
+
+ErrCode
+Animation::drawAnimation(
+        Interface::PixelMatrix  &imgDest)
+{
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    アニメーションを行うためのループを実行する。
+//
+
+ErrCode
+Animation::enterAnimationLoop()
+{
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    アニメーションを次のステップに進める。
+//
+
+Boolean
+Animation::stepAnimation()
+{
+    return ( BOOL_FALSE );
+}
+
 //========================================================================
 //
 //    Public Member Functions.
@@ -77,6 +108,16 @@ Animation::~Animation()
 //
 //    Accessors.
 //
+
+//----------------------------------------------------------------
+//    アニメーションの状態を取得する。
+//
+
+Boolean
+Animation::getAnimationFlag()  const
+{
+    return ( BOOL_FALSE );
+}
 
 //========================================================================
 //
