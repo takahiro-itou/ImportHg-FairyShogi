@@ -150,7 +150,35 @@ Animation::enqueueAnimation(
 ErrCode
 Animation::enterAnimationLoop()
 {
+    LpFnAnimationStep   pfnStep = (this->m_pfnStepAnim);
+    if ( pfnStep == nullptr ) {
+        return ( ERR_FAILURE );
+    }
+
+    const  HWND         hTrgWnd = (this->m_hTargetWnd);
+
     this->m_blnAnimFlag = BOOL_TRUE;
+
+    ::InvalidateRect(hTrgWnd, NULL, FALSE);
+    ::UpdateWindow  (hTrgWnd);
+
+    int     ret;
+    MSG     msg;
+    while ( this->m_blnAnimFlag ) {
+        ret = ::GetMessage(&msg, NULL, 0, 0);
+        if ( ret == 0 || ret == -1 ) {
+            break;
+        }
+        ::TranslateMessage(&msg);
+        ::DispatchMessage (&msg);
+
+        if ( (* pfnStep)(hTrgWnd, * this) == BOOL_FALSE ) {
+            return ( ERR_FAILURE );
+        }
+    }
+
+    ::InvalidateRect(hTrgWnd, NULL, FALSE);
+    ::UpdateWindow  (hTrgWnd);
 
     return ( ERR_SUCCESS );
 }
