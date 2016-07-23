@@ -841,6 +841,9 @@ WinMain(
 
     }
 
+    if ( g_scrBoard.setApplicationInstance(g_theApp) != ERR_SUCCESS ) {
+        return ( 0 );
+    }
     if ( g_scrBoard.setupBitmapImages(g_theApp) != ERR_SUCCESS ) {
         return ( 0 );
     }
