@@ -23,7 +23,7 @@ set (serial  "0.0.0")
 ##    プロジェクトの基本設定。
 ##
 
-option (ENABLE_WIN32  "Enable Win32 API."  OFF)
+option (ENABLE_WIN32  "Enable Win32 API."  ON)
 
 set (CMAKE_C_FLAGS    "-std=c++11")
 set (CMAKE_CXX_FLAGS  "-std=c++11")
