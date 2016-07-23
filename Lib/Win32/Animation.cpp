@@ -39,7 +39,9 @@ namespace  Win32  {
 
 Animation::Animation()
     : m_blnAnimFlag(BOOL_FALSE),
-      m_animFirst()
+      m_animFirst  (),
+      m_hTargetWnd (NULL),
+      m_pfnStepAnim(nullptr)
 {
 }
 
@@ -134,7 +136,9 @@ Animation::enqueueAnimation(
 ErrCode
 Animation::enterAnimationLoop()
 {
-    return ( ERR_FAILURE );
+    this->m_blnAnimFlag = BOOL_TRUE;
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
@@ -164,7 +168,31 @@ Animation::stepAnimation()
 Boolean
 Animation::getAnimationFlag()  const
 {
-    return ( BOOL_FALSE );
+    return ( this->m_blnAnimFlag );
+}
+
+//----------------------------------------------------------------
+//    アニメーション実行中のコールバック関数を指定する。
+//
+
+ErrCode
+Animation::setAnimationCallback(
+        LpFnAnimationStep   const   fnCb)
+{
+    this->m_pfnStepAnim = fnCb;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    描画を行うウィンドウを指定する。
+//
+
+ErrCode
+Animation::setAnimationWindow(
+        const   HWND    hWnd)
+{
+    this->m_hTargetWnd  = hWnd;
+    return ( ERR_SUCCESS );
 }
 
 //========================================================================

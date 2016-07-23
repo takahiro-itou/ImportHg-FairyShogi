@@ -67,6 +67,13 @@ private:
     **/
     typedef     int                         TWaitTime;
 
+    /**
+    **    アニメーションステップ時のコールバック関数。
+    **/
+    typedef     Boolean (* LpFnAnimationStep)(
+            const   HWND    hWnd,
+            Animation     & objAnim);
+
     struct  AnimationEntry
     {
         BitmapCoord             anmDestX;
@@ -217,6 +224,32 @@ public:
     Boolean
     getAnimationFlag()  const;
 
+    //----------------------------------------------------------------
+    /**   アニメーション実行中のコールバック関数を指定する。
+    **
+    **  @param [in] fnCb    コールバック関数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setAnimationCallback(
+            LpFnAnimationStep   const   fnCb);
+
+    //----------------------------------------------------------------
+    /**   描画を行うウィンドウを指定する。
+    **
+    **  @param [in] hWnd    ウィンドウハンドル。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setAnimationWindow(
+            const   HWND    hWnd);
+
 //========================================================================
 //
 //    For Internal Use Only.
@@ -237,6 +270,16 @@ private:
     **    アニメーションの現在の状態を管理するデータ。
     **/
     AnimationEntry      m_animFirst;
+
+    /**
+    **    描画を行う対象のウィンドウハンドル。
+    **/
+    HWND                m_hTargetWnd;
+
+    /**
+    **    アニメーション実行中のコールバック関数。
+    **/
+    LpFnAnimationStep   m_pfnStepAnim;
 
 //========================================================================
 //
