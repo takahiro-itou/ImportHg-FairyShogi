@@ -162,6 +162,20 @@ Animation::enterAnimationLoop()
 Boolean
 Animation::stepAnimation()
 {
+    if ( (this->m_blnAnimFlag) == BOOL_FALSE ) {
+        //  アニメーションが停止中のときは何もしない。  //
+        return( BOOL_FALSE );
+    }
+
+    this->m_animFirst.anmCurX   +=  (this->m_animFirst.bcStepX);
+    this->m_animFirst.anmCurY   +=  (this->m_animFirst.bcStepY);
+
+    if ( (-- (this->m_animFirst.cntSteps)) >= 0 ) {
+        return ( BOOL_TRUE );
+    }
+
+    //  アニメーションが終了した。  //
+    this->m_blnAnimFlag = BOOL_FALSE;
     return ( BOOL_FALSE );
 }
 
