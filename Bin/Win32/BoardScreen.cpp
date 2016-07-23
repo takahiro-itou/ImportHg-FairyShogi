@@ -88,6 +88,7 @@ s_tblHandSelY[Common::NUM_HAND_TYPES]  =  {
 
 BoardScreen::BoardScreen()
     : Super(),
+      m_ptrApp(nullptr),
       m_gcGameCtrl(),
       m_bsState(BSLS_NOTHING),
       m_bcSelX(-1),
@@ -123,6 +124,7 @@ BoardScreen::BoardScreen(
         const  WindowCoord  wcWidth,
         const  WindowCoord  wcHeight)
     : Super(wcLeft, wcTop, wcWidth, wcHeight),
+      m_ptrApp(nullptr),
       m_gcGameCtrl(),
       m_bsState(BSLS_NOTHING),
       m_bcSelX(-1),
@@ -730,6 +732,18 @@ BoardScreen::updateLastActionHighLights(
 //
 //    Accessors.
 //
+
+//----------------------------------------------------------------
+//    アプリケーションインスタンスを設定する。
+//
+
+ErrCode
+BoardScreen::setApplicationInstance(
+        FairyShogiApp  &objApp)
+{
+    this->m_ptrApp  = &objApp;
+    return ( ERR_SUCCESS );
+}
 
 //----------------------------------------------------------------
 //    思考エンジンの番号を取得する。
