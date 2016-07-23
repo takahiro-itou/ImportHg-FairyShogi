@@ -82,7 +82,21 @@ ErrCode
 Animation::drawAnimation(
         Interface::PixelMatrix  &imgDest)
 {
-    return ( ERR_FAILURE );
+    if ( (this->m_blnAnimFlag) == BOOL_FALSE ) {
+        //  アニメーションが停止中のときは何もしない。  //
+        return( ERR_SUCCESS );
+    }
+
+    imgDest.copyRectangle(
+            (this->m_animFirst.anmCurX) / (this->m_animFirst.bcScaleX),
+            (this->m_animFirst.anmCurY) / (this->m_animFirst.bcScaleY),
+            (this->m_animFirst.srcImgW),
+            (this->m_animFirst.srcImgH),
+            (* this->m_animFirst.srcImage),
+            (this->m_animFirst.srcImgX),
+            (this->m_animFirst.srcImgY) );
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
