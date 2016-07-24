@@ -47,6 +47,15 @@ class  Animation
 //
 //    Internal Type Definitions.
 //
+public:
+
+    /**
+    **    アニメーションの速度を制御する型。
+    **
+    **  各ステップの間の待機時間を指定する。
+    **/
+    typedef     int                         TWaitTime;
+
 private:
 
     /**   ビットマップイメージクラス。  **/
@@ -59,13 +68,6 @@ private:
     **    アニメーションのステップ数をカウントする型。
     **/
     typedef     int                         TStepCount;
-
-    /**
-    **    アニメーションの速度を制御する型。
-    **
-    **  各ステップの間の待機時間を指定する。
-    **/
-    typedef     int                         TWaitTime;
 
     /**
     **    アニメーションステップ時のコールバック関数。

@@ -701,6 +701,11 @@ onPaint(
 
     if ( objAnim.getAnimationFlag() ) {
         objAnim.stepAnimation();
+        const  Win32::Animation::TWaitTime
+            msWait  = objAnim.getWaitMilliSeconds();
+        if ( msWait > 0 ) {
+            ::Sleep(msWait);
+        }
     }
 
     return ( 0 );

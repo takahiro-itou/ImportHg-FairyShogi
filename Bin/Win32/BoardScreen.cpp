@@ -621,7 +621,7 @@ BoardScreen::playForward(
             (* this->m_brPiece),
             ((actFwd.fpAfter - 1) % 14) * SQUARE_WIDTH,
             ((actFwd.fpAfter - 1) / 14) * SQUARE_HEIGHT,
-            SQUARE_WIDTH,   SQUARE_HEIGHT,  16,  100);
+            SQUARE_WIDTH,   SQUARE_HEIGHT,  32,  0);
     objAnim.enterAnimationLoop();
 
     giGame.playForward(actFwd);
