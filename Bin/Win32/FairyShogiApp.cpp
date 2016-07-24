@@ -146,8 +146,8 @@ FairyShogiApp::callbackAnimationStep(
         const   HWND    hWnd,
         Animation     & objAnim)
 {
-    ::InvalidateRect(hWnd, NULL, FALSE);
-    ::UpdateWindow  (hWnd);
+    (void)(objAnim);
+    (void)(hWnd);
 
     return ( BOOL_TRUE );
 }
