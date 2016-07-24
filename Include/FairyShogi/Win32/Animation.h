@@ -250,6 +250,14 @@ public:
     setAnimationWindow(
             const   HWND    hWnd);
 
+    //----------------------------------------------------------------
+    /**   ステップ間の待機時間を取得する。
+    **
+    **  @return     待機時間をミリ秒単位で返す。
+    **/
+    TWaitTime
+    getWaitMilliSeconds()  const;
+
 //========================================================================
 //
 //    For Internal Use Only.

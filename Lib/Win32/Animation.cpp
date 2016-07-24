@@ -254,6 +254,16 @@ Animation::setAnimationWindow(
     return ( ERR_SUCCESS );
 }
 
+//----------------------------------------------------------------
+//    ステップ間の待機時間を取得する。
+//
+
+Animation::TWaitTime
+Animation::getWaitMilliSeconds()  const
+{
+    return ( this->m_animFirst.msWaits );
+}
+
 //========================================================================
 //
 //    For Internal Use Only.
