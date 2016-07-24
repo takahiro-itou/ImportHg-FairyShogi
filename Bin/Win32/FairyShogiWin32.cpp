@@ -26,6 +26,7 @@
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Common/MersenneTwister.h"
+#include    "FairyShogi/Win32/Animation.h"
 #include    "FairyShogi/Win32/BitmapResource.h"
 #include    "FairyShogi/Win32/MatchDialog.h"
 
@@ -831,6 +832,10 @@ WinMain(
     if ( hWnd == 0 ) {
         return ( 0 );
     }
+
+    //  アニメーションインスタンスを設定する。  //
+    Win32::Animation  & objAnim = g_theApp.getAnimationManager();
+    objAnim.setAnimationWindow(hWnd);
 
     //  この瞬間に画像を準備する。  //
     const  HDC  hDC = ::GetDC(hWnd);
