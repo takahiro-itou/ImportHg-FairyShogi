@@ -139,6 +139,19 @@ FairyShogiApp::loadBitmapResources(
 //
 
 //----------------------------------------------------------------
+//    アニメーションを管理するインスタンスを取得する。
+//
+
+Animation  &
+FairyShogiApp::getAnimationManager()  const
+{
+    if ( (this->m_manAnim) == (nullptr) ) {
+        throw  std::logic_error("Null Pointer Exception.");
+    }
+    return ( *(this->m_manAnim) );
+}
+
+//----------------------------------------------------------------
 //    盤面の画像リソースを取得する。
 //
 
