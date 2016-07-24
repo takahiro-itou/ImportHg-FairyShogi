@@ -692,8 +692,16 @@ onPaint(
                 0, 0);
     }
 
+    //  アニメーションを描画する。      //
+    Win32::Animation  & objAnim = g_theApp.getAnimationManager();
+    objAnim.drawAnimation(g_imgScreen);
+
     //  描画した内容を画面に表示する。  //
     g_imgScreen.drawBitmap(hDC, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    if ( objAnim.getAnimationFlag() ) {
+        objAnim.stepAnimation();
+    }
 
     return ( 0 );
 }

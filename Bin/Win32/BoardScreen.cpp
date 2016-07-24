@@ -21,6 +21,7 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/HelperMacros.h"
+#include    "FairyShogi/Win32/Animation.h"
 #include    "FairyShogi/Win32/BitmapResource.h"
 
 #include    <iostream>
@@ -609,6 +610,20 @@ BoardScreen::playForward(
     BoardScreen::GameInterface  &
             giGame  =  this->getGameController();
 
+    updateLastActionHighLights(actFwd);
+
+    Animation  &objAnim = this->m_ptrApp->getAnimationManager();
+    objAnim.enqueueAnimation(
+            (this->m_bcLastSrcX * SQUARE_WIDTH) + LEFT_MARGIN,
+            (this->m_bcLastSrcY * SQUARE_HEIGHT) + TOP_MARGIN,
+            (this->m_bcLastTrgX * SQUARE_WIDTH) + LEFT_MARGIN,
+            (this->m_bcLastTrgY * SQUARE_HEIGHT) + TOP_MARGIN,
+            (* this->m_brPiece),
+            ((actFwd.fpAfter - 1) % 14) * SQUARE_WIDTH,
+            ((actFwd.fpAfter - 1) % 14) * SQUARE_HEIGHT,
+            SQUARE_WIDTH,   SQUARE_HEIGHT,  16,  100);
+    objAnim.enterAnimationLoop();
+
     giGame.playForward(actFwd);
     giGame.setPlayerToNext();
     giGame.setConstraint(Common::DICE_DEFAULT_VALUE);
@@ -633,9 +648,6 @@ BoardScreen::playForward(
 
     //  強調表示を行うための情報を更新する。    //
     updateHighLightInfo();
-    if ( !(actList.empty()) ) {
-        updateLastActionHighLights(actList.back());
-    }
 
     return ( ERR_SUCCESS );
 }
