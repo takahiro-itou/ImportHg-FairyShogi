@@ -620,7 +620,7 @@ BoardScreen::playForward(
             (this->m_bcLastTrgY * SQUARE_HEIGHT) + TOP_MARGIN,
             (* this->m_brPiece),
             ((actFwd.fpAfter - 1) % 14) * SQUARE_WIDTH,
-            ((actFwd.fpAfter - 1) % 14) * SQUARE_HEIGHT,
+            ((actFwd.fpAfter - 1) / 14) * SQUARE_HEIGHT,
             SQUARE_WIDTH,   SQUARE_HEIGHT,  16,  100);
     objAnim.enterAnimationLoop();
 
