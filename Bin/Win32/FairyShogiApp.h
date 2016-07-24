@@ -108,6 +108,18 @@ public:
 //
 //    Public Member Functions.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   アニメーションループのコールバック関数。
+    **
+    **  @param [in] hWnd
+    **  @param      objAnim
+    **/
+    static  Boolean
+    callbackAnimationStep(
+            const   HWND    hWnd,
+            Animation     & objAnim);
 
 //========================================================================
 //

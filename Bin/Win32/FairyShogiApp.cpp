@@ -49,6 +49,10 @@ FairyShogiApp::FairyShogiApp()
       m_brIcons(nullptr),
       m_manAnim(nullptr)
 {
+    Animation  *   ptrAnim  = new  Animation;
+    ptrAnim->setAnimationCallback(
+            & FairyShogiApp::callbackAnimationStep );
+    this->m_manAnim = ptrAnim;
 }
 
 //----------------------------------------------------------------
@@ -132,6 +136,21 @@ FairyShogiApp::loadBitmapResources(
 //
 //    Public Member Functions.
 //
+
+//----------------------------------------------------------------
+//    アニメーションループのコールバック関数。
+//
+
+Boolean
+FairyShogiApp::callbackAnimationStep(
+        const   HWND    hWnd,
+        Animation     & objAnim)
+{
+    ::InvalidateRect(hWnd, NULL, FALSE);
+    ::UpdateWindow  (hWnd);
+
+    return ( BOOL_TRUE );
+}
 
 //========================================================================
 //
