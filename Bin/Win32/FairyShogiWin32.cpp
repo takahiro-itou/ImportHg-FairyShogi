@@ -262,9 +262,9 @@ rollDice(
 
     if ( giGame.isCheckState(giGame.getCurrentPlayer()) ) {
         scrBoard.setConstraint(Common::DICE_ANY_MOVE);
+        g_theApp.showCheckStateMessage();
         ::InvalidateRect(hWnd, NULL, FALSE);
         ::UpdateWindow(hWnd);
-        ::MessageBox(hWnd, "CHECK", NULL, MB_OK);
     } else if ( pidSel == 7 ) {
         //  乱数を初期化する。  //
         g_rndGen.setSeedValue(::time(nullptr));
