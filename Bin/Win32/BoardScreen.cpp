@@ -188,6 +188,17 @@ BoardScreen::drawScreenLayer(
     memset(&vb, 0, sizeof(vb));
     giGame.writeToViewBuffer(vb);
 
+    //  現在の局面が、王手または詰みの場合は、  //
+    //  それを画面の最下部に表示する。          //
+    const  PlayerIndex  pidCur  = giGame.getCurrentPlayer();
+    if ( giGame.isCheckState(pidCur) ) {
+        bmpTrg->copyRectangle(
+                LEFT_MARGIN,  SQUARE_HEIGHT * 7 + TOP_MARGIN,
+                64 * 5, 64 * 1,
+                this->m_ptrApp->getIconsBitmap(),
+                0, 64 * 2);
+    }
+
     //  直前の着手を表示する。  //
     if ( (this->m_bcLastSrcX >= 0) && (this->m_bcLastSrcY >= 0) ) {
         sx  = ((this->m_bcLastSrcX) * SQUARE_WIDTH) + LEFT_MARGIN;
