@@ -172,6 +172,9 @@ ErrCode
 BoardScreen::drawScreenLayer(
         BitmapImage  *  bmpTrg)  const
 {
+    const  BoardScreen::GameInterface  &
+        giGame  =  this->getGameController();
+
     int     sx, sy, dx, dy;
 
     //  背景をコピーする。      //
@@ -183,7 +186,7 @@ BoardScreen::drawScreenLayer(
 
     Common::ViewBuffer  vb;
     memset(&vb, 0, sizeof(vb));
-    this->m_gcGameCtrl.writeToViewBuffer(vb);
+    giGame.writeToViewBuffer(vb);
 
     //  直前の着手を表示する。  //
     if ( (this->m_bcLastSrcX >= 0) && (this->m_bcLastSrcY >= 0) ) {
