@@ -192,11 +192,14 @@ BoardScreen::drawScreenLayer(
     //  それを画面の最下部に表示する。          //
     const  PlayerIndex  pidCur  = giGame.getCurrentPlayer();
     if ( giGame.isCheckState(pidCur) ) {
+        if ( ! this->m_ptrApp->getAnimationManager().getAnimationFlag() )
+        {
         bmpTrg->copyRectangle(
                 LEFT_MARGIN,  SQUARE_HEIGHT * 7 + TOP_MARGIN,
                 64 * 5, 64 * 1,
                 this->m_ptrApp->getIconsBitmap(),
                 0, 64 * 2);
+        }
     }
 
     //  直前の着手を表示する。  //
