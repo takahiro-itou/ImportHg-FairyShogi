@@ -666,6 +666,14 @@ BoardScreen::playForward(
     //  強調表示を行うための情報を更新する。    //
     updateHighLightInfo();
 
+    //  詰み、及び、王手の判定を行う。  //
+    const  PlayerIndex  piNext  = giGame.getCurrentPlayer();
+    if ( giGame.isCheckMateState(piNext) ) {
+        this->m_ptrApp->showCheckMateStateMessage();
+    } else if ( giGame.isCheckState(piNext) ) {
+        this->m_ptrApp->showCheckStateMessage();
+    }
+
     return ( ERR_SUCCESS );
 }
 
