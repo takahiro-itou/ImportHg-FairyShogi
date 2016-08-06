@@ -173,6 +173,17 @@ GameController::computeBestAction(
 }
 
 //----------------------------------------------------------------
+//    玉将が詰んでいるかどうかを判定する。
+//
+
+Boolean
+GameController::isCheckMateState(
+        const  PlayerIndex  dPlayer)  const
+{
+    return ( this->m_gcBoard.isCheckMateState(dPlayer) );
+}
+
+//----------------------------------------------------------------
 //    王手が掛かっているかどうかを判定する。
 //
 

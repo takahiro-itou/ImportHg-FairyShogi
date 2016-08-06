@@ -144,6 +144,17 @@ public:
             ActionView  &actRet);
 
     //----------------------------------------------------------------
+    /**   玉将が詰んでいるかどうかを判定する。
+    **
+    **  @param [in] dPlayer   判定を行うプレーヤー。
+    **  @retval     BOOL_TRUE     チェックメイト。
+    **  @retval     BOOL_FALSE    それ以外。
+    **/
+    Boolean
+    isCheckMateState(
+            const  PlayerIndex  dPlayer)  const;
+
+    //----------------------------------------------------------------
     /**   王手が掛かっているかどうかを判定する。
     **
     **  @param [in] dPlayer   判定を行うプレーヤー。
