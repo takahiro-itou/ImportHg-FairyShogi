@@ -265,6 +265,16 @@ FairyShogiApp::getAnimationManager()  const
 }
 
 //----------------------------------------------------------------
+//    現在アニメーションが実行中か確認する。
+//
+
+Boolean
+FairyShogiApp::isAnimationRunning()  const
+{
+    return ( getAnimationManager().getAnimationFlag() );
+}
+
+//----------------------------------------------------------------
 //    盤面の画像リソースを取得する。
 //
 
