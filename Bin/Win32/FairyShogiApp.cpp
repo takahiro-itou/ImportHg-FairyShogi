@@ -186,7 +186,6 @@ FairyShogiApp::showCheckMateStateMessage()
             MSG_MATE_IMG_LEFT,  MSG_MATE_IMG_TOP,
             MSG_MATE_WIDTH,     MSG_MATE_HEIGHT,
             16,  10);
-    objAnim.enterAnimationLoop();
 
     objAnim.enqueueAnimation(
             ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
@@ -195,7 +194,6 @@ FairyShogiApp::showCheckMateStateMessage()
             MSG_MATE_IMG_LEFT,  MSG_MATE_IMG_TOP,
             MSG_MATE_WIDTH,     MSG_MATE_HEIGHT,
             3,  100);
-    objAnim.enterAnimationLoop();
 
     objAnim.enqueueAnimation(
             ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
@@ -204,6 +202,7 @@ FairyShogiApp::showCheckMateStateMessage()
             MSG_MATE_IMG_LEFT,  MSG_MATE_IMG_TOP,
             MSG_MATE_WIDTH,     MSG_MATE_HEIGHT,
             16,  10);
+
     objAnim.enterAnimationLoop();
 
     return ( ERR_SUCCESS );
