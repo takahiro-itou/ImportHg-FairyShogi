@@ -206,6 +206,11 @@ startComputerEngine(
         const  HWND     hWnd,
         const  Boolean  fAuto)
 {
+    if ( g_theApp.isAnimationRunning() ) {
+        //  アニメーション中なので、起動してはいけない。    //
+        return ( BOOL_FALSE );
+    }
+
     Win32::BoardScreen  & scrBoard  = g_scrBoard;
     Win32::BoardScreen::GameInterface  &
             giGame  = scrBoard.getGameController();
@@ -256,6 +261,11 @@ rollDice(
         const  HWND     hWnd,
         const  int      pidSel)
 {
+    if ( g_theApp.isAnimationRunning() ) {
+        //  アニメーション中なので、振ってはいけない。  //
+        return ( BOOL_FALSE );
+    }
+
     Win32::BoardScreen  & scrBoard  = g_scrBoard;
     Win32::BoardScreen::GameInterface  &
             giGame  = scrBoard.getGameController();
@@ -378,6 +388,11 @@ onLButtonDown(
 {
     UTL_HELP_UNUSED_ARGUMENT(fwKeys);
 
+    if ( g_theApp.isAnimationRunning() ) {
+        //  アニメーション中なので、マウス操作を無視する。  //
+        return ( 0 );
+    }
+
     Win32::ScreenLayer::EventResult
             evtRet  = Win32::ScreenLayer::EH_RESULT_SUCCESS;
 
@@ -447,6 +462,11 @@ onLButtonUp(
 
     g_hCapture  = (NULL);
     ::ReleaseCapture();
+
+    if ( g_theApp.isAnimationRunning() ) {
+        //  アニメーション中なので、マウス操作を無視する。  //
+        return ( 0 );
+    }
 
     Win32::ScreenLayer::EventResult
             evtRet  = Win32::ScreenLayer::EH_RESULT_SUCCESS;
