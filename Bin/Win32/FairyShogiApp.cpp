@@ -35,7 +35,7 @@ CONSTEXPR_VAR   int     MSG_CHECK_WIDTH         =  64 * 5;
 CONSTEXPR_VAR   int     MSG_CHECK_HEIGHT        =  64 * 1;
 
 CONSTEXPR_VAR   int     MSG_MATE_IMG_LEFT       =   0;
-CONSTEXPR_VAR   int     MSG_MATE_IMG_TOP        =  64 * 2;
+CONSTEXPR_VAR   int     MSG_MATE_IMG_TOP        =  64 * 3;
 CONSTEXPR_VAR   int     MSG_MATE_WIDTH          =  64 * 5;
 CONSTEXPR_VAR   int     MSG_MATE_HEIGHT         =  64 * 2;
 
