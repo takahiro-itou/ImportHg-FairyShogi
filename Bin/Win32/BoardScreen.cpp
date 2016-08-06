@@ -190,15 +190,20 @@ BoardScreen::drawScreenLayer(
 
     //  現在の局面が、王手または詰みの場合は、  //
     //  それを画面の最下部に表示する。          //
-    const  PlayerIndex  pidCur  = giGame.getCurrentPlayer();
-    if ( giGame.isCheckState(pidCur) ) {
-        if ( ! this->m_ptrApp->getAnimationManager().getAnimationFlag() )
-        {
-        bmpTrg->copyRectangle(
-                LEFT_MARGIN,  SQUARE_HEIGHT * 7 + TOP_MARGIN,
-                64 * 5, 64 * 1,
-                this->m_ptrApp->getIconsBitmap(),
-                0, 64 * 2);
+    if ( ! this->m_ptrApp->isAnimationRunning() ) {
+        const  PlayerIndex  pidCur  = giGame.getCurrentPlayer();
+        if ( giGame.isCheckMateState(pidCur) ) {
+            bmpTrg->copyRectangle(
+                    LEFT_MARGIN,  SQUARE_HEIGHT * 7 + TOP_MARGIN,
+                    64 * 5, 64 * 2,
+                    this->m_ptrApp->getIconsBitmap(),
+                    0, 64 * 3);
+        } else if ( giGame.isCheckState(pidCur) ) {
+            bmpTrg->copyRectangle(
+                    LEFT_MARGIN,  SQUARE_HEIGHT * 7 + TOP_MARGIN,
+                    64 * 5, 64 * 1,
+                    this->m_ptrApp->getIconsBitmap(),
+                    0, 64 * 2);
         }
     }
 
