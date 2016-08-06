@@ -40,6 +40,7 @@ namespace  Win32  {
 Animation::Animation()
     : m_blnAnimFlag(BOOL_FALSE),
       m_animFirst  (),
+      m_animQueue  (),
       m_hTargetWnd (NULL),
       m_pfnStepAnim(nullptr)
 {
@@ -138,7 +139,7 @@ Animation::enqueueAnimation(
     anmEnt.cntSteps = nSteps;
     anmEnt.msWaits  = msWait;
 
-    ::memcpy( &(this->m_animFirst), &(anmEnt), sizeof(anmEnt) );
+    this->m_animQueue.push(anmEnt);
 
     return ( ERR_SUCCESS );
 }
@@ -155,7 +156,16 @@ Animation::enterAnimationLoop()
         return ( ERR_FAILURE );
     }
 
+    if ( this->m_animQueue.empty() ) {
+        //  アニメーションキューが空だった、何もできない。  //
+        return ( ERR_FAILURE );
+    }
+
     const  HWND         hTrgWnd = (this->m_hTargetWnd);
+
+    //  キューの先頭のエントリを取り出す。  //
+    this->m_animFirst   = this->m_animQueue.front();
+    this->m_animQueue.pop();
 
     this->m_blnAnimFlag = BOOL_TRUE;
 
@@ -205,9 +215,17 @@ Animation::stepAnimation()
         return ( BOOL_TRUE );
     }
 
-    //  アニメーションが終了した。  //
-    this->m_blnAnimFlag = BOOL_FALSE;
-    return ( BOOL_FALSE );
+    //  アニメーションフレームが終了した。  //
+    if ( this->m_animQueue.empty() ) {
+        //  次のフレームも存在しないので、すべて終了した。  //
+        this->m_blnAnimFlag = BOOL_FALSE;
+        return ( BOOL_FALSE );
+    }
+
+    //  次のフレームを実行する準備をする。  //
+    this->m_animFirst   = this->m_animQueue.front();
+    this->m_animQueue.pop();
+    return ( BOOL_TRUE );
 }
 
 //========================================================================

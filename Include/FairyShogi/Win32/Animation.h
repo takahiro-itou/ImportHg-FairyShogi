@@ -29,6 +29,8 @@
 #    define     FAIRYSHOGI_WIN32_INCLUDED_SYS_WINDOWS_H
 #endif
 
+#include    <queue>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Win32  {
 
@@ -271,6 +273,10 @@ public:
 //
 private:
 
+    typedef     std::queue<AnimationEntry>      AnimationQueue;
+
+private:
+
     /**
     **    アニメーションが実行中か停止中かを示すフラグ。
     **/
@@ -280,6 +286,11 @@ private:
     **    アニメーションの現在の状態を管理するデータ。
     **/
     AnimationEntry      m_animFirst;
+
+    /**
+    **    アニメーションキュー。
+    **/
+    AnimationQueue      m_animQueue;
 
     /**
     **    描画を行う対象のウィンドウハンドル。
