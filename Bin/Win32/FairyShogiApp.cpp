@@ -30,19 +30,24 @@ namespace  Win32  {
 namespace  {
 
 CONSTEXPR_VAR   int     MSG_CHECK_IMG_LEFT      =   0;
-CONSTEXPR_VAR   int     MSG_CHECK_IMG_TOP       =  64 * 2;
-CONSTEXPR_VAR   int     MSG_CHECK_WIDTH         =  64 * 5;
-CONSTEXPR_VAR   int     MSG_CHECK_HEIGHT        =  64 * 1;
+CONSTEXPR_VAR   int     MSG_CHECK_IMG_TOP       = 128;
+CONSTEXPR_VAR   int     MSG_CHECK_WIDTH         = 320;
+CONSTEXPR_VAR   int     MSG_CHECK_HEIGHT        =  64;
 
 CONSTEXPR_VAR   int     MSG_MATE_IMG_LEFT       =   0;
-CONSTEXPR_VAR   int     MSG_MATE_IMG_TOP        =  64 * 3;
-CONSTEXPR_VAR   int     MSG_MATE_WIDTH          =  64 * 5;
-CONSTEXPR_VAR   int     MSG_MATE_HEIGHT         =  64 * 2;
+CONSTEXPR_VAR   int     MSG_MATE_IMG_TOP        = 192;
+CONSTEXPR_VAR   int     MSG_MATE_WIDTH          = 320;
+CONSTEXPR_VAR   int     MSG_MATE_HEIGHT         = 128;
 
-CONSTEXPR_VAR   int     ANIMATION_LEFT          =  64 * 1;
-CONSTEXPR_VAR   int     ANIMATION_START_TOP     =  64 * 1;
-CONSTEXPR_VAR   int     ANIMATION_BLINK_TOP     =  64 * 4;
-CONSTEXPR_VAR   int     ANIMATION_END_TOP       =  64 * 7;
+CONSTEXPR_VAR   int     CHECK_ANIM_LEFT         =  64;
+CONSTEXPR_VAR   int     CHECK_ANIM_START_TOP    =  64;
+CONSTEXPR_VAR   int     CHECK_ANIM_BLINK_TOP    = 256;
+CONSTEXPR_VAR   int     CHECK_ANIM_END_TOP      = 448;
+
+CONSTEXPR_VAR   int     MATE_ANIM_LEFT          =  64;
+CONSTEXPR_VAR   int     MATE_ANIM_START_TOP     =  64;
+CONSTEXPR_VAR   int     MATE_ANIM_BLINK_TOP     = 224;
+CONSTEXPR_VAR   int     MATE_ANIM_END_TOP       = 448;
 
 }
 
@@ -181,24 +186,24 @@ FairyShogiApp::showCheckMateStateMessage()
     Animation  &objAnim = getAnimationManager();
 
     objAnim.enqueueAnimation(
-            ANIMATION_LEFT,  ANIMATION_START_TOP,
-            ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
+            MATE_ANIM_LEFT,  MATE_ANIM_START_TOP,
+            MATE_ANIM_LEFT,  MATE_ANIM_BLINK_TOP,
             getIconsBitmap(),
             MSG_MATE_IMG_LEFT,  MSG_MATE_IMG_TOP,
             MSG_MATE_WIDTH,     MSG_MATE_HEIGHT,
             16,  10);
 
     objAnim.enqueueAnimation(
-            ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
-            ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
+            MATE_ANIM_LEFT,  MATE_ANIM_BLINK_TOP,
+            MATE_ANIM_LEFT,  MATE_ANIM_BLINK_TOP,
             getIconsBitmap(),
             MSG_MATE_IMG_LEFT,  MSG_MATE_IMG_TOP,
             MSG_MATE_WIDTH,     MSG_MATE_HEIGHT,
             3,  100);
 
     objAnim.enqueueAnimation(
-            ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
-            ANIMATION_LEFT,  ANIMATION_END_TOP,
+            MATE_ANIM_LEFT,  MATE_ANIM_BLINK_TOP,
+            MATE_ANIM_LEFT,  MATE_ANIM_END_TOP,
             getIconsBitmap(),
             MSG_MATE_IMG_LEFT,  MSG_MATE_IMG_TOP,
             MSG_MATE_WIDTH,     MSG_MATE_HEIGHT,
@@ -219,24 +224,24 @@ FairyShogiApp::showCheckStateMessage()
     Animation  &objAnim = getAnimationManager();
 
     objAnim.enqueueAnimation(
-            ANIMATION_LEFT,  ANIMATION_START_TOP,
-            ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
+            CHECK_ANIM_LEFT,  CHECK_ANIM_START_TOP,
+            CHECK_ANIM_LEFT,  CHECK_ANIM_BLINK_TOP,
             getIconsBitmap(),
             MSG_CHECK_IMG_LEFT,  MSG_CHECK_IMG_TOP,
             MSG_CHECK_WIDTH,     MSG_CHECK_HEIGHT,
             16,  10);
 
     objAnim.enqueueAnimation(
-            ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
-            ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
+            CHECK_ANIM_LEFT,  CHECK_ANIM_BLINK_TOP,
+            CHECK_ANIM_LEFT,  CHECK_ANIM_BLINK_TOP,
             getIconsBitmap(),
             MSG_CHECK_IMG_LEFT,  MSG_CHECK_IMG_TOP,
             MSG_CHECK_WIDTH,     MSG_CHECK_HEIGHT,
             3,  100);
 
     objAnim.enqueueAnimation(
-            ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
-            ANIMATION_LEFT,  ANIMATION_END_TOP,
+            CHECK_ANIM_LEFT,  CHECK_ANIM_BLINK_TOP,
+            CHECK_ANIM_LEFT,  CHECK_ANIM_END_TOP,
             getIconsBitmap(),
             MSG_CHECK_IMG_LEFT,  MSG_CHECK_IMG_TOP,
             MSG_CHECK_WIDTH,     MSG_CHECK_HEIGHT,
