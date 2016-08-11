@@ -179,6 +179,7 @@ ErrCode
 FairyShogiApp::showCheckMateStateMessage()
 {
     Animation  &objAnim = getAnimationManager();
+
     objAnim.enqueueAnimation(
             ANIMATION_LEFT,  ANIMATION_START_TOP,
             ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
@@ -216,6 +217,7 @@ ErrCode
 FairyShogiApp::showCheckStateMessage()
 {
     Animation  &objAnim = getAnimationManager();
+
     objAnim.enqueueAnimation(
             ANIMATION_LEFT,  ANIMATION_START_TOP,
             ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
@@ -223,7 +225,6 @@ FairyShogiApp::showCheckStateMessage()
             MSG_CHECK_IMG_LEFT,  MSG_CHECK_IMG_TOP,
             MSG_CHECK_WIDTH,     MSG_CHECK_HEIGHT,
             16,  10);
-    objAnim.enterAnimationLoop();
 
     objAnim.enqueueAnimation(
             ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
@@ -232,7 +233,6 @@ FairyShogiApp::showCheckStateMessage()
             MSG_CHECK_IMG_LEFT,  MSG_CHECK_IMG_TOP,
             MSG_CHECK_WIDTH,     MSG_CHECK_HEIGHT,
             3,  100);
-    objAnim.enterAnimationLoop();
 
     objAnim.enqueueAnimation(
             ANIMATION_LEFT,  ANIMATION_BLINK_TOP,
@@ -241,6 +241,7 @@ FairyShogiApp::showCheckStateMessage()
             MSG_CHECK_IMG_LEFT,  MSG_CHECK_IMG_TOP,
             MSG_CHECK_WIDTH,     MSG_CHECK_HEIGHT,
             16,  10);
+
     objAnim.enterAnimationLoop();
 
     return ( ERR_SUCCESS );
