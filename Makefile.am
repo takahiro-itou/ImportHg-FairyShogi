@@ -3,7 +3,8 @@
 ##    List of Directories.
 ##
 
-SUBDIRS  =  Lib  Bin
+SUBDIRS         =  Lib  Bin
+DIST_SUBDIRS    =  CMake
 
 ##
 ##    List of Installs.
