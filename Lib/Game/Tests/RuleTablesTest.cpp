@@ -47,8 +47,8 @@ class  RuleTablesTest : public  TestFixture
     CPPUNIT_TEST_SUITE_END();
 
 public:
-    virtual  void   setUp()     OVERRIDE    { }
-    virtual  void   tearDown()  OVERRIDE    { }
+    virtual  void   setUp()     override    { }
+    virtual  void   tearDown()  override    { }
 
 private:
     void  testExpandDirTable01();
