@@ -31,7 +31,7 @@ dnl
 dnl   適当なバージョンの automake を設定
 dnl
 
-m4_include([M4/InitAutomake.m4])
+m4_include([.M4/InitAutomake.m4])
 
 dnl
 dnl   プロジェクトの基本設定。
@@ -110,7 +110,7 @@ dnl
 dnl   Check Extra Compiler/Linker Options.
 dnl
 
-m4_include([M4/CheckExtraFlags.m4])
+m4_include([.M4/CheckExtraFlags.m4])
 
 MYAC_CHECK_EXTRA_COMPILER_OPTION(
     [FAIRYSHOGI_CNF_CFLAGS_MWINDOWS], [mwindows], [-mwindows])
@@ -124,16 +124,16 @@ dnl
 dnl   Check Compiler Features.
 dnl
 
-m4_include([M4/CheckConstExpr.m4])
+m4_include([.M4/CheckConstExpr.m4])
 AC_SUBST(FAIRYSHOGI_CNF_CONSTEXPR)
 
-m4_include([M4/CheckNullPtr.m4])
+m4_include([.M4/CheckNullPtr.m4])
 AC_SUBST(FAIRYSHOGI_CNF_NULLPTR)
 
-m4_include([M4/CheckOverride.m4])
+m4_include([.M4/CheckOverride.m4])
 AC_SUBST(FAIRYSHOGI_CNF_OVERRIDE)
 
-m4_include([M4/CheckStaticAssert.m4])
+m4_include([.M4/CheckStaticAssert.m4])
 AC_SUBST(FAIRYSHOGI_CNF_STATIC_ASSERT)
 
 dnl
@@ -149,7 +149,7 @@ dnl   Additional Packages.
 dnl   外部パッケージの追加
 dnl
 
-m4_include([M4/WithExtLibs.m4])
+m4_include([.M4/WithExtLibs.m4])
 
 MYAC_WITH_EXT_LIB(
     [CPPUNIT], [cppunit], [path to cppunit], [yes],
@@ -169,10 +169,10 @@ dnl   Basic Features.
 dnl
 
 AC_CONFIG_FILES([
+    .CMake/Makefile
     Makefile
     Bin/Makefile
     Bin/Win32/Makefile
-    CMake/Makefile
     Lib/Makefile
     Lib/.Config/Makefile
     Lib/Common/Makefile
