@@ -39,8 +39,8 @@ if [ ${amvermajor} -gt 1 -o ${amverminor} -ge 13 ] ; then
 else
   amtrgver=1.12
 fi
-${RM_F}  M4/InitAutomake.m4
-${LN_H}  M4/InitAutomake.${amtrgver}.m4  M4/InitAutomake.m4
+${RM_F}  .M4/InitAutomake.m4
+${LN_H}  .M4/InitAutomake.${amtrgver}.m4  .M4/InitAutomake.m4
 
 ##
 ##  定数宣言。
