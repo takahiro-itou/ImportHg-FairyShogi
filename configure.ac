@@ -169,10 +169,10 @@ dnl   Basic Features.
 dnl
 
 AC_CONFIG_FILES([
+    .CMake/Makefile
     Makefile
     Bin/Makefile
     Bin/Win32/Makefile
-    CMake/Makefile
     Lib/Makefile
     Lib/.Config/Makefile
     Lib/Common/Makefile
