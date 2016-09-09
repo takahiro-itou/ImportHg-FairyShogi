@@ -4,7 +4,7 @@
 ##
 
 SUBDIRS         =  Lib  Bin
-DIST_SUBDIRS    =  .CMake
+DIST_SUBDIRS    =  .CMake  $(SUBDIRS)
 
 ##
 ##    List of Installs.
