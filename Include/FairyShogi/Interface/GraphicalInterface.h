@@ -93,10 +93,10 @@ public:
     **/
     virtual  ErrCode
     setupMoveActionFromMouse(
-            const  PosCol       xOldCol,
-            const  PosRow       yOldRow,
-            const  PosCol       xNewCol,
-            const  PosRow       yNewRow,
+            const  FileCol      xOldCol,
+            const  RankRow      yOldRow,
+            const  FileCol      xNewCol,
+            const  RankRow      yNewRow,
             PromoteList  *      vProms,
             ActionView   *      ptrAct)  const;
 
@@ -117,8 +117,8 @@ public:
     **/
     virtual  ErrCode
     setupPutActionFromMouse(
-            const  PosCol       xPutCol,
-            const  PosRow       yPutRow,
+            const  FileCol      xPutCol,
+            const  RankRow      yPutRow,
             const  PieceIndex   pHand,
             PromoteList  *      vProms,
             ActionView   *      ptrAct)  const;
@@ -156,10 +156,10 @@ private:
     static  ErrCode
     convertCoordsFromMouse(
             const   ShowCoordFlags  flgShow,
-            const   PosCol          xInCol,
-            const   PosRow          yInRow,
-            PosCol  *   const       ptrCol,
-            PosRow  *   const       ptrRow);
+            const   FileCol         xInCol,
+            const   RankRow         yInRow,
+            FileCol  *  const       ptrCol,
+            RankRow  *  const       ptrRow);
 
 //========================================================================
 //

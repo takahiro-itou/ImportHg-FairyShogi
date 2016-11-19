@@ -323,8 +323,8 @@ BoardState::decodeActionData(
 
 Common::EFieldPiece
 BoardState::decodeFieldPiece(
-        const  PosCol   xCol,
-        const  PosRow   yRow)  const
+        const  FileCol  xCol,
+        const  RankRow  yRow)  const
 {
     return ( s_tblDecodeField[ getFieldPiece(xCol, yRow) ] );
 }
@@ -378,7 +378,7 @@ BoardState::encodeFromViewBuffer(
     //  盤上の駒のデータをコピーする。  //
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
-            const  PosCol   wrtCol  =  (POS_NUM_COLS - 1 - xc);
+            const  FileCol  wrtCol  =  (POS_NUM_COLS - 1 - xc);
             const  PieceIndex   pi  =  bufView.fpBoard[yr][wrtCol];
             curStat.m_bsField[getMatrixPos(xc, yr)]  =  s_tblEncodeField[pi];
         }
@@ -473,8 +473,8 @@ BoardState::isCheckState(
         //  致命的エラー。玉がどこにもいない。  //
         std::cerr   <<  "# FATAL ERROR : No King :"
                     <<  piKing  <<  std::endl;
-        for ( PosRow y = 0; y < POS_NUM_ROWS; ++ y ) {
-            for ( PosCol x = 0; x < POS_NUM_COLS; ++ x ) {
+        for ( RankRow y = 0; y < POS_NUM_ROWS; ++ y ) {
+            for ( FileCol x = 0; x < POS_NUM_COLS; ++ x ) {
                 const  FieldIndex   fi
                     = getMatrixPos(POS_NUM_COLS - 1 - x, y);
                 std::cerr   <<  std::setw(2)
@@ -865,7 +865,7 @@ BoardState::copyToViewBuffer(
     //  盤上の駒のデータをコピーする。  //
     for ( int yr = 0; yr < POS_NUM_ROWS; ++ yr ) {
         for ( int xc = 0; xc < POS_NUM_COLS; ++ xc ) {
-            const  PosCol   wrtCol  =  (POS_NUM_COLS - 1 - xc);
+            const  FileCol  wrtCol  =  (POS_NUM_COLS - 1 - xc);
             const  PieceIndex
                 pi  =  curStat.m_bsField[ getMatrixPos(xc, yr) ];
             bufView.fpBoard[yr][wrtCol] = s_tblDecodeField[pi];
@@ -898,8 +898,8 @@ BoardState::copyToViewBuffer(
 
 PieceIndex
 BoardState::getFieldPiece(
-        const  PosCol   xCol,
-        const  PosRow   yRow)  const
+        const  FileCol  xCol,
+        const  RankRow  yRow)  const
 {
     return ( getFieldPiece(this->m_icState, xCol, yRow) );
 }
@@ -911,8 +911,8 @@ BoardState::getFieldPiece(
 PieceIndex
 BoardState::getFieldPiece(
         const  InternState  &curStat,
-        const  PosCol       xCol,
-        const  PosRow       yRow)
+        const  FileCol      xCol,
+        const  RankRow      yRow)
 {
     return ( curStat.m_bsField[ getMatrixPos(xCol, yRow) ] );
 }
@@ -974,8 +974,8 @@ BoardState::getAttackFromList(
 
 inline  FieldIndex
 BoardState::getMatrixPos(
-        const   PosCol  xCol,
-        const   PosRow  yRow)
+        const  FileCol  xCol,
+        const  RankRow  yRow)
 {
     return ( (xCol * POS_NUM_ROWS) + yRow );
 }
