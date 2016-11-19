@@ -64,7 +64,12 @@ dnl
 dnl   ディレクトリ名。
 dnl
 
-AC_CONFIG_HEADER([Include/.FairyShogi.Config.h:Include/FairyShogi/.Config/Config.h.in])
+m4_include([.M4/ConfigDirectory.m4])
+
+MYAC_CUSTOMIZE_LIBRARY_DIR([Lib])
+MYAC_CUSTOMIZE_BINARY_DIR([Bin])
+MYAC_CUSTOMIZE_INCLUDE_DIR(
+    [Include],  [FairyShogi],  [.Config],  [Config.h])
 
 dnl----------------------------------------------------------------
 dnl
@@ -169,10 +174,7 @@ dnl   Linker Scripts.
 dnl   リンカスクリプトを生成する。
 dnl
 
-AC_CONFIG_FILES([Lib/libfsgEngine.a:Lib/.LinkerScript/fsgEngine.in])
-AC_CONFIG_FILES([Lib/libfsgGame.a:Lib/.LinkerScript/fsgGame.in])
-AC_CONFIG_FILES([Lib/libfsgInterface.a:Lib/.LinkerScript/fsgInterface.in])
-AC_CONFIG_FILES([Lib/libfsgWin32.a:Lib/.LinkerScript/fsgWin32.in])
+m4_include([.M4/LinkerScripts.m4])
 
 dnl----------------------------------------------------------------
 dnl
