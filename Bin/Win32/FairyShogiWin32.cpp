@@ -928,7 +928,13 @@ WinMain(
     ::ReleaseDC(hWnd, hDC);
 
     //  グローバル変数を初期化する。    //
+#if defined( _DEBUG )
+    //  デバッグ版は乱数のシードを固定値で初期化する。  //
     g_rndGen.setSeedValue(13579);
+#else
+    //  リリース版は乱数のシードを時刻で初期化する。    //
+    g_rndGen.setSeedValue(::time(nullptr));
+#endif
 
     g_scrBoard.setLeft  (VIEW_BOARD_LEFT);
     g_scrBoard.setTop   (VIEW_BOARD_TOP);

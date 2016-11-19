@@ -48,11 +48,12 @@
 //    Compile Features.
 //
 
+//----------------------------------------------------------------
 //
 //    キーワード constexpr  の検査。
 //
 
-#if ( @FAIRYSHOGI_CNF_CONSTEXPR@ )
+#if ( @CONFIG_CHECK_CXX_CONSTEXPR_ENABLED@ )
 #    define     FAIRYSHOGI_ENABLE_CONSTEXPR     1
 #else
 #    undef      FAIRYSHOGI_ENABLE_CONSTEXPR
@@ -66,11 +67,13 @@
 #    define     CONSTEXPR_FUNC
 #endif
 
+
+//----------------------------------------------------------------
 //
 //    キーワード nullptr  の検査。
 //
 
-#if ( @FAIRYSHOGI_CNF_NULLPTR@ )
+#if ( @CONFIG_CHECK_CXX_NULLPTR_ENABLED@ )
 #    define     FAIRYSHOGI_ENABLE_NULLPTR       1
 #else
 #    if !defined( nullptr )
@@ -79,11 +82,12 @@
 #    undef      FAIRYSHOGI_ENABLE_NULLPTR
 #endif
 
+//----------------------------------------------------------------
 //
 //    キーワード override の検査。
 //
 
-#if ( @FAIRYSHOGI_CNF_OVERRIDE@ )
+#if ( @CONFIG_CHECK_CXX_OVERRIDE_ENABLED@ )
 #    define     FAIRYSHOGI_ENABLE_OVERRIDE      1
 #else
 #    if !defined( override )
@@ -92,11 +96,12 @@
 #    undef      FAIRYSHOGI_ENABLE_OVERRIDE
 #endif
 
+//----------------------------------------------------------------
 //
 //    キーワード static_assert  の検査。
 //
 
-#if ( @FAIRYSHOGI_CNF_STATIC_ASSERT@ )
+#if ( @CONFIG_CHECK_CXX_STATIC_ASSERT_ENABLED@ )
 #    define     FAIRYSHOGI_ENABLE_STATIC_ASSERT     1
 #else
 #    undef      FAIRYSHOGI_ENABLE_STATIC_ASSERT

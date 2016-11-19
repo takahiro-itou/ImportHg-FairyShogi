@@ -706,8 +706,8 @@ BoardScreen::setPromotionOption(
 ErrCode
 BoardScreen::updateHighLightInfo()
 {
-    for ( PosRow y = 0; y < POS_NUM_ROWS; ++ y ) {
-        for ( PosCol x = 0; x < POS_NUM_COLS; ++ x ) {
+    for ( RankRow y = 0; y < POS_NUM_ROWS; ++ y ) {
+        for ( FileCol x = 0; x < POS_NUM_COLS; ++ x ) {
             this->m_tblHighLight[y][x]  = BOOL_FALSE;
         }
     }

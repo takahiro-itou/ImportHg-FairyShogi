@@ -117,10 +117,10 @@ public:
     /**   指し手データの内部形式の型。  **/
     struct  ActionData
     {
-        PosCol      xNewCol;
-        PosRow      yNewRow;
-        PosCol      xOldCol;
-        PosRow      yOldRow;
+        FileCol     xNewCol;
+        RankRow     yNewRow;
+        FileCol     xOldCol;
+        RankRow     yOldRow;
         PieceIndex  fpCatch;        /**<  捕まえた駒。  **/
         PieceIndex  fpMoved;        /**<  移動した駒。  **/
         PieceIndex  fpAfter;        /**<  移動後成り。  **/
@@ -216,8 +216,8 @@ public:
     **/
     Common::EFieldPiece
     decodeFieldPiece(
-            const  PosCol   xCol,
-            const  PosRow   yRow)  const;
+            const  FileCol  xCol,
+            const  RankRow  yRow)  const;
 
     //----------------------------------------------------------------
     /**   指し手の表示用形式を内部形式に変換する。
@@ -499,8 +499,8 @@ public:
     **/
     PieceIndex
     getFieldPiece(
-            const  PosCol   xCol,
-            const  PosRow   yRow)  const;
+            const  FileCol  xCol,
+            const  RankRow  yRow)  const;
 
     //----------------------------------------------------------------
     /**   指定した座標にある駒を取得する。
@@ -513,8 +513,8 @@ public:
     static  PieceIndex
     getFieldPiece(
             const  InternState  &curStat,
-            const  PosCol       xCol,
-            const  PosRow       yRow);
+            const  FileCol      xCol,
+            const  RankRow      yRow);
 
 //========================================================================
 //
@@ -538,8 +538,8 @@ private:
     **/
     static  inline  FieldIndex
     getMatrixPos(
-            const   PosCol  xCol,
-            const   PosRow  yRow);
+            const  FileCol  xCol,
+            const  RankRow  yRow);
 
 //========================================================================
 //

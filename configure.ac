@@ -33,12 +33,13 @@ dnl
 
 m4_include([.M4/InitAutomake.m4])
 
+dnl----------------------------------------------------------------
 dnl
 dnl   プロジェクトの基本設定。
 dnl
 
 AC_CONFIG_SRCDIR([Makefile.am])
-AC_CONFIG_HEADER([Include/.FairyShogi.Config.h:Include/FairyShogi/.Config/Config.h.in])
+AC_LANG_CPLUSPLUS
 
 dnl
 dnl   デフォルトのコンパイルオプション
@@ -47,8 +48,33 @@ dnl
 : ${CFLAGS:='-O0  -g  -D_DEBUG'}
 : ${CXXFLAGS:='-O0  -g  -D_DEBUG'}
 
-CFLAGS="${CFLAGS}  -std=c++11  -Wall"
-CXXFLAGS="${CXXFLAGS}  -std=c++11  -Wall  -Weffc++"
+EXTRA_COMPILER_OPTIONS="-Wall"
+CFLAGS="${CFLAGS}  ${EXTRA_COMPILER_OPTIONS}"
+CXXFLAGS="${CXXFLAGS}  ${EXTRA_COMPILER_OPTIONS}"
+
+dnl
+dnl   Project Name Space.
+dnl
+
+FAIRYSHOGI_CNF_NAMESPACE=fairyshogi_ns
+AC_SUBST(FAIRYSHOGI_CNF_NAMESPACE)
+
+dnl----------------------------------------------------------------
+dnl
+dnl   ディレクトリ名。
+dnl
+
+m4_include([.M4/ConfigDirectory.m4])
+
+MYAC_CUSTOMIZE_LIBRARY_DIR([Lib])
+MYAC_CUSTOMIZE_BINARY_DIR([Bin])
+MYAC_CUSTOMIZE_INCLUDE_DIR(
+    [Include],  [FairyShogi],  [.Config],  [Config.h])
+
+dnl----------------------------------------------------------------
+dnl
+dnl   ビルド環境の検査。
+dnl
 
 dnl
 dnl   Check Programs.
@@ -59,6 +85,18 @@ AC_PROG_CC
 AC_PROG_CXX
 AM_PROG_AS
 AC_PROG_RANLIB
+
+dnl
+dnl   Check Compiler Features.
+dnl
+
+m4_include([.M4/CheckExtraFlags.m4])
+m4_include([.M4/EnableCxx11.m4])
+
+m4_include([.M4/CheckConstExpr.m4])
+m4_include([.M4/CheckNullPtr.m4])
+m4_include([.M4/CheckOverride.m4])
+m4_include([.M4/CheckStaticAssert.m4])
 
 dnl
 dnl   Check Header Files.
@@ -110,8 +148,6 @@ dnl
 dnl   Check Extra Compiler/Linker Options.
 dnl
 
-m4_include([.M4/CheckExtraFlags.m4])
-
 MYAC_CHECK_EXTRA_COMPILER_OPTION(
     [FAIRYSHOGI_CNF_CFLAGS_MWINDOWS], [mwindows], [-mwindows])
 MYAC_CHECK_EXTRA_LINKER_OPTION(
@@ -119,29 +155,6 @@ MYAC_CHECK_EXTRA_LINKER_OPTION(
 MYAC_CHECK_EXTRA_LINKER_OPTION(
     [LDFLAGS], [static-libgcc],    [-static-libgcc])
 AC_SUBST(FAIRYSHOGI_CNF_CFLAGS_MWINDOWS)
-
-dnl
-dnl   Check Compiler Features.
-dnl
-
-m4_include([.M4/CheckConstExpr.m4])
-AC_SUBST(FAIRYSHOGI_CNF_CONSTEXPR)
-
-m4_include([.M4/CheckNullPtr.m4])
-AC_SUBST(FAIRYSHOGI_CNF_NULLPTR)
-
-m4_include([.M4/CheckOverride.m4])
-AC_SUBST(FAIRYSHOGI_CNF_OVERRIDE)
-
-m4_include([.M4/CheckStaticAssert.m4])
-AC_SUBST(FAIRYSHOGI_CNF_STATIC_ASSERT)
-
-dnl
-dnl   Project Name Space.
-dnl
-
-FAIRYSHOGI_CNF_NAMESPACE=fairyshogi_ns
-AC_SUBST(FAIRYSHOGI_CNF_NAMESPACE)
 
 dnl----------------------------------------------------------------
 dnl
@@ -154,6 +167,14 @@ m4_include([.M4/WithExtLibs.m4])
 MYAC_WITH_EXT_LIB(
     [CPPUNIT], [cppunit], [path to cppunit], [yes],
     [AMCNF_CPPUNIT_ENABLED])
+
+dnl----------------------------------------------------------------
+dnl
+dnl   Linker Scripts.
+dnl   リンカスクリプトを生成する。
+dnl
+
+m4_include([.M4/LinkerScripts.m4])
 
 dnl----------------------------------------------------------------
 dnl
@@ -189,11 +210,6 @@ AC_CONFIG_FILES([
 AC_CONFIG_FILES([
     Include/FairyShogi/.Config/ExtraConfig.h:Include/FairyShogi/.Config/ExtraConfig.h.autoconf.in
 ])
-
-AC_CONFIG_FILES([Lib/libfsgEngine.a:Lib/.LinkerScript/fsgEngine.in])
-AC_CONFIG_FILES([Lib/libfsgGame.a:Lib/.LinkerScript/fsgGame.in])
-AC_CONFIG_FILES([Lib/libfsgInterface.a:Lib/.LinkerScript/fsgInterface.in])
-AC_CONFIG_FILES([Lib/libfsgWin32.a:Lib/.LinkerScript/fsgWin32.in])
 
 dnl
 dnl   Test Festures.

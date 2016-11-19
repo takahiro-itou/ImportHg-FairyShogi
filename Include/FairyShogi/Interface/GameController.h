@@ -388,8 +388,8 @@ public:
     **/
     Common::EFieldPiece
     getFieldPiece(
-            const  PosCol   xCol,
-            const  PosRow   yRow)  const;
+            const  FileCol  xCol,
+            const  RankRow  yRow)  const;
 
     //----------------------------------------------------------------
     /**   ゲームの勝敗を取得する。

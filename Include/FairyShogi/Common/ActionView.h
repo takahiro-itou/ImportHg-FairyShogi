@@ -77,10 +77,10 @@ enum  ActionLegalFlag
 
 struct  ActionView
 {
-    PosCol      xPlayNewCol;    /**<  移動先の座標（横方向）。  **/
-    PosRow      yPlayNewRow;    /**<  移動先の座標（縦方向）。  **/
-    PosCol      xPlayOldCol;    /**<  移動元の座標（横方向）。  **/
-    PosRow      yPlayOldRow;    /**<  移動元の座標（縦方向）。  **/
+    FileCol     xPlayNewCol;    /**<  移動先の座標（横方向）。  **/
+    RankRow     yPlayNewRow;    /**<  移動先の座標（縦方向）。  **/
+    FileCol     xPlayOldCol;    /**<  移動元の座標（横方向）。  **/
+    RankRow     yPlayOldRow;    /**<  移動元の座標（縦方向）。  **/
 
     PieceIndex  fpAfter;        /**<  駒が成った後の種類。      **/
     PieceIndex  fpMoved;        /**<  移動した自分の駒の種類。  **/
@@ -89,10 +89,10 @@ struct  ActionView
     PieceIndex  hpiDrop;        /**<  打った持ち駒の種類。      **/
 
     ActionFlag  fLegals;        /**<  指し手の合法判定の結果。  **/
-    PosCol      xDispNewCol;    /**<  移動先の座標（表示用）。  **/
-    PosRow      yDispNewRow;    /**<  移動先の座標（表示用）。  **/
-    PosCol      xDispOldCol;    /**<  移動元の座標（表示用）。  **/
-    PosRow      yDispOldRow;    /**<  移動元の座標（表示用）。  **/
+    FileCol     xDispNewCol;    /**<  移動先の座標（表示用）。  **/
+    RankRow     yDispNewRow;    /**<  移動先の座標（表示用）。  **/
+    FileCol     xDispOldCol;    /**<  移動元の座標（表示用）。  **/
+    RankRow     yDispOldRow;    /**<  移動元の座標（表示用）。  **/
 };
 
 }   //  End of namespace  Common

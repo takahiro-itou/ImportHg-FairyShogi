@@ -121,8 +121,8 @@ private:
     static  ErrCode
     convertCoordsFromConsole(
             const   ShowCoordFlags  flgShow,
-            PosCol  *   const       ptrCol,
-            PosRow  *   const       ptrRow);
+            FileCol  *  const       ptrCol,
+            RankRow  *  const       ptrRow);
 
 //========================================================================
 //
