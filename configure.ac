@@ -48,8 +48,9 @@ dnl
 : ${CFLAGS:='-O0  -g  -D_DEBUG'}
 : ${CXXFLAGS:='-O0  -g  -D_DEBUG'}
 
-CFLAGS="${CFLAGS}  -std=c++11  -Wall"
-CXXFLAGS="${CXXFLAGS}  -std=c++11  -Wall  -Weffc++"
+EXTRA_COMPILER_OPTIONS="-Wall"
+CFLAGS="${CFLAGS}  ${EXTRA_COMPILER_OPTIONS}"
+CXXFLAGS="${CXXFLAGS}  ${EXTRA_COMPILER_OPTIONS}"
 
 dnl
 dnl   Project Name Space.
@@ -79,6 +80,18 @@ AC_PROG_CC
 AC_PROG_CXX
 AM_PROG_AS
 AC_PROG_RANLIB
+
+dnl
+dnl   Check Compiler Features.
+dnl
+
+m4_include([.M4/CheckExtraFlags.m4])
+m4_include([.M4/EnableCxx11.m4])
+
+m4_include([.M4/CheckConstExpr.m4])
+m4_include([.M4/CheckNullPtr.m4])
+m4_include([.M4/CheckOverride.m4])
+m4_include([.M4/CheckStaticAssert.m4])
 
 dnl
 dnl   Check Header Files.
@@ -130,8 +143,6 @@ dnl
 dnl   Check Extra Compiler/Linker Options.
 dnl
 
-m4_include([.M4/CheckExtraFlags.m4])
-
 MYAC_CHECK_EXTRA_COMPILER_OPTION(
     [FAIRYSHOGI_CNF_CFLAGS_MWINDOWS], [mwindows], [-mwindows])
 MYAC_CHECK_EXTRA_LINKER_OPTION(
@@ -139,15 +150,6 @@ MYAC_CHECK_EXTRA_LINKER_OPTION(
 MYAC_CHECK_EXTRA_LINKER_OPTION(
     [LDFLAGS], [static-libgcc],    [-static-libgcc])
 AC_SUBST(FAIRYSHOGI_CNF_CFLAGS_MWINDOWS)
-
-dnl
-dnl   Check Compiler Features.
-dnl
-
-m4_include([.M4/CheckConstExpr.m4])
-m4_include([.M4/CheckNullPtr.m4])
-m4_include([.M4/CheckOverride.m4])
-m4_include([.M4/CheckStaticAssert.m4])
 
 dnl----------------------------------------------------------------
 dnl
