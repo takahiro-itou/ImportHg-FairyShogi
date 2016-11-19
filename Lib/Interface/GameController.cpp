@@ -630,8 +630,8 @@ GameController::setCurrentPlayer(
 
 Common::EFieldPiece
 GameController::getFieldPiece(
-        const  PosCol   xCol,
-        const  PosRow   yRow)  const
+        const  FileCol  xCol,
+        const  RankRow  yRow)  const
 {
     return ( this->m_gcBoard.decodeFieldPiece(xCol, yRow) );
 }

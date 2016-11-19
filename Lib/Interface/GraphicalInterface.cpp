@@ -122,10 +122,10 @@ GraphicalInterface::~GraphicalInterface()
 
 ErrCode
 GraphicalInterface::setupMoveActionFromMouse(
-        const  PosCol       xOldCol,
-        const  PosRow       yOldRow,
-        const  PosCol       xNewCol,
-        const  PosRow       yNewRow,
+        const  FileCol      xOldCol,
+        const  RankRow      yOldRow,
+        const  FileCol      xNewCol,
+        const  RankRow      yNewRow,
         PromoteList  *      vProms,
         ActionView   *      ptrAct)  const
 {
@@ -179,8 +179,8 @@ GraphicalInterface::setupMoveActionFromMouse(
 
 ErrCode
 GraphicalInterface::setupPutActionFromMouse(
-        const  PosCol       xPutCol,
-        const  PosRow       yPutRow,
+        const  FileCol      xPutCol,
+        const  RankRow      yPutRow,
         const  PieceIndex   pHand,
         PromoteList  *      vProms,
         ActionView   *      ptrAct)  const
@@ -240,13 +240,13 @@ GraphicalInterface::setupPutActionFromMouse(
 ErrCode
 GraphicalInterface::convertCoordsFromMouse(
         const   ShowCoordFlags  flgShow,
-        const   PosCol          xInCol,
-        const   PosRow          yInRow,
-        PosCol  *   const       ptrCol,
-        PosRow  *   const       ptrRow)
+        const   FileCol         xInCol,
+        const   RankRow         yInRow,
+        FileCol  *  const       ptrCol,
+        RankRow  *  const       ptrRow)
 {
-    PosCol  xColTmp = xInCol;
-    PosRow  yRowTmp = yInRow;
+    FileCol xColTmp = xInCol;
+    RankRow yRowTmp = yInRow;
 
     //  マウス入力では、左上を (0, 0) とする座標系である。  //
     //  これは画面を回転させている場合でもそのままである。  //

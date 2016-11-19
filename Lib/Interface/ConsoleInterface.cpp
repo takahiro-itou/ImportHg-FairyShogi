@@ -146,8 +146,8 @@ ConsoleInterface::parseActionText(
     ::memset( ptrAct, 0, sizeof(ActionView) );
 
     {
-        PosCol  xNewCol = strPlay[2] - '0';
-        PosRow  yNewRow = strPlay[3] - '0';
+        FileCol xNewCol = strPlay[2] - '0';
+        RankRow yNewRow = strPlay[3] - '0';
         if (       (xNewCol < 1) || (5 < xNewCol)
                 || (yNewRow < 1) || (5 < yNewRow) )
         {
@@ -191,8 +191,8 @@ ConsoleInterface::parseActionText(
 
     } else {
         //  盤上の駒を移動させる。  //
-        PosCol  xOldCol = strPlay[0] - '0';
-        PosRow  yOldRow = strPlay[1] - '0';
+        FileCol xOldCol = strPlay[0] - '0';
+        RankRow yOldRow = strPlay[1] - '0';
         if (       (xOldCol < 1) || (5 < xOldCol)
                 || (yOldRow < 1) || (5 < yOldRow) )
         {
@@ -244,11 +244,11 @@ ConsoleInterface::parseActionText(
 ErrCode
 ConsoleInterface::convertCoordsFromConsole(
         const   ShowCoordFlags  flgShow,
-        PosCol  *   const       ptrCol,
-        PosRow  *   const       ptrRow)
+        FileCol  *  const       ptrCol,
+        RankRow  *  const       ptrRow)
 {
-    PosCol  xColTmp = (* ptrCol);
-    PosRow  yRowTmp = (* ptrRow);
+    FileCol xColTmp = (* ptrCol);
+    RankRow yRowTmp = (* ptrRow);
 
     if ( (flgShow) & SCF_FLIP_COLUMNS ) {
         //  水平方向の座標を反転させる。        //
