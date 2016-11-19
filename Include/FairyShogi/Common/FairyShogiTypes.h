@@ -69,7 +69,6 @@ enum  Boolean
 **/
 
 typedef     int     FileCol;
-typedef     int     PosCol;
 
 //----------------------------------------------------------------
 /**
@@ -77,7 +76,6 @@ typedef     int     PosCol;
 **/
 
 typedef     int     RankRow;
-typedef     int     PosRow;
 
 //----------------------------------------------------------------
 /**

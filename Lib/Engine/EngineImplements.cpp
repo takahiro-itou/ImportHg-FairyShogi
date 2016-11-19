@@ -107,7 +107,7 @@ EngineImplements::findCheckMateActions(
     const  ActIter  itrEnd  = actList.end();
     for ( ActIter itr = actList.begin(); itr != itrEnd; ++ itr ) {
         stClone = curStat;
-        const   PosCol  nx  = (itr->xNewCol);
+        const  FileCol  nx  = (itr->xNewCol);
 
         BoardState::playForward(* itr, stClone);
         if ( nCounts[nx] < 0 ) {
