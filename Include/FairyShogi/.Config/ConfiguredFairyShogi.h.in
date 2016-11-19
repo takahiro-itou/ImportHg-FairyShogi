@@ -48,11 +48,12 @@
 //    Compile Features.
 //
 
+//----------------------------------------------------------------
 //
 //    キーワード constexpr  の検査。
 //
 
-#if ( @FAIRYSHOGI_CNF_CONSTEXPR@ )
+#if ( @CONFIG_CHECK_CXX_CONSTEXPR_ENABLED@ )
 #    define     FAIRYSHOGI_ENABLE_CONSTEXPR     1
 #else
 #    undef      FAIRYSHOGI_ENABLE_CONSTEXPR
