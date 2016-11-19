@@ -46,10 +46,10 @@ struct  ViewBuffer
     PlayerIndex     numPlayers;
 
     /**   盤面の行数。      **/
-    PosRow          numRows;
+    RankRow         numRows;
 
     /**   盤面の列数。      **/
-    PosCol          numCols;
+    FileCol         numCols;
 
     /**
     **    持ち駒の種類。

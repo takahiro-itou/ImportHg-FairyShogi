@@ -68,6 +68,7 @@ enum  Boolean
 **    横方向の座標を表す型。
 **/
 
+typedef     int     FileCol;
 typedef     int     PosCol;
 
 //----------------------------------------------------------------
@@ -75,6 +76,7 @@ typedef     int     PosCol;
 **    縦方向の座標を表す型。
 **/
 
+typedef     int     RankRow;
 typedef     int     PosRow;
 
 //----------------------------------------------------------------
