@@ -94,11 +94,12 @@
 #    undef      FAIRYSHOGI_ENABLE_OVERRIDE
 #endif
 
+//----------------------------------------------------------------
 //
 //    キーワード static_assert  の検査。
 //
 
-#if ( @FAIRYSHOGI_CNF_STATIC_ASSERT@ )
+#if ( @CONFIG_CHECK_CXX_STATIC_ASSERT_ENABLED@ )
 #    define     FAIRYSHOGI_ENABLE_STATIC_ASSERT     1
 #else
 #    undef      FAIRYSHOGI_ENABLE_STATIC_ASSERT
