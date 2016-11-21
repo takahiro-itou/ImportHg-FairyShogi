@@ -100,6 +100,19 @@ Include_Directories ("${PROJECT_BINARY_DIR}/Include")
 
 ##----------------------------------------------------------------
 ##
+##    Additional Packages.
+##    外部ライブラリ。
+##
+
+Include (${COMMON_CMAKE_DIR}/FindCppUnit.cmake)
+
+Set (CURSES_USE_NCURSES  TRUE)
+Find_Package (Curses)
+Message (STATUS  "CURSES_INCLUDE_DIRS = ${CURSES_INCLUDE_DIRS}")
+Message (STATUS  "CURSES_LIBRARIES    = ${CURSES_LIBRARIES}")
+
+##----------------------------------------------------------------
+##
 ##    設定を書き込んだファイルを生成。
 ##
 
