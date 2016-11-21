@@ -168,6 +168,8 @@ MYAC_WITH_EXT_LIB(
     [CPPUNIT], [cppunit], [path to cppunit], [yes],
     [AMCNF_CPPUNIT_ENABLED])
 
+m4_include([.M4/FindCurses.m4])
+
 dnl----------------------------------------------------------------
 dnl
 dnl   Linker Scripts.
