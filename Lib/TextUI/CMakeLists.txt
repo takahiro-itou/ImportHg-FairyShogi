@@ -17,12 +17,16 @@ Set (INCLIB_BINARY_DIR     "${INCLUDE_BINARY_DIR}/${MODULE_DIR_NAME}")
 ##
 
 Set (LIBRARY_SOURCE_FILES
+        TextUserInterface.cpp
 )
 
 Set (INCLIB_HEADER_FILES
+        ${INCLIB_SOURCE_DIR}/TextUserInterface.h
 )
 
 Set (MODULE_NEEDS_LIBRARIES
+        ${PROJECT_NAME}-${LIBRARIES_TARGET_PREFIX}Interface
+        ${CURSES_LIBRARIES}
 )
 
 ##----------------------------------------------------------------
