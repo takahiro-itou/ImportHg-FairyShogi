@@ -13,7 +13,6 @@ Set (FSHOGI_WIN32_SOURCES
 
 Set (WIN32_COMMONLIBS
         ${PROJECT_NAME}-${LIBRARIES_TARGET_PREFIX}Win32
-        fsgInterface  fsgEngine  fsgGame
         Gdi32
 )
 

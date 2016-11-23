@@ -48,6 +48,3 @@ Include (${COMMON_CMAKE_DIR}/BuildLibraryCommon.cmake)
 
 Add_SubDirectory (Tests)
 
-
-add_library(fsgInterface  ${LIBRARY_SOURCE_FILES})
-
