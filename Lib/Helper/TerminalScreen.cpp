@@ -10,91 +10,22 @@
 *************************************************************************/
 
 /**
-**      An Implementation of EngineBase class.
+**      An Implementation of TerminalScreen class.
 **
-**      @file       Engine/EngineBase.cpp
+**      @file       Helper/TerminalScreen.cpp
 **/
 
-#include    "FairyShogi/Engine/EngineBase.h"
-
-#include    "EngineLevel0.h"
-#include    "EngineLevel1.h"
-#include    "EngineLevel2.h"
-#include    "EngineLevel3.h"
-#include    "EngineLevel4.h"
-
-#include    "FairyShogi/Common/ActionView.h"
-#include    "FairyShogi/Common/HelperMacros.h"
-#include    "FairyShogi/Game/BoardState.h"
 #include    "FairyShogi/Helper/TerminalScreen.h"
 
 #include    <iostream>
-#include    <sstream>
-#include    <stdexcept>
-#include    <stdlib.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
-namespace  Engine  {
+namespace  Helper  {
 
 //========================================================================
 //
-//    EngineBase  class.
+//    TerminalScreen  class.
 //
-
-//========================================================================
-//
-//    Factory.
-//
-
-//----------------------------------------------------------------
-//    思考エンジンのインスタンスを生成する。
-//
-
-EngineBase  *
-EngineBase::createEngine(
-        const  std::string  &engName)
-{
-    EngineBase  *   ptrEng  =  (nullptr);
-
-    if ( engName == "default" ) {
-        ptrEng  =  new  EngineLevel3;
-    } else if ( engName == "level4" ) {
-        ptrEng  =  new  EngineLevel4;
-    } else if ( engName == "level3" ) {
-        ptrEng  =  new  EngineLevel3;
-    } else if ( engName == "level2" ) {
-        ptrEng  =  new  EngineLevel2;
-    } else if ( engName == "level1" ) {
-        ptrEng  =  new  EngineLevel1;
-    } else if ( engName == "level0" ) {
-        ptrEng  =  new  EngineLevel0;
-    } else {
-        std::stringstream   ss;
-        ss  <<  "Invalid Engine Name ["
-            <<  engName
-            <<  ']';
-        Helper::TerminalScreen::writeLineToStdErr(ss.str());
-        throw  std::runtime_error(ss.str());
-    }
-
-    return ( ptrEng );
-}
-
-//----------------------------------------------------------------
-//    思考エンジンのインスタンスを破棄する。
-//
-
-ErrCode
-EngineBase::destroyEngine(
-        EngineBase  *  &ptrEng)
-{
-    if ( ptrEng != (nullptr) ) {
-        delete  ptrEng;
-    }
-
-    ptrEng  = (nullptr);
-    return ( ERR_SUCCESS );
-}
 
 //========================================================================
 //
@@ -106,7 +37,7 @@ EngineBase::destroyEngine(
 //  （デフォルトコンストラクタ）。
 //
 
-EngineBase::EngineBase()
+TerminalScreen::TerminalScreen()
 {
 }
 
@@ -115,7 +46,7 @@ EngineBase::EngineBase()
 //  （デストラクタ）。
 //
 
-EngineBase::~EngineBase()
+TerminalScreen::~TerminalScreen()
 {
 }
 
@@ -144,6 +75,56 @@ EngineBase::~EngineBase()
 //    Public Member Functions.
 //
 
+//----------------------------------------------------------------
+//    標準出力に文字列と改行を出力する。
+//
+
+ErrCode
+TerminalScreen::writeLineToStdOut(
+        const  std::string  &strText)
+{
+    std::cout   <<  strText
+                <<  std::endl;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    標準出力に文字列を出力する。
+//
+
+ErrCode
+TerminalScreen::writeTextToStdOut(
+        const  std::string  &strText)
+{
+    std::cout   <<  strText;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    標準エラー出力に文字列と改行を出力する。
+//
+
+ErrCode
+TerminalScreen::writeLineToStdErr(
+        const  std::string  &strText)
+{
+    std::cerr   <<  strText
+                <<  std::endl;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    標準エラー出力に文字列を出力する。
+//
+
+ErrCode
+TerminalScreen::writeTextToStdErr(
+        const  std::string  &strText)
+{
+    std::cerr   <<  strText;
+    return ( ERR_SUCCESS );
+}
+
 //========================================================================
 //
 //    Accessors.
@@ -151,13 +132,8 @@ EngineBase::~EngineBase()
 
 //========================================================================
 //
-//    Protected Member Functions.
-//
-
-//========================================================================
-//
 //    For Internal Use Only.
 //
 
-}   //  End of namespace  Engine
+}   //  End of namespace  Helper
 FAIRYSHOGI_NAMESPACE_END

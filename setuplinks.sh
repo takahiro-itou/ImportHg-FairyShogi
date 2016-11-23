@@ -66,7 +66,7 @@ if [ -d  Lib/${testcommondir}/Tests ] ; then
       &&  ${LN_S}  ../../Tests/.TestsCommon/CMakeLists.txt)
 fi
 
-for  dir  in  Common  Engine  Game  Interface  Win32  ; do
+for  dir  in  Common  Engine  Game  Helper  Interface  Win32  ; do
     if [ -d Lib/${dir}/Tests ] ; then
         (cd  Lib/${dir}/Tests          \
           &&  ${RM_F}  Makefile.am     \

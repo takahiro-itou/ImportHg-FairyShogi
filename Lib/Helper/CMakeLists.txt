@@ -4,9 +4,9 @@
 ##    モジュールの設定。
 ##
 
-Set (MODULE_DIR_NAME       "Game")
-Set (MODULE_OUTPUT_NAME    "Game")
-Set (MODULE_TITLE          "Game")
+Set (MODULE_DIR_NAME       "Helper")
+Set (MODULE_OUTPUT_NAME    "Helper")
+Set (MODULE_TITLE          "Helper")
 
 Set (INCLIB_SOURCE_DIR     "${INCLUDE_SOURCE_DIR}/${MODULE_DIR_NAME}")
 Set (INCLIB_BINARY_DIR     "${INCLUDE_BINARY_DIR}/${MODULE_DIR_NAME}")
@@ -17,18 +17,14 @@ Set (INCLIB_BINARY_DIR     "${INCLUDE_BINARY_DIR}/${MODULE_DIR_NAME}")
 ##
 
 Set (LIBRARY_SOURCE_FILES
-        BoardState.cpp
-        RuleTables.cpp
+        TerminalScreen.cpp
 )
 
 Set (INCLIB_HEADER_FILES
-        ${INCLIB_SOURCE_DIR}/BitSet.h
-        ${INCLIB_SOURCE_DIR}/BoardState.h
-        ${INCLIB_SOURCE_DIR}/RuleTables.h
+        ${INCLIB_SOURCE_DIR}/TerminalScreen.h
 )
 
 Set (MODULE_NEEDS_LIBRARIES
-        ${PROJECT_NAME}-${LIBRARIES_TARGET_PREFIX}Helper
 )
 
 ##----------------------------------------------------------------

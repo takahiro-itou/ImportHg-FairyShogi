@@ -3,7 +3,7 @@
 ##    List of Directories.
 ##
 
-SUBLIBS  =  Common  Game  Engine  Interface
+SUBLIBS  =  Common  Helper  Game  Engine  Interface
 
 if  FAIRYSHOGI_AMCNF_ENABLE_WINDOWS_H
 SUBLIBS  +=  Win32

@@ -201,6 +201,7 @@ AC_CONFIG_FILES([
     Lib/Common/Makefile
     Lib/Engine/Makefile
     Lib/Game/Makefile
+    Lib/Helper/Makefile
     Lib/Interface/Makefile
     Lib/Win32/Makefile
 ])
@@ -221,6 +222,7 @@ AC_CONFIG_FILES([
     Lib/Common/Tests/Makefile
     Lib/Engine/Tests/Makefile
     Lib/Game/Tests/Makefile
+    Lib/Helper/Tests/Makefile
     Lib/Interface/Tests/Makefile
     Lib/Tests/Makefile
     Lib/Win32/Tests/Makefile

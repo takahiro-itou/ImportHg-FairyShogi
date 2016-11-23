@@ -2,3 +2,5 @@
 /*  Linker Script.  */
 INPUT( AS_NEEDED(Game/libfsgGame.staticd.a) )
 
+INPUT( AS_NEEDED(-lfsgHelper) )
+
