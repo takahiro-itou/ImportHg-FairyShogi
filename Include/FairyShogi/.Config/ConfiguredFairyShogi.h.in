@@ -45,6 +45,17 @@
 
 //========================================================================
 //
+//    Curses.
+//
+
+#if ( @FAIRYSHOGI_CNF_CURSES_ENABLED@ )
+#    define     FAIRYSHOGI_ENABLE_CURSES    @FAIRYSHOGI_CNF_CURSES_ENABLED@
+#else
+#    undef      FAIRYSHOGI_ENABLE_CURSES
+#endif
+
+//========================================================================
+//
 //    Compile Features.
 //
 
