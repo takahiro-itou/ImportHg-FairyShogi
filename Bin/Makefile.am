@@ -7,50 +7,28 @@
 ##    List of Directories.
 ##
 
+MODULE_DIR_NAME         =  Binary
+
 SUBMODULES              =
+
 if  FAIRYSHOGI_AMCNF_ENABLE_WINDOWS_H
 SUBMODULES              +=  Win32
 endif
 
+if  FAIRYSHOGI_AMCNF_ENABLE_CURSES
+SUBMODULES              +=  TextUI
+endif
+
 SUBDIRS                 =  .  $(SUBMODULES)
 
-SRCTOPDIR               =  @top_srcdir@
-INCTOPDIR               =  $(SRCTOPDIR)/Include
-INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
-
-BLDTOPDIR               =  @top_builddir@
-LIBTOPDIR               =  $(BLDTOPDIR)/Lib
+include  $(top_srcdir)/.M4/Makefile.DirList.inc
 
 ##
 ##    List of Source and Header Files.
 ##
 
-EXTRALIBSOURCES         =
-EXTRANOINSTHEADERS      =
-EXTRALIBHEADERS         =
-
-LIBCXXSOURCEFILES       =  \
-        CommandInterpreter.cpp  \
-        $(EXTRALIBSOURCES)
-
-LIBINSTANTIATIONS       =
-LIBCXXINLINEFILES       =
-
-LIBNOINSTHEADERS        =  \
-        CommandInterpreter.h   \
-        $(EXTRANOINSTHEADERS)
-
-INCLIBHEADERS           =  \
-        $(EXTRALIBHEADERS)
-
-LIBNODISTHEADERS        =
-
-LIBINSTALLSOURCES       =
-LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
-
-##
-##    List of Libraries.
-##
+COMMONSOURCES           =  \
+        CommandInterpreter.cpp
 
 ##
 ##    Internal Libraries.
@@ -60,14 +38,11 @@ LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
 ##    Compile and Link Options.
 ##
 
-AM_CPPFLAGS             =  -I$(INCTOPDIR)
+AM_CPPFLAGS             =  \
+        -I${INCTOP_SOURCE_DIR}
 AM_CFLAGS               =
 AM_CXXFLAGS             =
-AM_LDFLAGS              =  -L$(LIBTOPDIR)
-
-##
-##    Include Common Settings.
-##
+AM_LDFLAGS              =  -L${LIBTOP_BINARY_DIR}
 
 ##
 ##    List of Installs.
@@ -80,17 +55,13 @@ bin_PROGRAMS            =  \
 dist_noinst_DATA        =  \
         CMakeLists.txt
 
-dist_noinst_HEADERS     =  $(LIBNOINSTHEADERS)
-
 ##
-##    Build Programs.
+##    Build Executables.
 ##
 
-AutoMatch_SOURCES       =  AutoMatch.cpp   \
-        $(LIBCOMPILESOURCES)
+AutoMatch_SOURCES       =  AutoMatch.cpp   ${COMMONSOURCES}
 AutoMatch_LDADD         =  -lfsgInterface
 
-FairyShogi_SOURCES      =  FairyShogi.cpp  \
-        $(LIBCOMPILESOURCES)
+FairyShogi_SOURCES      =  FairyShogi.cpp  ${COMMONSOURCES}
 FairyShogi_LDADD        =  -lfsgInterface
 

@@ -17,5 +17,9 @@ Target_Link_Libraries (FairyShogi  ${COMMONLIBS})
 
 If ( ENABLE_WIN32 )
   Add_Subdirectory (Win32)
-EndIf()
+EndIf ()
+
+If ( CURSES_FOUND )
+  Add_SubDirectory (TextUI)
+EndIf ()
 

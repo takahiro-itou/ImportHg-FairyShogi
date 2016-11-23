@@ -195,6 +195,7 @@ AC_CONFIG_FILES([
     .CMake/Makefile
     Makefile
     Bin/Makefile
+    Bin/TextUI/Makefile
     Bin/Win32/Makefile
     Lib/Makefile
     Lib/.Config/Makefile
