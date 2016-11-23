@@ -3,4 +3,5 @@
 INPUT( AS_NEEDED(TextUI/libfsgTextUI.staticd.a) )
 
 INPUT( AS_NEEDED(-lfsgInterface) )
+INPUT( AS_NEEDED(-lncurses) )
 
