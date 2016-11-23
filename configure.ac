@@ -31,7 +31,7 @@ dnl
 dnl   適当なバージョンの automake を設定
 dnl
 
-m4_include([.M4/InitAutomake.m4])
+m4_include([.M4/InitAutoMake.m4])
 
 dnl----------------------------------------------------------------
 dnl

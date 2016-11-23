@@ -1,9 +1,10 @@
-#! /bin/bash  -x
+#!/usr/bin/env  bash
 
 ##
-##  コマンド。
+##  コマンド定義。
 ##
 
+set  -x
 LN_H='ln -f '
 LN_S='ln -sf '
 RM_F='rm -f '
@@ -39,14 +40,14 @@ if [ ${amvermajor} -gt 1 -o ${amverminor} -ge 13 ] ; then
 else
   amtrgver=1.12
 fi
-${RM_F}  .M4/InitAutomake.m4
-${LN_H}  .M4/InitAutomake.${amtrgver}.m4  .M4/InitAutomake.m4
+${RM_F}  .M4/InitAutoMake.m4
+${LN_H}  .M4/InitAutomake.${amtrgver}.m4  .M4/InitAutoMake.m4
 
 ##
-##  定数宣言。
+##  定数宣言
 ##
 
-testcommondir='.TestsCommon'
+testcommondir='.TestsConfig'
 
 ##
 ##
@@ -58,15 +59,21 @@ fi
 
 if [ -d  Lib/${testcommondir}/Tests ] ; then
     (cd  Lib/${testcommondir}/Tests  \
-      &&  ${RM_F}  Makefile.am  \
+      &&  ${RM_F}  Makefile.am       \
       &&  ${LN_S}  ../../Tests/.TestsCommon/Makefile.am)
+    (cd  Lib/${testcommondir}/Tests  \
+      &&  ${RM_F}  CMakeLists.txt    \
+      &&  ${LN_S}  ../../Tests/.TestsCommon/CMakeLists.txt)
 fi
 
 for  dir  in  Common  Engine  Game  Interface  Win32  ; do
     if [ -d Lib/${dir}/Tests ] ; then
-        (cd  Lib/${dir}/Tests  \
-          &&  ${RM_F}  Makefile.am  \
+        (cd  Lib/${dir}/Tests          \
+          &&  ${RM_F}  Makefile.am     \
           &&  ${LN_H}  ../../${testcommondir}/Tests/Makefile.am)
+        (cd  Lib/${dir}/Tests          \
+          &&  ${RM_F}  CMakeLists.txt  \
+          &&  ${LN_H}  ../../${testcommondir}/Tests/CMakeLists.txt)
     fi
 done
 
