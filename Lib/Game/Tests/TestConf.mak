@@ -6,19 +6,26 @@
 EXTRATESTS              =
 TESTS                   =  \
         RuleTablesTest     \
-        $(EXTRATESTS)
+        ${EXTRATESTS}
+
+##
+##    Test Configurations.
+##
+
+TARGET_TESTEE_LIBRARY       +=  -lfsgGame
+
+DIST_NOINST_DATA_FILES      +=
+DIST_NOINST_HEADER_FILES    +=
+EXTRA_TEST_DRIVERS          +=
+LIBRARY_TEST_DRIVERS        +=
+SOURCE_TEST_DRIVERS         +=
 
 ##
 ##    Compile and Link Options.
 ##
 
-TESTCPPFLAGS            +=
-TESTLDFLAGS             +=
-TESTLIBTESTEE           +=  -lfsgGame
-
-##
-##    Test Configurations.
-##
+TEST_CPPFLAGS_COMMON        +=
+TEST_LDFLAGS_COMMON         +=
 
 ##
 ##    Test Programs.
