@@ -203,6 +203,7 @@ AC_CONFIG_FILES([
     Lib/Game/Makefile
     Lib/Helper/Makefile
     Lib/Interface/Makefile
+    Lib/TextUI/Makefile
     Lib/Win32/Makefile
 ])
 
@@ -225,6 +226,7 @@ AC_CONFIG_FILES([
     Lib/Helper/Tests/Makefile
     Lib/Interface/Tests/Makefile
     Lib/Tests/Makefile
+    Lib/TextUI/Tests/Makefile
     Lib/Win32/Tests/Makefile
 ])
 
