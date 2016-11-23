@@ -7,56 +7,59 @@
 ##    List of Directories.
 ##
 
+MODULE_DIR_NAME         =  Common
 SUBDIRS                 =  .  Tests
 
-SRCTOPDIR               =  @top_srcdir@
-INCTOPDIR               =  $(SRCTOPDIR)/Include
-INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
-INCLIBDIR               =  $(INCPKGDIR)/Common
+include  $(top_srcdir)/.M4/Makefile.DirList.inc
 
 ##
 ##    List of Source and Header Files.
 ##
 
-EXTRALIBSOURCES         =
-EXTRANOINSTDATA         =
-EXTRANOINSTHEADERS      =
-EXTRALIBHEADERS         =
+EXTRA_LIBRARY_SOURCE_FILES  =
+EXTRA_LIBRARY_HEADER_FILES  =
+EXTRA_NOINST_DATA_FILES     =
+EXTRA_NOINST_HEADER_FILES   =
 
-LIBCXXSOURCEFILES       =  \
-        $(EXTRALIBSOURCES)
+LIBRARY_SOURCE_FILES        =  \
+        ${EXTRA_LIBRARY_SOURCE_FILES}
 
-LIBINSTANTIATIONS       =
-LIBCXXINLINEFILES       =
+LIBRARY_INSTANTIATIONS      =
+LIBRARY_INLINE_FILES        =
 
-LIBNOINSTDATA           =  \
-        CMakeLists.txt      \
-        $(EXTRANOINSTDATA)
-LIBNOINSTHEADERS        =  \
-        $(EXTRANOINSTHEADERS)
+DIST_NOINST_DATA_FILES      =  \
+        CMakeLists.txt              \
+        ${EXTRA_NOINST_DATA_FILES}
 
-INCLIBHEADERS           =  \
-        $(INCLIBDIR)/ActionView.h          \
-        $(INCLIBDIR)/DefaultShogiPieces.h  \
-        $(INCLIBDIR)/FairyShogiConst.h     \
-        $(INCLIBDIR)/FairyShogiSettings.h  \
-        $(INCLIBDIR)/FairyShogiTypes.h     \
-        $(INCLIBDIR)/HelperMacros.h        \
-        $(INCLIBDIR)/MersenneTwister.h     \
-        $(INCLIBDIR)/ViewBuffer.h          \
-        $(EXTRALIBHEADERS)
+DIST_NOINST_HEADER_FILES    =  \
+        ${EXTRA_NOINST_HEADER_FILES}
 
-LIBNODISTHEADERS        =
+INCLIB_HEADER_FILES         =  \
+        ${INCLIB_SOURCE_DIR}/ActionView.h          \
+        ${INCLIB_SOURCE_DIR}/DefaultShogiPieces.h  \
+        ${INCLIB_SOURCE_DIR}/FairyShogiConst.h     \
+        ${INCLIB_SOURCE_DIR}/FairyShogiSettings.h  \
+        ${INCLIB_SOURCE_DIR}/FairyShogiTypes.h     \
+        ${INCLIB_SOURCE_DIR}/HelperMacros.h        \
+        ${INCLIB_SOURCE_DIR}/MersenneTwister.h     \
+        ${INCLIB_SOURCE_DIR}/ViewBuffer.h          \
+        ${EXTRA_LIBRARY_HEADER_FILES}
 
-LIBINSTALLSOURCES       =
-LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+INCLIB_NODIST_HEADER_FILES  =
+
+LIBRARY_INSTALL_SRCFILES    =  \
+        ${LIBRARY_INLINE_FILES}
+
+LIBRARY_COMPILE_SRCFILES    =  \
+        ${LIBRARY_SOURCE_FILES}    \
+        ${LIBRARY_INSTANTIATIONS}
 
 ##
 ##    List of Libraries.
 ##
 
-LIB_STATIC              =
-LIB_SHARED              =
+STATIC_LIBRARIES_LIST   =
+SHARED_LIBRARIES_LIST   =
 
 ##
 ##    Internal Libraries.
@@ -66,30 +69,16 @@ LIB_SHARED              =
 ##    Compile and Link Options.
 ##
 
-AM_CPPFLAGS             =  -I$(INCTOPDIR)
+AM_CPPFLAGS          =  \
+        -I${INCTOP_SOURCE_DIR}
 AM_CFLAGS               =
 AM_CXXFLAGS             =
 
 ##
-##    Include Common Settings.
+##    Include Common Install Settings.
 ##
 
-##
-##    List of Installs.
-##
-
-fshogi_includedir              =  $(includedir)/FairyShogi
-fshogi_libdir                  =  $(libdir)
-fshogi_common_includedir       =  $(fshogi_includedir)/Common
-fshogi_common_libdir           =  $(fshogi_libdir)/Common
-
-fshogi_common_include_HEADERS  =  $(INCLIBHEADERS)
-
-dist_noinst_DATA               =  $(LIBNOINSTDATA)
-dist_noinst_HEADERS            =  $(LIBNOINSTHEADERS)
-
-fshogi_common_lib_LTLIBRARIES  =  $(LIB_SHARED)
-fshogi_common_lib_LIBRARIES    =  $(LIB_STATIC)
+include  $(top_srcdir)/.M4/Makefile.Install.inc
 
 ##
 ##    Build Libraries.

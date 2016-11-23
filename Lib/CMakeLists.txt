@@ -10,15 +10,15 @@
 ##    サブディレクトリの追加。
 ##
 
-add_subdirectory (Tests)
-add_subdirectory (.Config)
+Add_SubDirectory (Tests)
+Add_SubDirectory (.Config)
 
-add_subdirectory (Common)
-add_subdirectory (Game)
-add_subdirectory (Engine)
-add_subdirectory (Interface)
+Add_SubDirectory (Common)
+Add_SubDirectory (Game)
+Add_SubDirectory (Engine)
+Add_SubDirectory (Interface)
 
-if ( ENABLE_WIN32 )
-  add_subdirectory (Win32)
-endif()
+If ( ENABLE_WIN32 )
+  Add_SubDirectory (Win32)
+EndIf()
 

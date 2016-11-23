@@ -7,29 +7,27 @@
 ##    List of Directories.
 ##
 
-BLDTOPDIR               =  @top_builddir@
-SRCTOPDIR               =  @top_srcdir@
-INCTOPDIR               =  $(SRCTOPDIR)/Include
-LIBTOPDIR               =  $(BLDTOPDIR)/Lib
+include  $(top_srcdir)/.M4/Makefile.DirList.inc
 
-DRIVER_LIBDIR           =  $(BLDTOPDIR)/Lib/Tests
-DRIVER_SRCDIR           =  $(SRCTOPDIR)/Lib/Tests
-
-TESTEE_LIBDIR           =  ..
-TESTEE_SRCDIR           =  @srcdir@/..
+DRIVER_SOURCE_DIR       =  ${LIBTOP_SOURCE_DIR}/Tests
+DRIVER_BINARY_DIR       =  ${LIBTOP_BINARY_DIR}/Tests
+TESTEE_SOURCE_DIR       =  @srcdir@/..
+TESTEE_BINARY_DIR       =  ..
 
 ##
 ##    Initialize Test Configurations.
 ##
 
-TESTDRIVERS             =
-LIBNOINSTHEADERS        =
-EXTRADRIVERS            =
-LDTESTDRIVERS           =
+TARGET_TESTEE_LIBRARY       =
 
-TESTCPPFLAGS            =
-TESTLDFLAGS             =
-TESTLIBTESTEE           =
+DIST_NOINST_DATA_FILES      =
+DIST_NOINST_HEADER_FILES    =
+EXTRA_TEST_DRIVERS          =
+LIBRARY_TEST_DRIVERS        =
+SOURCE_TEST_DRIVERS         =
+
+TEST_CPPFLAGS_COMMON        =
+TEST_LDFLAGS_COMMON         =
 
 ##
 ##    Test Configurations.
@@ -38,51 +36,60 @@ TESTLIBTESTEE           =
 include  $(srcdir)/TestConf.mak
 
 ##
-##    List of Source and Header Files.
+##    Append Test Configurations.
 ##
 
-TESTDRIVERS             +=
-LIBNOINSTHEADERS        +=
-EXTRADRIVERS            +=
-LDTESTDRIVERS           +=  $(DRIVER_LIBDIR)/libTestDriver.a
+DIST_NOINST_DATA_FILES      +=  CMakeLists.txt  TestConf.cmake
+DIST_NOINST_HEADER_FILES    +=
+EXTRA_TEST_DRIVERS          +=
+LIBRARY_TEST_DRIVERS        +=  ${DRIVER_BINARY_DIR}/libTestDriver.a
+SOURCE_TEST_DRIVERS         +=
 
 ##
 ##    Compile and Link Options.
 ##
 
+TEST_CPPFLAGS_COMMON        +=
+TEST_LDFLAGS_COMMON         +=
+
 if  AMCNF_CPPUNIT_ENABLED
-TESTXUNITCPPFLAGS       =  -DHAVE_CPPUNIT=1
-TESTXUNITLDFLAGS        =
-TESTXUNITLINKLDADD      =  -lcppunit
+TEST_CPPFLAGS_XUNIT         =  -DHAVE_CPPUNIT=1
+TEST_LDFLAGS_XUNIT          =
+TEST_LINK_LDADD_XUNIT       =  -lcppunit
 else
-TESTXUNITCPPFLAGS       =  -DHAVE_CPPUNIT=0
-TESTXUNITLDFLAGS        =
-TESTXUNITLINKLDADD      =
+TEST_CPPFLAGS_XUNIT         =  -DHAVE_CPPUNIT=0
+TEST_LDFLAGS_XUNIT          =
+TEST_LINK_LDADD_XUNIT       =
 endif
 
-AM_CPPFLAGS             =  \
-        -I$(TESTEE_SRCDIR)  \
-        -I$(INCTOPDIR)      \
-        -I$(SRCTOPDIR)/Lib  \
-        -I$(DRIVER_SRCDIR)  \
-        $(TEST_CPPFLAGS)
+AM_CPPFLAGS         =  \
+        -I${TESTEE_SOURCE_DIR}  \
+        -I${INCTOP_SOURCE_DIR}  \
+        -I${LIBTOP_SOURCE_DIR}  \
+        -I${DRIVER_SOURCE_DIR}  \
+        ${TEST_CPPFLAGS}
 
-AM_CFLAGS               =  $(TESTXUNITCPPFLAGS)
-AM_CXXFLAGS             =  $(TESTXUNITCPPFLAGS)
-AM_LDFLAGS              =  \
-        -L$(LIBTOPDIR)       \
-        $(TESTLDFLAGS)       \
-        $(TESTXUNITLDFLAGS)
+AM_CFLAGS           =  ${TEST_CPPFLAGS_XUNIT}
+AM_CXXFLAGS         =  ${TEST_CPPFLAGS_XUNIT}
+AM_LDFLAGS          =  \
+        -L${LIBTOP_BINARY_DIR}  \
+        ${TEST_LDFLAGS_COMMON}  \
+        ${TEST_LDFLAGS_XUNIT}
 
-LDADD                   =  \
-        $(TESTLIBTESTEE)       \
-        $(LDTESTDRIVERS)       \
-        $(TESTXUNITLINKLDADD)
+LDADD               =  \
+        ${TARGET_TESTEE_LIBRARY}  \
+        ${LIBRARY_TEST_DRIVERS}   \
+        ${TEST_LINK_LDADD_XUNIT}
 
 ##
 ##    List of Installs.
 ##
 
-dist_noinst_HEADERS     =  $(EXTRATESTDRIVERS)  $(LIBNOINSTHEADERS)
-check_PROGRAMS          =  $(TESTS)
+check_PROGRAMS      =  ${TESTS}
+
+##
+##    Include Common Install Settings.
+##
+
+include  $(top_srcdir)/.M4/Makefile.Install.inc
 

@@ -7,56 +7,59 @@
 ##    List of Directories.
 ##
 
+MODULE_DIR_NAME         =  Interface
 SUBDIRS                 =  .  Tests
 
-SRCTOPDIR               =  @top_srcdir@
-INCTOPDIR               =  $(SRCTOPDIR)/Include
-INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
-INCLIBDIR               =  $(INCPKGDIR)/Interface
+include  $(top_srcdir)/.M4/Makefile.DirList.inc
 
 ##
 ##    List of Source and Header Files.
 ##
 
-EXTRALIBSOURCES         =
-EXTRANOINSTDATA         =
-EXTRANOINSTHEADERS      =
-EXTRALIBHEADERS         =
+EXTRA_LIBRARY_SOURCE_FILES  =
+EXTRA_LIBRARY_HEADER_FILES  =
+EXTRA_NOINST_DATA_FILES     =
+EXTRA_NOINST_HEADER_FILES   =
 
-LIBCXXSOURCEFILES       =  \
+LIBRARY_SOURCE_FILES        =  \
         ConsoleInterface.cpp    \
         GameController.cpp      \
         GraphicalInterface.cpp  \
         PixelMatrix.cpp         \
-        $(EXTRALIBSOURCES)
+        ${EXTRA_LIBRARY_SOURCE_FILES}
 
-LIBINSTANTIATIONS       =
-LIBCXXINLINEFILES       =
+LIBRARY_INSTANTIATIONS      =
+LIBRARY_INLINE_FILES        =
 
-LIBNOINSTDATA           =  \
-        CMakeLists.txt      \
-        $(EXTRANOINSTDATA)
-LIBNOINSTHEADERS        =  \
-        $(EXTRANOINSTHEADERS)
+DIST_NOINST_DATA_FILES      =  \
+        CMakeLists.txt              \
+        ${EXTRA_NOINST_DATA_FILES}
 
-INCLIBHEADERS           =  \
-        $(INCLIBDIR)/ConsoleInterface.h    \
-        $(INCLIBDIR)/GameController.h      \
-        $(INCLIBDIR)/GraphicalInterface.h  \
-        $(INCLIBDIR)/PixelMatrix.h         \
-        $(EXTRALIBHEADERS)
+DIST_NOINST_HEADER_FILES    =  \
+        ${EXTRA_NOINST_HEADER_FILES}
 
-LIBNODISTHEADERS        =
+INCLIB_HEADER_FILES         =  \
+        ${INCLIB_SOURCE_DIR}/ConsoleInterface.h    \
+        ${INCLIB_SOURCE_DIR}/GameController.h      \
+        ${INCLIB_SOURCE_DIR}/GraphicalInterface.h  \
+        ${INCLIB_SOURCE_DIR}/PixelMatrix.h         \
+        ${EXTRA_LIBRARY_HEADER_FILES}
 
-LIBINSTALLSOURCES       =
-LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+INCLIB_NODIST_HEADER_FILES  =
+
+LIBRARY_INSTALL_SRCFILES    =  \
+        ${LIBRARY_INLINE_FILES}
+
+LIBRARY_COMPILE_SRCFILES    =  \
+        ${LIBRARY_SOURCE_FILES}    \
+        ${LIBRARY_INSTANTIATIONS}
 
 ##
 ##    List of Libraries.
 ##
 
-LIB_STATIC              =  libfsgInterface.staticd.a
-LIB_SHARED              =
+STATIC_LIBRARIES_LIST   =  libfsgInterface.staticd.a
+SHARED_LIBRARIES_LIST   =
 
 ##
 ##    Internal Libraries.
@@ -66,34 +69,20 @@ LIB_SHARED              =
 ##    Compile and Link Options.
 ##
 
-AM_CPPFLAGS             =  -I$(INCTOPDIR)
+AM_CPPFLAGS          =  \
+        -I${INCTOP_SOURCE_DIR}
 AM_CFLAGS               =
 AM_CXXFLAGS             =
 
 ##
-##    Include Common Settings.
+##    Include Common Install Settings.
 ##
 
-##
-##    List of Installs.
-##
-
-fshogi_includedir                 =  $(includedir)/FairyShogi
-fshogi_libdir                     =  $(libdir)
-fshogi_interface_includedir       =  $(fshogi_includedir)/Interface
-fshogi_interface_libdir           =  $(fshogi_libdir)/Interface
-
-fshogi_interface_include_HEADERS  =  $(INCLIBHEADERS)
-
-dist_noinst_DATA                  =  $(LIBNOINSTDATA)
-dist_noinst_HEADERS               =  $(LIBNOINSTHEADERS)
-
-fshogi_interface_lib_LTLIBRARIES  =  $(LIB_SHARED)
-fshogi_interface_lib_LIBRARIES    =  $(LIB_STATIC)
+include  $(top_srcdir)/.M4/Makefile.Install.inc
 
 ##
 ##    Build Libraries.
 ##
 
-libfsgInterface_staticd_a_SOURCES   =  $(LIBCOMPILESOURCES)
+libfsgInterface_staticd_a_SOURCES   =  ${LIBRARY_SOURCE_FILES}
 

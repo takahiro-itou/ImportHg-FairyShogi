@@ -7,69 +7,63 @@
 ##    List of Directories.
 ##
 
+MODULE_DIR_NAME         =  Win32
 SUBDIRS                 =  .  Tests
 
-SRCTOPDIR               =  @top_srcdir@
-INCTOPDIR               =  $(SRCTOPDIR)/Include
-INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
-INCLIBDIR               =  $(INCPKGDIR)/Win32
+include  $(top_srcdir)/.M4/Makefile.DirList.inc
 
 ##
 ##    List of Source and Header Files.
 ##
 
-EXTRALIBSOURCES         =
-EXTRANOINSTDATA         =
-EXTRANOINSTHEADERS      =
-EXTRALIBHEADERS         =
+EXTRA_LIBRARY_SOURCE_FILES  =
+EXTRA_LIBRARY_HEADER_FILES  =
+EXTRA_NOINST_DATA_FILES     =
+EXTRA_NOINST_HEADER_FILES   =
 
-LIBCXXSOURCEFILES       =  \
-        Animation.cpp       \
-        BitmapImage.cpp     \
-        BitmapResource.cpp  \
-        DialogWindow.cpp    \
-        MatchDialog.cpp     \
-        $(EXTRALIBSOURCES)
+LIBRARY_SOURCE_FILES        =  \
+        Animation.cpp          \
+        BitmapImage.cpp        \
+        BitmapResource.cpp     \
+        DialogWindow.cpp       \
+        MatchDialog.cpp        \
+        ${EXTRA_LIBRARY_SOURCE_FILES}
 
-LIBINSTANTIATIONS       =
-LIBCXXINLINEFILES       =
+LIBRARY_INSTANTIATIONS      =
+LIBRARY_INLINE_FILES        =
 
-LIBNOINSTDATA           =  \
-        CMakeLists.txt      \
-        $(EXTRANOINSTDATA)
-LIBNOINSTHEADERS        =  \
-        $(EXTRANOINSTHEADERS)
+DIST_NOINST_DATA_FILES      =  \
+        CMakeLists.txt              \
+        ${EXTRA_NOINST_DATA_FILES}
 
-INCLIBHEADERS           =  \
-        $(INCLIBDIR)/Animation.h         \
-        $(INCLIBDIR)/BitmapImage.h       \
-        $(INCLIBDIR)/BitmapResource.h    \
-        $(INCLIBDIR)/CommonResources.h   \
-        $(INCLIBDIR)/CommonResources.rc  \
-        $(INCLIBDIR)/DialogWindow.h      \
-        $(INCLIBDIR)/MatchDialog.h       \
-        $(EXTRALIBHEADERS)
+DIST_NOINST_HEADER_FILES    =  \
+        ${EXTRA_NOINST_HEADER_FILES}
 
-LIBNODISTHEADERS        =
+INCLIB_HEADER_FILES         =  \
+        ${INCLIB_SOURCE_DIR}/Animation.h         \
+        ${INCLIB_SOURCE_DIR}/BitmapImage.h       \
+        ${INCLIB_SOURCE_DIR}/BitmapResource.h    \
+        ${INCLIB_SOURCE_DIR}/CommonResources.h   \
+        ${INCLIB_SOURCE_DIR}/CommonResources.rc  \
+        ${INCLIB_SOURCE_DIR}/DialogWindow.h      \
+        ${INCLIB_SOURCE_DIR}/MatchDialog.h       \
+        ${EXTRA_LIBRARY_HEADER_FILES}
 
-LIBINSTALLSOURCES       =
-LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+INCLIB_NODIST_HEADER_FILES  =
 
-##
-##    Suffix Rules.
-##
+LIBRARY_INSTALL_SRCFILES    =  \
+        ${LIBRARY_INLINE_FILES}
 
-SUFFIXES  =  .rc
-
-.rc.o :
-	windres  -i $<  -o $@  -I$(INCTOPDIR)
+LIBRARY_COMPILE_SRCFILES    =  \
+        ${LIBRARY_SOURCE_FILES}    \
+        ${LIBRARY_INSTANTIATIONS}
 
 ##
 ##    List of Libraries.
 ##
 
-LIB_STATIC              =  libfsgWin32.staticd.a
-LIB_SHARED              =
+STATIC_LIBRARIES_LIST   =  libfsgWin32.staticd.a
+SHARED_LIBRARIES_LIST   =
 
 ##
 ##    Internal Libraries.
@@ -79,34 +73,20 @@ LIB_SHARED              =
 ##    Compile and Link Options.
 ##
 
-AM_CPPFLAGS             =  -I$(INCTOPDIR)
+AM_CPPFLAGS          =  \
+        -I${INCTOP_SOURCE_DIR}
 AM_CFLAGS               =
 AM_CXXFLAGS             =
 
 ##
-##    Include Common Settings.
+##    Include Common Install Settings.
 ##
 
-##
-##    List of Installs.
-##
-
-fshogi_includedir             =  $(includedir)/FairyShogi
-fshogi_libdir                 =  $(libdir)
-fshogi_win32_includedir       =  $(fshogi_includedir)/Win32
-fshogi_win32_libdir           =  $(fshogi_libdir)/Win32
-
-fshogi_win32_include_HEADERS  =  $(INCLIBHEADERS)
-
-dist_noinst_DATA              =  $(LIBNOINSTDATA)
-dist_noinst_HEADERS           =  $(LIBNOINSTHEADERS)
-
-fshogi_win32_lib_LTLIBRARIES  =  $(LIB_SHARED)
-fshogi_win32_lib_LIBRARIES    =  $(LIB_STATIC)
+include  $(top_srcdir)/.M4/Makefile.Install.inc
 
 ##
 ##    Build Libraries.
 ##
 
-libfsgWin32_staticd_a_SOURCES   =  $(LIBCOMPILESOURCES)
+libfsgWin32_staticd_a_SOURCES   =  ${LIBRARY_SOURCE_FILES}
 

@@ -7,53 +7,56 @@
 ##    List of Directories.
 ##
 
+MODULE_DIR_NAME         =  Game
 SUBDIRS                 =  .  Tests
 
-SRCTOPDIR               =  @top_srcdir@
-INCTOPDIR               =  $(SRCTOPDIR)/Include
-INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
-INCLIBDIR               =  $(INCPKGDIR)/Game
+include  $(top_srcdir)/.M4/Makefile.DirList.inc
 
 ##
 ##    List of Source and Header Files.
 ##
 
-EXTRALIBSOURCES         =
-EXTRANOINSTDATA         =
-EXTRANOINSTHEADERS      =
-EXTRALIBHEADERS         =
+EXTRA_LIBRARY_SOURCE_FILES  =
+EXTRA_LIBRARY_HEADER_FILES  =
+EXTRA_NOINST_DATA_FILES     =
+EXTRA_NOINST_HEADER_FILES   =
 
-LIBCXXSOURCEFILES       =  \
-        BoardState.cpp      \
-        RuleTables.cpp      \
-        $(EXTRALIBSOURCES)
+LIBRARY_SOURCE_FILES        =  \
+        BoardState.cpp         \
+        RuleTables.cpp         \
+        ${EXTRA_LIBRARY_SOURCE_FILES}
 
-LIBINSTANTIATIONS       =
-LIBCXXINLINEFILES       =
+LIBRARY_INSTANTIATIONS      =
+LIBRARY_INLINE_FILES        =
 
-LIBNOINSTDATA           =  \
-        CMakeLists.txt      \
-        $(EXTRANOINSTDATA)
-LIBNOINSTHEADERS        =  \
-        $(EXTRANOINSTHEADERS)
+DIST_NOINST_DATA_FILES      =  \
+        CMakeLists.txt              \
+        ${EXTRA_NOINST_DATA_FILES}
 
-INCLIBHEADERS           =  \
-        $(INCLIBDIR)/BitSet.h      \
-        $(INCLIBDIR)/BoardState.h  \
-        $(INCLIBDIR)/RuleTables.h  \
-        $(EXTRALIBHEADERS)
+DIST_NOINST_HEADER_FILES    =  \
+        ${EXTRA_NOINST_HEADER_FILES}
 
-LIBNODISTHEADERS        =
+INCLIB_HEADER_FILES         =  \
+        ${INCLIB_SOURCE_DIR}/BitSet.h      \
+        ${INCLIB_SOURCE_DIR}/BoardState.h  \
+        ${INCLIB_SOURCE_DIR}/RuleTables.h  \
+        ${EXTRA_LIBRARY_HEADER_FILES}
 
-LIBINSTALLSOURCES       =
-LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+INCLIB_NODIST_HEADER_FILES  =
+
+LIBRARY_INSTALL_SRCFILES    =  \
+        ${LIBRARY_INLINE_FILES}
+
+LIBRARY_COMPILE_SRCFILES    =  \
+        ${LIBRARY_SOURCE_FILES}    \
+        ${LIBRARY_INSTANTIATIONS}
 
 ##
 ##    List of Libraries.
 ##
 
-LIB_STATIC              =  libfsgGame.staticd.a
-LIB_SHARED              =
+STATIC_LIBRARIES_LIST   =  libfsgGame.staticd.a
+SHARED_LIBRARIES_LIST   =
 
 ##
 ##    Internal Libraries.
@@ -63,34 +66,20 @@ LIB_SHARED              =
 ##    Compile and Link Options.
 ##
 
-AM_CPPFLAGS             =  -I$(INCTOPDIR)
+AM_CPPFLAGS          =  \
+        -I${INCTOP_SOURCE_DIR}
 AM_CFLAGS               =
 AM_CXXFLAGS             =
 
 ##
-##    Include Common Settings.
+##    Include Common Install Settings.
 ##
 
-##
-##    List of Installs.
-##
-
-fshogi_includedir            =  $(includedir)/FairyShogi
-fshogi_libdir                =  $(libdir)
-fshogi_game_includedir       =  $(fshogi_includedir)/Game
-fshogi_game_libdir           =  $(fshogi_libdir)/Game
-
-fshogi_game_include_HEADERS  =  $(INCLIBHEADERS)
-
-dist_noinst_DATA             =  $(LIBNOINSTDATA)
-dist_noinst_HEADERS          =  $(LIBNOINSTHEADERS)
-
-fshogi_game_lib_LTLIBRARIES  =  $(LIB_SHARED)
-fshogi_game_lib_LIBRARIES    =  $(LIB_STATIC)
+include  $(top_srcdir)/.M4/Makefile.Install.inc
 
 ##
 ##    Build Libraries.
 ##
 
-libfsgGame_staticd_a_SOURCES   =  $(LIBCOMPILESOURCES)
+libfsgGame_staticd_a_SOURCES   =  ${LIBRARY_SOURCE_FILES}
 

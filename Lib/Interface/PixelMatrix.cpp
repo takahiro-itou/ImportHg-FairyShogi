@@ -26,48 +26,6 @@
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Interface  {
 
-#if  !defined( FAIRYSHOGI_WIN32_API )
-
-//========================================================================
-//
-//    PixelMatrix::TBitmapInfoHeader  struct.
-//
-
-struct  PixelMatrix::TBitmapInfoHeader
-{
-    DWORD   biSize;
-    LONG    biWidth;
-    LONG    biHeight;
-    WORD    biPlanes;
-    WORD    biBitCount;
-    DWORD   biCompression;
-    DWORD   biSizeImage;
-    LONG    biXPelsPerMeter;
-    LONG    biYPelsPerMeter;
-    DWORD   biClrUsed;
-    DWORD   biClrImportant;
-};
-
-struct  PixelMatrix::TRgbQuad
-{
-    BYTE    rgbBlue;
-    BYTE    rgbGreen;
-    BYTE    rgbRed;
-    BYTE    rgbReserved;
-};
-
-struct  PixelMatrix::TBitmapInfo
-{
-    TBitmapInfoHeader   bmiHeader;
-    TRgbQuad            bmiColors[1];
-};
-
-enum  {
-    BI_RGB  =  0
-};
-
-#endif  //  !defined( FAIRYSHOGI_WIN32_API )
-
 //========================================================================
 //
 //    PixelMatrix  class.

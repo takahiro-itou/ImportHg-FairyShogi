@@ -1,19 +1,21 @@
 
-set (COMMONSOURCES  CommandInterpreter.cpp)
-set (COMMONLIBS     fsgInterface  fsgEngine  fsgGame)
+Set (COMMONSOURCES  CommandInterpreter.cpp)
+Set (COMMONLIBS
+        ${PROJECT_NAME}-${LIBRARIES_TARGET_PREFIX}Interface
+)
 
-add_executable (AutoMatch   AutoMatch.cpp   ${COMMONSOURCES})
-add_executable (FairyShogi  FairyShogi.cpp  ${COMMONSOURCES})
+Add_Executable (AutoMatch   AutoMatch.cpp   ${COMMONSOURCES})
+Add_Executable (FairyShogi  FairyShogi.cpp  ${COMMONSOURCES})
 
-target_link_libraries (AutoMatch   ${COMMONLIBS})
-target_link_libraries (FairyShogi  ${COMMONLIBS})
+Target_Link_Libraries (AutoMatch   ${COMMONLIBS})
+Target_Link_Libraries (FairyShogi  ${COMMONLIBS})
 
 ##----------------------------------------------------------------
 ##
 ##    サブディレクトリの追加。
 ##
 
-if ( ENABLE_WIN32 )
-  add_subdirectory (Win32)
-endif()
+If ( ENABLE_WIN32 )
+  Add_Subdirectory (Win32)
+EndIf()
 

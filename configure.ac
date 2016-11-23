@@ -31,7 +31,7 @@ dnl
 dnl   適当なバージョンの automake を設定
 dnl
 
-m4_include([.M4/InitAutomake.m4])
+m4_include([.M4/InitAutoMake.m4])
 
 dnl----------------------------------------------------------------
 dnl
@@ -167,6 +167,8 @@ m4_include([.M4/WithExtLibs.m4])
 MYAC_WITH_EXT_LIB(
     [CPPUNIT], [cppunit], [path to cppunit], [yes],
     [AMCNF_CPPUNIT_ENABLED])
+
+m4_include([.M4/FindCurses.m4])
 
 dnl----------------------------------------------------------------
 dnl

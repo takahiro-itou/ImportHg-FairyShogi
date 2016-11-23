@@ -41,8 +41,8 @@ Set (LIBTOP_BINARY_DIR     "${PROJECT_BINARY_DIR}/${LIBTOP_DIR_NAME}")
 Set (INCLUDE_SOURCE_DIR    "${INCTOP_SOURCE_DIR}/${INCPKG_DIR_NAME}")
 Set (INCLUDE_BINARY_DIR    "${INCTOP_BINARY_DIR}/${INCPKG_DIR_NAME}")
 
-
-set (FSHOGI_INCLUDE_DIR  "Include/FairyShogi")
+Set (LIBRARIES_TARGET_PREFIX)
+Set (LIBRARIES_NAME_PREFIX)
 
 ##----------------------------------------------------------------
 ##
@@ -97,6 +97,19 @@ Set (FAIRYSHOGI_CNF_NAMESPACE  fairyshogi_ns)
 
 Include_Directories ("${PROJECT_SOURCE_DIR}/Include")
 Include_Directories ("${PROJECT_BINARY_DIR}/Include")
+
+##----------------------------------------------------------------
+##
+##    Additional Packages.
+##    外部ライブラリ。
+##
+
+Include (${COMMON_CMAKE_DIR}/FindCppUnit.cmake)
+
+Set (CURSES_USE_NCURSES  TRUE)
+Find_Package (Curses)
+Message (STATUS  "CURSES_INCLUDE_DIRS = ${CURSES_INCLUDE_DIRS}")
+Message (STATUS  "CURSES_LIBRARIES    = ${CURSES_LIBRARIES}")
 
 ##----------------------------------------------------------------
 ##
