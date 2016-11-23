@@ -41,8 +41,8 @@ Set (LIBTOP_BINARY_DIR     "${PROJECT_BINARY_DIR}/${LIBTOP_DIR_NAME}")
 Set (INCLUDE_SOURCE_DIR    "${INCTOP_SOURCE_DIR}/${INCPKG_DIR_NAME}")
 Set (INCLUDE_BINARY_DIR    "${INCTOP_BINARY_DIR}/${INCPKG_DIR_NAME}")
 
-
-set (FSHOGI_INCLUDE_DIR  "Include/FairyShogi")
+Set (LIBRARIES_TARGET_PREFIX)
+Set (LIBRARIES_NAME_PREFIX)
 
 ##----------------------------------------------------------------
 ##
