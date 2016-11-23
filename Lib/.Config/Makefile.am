@@ -7,52 +7,53 @@
 ##    List of Directories.
 ##
 
-SRCTOPDIR               =  @top_srcdir@
-INCTOPDIR               =  $(SRCTOPDIR)/Include
-INCPKGDIR               =  $(INCTOPDIR)/FairyShogi
-INCLIBDIR               =  $(INCPKGDIR)/.Config
+MODULE_DIR_NAME         =  .Config
+SUBDIRS                 =  .
 
-CNF_SRCTOPDIR           =  @top_builddir@
-CNF_INCTOPDIR           =  $(CNF_SRCTOPDIR)/Include
-CNF_INCPKGDIR           =  $(CNF_INCTOPDIR)/FairyShogi
-CNF_INCLIBDIR           =  $(CNF_INCPKGDIR)/.Config
+include  $(top_srcdir)/.M4/Makefile.DirList.inc
 
 ##
 ##    List of Source and Header Files.
 ##
 
-EXTRALIBSOURCES         =
-EXTRANOINSTDATA         =
-EXTRANOINSTHEADERS      =
-EXTRALIBHEADERS         =
+EXTRA_LIBRARY_SOURCE_FILES  =
+EXTRA_LIBRARY_HEADER_FILES  =
+EXTRA_NOINST_DATA_FILES     =
+EXTRA_NOINST_HEADER_FILES   =
 
-LIBCXXSOURCEFILES       =  \
-        $(EXTRALIBSOURCES)
+LIBRARY_SOURCE_FILES        =  \
+        ${EXTRA_LIBRARY_SOURCE_FILES}
 
-LIBINSTANTIATIONS       =
-LIBCXXINLINEFILES       =
+LIBRARY_INSTANTIATIONS      =
+LIBRARY_INLINE_FILES        =
 
-LIBNOINSTDATA           =  \
-        CMakeLists.txt      \
-        $(EXTRANOINSTDATA)
-LIBNOINSTHEADERS        =  \
-        $(EXTRANOINSTHEADERS)
+DIST_NOINST_DATA_FILES      =  \
+        CMakeLists.txt                               \
+        ${INCLIB_SOURCE_DIR}/ExtraConfig.h.cmake.in  \
+        ${EXTRA_NOINST_DATA_FILES}
 
-INCLIBHEADERS           =  \
-        $(EXTRALIBHEADERS)
+DIST_NOINST_HEADER_FILES    =  \
+        ${EXTRA_NOINST_HEADER_FILES}
 
-LIBNODISTHEADERS        =  \
-        $(CNF_INCLIBDIR)/ConfiguredFairyShogi.h
+INCLIB_HEADER_FILES         =  \
+        ${EXTRA_LIBRARY_HEADER_FILES}
 
-LIBINSTALLSOURCES       =
-LIBCOMPILESOURCES       =  $(LIBCXXSOURCEFILES)  $(LIBINSTANTIATIONS)
+INCLIB_NODIST_HEADER_FILES  =  \
+        ${INCLIB_BINARY_DIR}/ConfiguredFairyShogi.h
+
+LIBRARY_INSTALL_SRCFILES    =  \
+        ${LIBRARY_INLINE_FILES}
+
+LIBRARY_COMPILE_SRCFILES    =  \
+        ${LIBRARY_SOURCE_FILES}    \
+        ${LIBRARY_INSTANTIATIONS}
 
 ##
 ##    List of Libraries.
 ##
 
-LIB_STATIC              =
-LIB_SHARED              =
+STATIC_LIBRARIES_LIST   =
+SHARED_LIBRARIES_LIST   =
 
 ##
 ##    Internal Libraries.
@@ -62,32 +63,16 @@ LIB_SHARED              =
 ##    Compile and Link Options.
 ##
 
-AM_CPPFLAGS             =  -I$(INCTOPDIR)
+AM_CPPFLAGS          =  \
+        -I${INCTOP_SOURCE_DIR}
 AM_CFLAGS               =
 AM_CXXFLAGS             =
 
 ##
-##    List of Installs.
+##    Include Common Install Settings.
 ##
 
-fshogi_includedir               =  $(includedir)/FairyShogi
-fshogi_libdir                   =  $(libdir)
-fshogi_config_includedir        =  $(fshogi_includedir)/.Config
-fshogi_config_libdir            =  $(fshogi_libdir)/.Config
-
-fshogi_config_include_HEADERS   =  $(INCLIBHEADERS)
-
-dist_noinst_DATA                =  $(LIBNOINSTDATA)
-dist_noinst_HEADERS             =  $(LIBNOINSTHEADERS)
-
-fshogi_config_lib_LTLIBRARIES   =  $(LIB_SHARED)
-fshogi_config_lib_LIBRARIES     =  $(LIB_STATIC)
-
-##
-##    List of (No Dist) Installs.
-##
-
-nodist_fshogi_config_include_HEADERS    =  $(LIBNODISTHEADERS)
+include  $(top_srcdir)/.M4/Makefile.Install.inc
 
 ##
 ##    Build Libraries.
