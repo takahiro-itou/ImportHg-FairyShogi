@@ -1,5 +1,5 @@
 
-set (FSHOGI_WIN32_SOURCES
+Set (FSHOGI_WIN32_SOURCES
         BoardScreen.cpp
         ChoiceScreen.cpp
         DiceScreen.cpp
@@ -10,11 +10,13 @@ set (FSHOGI_WIN32_SOURCES
         ScreenLayer.cpp
         Resources.rc
 )
-set (WIN32_COMMONLIBS
-        fsgWin32  fsgInterface  fsgEngine  fsgGame
+
+Set (WIN32_COMMONLIBS
+        ${PROJECT_NAME}-${LIBRARIES_TARGET_PREFIX}Win32
+        fsgInterface  fsgEngine  fsgGame
         Gdi32
 )
 
-add_executable (FairyShogiWin32   WIN32  ${FSHOGI_WIN32_SOURCES})
-target_link_libraries (FairyShogiWin32  ${WIN32_COMMONLIBS})
+Add_Executable (FairyShogiWin32   WIN32  ${FSHOGI_WIN32_SOURCES})
+Target_Link_Libraries (FairyShogiWin32   ${WIN32_COMMONLIBS})
 
