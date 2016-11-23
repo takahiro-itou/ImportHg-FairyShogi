@@ -21,12 +21,14 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/FairyShogiConst.h"
+#include    "FairyShogi/Helper/TerminalScreen.h"
 
 #include    <iostream>
 #include    <memory.h>
 
 #include    <assert.h>
 #include    <iomanip>
+#include    <sstream>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Game  {
@@ -471,18 +473,20 @@ BoardState::isCheckState(
     }
     if ( posTrg == BOARD_SIZE ) {
         //  致命的エラー。玉がどこにもいない。  //
-        std::cerr   <<  "# FATAL ERROR : No King :"
-                    <<  piKing  <<  std::endl;
+        std::stringstream   ss;
+        ss  <<  "# FATAL ERROR : No King :"
+            <<  piKing  <<  "\n";
         for ( RankRow y = 0; y < POS_NUM_ROWS; ++ y ) {
             for ( FileCol x = 0; x < POS_NUM_COLS; ++ x ) {
                 const  FieldIndex   fi
                     = getMatrixPos(POS_NUM_COLS - 1 - x, y);
-                std::cerr   <<  std::setw(2)
-                            <<  curStat.m_bsField[fi]
-                            <<  ", ";
+                ss  <<  std::setw(2)
+                    <<  curStat.m_bsField[fi]
+                    <<  ", ";
             }
-            std::cerr   <<  std::endl;
+            ss  <<  "\n";
         }
+        Helper::TerminalScreen::writeLineToStdErr(ss.str());
 
         return ( 0 );
     }

@@ -26,6 +26,7 @@
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Game/BoardState.h"
+#include    "FairyShogi/Helper/TerminalScreen.h"
 
 #include    <iostream>
 #include    <sstream>
@@ -72,7 +73,7 @@ EngineBase::createEngine(
         ss  <<  "Invalid Engine Name ["
             <<  engName
             <<  ']';
-        std::cerr  << ss.str()  <<  std::endl;
+        Helper::TerminalScreen::writeLineToStdErr(ss.str());
         throw  std::runtime_error(ss.str());
     }
 
