@@ -9,7 +9,6 @@ Set (TARGET_TESTEE_LIBRARY  "${MODULE_TITLE}")
 Set (DRIVER_SOURCE_DIR      "${LIBTOP_SOURCE_DIR}/Tests")
 Set (DRIVER_BINARY_DIR      "${LIBTOP_BINARY_DIR}/Tests")
 
-
 ##----------------------------------------------------------------
 ##
 ##    テストの設定。

@@ -6,6 +6,7 @@
 ##
 
 Set (LIBRARIES_TARGET_PREFIX)
+Set (LIBRARIES_NAME_PREFIX)
 
 ##----------------------------------------------------------------
 ##
