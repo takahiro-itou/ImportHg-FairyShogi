@@ -41,7 +41,7 @@ else
   amtrgver=1.12
 fi
 ${RM_F}  .M4/InitAutoMake.m4
-${LN_H}  .M4/InitAutomake.${amtrgver}.m4  .M4/InitAutoMake.m4
+${LN_H}  .M4/InitAutoMake.${amtrgver}.m4  .M4/InitAutoMake.m4
 
 ##
 ##  定数宣言
