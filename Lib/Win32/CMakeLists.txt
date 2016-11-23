@@ -35,6 +35,7 @@ Set (INCLIB_HEADER_FILES
 )
 
 Set (MODULE_NEEDS_LIBRARIES
+        ${PROJECT_NAME}-${LIBRARIES_TARGET_PREFIX}Interface
 )
 
 ##----------------------------------------------------------------
