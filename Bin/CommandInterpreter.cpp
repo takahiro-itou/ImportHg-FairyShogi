@@ -311,9 +311,10 @@ CommandInterpreter::executeDiceCommand(
     }
 
     if ( strArgs[0] == 'g' ) {
-        std::cout   <<  "Current Constraint. Dice = "
-                    <<  objGame.getConstraint()
-                    <<  std::endl;
+        std::stringstream   ss;
+        ss  <<  "Current Constraint. Dice = "
+            <<  objGame.getConstraint();
+        Helper::TerminalScreen::writeLineToStdOut(ss.str());
         return ( ERR_SUCCESS );
     }
 
@@ -322,7 +323,11 @@ CommandInterpreter::executeDiceCommand(
             rv  =  (ciClbk.m_rndGen.getNext() & RANDOM_MAX_VALUE);
         const  int  rn
             =  (rv * Common::DICE_MAX_VALUE) / (RANDOM_MAX_VALUE + 1) + 1;
-        std::cout   <<  rn  <<  std::endl;
+
+        std::stringstream   ss;
+        ss  <<  rn;
+        Helper::TerminalScreen::writeLineToStdOut(ss.str());
+
         objGame.setConstraint(rn);
         return ( ERR_SUCCESS );
     }
@@ -603,8 +608,9 @@ CommandInterpreter::executeRecordCommand(
         return ( retErr );
     }
 
-    std::ostream  *    pOutStr  =  &(std::cout);
-    std::ofstream      ofsRec;
+    std::stringstream   ssTemp;
+    std::ostream  *     pOutStr = &(ssTemp);
+    std::ofstream       ofsRec;
     if ( !(strArgs.empty()) ) {
         ofsRec.open( strArgs.c_str() );
         if ( !ofsRec ) {
@@ -613,7 +619,7 @@ CommandInterpreter::executeRecordCommand(
                 <<  "]";
             Helper::TerminalScreen::writeLineToStdErr(ss.str());
         } else {
-            pOutStr =  &(ofsRec);
+            pOutStr = &(ofsRec);
         }
     }
 
@@ -622,6 +628,10 @@ CommandInterpreter::executeRecordCommand(
     {
         objGame.writeActionViewSfen( * itr, BOOL_TRUE,  * pOutStr )
                 <<  std::endl;
+    }
+
+    if ( pOutStr == &ssTemp ) {
+        Helper::TerminalScreen::writeLineToStdOut(ssTemp.str());
     }
 
     return ( ERR_SUCCESS );
