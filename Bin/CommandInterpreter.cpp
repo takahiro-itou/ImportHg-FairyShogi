@@ -20,12 +20,14 @@
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/HelperMacros.h"
 #include    "FairyShogi/Common/ViewBuffer.h"
+#include    "FairyShogi/Helper/TerminalScreen.h"
 
 #include    <iostream>
 #include    <limits>
 #include    <cstdlib>
 #include    <cstring>
 #include    <fstream>
+#include    <sstream>
 #include    <time.h>
 #include    <vector>
 
@@ -206,7 +208,7 @@ CommandInterpreter::interpretConsoleInput(
     }
 
     if ( pfnExecCmd == (nullptr) ) {
-        std::cerr   <<  "Invalid Command."  << std::endl;
+        Helper::TerminalScreen::writeLineToStdErr("Invalid Command.");
         return ( ERR_INVALID_COMMAND );
     }
 
@@ -299,11 +301,11 @@ CommandInterpreter::executeDiceCommand(
     const  size_t
         numChk  = bsCur.isCheckState(objGame.getCurrentPlayer(), bbFrom);
     if ( numChk == 1 ) {
-        std::cerr   <<  "* CHECK!"  <<  std::endl;
+        Helper::TerminalScreen::writeLineToStdErr("* CHECK!");
         objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
         return ( ERR_SUCCESS );
     } else if ( numChk >= 2 ) {
-        std::cerr   <<  "** DOUBLE CHECK!"  <<  std::endl;
+        Helper::TerminalScreen::writeLineToStdErr("** DOUBLE CHECK!");
         objGame.setConstraint(Common::DICE_DEFAULT_VALUE);
         return ( ERR_SUCCESS );
     }
@@ -383,11 +385,13 @@ CommandInterpreter::executeForwardCommand(
         return ( ERR_INVALID_COMMAND );
     }
 
-    std::cerr   <<  "# DEBUG (USI) : ";
-    objGame.writeActionViewSfen(actView, BOOL_TRUE, std::cerr)
+    std::stringstream   ss;
+    ss      <<  "# DEBUG (USI) : ";
+    objGame.writeActionViewSfen(actView, BOOL_TRUE,  ss)
             <<  std::endl;
-    std::cerr   <<  "# DEBUG (CSA) : ";
-    objGame.writeActionViewCsa(actView, std::cerr)  <<  std::endl;
+    ss      <<  "# DEBUG (CSA) : ";
+    objGame.writeActionViewCsa(actView,  ss);
+    Helper::TerminalScreen::writeLineToStdErr(ss.str());
 
     ActionList      actList;
     objGame.makeLegalActionList(0, -1, actList);
@@ -402,7 +406,7 @@ CommandInterpreter::executeForwardCommand(
     }
 
     if ( flgLeg != Common::ALF_LEGAL_ACTION ) {
-        std::cerr   <<  "Not Legal Move."   <<  std::endl;
+        Helper::TerminalScreen::writeLineToStdErr("Not Legal Move.");
         if ( strArgs[strArgs.length() - 1] != '!' ) {
             return ( ERR_ILLEGAL_ACTION );
         }
@@ -443,18 +447,22 @@ CommandInterpreter::executeGoCommand(
     ActionView  actData;
 
     if ( objGame.computeBestAction(actData) != ERR_SUCCESS ) {
-        std::cerr   <<  "No Legal Actions"  <<  std::endl;
+        Helper::TerminalScreen::writeLineToStdErr("No Legal Actions");
         return ( ERR_SUCCESS );
     }
 
-    outStr      <<  "bestmove ";
+    outStr  <<  "bestmove ";
     objGame.writeActionViewSfen(actData,  BOOL_FALSE,  outStr)
             <<  std::endl;
-    std::cerr   <<  "#  COM (USI) : ";
-    objGame.writeActionViewSfen(actData,  BOOL_TRUE,  std::cerr)
+
+    std::stringstream   ss;
+
+    ss      <<  "#  COM (USI) : ";
+    objGame.writeActionViewSfen(actData,  BOOL_TRUE,  ss)
             <<  std::endl;
-    std::cerr   <<  "#  COM (CSA) : ";
-    objGame.writeActionViewCsa(actData, std::cerr)  <<  std::endl;
+    ss      <<  "#  COM (CSA) : ";
+    objGame.writeActionViewCsa(actData,  ss);
+    Helper::TerminalScreen::writeLineToStdErr(ss.str());
 
     return ( ERR_SUCCESS );
 }
@@ -480,7 +488,9 @@ CommandInterpreter::executeListCommand(
     if ( strArgs[ strArgs.length() - 1 ] == '!' ) {
         fLegal  =  Common::ALF_ALL_FLAGS;
     }
-    std::cerr   <<  "List For Dice = "  <<  dc  <<  std::endl;
+    std::stringstream   ss;
+    ss  <<  "List For Dice = "  <<  dc;
+    Helper::TerminalScreen::writeLineToStdErr(ss.str());
 
     ActionList      vActs;
     objGame.makeLegalActionList(fLegal, dc, vActs);
@@ -598,8 +608,10 @@ CommandInterpreter::executeRecordCommand(
     if ( !(strArgs.empty()) ) {
         ofsRec.open( strArgs.c_str() );
         if ( !ofsRec ) {
-            std::cerr   <<  "File Open Failure. ["  <<  strArgs
-                        <<  "]"     <<  std::endl;
+            std::stringstream   ss;
+            ss  <<  "File Open Failure. ["  <<  strArgs
+                <<  "]";
+            Helper::TerminalScreen::writeLineToStdErr(ss.str());
         } else {
             pOutStr =  &(ofsRec);
         }

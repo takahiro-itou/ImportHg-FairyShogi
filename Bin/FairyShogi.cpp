@@ -20,6 +20,7 @@
 #include    "FairyShogi/Common/FairyShogiTypes.h"
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Common/ViewBuffer.h"
+#include    "FairyShogi/Helper/TerminalScreen.h"
 #include    "FairyShogi/Interface/ConsoleInterface.h"
 
 #include    <iostream>
@@ -36,8 +37,7 @@ Interface::CommandInterpreter   g_ciGameCtrl;
 
 int  main(int argc, char * argv[])
 {
-    std::cerr   <<  "Fairy Shogi Version 0.0"
-                <<  std::endl;
+    Helper::TerminalScreen::writeLineToStdErr("Fairy Shogi Version 0.0");
 
     std::string     strBuf;
     ErrCode         retErr;
@@ -48,7 +48,7 @@ int  main(int argc, char * argv[])
         if ( ! inStr ) {
             break;
         }
-        std::cerr   <<  ">";
+        Helper::TerminalScreen::writeTextToStdErr(">");
         std::getline(inStr, strBuf);
 
         if ( strBuf.empty() ) {
@@ -65,7 +65,7 @@ int  main(int argc, char * argv[])
 
         retErr  =  g_ciGameCtrl.interpretConsoleInput(strBuf,  std::cout);
         if ( retErr != ERR_SUCCESS ) {
-            std::cerr   <<  "\nCommand Failed"  <<  std::endl;
+            Helper::TerminalScreen::writeLineToStdErr("\nCommand Failed");
         }
 
     }
