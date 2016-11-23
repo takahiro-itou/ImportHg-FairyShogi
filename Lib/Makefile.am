@@ -5,10 +5,12 @@
 
 SUBLIBS  =  Common  Helper  Game  Engine  Interface
 
-SUBLIBS  +=  TextUI
-
 if  FAIRYSHOGI_AMCNF_ENABLE_WINDOWS_H
 SUBLIBS  +=  Win32
+endif
+
+if  FAIRYSHOGI_AMCNF_ENABLE_CURSES
+SUBLIBS  +=  TextUI
 endif
 
 SUBDIRS  =  Tests  .Config  $(SUBLIBS)  .

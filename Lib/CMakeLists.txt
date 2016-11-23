@@ -18,9 +18,12 @@ Add_SubDirectory (Helper)
 Add_SubDirectory (Game)
 Add_SubDirectory (Engine)
 Add_SubDirectory (Interface)
-Add_SubDirectory (TextUI)
+
+If ( CURSES_FOUND )
+  Add_SubDirectory (TextUI)
+EndIf ()
 
 If ( ENABLE_WIN32 )
   Add_SubDirectory (Win32)
-EndIf()
+EndIf ()
 

@@ -67,9 +67,9 @@ Include (${COMMON_CMAKE_DIR}/CheckStaticAssert.cmake)
 Option (ENABLE_WIN32  "Enable Win32 API."  ON)
 If ( ENABLE_WIN32 )
   Set (FAIRYSHOGI_CNF_WIN32_API  1)
-Else()
+Else  ()
   Set (FAIRYSHOGI_CNF_WIN32_API  0)
-EndIf()
+EndIf ()
 
 ##
 ##    Check Header Files.
@@ -106,10 +106,23 @@ Include_Directories ("${PROJECT_BINARY_DIR}/Include")
 
 Include (${COMMON_CMAKE_DIR}/FindCppUnit.cmake)
 
-Set (CURSES_USE_NCURSES  TRUE)
-Find_Package (Curses)
-Message (STATUS  "CURSES_INCLUDE_DIRS = ${CURSES_INCLUDE_DIRS}")
-Message (STATUS  "CURSES_LIBRARIES    = ${CURSES_LIBRARIES}")
+Option (ENABLE_CURSES  "Enable Curses."  ON)
+
+If ( ENABLE_CURSES )
+    Set (CURSES_USE_NCURSES  TRUE)
+    Find_Package (Curses)
+    Message (STATUS  "CURSES_INCLUDE_DIRS = ${CURSES_INCLUDE_DIRS}")
+    Message (STATUS  "CURSES_LIBRARIES    = ${CURSES_LIBRARIES}")
+Else  ()
+    Message (STATUS  "Skip. CURSES ... Disabled by User.")
+    Set (CURSES_FOUND  FALSE)
+EndIf ()
+
+If ( CURSES_FOUND )
+  Set (FAIRYSHOGI_CNF_CURSES_ENABLED  1)
+Else  ()
+  Set (FAIRYSHOGI_CNF_CURSES_ENABLED  0)
+EndIf ()
 
 ##----------------------------------------------------------------
 ##
