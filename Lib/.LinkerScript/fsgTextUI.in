@@ -1,0 +1,6 @@
+
+/*  Linker Script.  */
+INPUT( AS_NEEDED(TextUI/libfsgTextUI.staticd.a) )
+
+INPUT( AS_NEEDED(-lfsgInterface) )
+

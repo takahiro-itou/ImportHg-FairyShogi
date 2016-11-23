@@ -50,7 +50,7 @@ LIBRARY_COMPILE_SRCFILES    =  \
 ##    List of Libraries.
 ##
 
-STATIC_LIBRARIES_LIST   =  libfsgHelper.staticd.a
+STATIC_LIBRARIES_LIST   =  libfsgTextUI.staticd.a
 SHARED_LIBRARIES_LIST   =
 
 ##
@@ -76,5 +76,5 @@ include  $(top_srcdir)/.M4/Makefile.Install.inc
 ##    Build Libraries.
 ##
 
-libfsgHelper_staticd_a_SOURCES   =  ${LIBRARY_SOURCE_FILES}
+libfsgTextUI_staticd_a_SOURCES   =  ${LIBRARY_SOURCE_FILES}
 
