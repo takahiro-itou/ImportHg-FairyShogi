@@ -19,8 +19,10 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Game/BoardState.h"
+#include    "FairyShogi/Helper/TerminalScreen.h"
 
 #include    <iostream>
+#include    <sstream>
 #include    <time.h>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -92,10 +94,7 @@ EngineLevel2::computeBestAction(
         const  TConstraint  vCons,
         ActionView          &actRet)
 {
-    typedef     BoardState::ActionData          ActionData;
-    typedef     std::vector<ActionData>         ActionDataList;
-    typedef     ActionDataList::const_iterator  ActIter;
-
+    std::stringstream   ss;
 
     //  現在の局面を、内部形式に変換する。  //
     BoardState      curStat;
@@ -115,14 +114,14 @@ EngineLevel2::computeBestAction(
         return ( ERR_SUCCESS );
     }
 
-    BoardState      bsClone;
-    BoardState      bsClone2;
-    ActionData      actData;
-    ActionDataList  vActs;
-    ActionDataList  vActs2;
+    BoardState  bsClone;
+    BoardState  bsClone2;
+    ActionData  actData;
+    ActionList  vActs;
+    ActionList  vActs2;
 
-    int             idxMin  =  0;
-    double          scrMin  =  100000;
+    int         idxMin  =  0;
+    double      scrMin  =  100000;
 
     const  PlayerIndex  piRival = piTurn ^ Common::PLAYER_OPPOSITE;
 
@@ -137,20 +136,24 @@ EngineLevel2::computeBestAction(
         bsClone.makeLegalActionList(piRival,  0,  vActs);
         size_t  cntLegs =  vActs.size();
 
-        std::cerr   <<  "# INFO : "
-                    <<  '['  <<  r  <<  "] "
-                    <<  (actData.xOldCol) + 1
-                    <<  (actData.yOldRow) + 1
-                    <<  "->"
-                    <<  (actData.xNewCol) + 1
-                    <<  (actData.yNewRow) + 1
-                    <<  '='
-                    <<  (actData.fpAfter)
-                    <<  "...";
+        ss.clear();
+        ss.str("");
+
+        ss  <<  "# INFO : "
+            <<  '['  <<  r  <<  "] "
+            <<  (actData.xOldCol) + 1
+            <<  (actData.yOldRow) + 1
+            <<  "->"
+            <<  (actData.xNewCol) + 1
+            <<  (actData.yNewRow) + 1
+            <<  '='
+            <<  (actData.fpAfter)
+            <<  "...";
         if ( bsClone.isCheckState(piRival,  bbCheck) > 0 ) {
             if ( cntLegs == 0 ) {
                 //  チェックメイトなので、それを選択して勝ち。  //
-                std::cerr   <<  " CHECK MATE"   <<  std::endl;
+                ss  <<  " CHECK MATE";
+                Helper::TerminalScreen::writeLineToStdErr(ss.str());
                 actRet  =  actList[r];
                 return ( ERR_SUCCESS );
             }
@@ -158,7 +161,8 @@ EngineLevel2::computeBestAction(
             if ( cntLegs == 0 ) {
                 //  王手が掛かっていない時は、選択しない。  //
                 //  ステイルメイトなので、逆転負けになる。  //
-                std::cerr   <<  "STALE MATE"    <<  std::endl;
+                ss  <<  " STALE MATE";
+                Helper::TerminalScreen::writeLineToStdErr(ss.str());
                 continue;
             }
 
@@ -189,14 +193,15 @@ EngineLevel2::computeBestAction(
                     idxMin  =  r;
                     scrMin  =  scrCur;
                 }
-                std::cerr   <<  "TUMERO."   <<  std::endl;
+                ss  <<  "TUMERO.";
+                Helper::TerminalScreen::writeLineToStdErr(ss.str());
                 continue;
             }
-        }
+        }   //  End If (isCheckState)
 
         //  それ以外は、相手の合法手を減らす。  //
         if ( bsClone.isCheckState(piRival,  bbCheck) > 0 ) {
-            std::cerr   <<  "CHECK.";
+            ss  <<  "CHECK.";
             cntLegs *= 3;
         }
 
@@ -208,11 +213,15 @@ EngineLevel2::computeBestAction(
             idxMin  =  r;
             scrMin  =  scrCur;
         }
-        std::cerr   <<  "@ "    <<  scrCur
-                    <<  " / "   <<  scrMin  <<  std::endl;
+        ss  <<  "@ "    <<  scrCur  <<  " / "   <<  scrMin;
+        Helper::TerminalScreen::writeLineToStdErr(ss.str());
     }
 
-    std::cerr   <<  "# INFO : Select Index = "  <<  idxMin  <<  std::endl;
+    ss.clear();
+    ss.str("");
+    ss  <<  "# INFO : Select Index = "  <<  idxMin;
+    Helper::TerminalScreen::writeLineToStdErr(ss.str());
+
     actRet  =  actList[idxMin];
 
     return ( ERR_SUCCESS );
