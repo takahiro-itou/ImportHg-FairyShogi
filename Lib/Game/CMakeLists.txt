@@ -44,5 +44,3 @@ Include (${COMMON_CMAKE_DIR}/BuildLibraryCommon.cmake)
 
 Add_SubDirectory (Tests)
 
-Add_Library(fsgGame  ${LIBRARY_SOURCE_FILES})
-

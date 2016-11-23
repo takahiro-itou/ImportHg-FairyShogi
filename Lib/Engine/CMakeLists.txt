@@ -48,5 +48,3 @@ Include (${COMMON_CMAKE_DIR}/BuildLibraryCommon.cmake)
 
 Add_SubDirectory (Tests)
 
-Add_Library(fsgEngine  ${LIBRARY_SOURCE_FILES})
-
