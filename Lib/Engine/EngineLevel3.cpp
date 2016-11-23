@@ -19,8 +19,10 @@
 
 #include    "FairyShogi/Common/ActionView.h"
 #include    "FairyShogi/Game/BoardState.h"
+#include    "FairyShogi/Helper/TerminalScreen.h"
 
 #include    <iostream>
+#include    <sstream>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  Engine  {
@@ -103,6 +105,8 @@ EngineLevel3::computeBestAction(
         const  TConstraint  vCons,
         ActionView          &actRet)
 {
+    std::stringstream   ss;
+
     //  現在の局面を、内部形式に変換する。  //
     BoardState      bsCur;
     InternState     curStat;
@@ -151,22 +155,26 @@ EngineLevel3::computeBestAction(
         bsClone.makeLegalActionList(piRival,  0,  vActsE);
         cntLegOppn  =  vActsE.size();
 
-        std::cerr   <<  "# INFO : "
-                    <<  '['  <<  r  <<  "] "
-                    <<  (actData.xOldCol) + 1
-                    <<  (actData.yOldRow) + 1
-                    <<  "->"
-                    <<  (actData.xNewCol) + 1
-                    <<  (actData.yNewRow) + 1
-                    <<  '='
-                    <<  (actData.fpAfter)
-                    <<  "...";
+        ss.clear();
+        ss.str("");
+
+        ss  <<  "# INFO : "
+            <<  '['  <<  r  <<  "] "
+            <<  (actData.xOldCol) + 1
+            <<  (actData.yOldRow) + 1
+            <<  "->"
+            <<  (actData.xNewCol) + 1
+            <<  (actData.yNewRow) + 1
+            <<  '='
+            <<  (actData.fpAfter)
+            <<  "...";
 
         if ( bsClone.isCheckState(piRival,  bbCheck) > 0 )
         {
             if ( cntLegOppn == 0 ) {
                 //  チェックメイトなので、それを選択して勝ち。  //
-                std::cerr   <<  " CHECK MATE"   <<  std::endl;
+                ss  <<  " CHECK MATE";
+                Helper::TerminalScreen::writeLineToStdErr(ss.str());
                 actRet  =  actList[r];
                 return ( ERR_SUCCESS );
             }
@@ -174,7 +182,8 @@ EngineLevel3::computeBestAction(
             if ( cntLegOppn == 0 ) {
                 //  王手が掛かっていない時は、選択しない。  //
                 //  ステイルメイトなので、逆転負けになる。  //
-                std::cerr   <<  "STALE MATE"    <<  std::endl;
+                ss  <<  " STALE MATE";
+                Helper::TerminalScreen::writeLineToStdErr(ss.str());
                 continue;
             }
 
@@ -201,32 +210,33 @@ EngineLevel3::computeBestAction(
                     if ( ++ flgWins[itrS->xNewCol] == 1 ) {
                         ++  numWinDice;
                     }
-                    std::cerr   <<  "["
-                                <<  (itrS->xOldCol + 1)
-                                <<  (itrS->yOldRow + 1)
-                                <<  (itrS->xNewCol + 1)
-                                <<  (itrS->yNewRow + 1)
-                                <<  (itrS->fpAfter)
-                                <<  "] ";
+                    ss  <<  "["
+                        <<  (itrS->xOldCol + 1)
+                        <<  (itrS->yOldRow + 1)
+                        <<  (itrS->xNewCol + 1)
+                        <<  (itrS->yNewRow + 1)
+                        <<  (itrS->fpAfter)
+                        <<  "] ";
                     ++  numWinPats;
                 }
-            }   //  Next  itrE
+            }   //  Next  (itrE)
 
             if ( numWinPats > 0 ) {
                 //  詰めろを掛けられる時は掛ける。  //
                 const  int  scrCur  =  numWinDice * 1000 + numWinPats;
                 if ( scrTmr < scrCur ) {
-                    std::cerr   <<  "*SEL ";
+                    ss      <<  "*SEL ";
                     idxMax  =  r;
                     idxTmr  =  r;
                     scrTmr  =  scrCur;
                     scrMax  =  scrCur;
                 }
-                std::cerr   <<  "  TUMERO : "   <<  scrCur
-                            <<  " / "   <<  scrTmr  <<  std::endl;
+                ss  <<  "  TUMERO : "   <<  scrCur
+                    <<  " / "   <<  scrTmr;
+                Helper::TerminalScreen::writeLineToStdErr(ss.str());
                 continue;
             }
-        }
+        }   //  End If (isCheckState)
 
         //  それ以外は、駒の損得と、合法手の数で計算する。  //
 
@@ -256,7 +266,7 @@ EngineLevel3::computeBestAction(
                 }
                 scrAtkMaxs[nx]  =  sc;
             }
-        }
+        }   //  Next (itrE)
 
         //  自分の合法手。本当は、相手の手番だが無視。  //
         vActsS.clear();
@@ -266,7 +276,7 @@ EngineLevel3::computeBestAction(
         //  相手の合法手の総数は既に計算済み。  //
         //  そこから期待値を算出する。          //
         if ( bsClone.isCheckState(piRival,  bbCheck) > 0 ) {
-            std::cerr   <<  "CHECK.";
+            ss  <<  "CHECK.";
             cntLegOppn  *=  3;
             scrCatchMe  =   scrAtkMaxs[5] * 6;
         } else {
@@ -285,26 +295,30 @@ EngineLevel3::computeBestAction(
         const  int  scrCur  =  (scrCatchUp - scrCatchMe)
             +  ((cntLegSelf - cntLegOppn)) + sbProm;
         if ( scrMax < scrCur ) {
-            std::cerr   <<  "*SEL ";
+            ss  <<  "*SEL ";
             idxMax  =  r;
             scrMax  =  scrCur;
         }
-        std::cerr   <<  "@ "    <<  scrCur
-                    <<  " / "   <<  scrMax
-                    <<  ", # +CU="  <<  scrCatchUp
-                    <<  ", -CM="    <<  scrCatchMe
-                    <<  ", +MS="    <<  cntLegSelf
-                    <<  ", -ME="    <<  cntLegOppn
-                    <<  std::endl;
-    }
+        ss  <<  "@ "    <<  scrCur
+            <<  " / "   <<  scrMax
+            <<  ", # +CU="  <<  scrCatchUp
+            <<  ", -CM="    <<  scrCatchMe
+            <<  ", +MS="    <<  cntLegSelf
+            <<  ", -ME="    <<  cntLegOppn;
+        Helper::TerminalScreen::writeLineToStdErr(ss.str());
+    }   //  Next (r)
+
+    ss.clear();
+    ss.str("");
 
     if ( idxTmr >= 0 ) {
-        std::cerr   <<  "# INFO : TUMERO (or HISSI) Finded ."
-                    <<  std::endl;
+        ss  <<  "# INFO : TUMERO (or HISSI) Finded .\n";
         idxMax  =  idxTmr;
     }
 
-    std::cerr   <<  "# INFO : Select Index = "  <<  idxMax  <<  std::endl;
+    ss  <<  "# INFO : Select Index = "  <<  idxMax;
+    Helper::TerminalScreen::writeLineToStdErr(ss.str());
+
     actRet  =  actList[idxMax];
 
     return ( ERR_SUCCESS );

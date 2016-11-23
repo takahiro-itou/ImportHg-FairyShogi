@@ -215,7 +215,7 @@ EngineLevel2::computeBestAction(
         }
         ss  <<  "@ "    <<  scrCur  <<  " / "   <<  scrMin;
         Helper::TerminalScreen::writeLineToStdErr(ss.str());
-    }
+    }   //  Next (r)
 
     ss.clear();
     ss.str("");
