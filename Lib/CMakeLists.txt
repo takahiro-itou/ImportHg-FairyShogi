@@ -18,6 +18,7 @@ Add_SubDirectory (Helper)
 Add_SubDirectory (Game)
 Add_SubDirectory (Engine)
 Add_SubDirectory (Interface)
+Add_SubDirectory (TextUI)
 
 If ( ENABLE_WIN32 )
   Add_SubDirectory (Win32)
