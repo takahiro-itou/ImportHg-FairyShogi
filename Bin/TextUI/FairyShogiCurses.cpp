@@ -26,7 +26,7 @@ int  main(int argc, char * argv[])
 {
     TextUI::TextUserInterface   gcTUI;
 
-    int     x, y;
+    int     x = 0, y = 0;
     int     key;
 
     initscr();
@@ -42,16 +42,6 @@ int  main(int argc, char * argv[])
 
         key = getch();
         if ( key == 'q' ) { break; }
-        if ( key == KEY_MOUSE ) {
-            MEVENT  mouseEvent;
-            if (getmouse(&mouseEvent) != OK ) {
-                continue;
-            }
-            x   =  mouseEvent.x;
-            y   =  mouseEvent.y;
-            continue;
-        }
-
         switch ( key ) {
         case  KEY_LEFT:   case  'h':    -- x;   break;
         case  KEY_DOWN:   case  'j':    ++ y;   break;
