@@ -117,6 +117,44 @@ TextUserInterface::~TextUserInterface()
 //
 
 //----------------------------------------------------------------
+//    内部座標をカーソル座標に変換する。
+//
+
+FileCol
+TextUserInterface::getCursorColFromInternal(
+        const  FileCol  xIntCol)  const
+{
+    const  GameInterface  & gcGame  =  (this->m_giGameCtrl);
+    const  GameInterface::ShowCoordFlags
+        flgShow = gcGame.getShowFlag();
+
+    if ( (flgShow == GameInterface::SCF_FLIP_COLUMNS)
+            || (flgShow == GameInterface::SCF_ROTATE_BOARD) )
+    {
+        return ( 5 - xIntCol - 1 );
+    }
+    return ( xIntCol );
+}
+
+//----------------------------------------------------------------
+//    内部座標をカーソル座標に変換する。
+//
+
+RankRow
+TextUserInterface::getCursorRowFromInternal(
+        const  RankRow  yIntRow)  const
+{
+    const  GameInterface  & gcGame  =  (this->m_giGameCtrl);
+    const  GameInterface::ShowCoordFlags
+        flgShow = gcGame.getShowFlag();
+
+    if ( (flgShow) & GameInterface::SCF_ROTATE_BOARD ) {
+        return ( 5 - yIntRow - 1 );
+    }
+    return ( yIntRow );
+}
+
+//----------------------------------------------------------------
 //    現在の盤面を表示する。
 //
 

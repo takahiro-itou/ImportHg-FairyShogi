@@ -79,6 +79,26 @@ public:
 public:
 
     //----------------------------------------------------------------
+    /**   内部座標をカーソル座標に変換する。
+    **
+    **  @param [in] xIntCol   内部座標。
+    **  @return     カーソル座標。
+    **/
+    virtual  FileCol
+    getCursorColFromInternal(
+            const  FileCol  xIntCol)  const;
+
+    //----------------------------------------------------------------
+    /**   内部座標をカーソル座標に変換する。
+    **
+    **  @param [in] yIntRow   内部座標。
+    **  @return     カーソル座標。
+    **/
+    virtual  RankRow
+    getCursorRowFromInternal(
+            const  RankRow  yIntRow)  const;
+
+    //----------------------------------------------------------------
     /**   現在の盤面を表示する。
     **
     **  @return     エラーコードを返す。
