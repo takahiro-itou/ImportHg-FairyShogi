@@ -48,8 +48,8 @@ int  main(int argc, char * argv[])
     gcTUI.setupColors();
 
     for (;;) {
+        gcTUI.changeCursorPosition(y, x);
         gcTUI.showCurrentState();
-        move(y, x);
         refresh();
 
         key = getch();

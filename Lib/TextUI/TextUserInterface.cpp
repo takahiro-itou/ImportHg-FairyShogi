@@ -18,7 +18,6 @@
 #include    "FairyShogi/TextUI/TextUserInterface.h"
 
 #include    <memory.h>
-#include    <ncurses.h>
 #include    <sstream>
 
 FAIRYSHOGI_NAMESPACE_BEGIN
@@ -69,6 +68,13 @@ s_tblHandName[]     = {
 //
 
 TextUserInterface::TextUserInterface()
+    : m_giGameCtrl(),
+      m_rndGen(),
+      m_flgInitScr(BOOL_FALSE),
+      m_wScreen(nullptr),
+      m_wBoard (nullptr),
+      m_yCurRow(0),
+      m_xCurCol(0)
 {
     this->m_giGameCtrl.resetGame();
 }
@@ -104,6 +110,34 @@ TextUserInterface::~TextUserInterface()
 //
 
 //----------------------------------------------------------------
+//    カーソル位置を変更する。
+//
+
+ErrCode
+TextUserInterface::changeCursorPosition(
+        const  RankRow  yNewRow,
+        const  FileCol  xNewCol)
+{
+    this->m_yCurRow = yNewRow;
+    this->m_xCurCol = xNewCol;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    カーソル位置を変更する。
+//
+
+ErrCode
+TextUserInterface::incrementCursorPosition(
+        const  RankRow  yIncRow,
+        const  FileCol  xIncCol)
+{
+    const  RankRow  yNewRow = (this->m_yCurRow) + yIncRow;
+    const  FileCol  xNewCol = (this->m_xCurCol) + xIncCol;
+    return ( changeCursorPosition(yNewRow,  xNewCol) );
+}
+
+//----------------------------------------------------------------
 //    現在の盤面を表示する。
 //
 
@@ -111,58 +145,99 @@ ErrCode
 TextUserInterface::showCurrentState()  const
 {
     CONSTEXPR_VAR   const  char  *  s_tblHandOwnerNames[2]  =  {
-        "BLACK:",
-        "WHITE:"
+        "BLACK",
+        "WHITE"
     };
 
-    const   GameInterface  &objGame =  (this->m_giGameCtrl);
-    const   GameInterface::ShowCoordFlags
+    WINDOW  *  const        wBoard  =  (this->m_wBoard);
+    const  GameInterface  &objGame  =  (this->m_giGameCtrl);
+    const  GameInterface::ShowCoordFlags
         flgShow = objGame.getShowFlag();
 
     Common::ViewBuffer  vb;
     ::memset( &vb, 0, sizeof(vb) );
     objGame.writeToViewBuffer(vb);
 
+    //  画面をすべて消去する。  //
+    wattrset(wBoard,  COLOR_PAIR(1));
+    werase  (wBoard);
+    wborder (this->m_wBoard,  0, 0, 0, 0,  0, 0, 0, 0);
+
     //  盤面を表示する。    //
-    attrset(COLOR_PAIR(1));
-    erase();
-    move(0, 0);
-    attrset(COLOR_PAIR(1));
+    wattrset(wBoard,  COLOR_PAIR(2));
     if ( (flgShow == GameInterface::SCF_FLIP_COLUMNS)
             || (flgShow == GameInterface::SCF_ROTATE_BOARD) )
     {
-        addstr("| 1| 2| 3| 4| 5|");
+        wmove   (wBoard,   3,  1);
+        waddstr (wBoard,  "| 1| 2| 3| 4| 5| ");
+
+        wmove   (wBoard,  15,  1);
+        waddstr (wBoard,  "| 1| 2| 3| 4| 5| ");
     } else {
-        addstr("| 5| 4| 3| 2| 1|");
+        wmove   (wBoard,   3,  1);
+        waddstr (wBoard,  "| 5| 4| 3| 2| 1| ");
+
+        wmove   (wBoard,  15,  1);
+        waddstr (wBoard,  "| 5| 4| 3| 2| 1| ");
     }
 
-    move(1, 0);
-    attrset(COLOR_PAIR(1));
-    addstr("----------------");
+    wmove   (wBoard,  4,  1);
+    waddstr (wBoard,  "---------------- ");
     for ( int y = 0; y < 5; ++ y ) {
         std::stringstream   ssLine;
+
+        wmove   (wBoard,  y * 2 + 5, 1);
         for ( int x = 0; x < 5; ++ x ) {
             const  PieceIndex   dp  = vb.fpBoard[y][x];
-            ssLine  <<  "|"  <<  s_tblPieceName[dp];
+            wattrset(wBoard,  COLOR_PAIR(2));
+            waddstr (wBoard,  "|");
+
+            if ( dp == 0 ) {
+                wattrset(wBoard,  COLOR_PAIR(2));
+            } else if ( dp <= 14 ) {
+                wattrset(wBoard,  COLOR_PAIR(3));
+            } else {
+                wattrset(wBoard,  COLOR_PAIR(4));
+            }
+
+            ssLine.clear();
+            ssLine.str("");
+            ssLine  <<  s_tblPieceName[dp];
+            waddstr (wBoard,  ssLine.str().c_str());
         }
+
+        ssLine.clear();
+        ssLine.str("");
         if ( (flgShow) & GameInterface::SCF_ROTATE_BOARD ) {
             ssLine  <<  "|"  <<  (5-y);
         } else {
             ssLine  <<  "|"  <<  (y+1);
         }
-        move(y * 2 + 2, 0);
-        attrset(COLOR_PAIR(1));
-        addstr(ssLine.str().c_str());
+        wattrset(wBoard,  COLOR_PAIR(2));
+        waddstr (wBoard,  ssLine.str().c_str());
 
-        move(y * 2 + 3, 0);
-        attrset(COLOR_PAIR(1));
-        addstr("----------------");
+        wattrset(wBoard,  COLOR_PAIR(2));
+        wmove   (wBoard,  y * 2 + 6, 1);
+        waddstr (wBoard,  "---------------- ");
     }
 
     //  持ち駒を表示する。  //
     for ( PlayerIndex i = 0; i < vb.numPlayers; ++ i ) {
+        WINDOW  *   wHands  =  (this->m_wHands[i]);
+
+        wbkgd   (wHands,  COLOR_PAIR(i + 3));
+        werase  (wHands);
+        wborder (wHands,  0, 0, 0, 0,  0, 0, 0, 0);
+        wattrset(wHands,  COLOR_PAIR(i + 3));
+
+
         std::stringstream   ssLine;
-        ssLine  <<  s_tblHandOwnerNames[i];
+        ssLine  <<  s_tblHandOwnerNames[i]  <<  "  HANDS:";
+        wmove   (wHands,  1, 1);
+        waddstr (wHands,  ssLine.str().c_str());
+
+        ssLine.clear();
+        ssLine.str("");
         const  PieceIndex  numHand  =  vb.numHandTypes[i];
         for ( PieceIndex c = 0; c < numHand;  ++ c )
         {
@@ -173,11 +248,21 @@ TextUserInterface::showCurrentState()  const
                     <<  hcHand
                     <<  ", ";
         }
-        move(i + 14, 0);
-        attrset(COLOR_PAIR(i + 2));
-        addstr(ssLine.str().c_str());
+
+        wmove   (wHands,  2, 1);
+        waddstr (wHands,  ssLine.str().c_str());
+
+        touchwin(wHands);
+        wrefresh(wHands);
     }
-    refresh();
+
+    touchwin(wBoard);
+    wrefresh(wBoard);
+
+    int     sx,  sy;
+    wattrset(wBoard,  COLOR_PAIR(0));
+    getbegyx(wBoard,  sy,  sx);
+    move((this->m_yCurRow) * 2 + 4 + sy,  (this->m_xCurCol) * 3 + 1 + sx);
 
     return ( ERR_SUCCESS );
 }
@@ -188,12 +273,20 @@ TextUserInterface::showCurrentState()  const
 //
 
 //----------------------------------------------------------------
-//    画面制御ライブラリを終了する。
+//    端末制御ライブラリを終了する。
 //
 
 ErrCode
 TextUserInterface::cleanupScreen()
 {
+    if ( this->m_flgInitScr == BOOL_FALSE ) {
+        //  初期化されていない状態なので、何もしない。  //
+        return ( ERR_FAILURE );
+    }
+
+    delwin(this->m_wBoard);
+    this->m_wBoard  =  (nullptr);
+
     endwin();
 
     return ( ERR_SUCCESS );
@@ -207,34 +300,66 @@ ErrCode
 TextUserInterface::setupColors()
 {
     init_pair( 1,  COLOR_WHITE,   COLOR_BLUE);
-    init_pair( 2,  COLOR_YELLOW,  COLOR_BLACK);
-    init_pair( 3,  COLOR_RED,     COLOR_WHITE);
+    init_pair( 2,  COLOR_BLACK,   COLOR_YELLOW);
+    init_pair( 3,  COLOR_CYAN,    COLOR_BLACK);
+    init_pair( 4,  COLOR_RED,     COLOR_WHITE);
 
-    bkgd(COLOR_PAIR(1));
-    attrset(COLOR_PAIR(1));
-    erase();
+    bkgd   (COLOR_PAIR(1));
+    clear();
+
+    wbkgd     (this->m_wBoard,  COLOR_PAIR(1));
+    wborder   (this->m_wBoard,  0, 0, 0, 0,  0, 0, 0, 0);
 
     return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------
-//    画面制御ライブラリを初期化する。
+//    端末制御ライブラリを初期化する。
 //
 
 ErrCode
 TextUserInterface::setupScreen()
 {
+    if ( (this->m_flgInitScr) != BOOL_FALSE ) {
+        //  既に初期化されているので、何もしない。  //
+        return ( ERR_SUCCESS );
+    }
+
     initscr();
 
     if ( has_colors() == FALSE || start_color() == ERR ) {
         return ( ERR_FAILURE );
     }
 
+    //  画面のサイズを取得、検査する。  //
+    //  最低でも w40 x h30 以上が必要。  //
+    int         sxW,  syH;
+    getmaxyx(stdscr,  syH,  sxW);
+    if ( (sxW < 40) || (syH < 30) ) {
+        return ( ERR_FAILURE );
+    }
+
+    //  以下の条件でウィンドウを作成する。  //
+    //  ボード表示：w30 x h20               //
+    //  持ち駒表示：w30 x h 4               //
+    //  さらに画面の中央に表示する。        //
+    const  int  sxCent  =  (sxW - 30) / 2;
+    const  int  syCent  =  (syH - 30) / 2;
+
+    WINDOW  *   wBoard  =  subwin(stdscr,  20,  30,  syCent +  5,  sxCent);
+    WINDOW  *   wHandB  =  subwin(stdscr,   4,  30,  syCent + 26,  sxCent);
+    WINDOW  *   wHandW  =  subwin(stdscr,   4,  30,  syCent +  0,  sxCent);
     noecho();
     cbreak();
     keypad(stdscr,  TRUE);
 
     mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION,  NULL);
+
+    this->m_wScreen     =  stdscr;
+    this->m_wBoard      =  wBoard;
+    this->m_wHands[0]   =  wHandB;
+    this->m_wHands[1]   =  wHandW;
+    this->m_flgInitScr  =  BOOL_TRUE;
 
     return ( ERR_SUCCESS );
 }

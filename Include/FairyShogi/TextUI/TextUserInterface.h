@@ -21,6 +21,8 @@
 #include    "FairyShogi/Common/MersenneTwister.h"
 #include    "FairyShogi/Interface/GraphicalInterface.h"
 
+#include    <ncurses.h>
+
 FAIRYSHOGI_NAMESPACE_BEGIN
 namespace  TextUI  {
 
@@ -77,6 +79,30 @@ public:
 public:
 
     //----------------------------------------------------------------
+    /**   カーソル位置を変更する。
+    **
+    **  @param [in] yNewRow
+    **  @param [in] xNewCol
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    changeCursorPosition(
+            const  RankRow  yNewRow,
+            const  FileCol  xNewCol);
+
+    //----------------------------------------------------------------
+    /**   カーソル位置を変更する。
+    **
+    **/
+    virtual  ErrCode
+    incrementCursorPosition(
+            const  RankRow  yIncRow,
+            const  FileCol  xIncCol);
+
+    //----------------------------------------------------------------
     /**   現在の盤面を表示する。
     **
     **  @return     エラーコードを返す。
@@ -94,7 +120,7 @@ public:
 public:
 
     //----------------------------------------------------------------
-    /**   画面制御ライブラリを終了する。
+    /**   端末制御ライブラリを終了する。
     **
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
@@ -116,7 +142,7 @@ public:
     setupColors();
 
     //----------------------------------------------------------------
-    /**   画面制御ライブラリを初期化する。
+    /**   端末制御ライブラリを初期化する。
     **
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
@@ -157,6 +183,30 @@ private:
 
     /**   乱数のジェネレータ。  **/
     RandomGenerator     m_rndGen;
+
+    /**   端末制御の初期化フラグ。  **/
+    Boolean             m_flgInitScr;
+
+    /**
+    **    端末内のウィンドウ（スクリーン全体）。
+    **/
+    WINDOW  *           m_wScreen;
+
+    /**
+    **    端末内のウィンドウ（盤面表示）。
+    **/
+    WINDOW  *           m_wBoard;
+
+    /**
+    **    端末内のウィンドウ（持ち駒表示）。
+    **/
+    WINDOW  *           m_wHands[2];
+
+    /**   カーソル位置。    **/
+    RankRow             m_yCurRow;
+
+    /**   カーソル位置。    **/
+    FileCol             m_xCurCol;
 
 //========================================================================
 //
