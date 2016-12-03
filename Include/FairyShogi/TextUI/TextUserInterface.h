@@ -79,30 +79,6 @@ public:
 public:
 
     //----------------------------------------------------------------
-    /**   カーソル位置を変更する。
-    **
-    **  @param [in] yNewRow
-    **  @param [in] xNewCol
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    virtual  ErrCode
-    changeCursorPosition(
-            const  RankRow  yNewRow,
-            const  FileCol  xNewCol);
-
-    //----------------------------------------------------------------
-    /**   カーソル位置を変更する。
-    **
-    **/
-    virtual  ErrCode
-    incrementCursorPosition(
-            const  RankRow  yIncRow,
-            const  FileCol  xIncCol);
-
-    //----------------------------------------------------------------
     /**   現在の盤面を表示する。
     **
     **  @return     エラーコードを返す。
@@ -129,6 +105,51 @@ public:
     **/
     ErrCode
     cleanupScreen();
+
+    //----------------------------------------------------------------
+    /**   カーソルを表示する座標を計算する。
+    **
+    **/
+    ErrCode
+    computeScreenCursorPosition(
+            int  *  const   pWY,
+            int  *  const   pWX,
+            int  *  const   pSY,
+            int  *  const   pSX,
+            WINDOW  *   &   pWnd)  const;
+
+    //----------------------------------------------------------------
+    /**   現在のカーソル位置を取得する。
+    **
+    **/
+    ErrCode
+    getCursorPosition(
+            int &   yNewRow,
+            int &   xNewCol)  const;
+
+    //----------------------------------------------------------------
+    /**   カーソル位置を変更する。
+    **
+    **/
+    ErrCode
+    incrementCursorPosition(
+            const  RankRow  yIncRow,
+            const  FileCol  xIncCol);
+
+    //----------------------------------------------------------------
+    /**   カーソル位置を変更する。
+    **
+    **  @param [in] yNewRow
+    **  @param [in] xNewCol
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setCursorPosition(
+            const  RankRow  yNewRow,
+            const  FileCol  xNewCol);
 
     //----------------------------------------------------------------
     /**   色を準備する。

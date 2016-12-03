@@ -117,34 +117,6 @@ TextUserInterface::~TextUserInterface()
 //
 
 //----------------------------------------------------------------
-//    カーソル位置を変更する。
-//
-
-ErrCode
-TextUserInterface::changeCursorPosition(
-        const  RankRow  yNewRow,
-        const  FileCol  xNewCol)
-{
-    this->m_yCurRow = yNewRow;
-    this->m_xCurCol = xNewCol;
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
-//    カーソル位置を変更する。
-//
-
-ErrCode
-TextUserInterface::incrementCursorPosition(
-        const  RankRow  yIncRow,
-        const  FileCol  xIncCol)
-{
-    const  RankRow  yNewRow = (this->m_yCurRow) + yIncRow;
-    const  FileCol  xNewCol = (this->m_xCurCol) + xIncCol;
-    return ( changeCursorPosition(yNewRow,  xNewCol) );
-}
-
-//----------------------------------------------------------------
 //    現在の盤面を表示する。
 //
 
@@ -274,19 +246,17 @@ TextUserInterface::showCurrentState()  const
         wrefresh(wHands);
     }
 
-    const  int  cx  =  (this->m_xCurCol) * 5 + 4;
-    const  int  cy  =  (this->m_yCurRow) * 3 + 3;
-    wmove   (wBoard,  cy,  cx);
-    wattrset(wBoard,  COLOR_PAIR(5));
-    waddch  (wBoard,  '>');
+    int         cx,  cy,  sx, sy;
+    WINDOW  *   wCurIn;
+    computeScreenCursorPosition(&cy,  &cx,  &sy,  &sx,  wCurIn);
+
+    wmove   (wCurIn,  cy,  cx);
+    wattrset(wCurIn,  COLOR_PAIR(5));
+    waddch  (wCurIn,  '>');
 
     touchwin(wBoard);
     wrefresh(wBoard);
-
-    int     sx,  sy;
-    wattrset(wBoard,  COLOR_PAIR(0));
-    getbegyx(wBoard,  sy,  sx);
-    move(cy + sy,  cx + sx);
+    wmove   (stdscr,  sy,  sx);
 
     return ( ERR_SUCCESS );
 }
@@ -313,6 +283,109 @@ TextUserInterface::cleanupScreen()
 
     endwin();
 
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    カーソルを表示する座標を計算する。
+//
+
+ErrCode
+TextUserInterface::computeScreenCursorPosition(
+        int  *  const   pWY,
+        int  *  const   pWX,
+        int  *  const   pSY,
+        int  *  const   pSX,
+        WINDOW  *    &  pWnd)  const
+{
+    WINDOW  *   wCurIn  =  nullptr;
+    int         wY,  wX;
+    int         oY,  oX;
+
+    if ( (this->m_yCurRow) == -1 ) {
+        //  後手（白）の持ち駒ウィンドウ。  //
+        wCurIn  =  (this->m_wHands[1]);
+        wY      =  1;
+        wX      =  (this->m_xCurCol) * 2 + 1;
+    } else if ( (this->m_yCurRow) == 5 ) {
+        //  先手（黒）の持ち駒ウィンドウ。  //
+        wCurIn  =  (this->m_wHands[0]);
+        wY      =  1;
+        wX      =  (this->m_xCurCol) * 2 + 1;
+    } else {
+        //  盤面を表示しているウィンドウ。  //
+        wCurIn  =  (this->m_wBoard);
+        wY      =  (this->m_yCurRow) * 3 + 3;
+        wX      =  (this->m_xCurCol) * 5 + 4;
+    }
+
+    getbegyx(wCurIn,  oY,  oX);
+
+    (*pWY)  =  wY;
+    (*pWX)  =  wX;
+    (*pSY)  =  wY + oY;
+    (*pSX)  =  wX + oX;
+    pWnd    =  wCurIn;
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    現在のカーソル位置を取得する。
+//
+
+ErrCode
+TextUserInterface::getCursorPosition(
+        int &   yNewRow,
+        int &   xNewCol)  const
+{
+    yNewRow = (this->m_yCurRow);
+    xNewCol = (this->m_xCurCol);
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    カーソル位置を変更する。
+//
+
+ErrCode
+TextUserInterface::incrementCursorPosition(
+        const  RankRow  yIncRow,
+        const  FileCol  xIncCol)
+{
+    const  RankRow  yNewRow = (this->m_yCurRow) + yIncRow;
+    const  FileCol  xNewCol = (this->m_xCurCol) + xIncCol;
+    return ( setCursorPosition(yNewRow,  xNewCol) );
+}
+
+//----------------------------------------------------------------
+//    カーソル位置を変更する。
+//
+
+ErrCode
+TextUserInterface::setCursorPosition(
+        const  RankRow  yNewRow,
+        const  FileCol  xNewCol)
+{
+    RankRow     yTmpRow = yNewRow;
+    FileCol     xTmpCol = xNewCol;
+
+    if ( (yTmpRow < -1) || (5 < yTmpRow) ) {
+        //  範囲外の座標。  //
+        return ( ERR_FAILURE );
+    }
+
+    if ( (yTmpRow == -1) || (yTmpRow == 5) ) {
+        //  持ち駒ウィンドウ。  //
+    }
+
+    if ( (xTmpCol < 0) || (5 <= xTmpCol) ) {
+        //  範囲外の座標。  //
+        return ( ERR_FAILURE );
+    }
+
+    this->m_yCurRow = yNewRow;
+    this->m_xCurCol = xNewCol;
     return ( ERR_SUCCESS );
 }
 

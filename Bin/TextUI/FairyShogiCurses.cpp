@@ -38,20 +38,14 @@ int  main(int argc, char * argv[])
     int     x = 0, y = 0;
     int     key;
 
-    // initscr();
-    // noecho();
-    // cbreak();
-    // keypad(stdscr,  TRUE);
-
-    // mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION,  NULL);
-
     gcTUI.setupColors();
 
     for (;;) {
-        gcTUI.changeCursorPosition(y, x);
+        gcTUI.setCursorPosition(y, x);
         gcTUI.showCurrentState();
         refresh();
 
+        gcTUI.getCursorPosition(y,  x);
         key = getch();
         if ( key == 'q' ) { break; }
         switch ( key ) {
