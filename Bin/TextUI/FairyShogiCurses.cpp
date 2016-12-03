@@ -49,28 +49,34 @@ int  main(int argc, char * argv[])
 
         gcTUI.getCursorPosition(cy,  cx);
         key = getch();
+
+        attrset(COLOR_PAIR(0));
+        mvprintw(40, 0, "# DEBUG : KEY = %x",  key);
+
         if ( key == 'q' ) { break; }
-        if ( key == ' ' ) { break; }
+
+        if ( (key == '\n') || (key == KEY_ENTER) ) {
+            continue;
+        }
 
         switch ( key ) {
         case  KEY_LEFT:   case  'h':    -- cx;  break;
         case  KEY_DOWN:   case  'j':    ++ cy;  break;
         case  KEY_UP:     case  'k':    -- cy;  break;
         case  KEY_RIGHT:  case  'l':    ++ cx;  break;
-        case  '1':
-        case  '2':
-        case  '3':
-        case  '4':
-        case  '5':
+        }
+
+        if ( ('1' <= key) && (key <= '5') ) {
             cx  =  gcTUI.getCursorColFromInternal(key - '1');
-            break;
-        case  'a':
-        case  'b':
-        case  'c':
-        case  'd':
-        case  'e':
+            continue;
+        }
+        if ( ('a' <= key) && (key <= 'e') ) {
             cy  =  gcTUI.getCursorRowFromInternal(key - 'a');
-            break;
+            continue;
+        }
+        if ( ('A' <= key) && (key <= 'E') ) {
+            cy  =  gcTUI.getCursorRowFromInternal(key - 'A');
+            continue;
         }
     }
 

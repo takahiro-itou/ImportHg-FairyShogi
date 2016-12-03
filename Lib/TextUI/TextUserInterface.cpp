@@ -280,18 +280,24 @@ TextUserInterface::showCurrentState()  const
 
         wmove   (wHands,  2, 1);
         waddstr (wHands,  ssLine.str().c_str());
-
-        touchwin(wHands);
-        wrefresh(wHands);
     }
 
     int         cx,  cy,  sx, sy;
     WINDOW  *   wCurIn;
     computeScreenCursorPosition(sy,  sx,  wCurIn,  cy,  cx);
 
+    // attrset(COLOR_PAIR(0));
+    // mvprintw(40, 0, "# DEBUG : cy=%d, cx=%d",  cy, cx);
+
     wmove   (wCurIn,  cy,  cx);
     wattrset(wCurIn,  COLOR_PAIR(5));
     waddch  (wCurIn,  '>');
+
+    for ( PlayerIndex i = 0; i < vb.numPlayers; ++ i ) {
+        WINDOW  *   wHands  =  (this->m_wHands[i]);
+        touchwin(wHands);
+        wrefresh(wHands);
+    }
 
     touchwin(wBoard);
     wrefresh(wBoard);
@@ -387,12 +393,12 @@ TextUserInterface::computeScreenCursorPosition(
         //  後手（白）の持ち駒ウィンドウ。  //
         wCurIn  =  (this->m_wHands[1]);
         wTempY  =  2;
-        wTempX  =  (this->m_xCurCol) * 2 + 1;
+        wTempX  =  (this->m_xCurCol) * 4 + 1;
     } else if ( (this->m_yCurRow) == 5 ) {
         //  先手（黒）の持ち駒ウィンドウ。  //
         wCurIn  =  (this->m_wHands[0]);
         wTempY  =  2;
-        wTempX  =  (this->m_xCurCol) * 2 + 1;
+        wTempX  =  (this->m_xCurCol) * 4 + 1;
     } else {
         //  盤面を表示しているウィンドウ。  //
         wCurIn  =  (this->m_wBoard);
@@ -450,6 +456,7 @@ TextUserInterface::setCursorPosition(
 {
     RankRow     yTmpRow = yNewRow;
     FileCol     xTmpCol = xNewCol;
+    FileCol     xMaxCol = 0;
 
     if ( (yTmpRow < -1) || (5 < yTmpRow) ) {
         //  範囲外の座標。  //
@@ -458,15 +465,19 @@ TextUserInterface::setCursorPosition(
 
     if ( (yTmpRow == -1) || (yTmpRow == 5) ) {
         //  持ち駒ウィンドウ。  //
+        xMaxCol = 5;
+    } else {
+        xMaxCol = 5;
     }
 
-    if ( (xTmpCol < 0) || (5 <= xTmpCol) ) {
+    if ( (xTmpCol < 0) || (xMaxCol <= xTmpCol) ) {
         //  範囲外の座標。  //
         return ( ERR_FAILURE );
     }
 
     this->m_yCurRow = yNewRow;
     this->m_xCurCol = xNewCol;
+
     return ( ERR_SUCCESS );
 }
 
