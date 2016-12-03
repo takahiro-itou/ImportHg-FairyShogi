@@ -52,7 +52,8 @@ int  main(int argc, char * argv[])
 
         if ( key == 'q' ) { break; }
 
-        if ( (key == '\n') || (key == KEY_ENTER) ) {
+        if ( (key == '\n') || (key == KEY_ENTER) || (key == ' ') ) {
+            gcTUI.setSourcePosition(cy,  cx);
             continue;
         }
 
