@@ -80,8 +80,14 @@ TextUserInterface::TextUserInterface()
       m_flgInitScr(BOOL_FALSE),
       m_wScreen(nullptr),
       m_wBoard (nullptr),
+      m_wHands (),
+      m_wInfos (nullptr),
       m_yCurRow(0),
-      m_xCurCol(0)
+      m_xCurCol(0),
+      m_ySrcRow(-1),
+      m_xSrcCol(-1),
+      m_yTrgRow(-1),
+      m_xTrgCol(-1)
 {
     this->m_giGameCtrl.resetGame();
 }
@@ -604,6 +610,34 @@ TextUserInterface::setupScreen()
 //
 //    Accessors.
 //
+
+//----------------------------------------------------------------
+//    移動元の座標を設定する。
+//
+
+ErrCode
+TextUserInterface::setSourcePosition(
+        const  RankRow  ySrcRow,
+        const  FileCol  xSrcCol)
+{
+    this->m_ySrcRow = ySrcRow;
+    this->m_xSrcCol = xSrcCol;
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    移動先の座標を設定する。
+//
+
+ErrCode
+TextUserInterface::setTargetPosition(
+        const  RankRow  yTrgRow,
+        const  FileCol  xTrgCol)
+{
+    this->m_yTrgRow = yTrgRow;
+    this->m_xTrgCol = xTrgCol;
+    return ( ERR_SUCCESS );
+}
 
 //========================================================================
 //

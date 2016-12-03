@@ -255,6 +255,37 @@ public:
 //
 //    Accessors.
 //
+public:
+
+    //----------------------------------------------------------------
+    /**   移動元の座標を設定する。
+    **
+    **  @param [in] ySrcRow
+    **  @param [in] xSrcCol
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setSourcePosition(
+            const  RankRow  ySrcRow,
+            const  FileCol  xSrcCol);
+
+    //----------------------------------------------------------------
+    /**   移動先の座標を設定する。
+    **
+    **  @param [in] yTrgRow
+    **  @param [in] yTrgCol
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    setTargetPosition(
+            const  RankRow  yTrgRow,
+            const  FileCol  xTrgCol);
 
 //========================================================================
 //
@@ -332,6 +363,18 @@ private:
 
     /**   カーソルの座標（内部座標）。  **/
     FileCol             m_xCurCol;
+
+    /**   選択した移動元座標。  **/
+    RankRow             m_ySrcRow;
+
+    /**   選択した移動元座標。  **/
+    FileCol             m_xSrcCol;
+
+    /**   選択した移動先座標。  **/
+    RankRow             m_yTrgRow;
+
+    /**   選択した移動先座標。  **/
+    FileCol             m_xTrgCol;
 
 //========================================================================
 //
