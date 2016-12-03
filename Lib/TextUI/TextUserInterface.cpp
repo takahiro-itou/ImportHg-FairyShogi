@@ -282,13 +282,19 @@ TextUserInterface::showCurrentState()  const
         wrefresh(wHands);
     }
 
+    const  int  cx  =  (this->m_xCurCol) * 5 + 4;
+    const  int  cy  =  (this->m_yCurRow) * 3 + 3;
+    wmove   (wBoard,  cy,  cx);
+    wattrset(wBoard,  COLOR_PAIR(5));
+    waddch  (wBoard,  '>');
+
     touchwin(wBoard);
     wrefresh(wBoard);
 
     int     sx,  sy;
     wattrset(wBoard,  COLOR_PAIR(0));
     getbegyx(wBoard,  sy,  sx);
-    move((this->m_yCurRow) * 2 + 4 + sy,  (this->m_xCurCol) * 3 + 1 + sx);
+    move(cy + sy,  cx + sx);
 
     return ( ERR_SUCCESS );
 }
@@ -329,7 +335,7 @@ TextUserInterface::setupColors()
     init_pair( 2,  COLOR_BLACK,   COLOR_YELLOW);
     init_pair( 3,  COLOR_CYAN,    COLOR_BLACK);
     init_pair( 4,  COLOR_RED,     COLOR_WHITE);
-
+    init_pair( 5,  COLOR_BLACK,   COLOR_RED);
     bkgd   (COLOR_PAIR(1));
     clear();
 
