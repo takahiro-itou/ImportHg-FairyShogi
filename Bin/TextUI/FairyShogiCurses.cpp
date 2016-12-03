@@ -49,11 +49,27 @@ int  main(int argc, char * argv[])
         gcTUI.getCursorPosition(y,  x);
         key = getch();
         if ( key == 'q' ) { break; }
+        if ( key == ' ' ) { break; }
+
         switch ( key ) {
         case  KEY_LEFT:   case  'h':    -- x;   break;
         case  KEY_DOWN:   case  'j':    ++ y;   break;
         case  KEY_UP:     case  'k':    -- y;   break;
         case  KEY_RIGHT:  case  'l':    ++ x;   break;
+        case  '1':
+        case  '2':
+        case  '3':
+        case  '4':
+        case  '5':
+            x   =  key - '1';
+            break;
+        case  'a':
+        case  'b':
+        case  'c':
+        case  'd':
+        case  'e':
+            y   =  key - 'a';
+            break;
         }
     }
 

@@ -162,24 +162,25 @@ TextUserInterface::showCurrentState()  const
         whline  (wBoard,  0,  26);
     }
 
-    std::stringstream   ssSqur;
+    int     ry  =  0;
     for ( int y = 0; y < 5; ++ y ) {
         std::stringstream   ssLine;
 
         if ( (flgShow) & GameInterface::SCF_ROTATE_BOARD ) {
-            ssLine  <<  (5-y);
+            ry  =  (5 - y);
         } else {
-            ssLine  <<  (y+1);
+            ry  =  (y + 1);
         }
+
 
         wattrset(wBoard,  COLOR_PAIR(2));
         wmove   (wBoard,  y * 3 + 3, 1);
         waddstr (wBoard,  " |    |    |    |    |    | ");
 
         wmove   (wBoard,  y * 3 + 4, 1);
-        waddstr (wBoard,  ssLine.str().c_str());
+        waddch  (wBoard,  ry + 'a' - 1);
         waddstr (wBoard,  "|    |    |    |    |    |");
-        waddstr (wBoard,  ssLine.str().c_str());
+        waddch  (wBoard,  ry + '0');
 
         for ( int x = 0; x < 5; ++ x ) {
             const  PieceIndex   dp  = vb.fpBoard[y][x];
