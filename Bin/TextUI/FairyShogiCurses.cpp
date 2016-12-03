@@ -29,12 +29,14 @@ int  main(int argc, char * argv[])
     int     x = 0, y = 0;
     int     key;
 
-    initscr();
-    noecho();
-    cbreak();
-    keypad(stdscr,  TRUE);
+    // initscr();
+    // noecho();
+    // cbreak();
+    // keypad(stdscr,  TRUE);
 
-    mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION,  NULL);
+    // mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION,  NULL);
+
+    gcTUI.showCurrentState();
 
     for (;;) {
         move(y, x);
@@ -50,7 +52,7 @@ int  main(int argc, char * argv[])
         }
     }
 
-    endwin();
+    // endwin();
 
     return ( 0 );
 }
