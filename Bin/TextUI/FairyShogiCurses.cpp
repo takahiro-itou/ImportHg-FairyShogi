@@ -42,6 +42,7 @@ int  main(int argc, char * argv[])
 
     for (;;) {
         gcTUI.setCursorPosition(y, x);
+        gcTUI.showInformations();
         gcTUI.showCurrentState();
         refresh();
 

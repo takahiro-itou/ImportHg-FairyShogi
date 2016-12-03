@@ -51,7 +51,7 @@ s_tblHandName[]     = {
 };
 
 CONSTEXPR_VAR   const  char  *
-s_tblHandOwnerNames[]   =  {
+s_tblPlayerNames[]  =  {
     "BLACK",
     "WHITE"
 };
@@ -124,18 +124,18 @@ ErrCode
 TextUserInterface::showCurrentState()  const
 {
     WINDOW  *  const        wBoard  =  (this->m_wBoard);
-    const  GameInterface  &objGame  =  (this->m_giGameCtrl);
+    const  GameInterface  & gcGame  =  (this->m_giGameCtrl);
     const  GameInterface::ShowCoordFlags
-        flgShow = objGame.getShowFlag();
+        flgShow = gcGame.getShowFlag();
 
     Common::ViewBuffer  vb;
     ::memset( &vb, 0, sizeof(vb) );
-    objGame.writeToViewBuffer(vb);
+    gcGame.writeToViewBuffer(vb);
 
     //  画面をすべて消去する。  //
     wattrset(wBoard,  COLOR_PAIR(1));
     werase  (wBoard);
-    wborder (this->m_wBoard,  0, 0, 0, 0,  0, 0, 0, 0);
+    wborder (wBoard,  0, 0, 0, 0,  0, 0, 0, 0);
     wbkgd   (wBoard,  COLOR_PAIR(2));
 
     //  盤面を表示する。    //
@@ -222,7 +222,7 @@ TextUserInterface::showCurrentState()  const
 
 
         std::stringstream   ssLine;
-        ssLine  <<  s_tblHandOwnerNames[i]  <<  "  HANDS:";
+        ssLine  <<  s_tblPlayerNames[i]  <<  "  HANDS:";
         wmove   (wHands,  1, 1);
         waddstr (wHands,  ssLine.str().c_str());
 
@@ -257,6 +257,47 @@ TextUserInterface::showCurrentState()  const
     touchwin(wBoard);
     wrefresh(wBoard);
     wmove   (stdscr,  sy,  sx);
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    追加の情報を表示する。
+//
+
+ErrCode
+TextUserInterface::showInformations()  const
+{
+    WINDOW  *  const        wInfos  =  (this->m_wInfos);
+    const  GameInterface  & gcGame  =  (this->m_giGameCtrl);
+
+    const  PlayerIndex      piTurn  =  gcGame.getCurrentPlayer();
+
+    std::stringstream       ssDice;
+    ssDice  <<  gcGame.getConstraint();
+
+    //  画面をすべて消去する。  //
+    wattrset(wInfos,  COLOR_PAIR(1));
+    werase  (wInfos);
+    wborder (wInfos,  0, 0, 0, 0,  0, 0, 0, 0);
+    wbkgd   (wInfos,  COLOR_PAIR(1));
+
+    wattrset(wInfos,  COLOR_PAIR(1));
+    wmove   (wInfos,  1, 1);
+    waddstr (wInfos,  "TURN: ");
+    wattrset(wInfos,  COLOR_PAIR(piTurn + 2) | A_BOLD);
+    wmove   (wInfos,  2, 2);
+    waddstr (wInfos,  s_tblPlayerNames[piTurn]);
+
+    wattrset(wInfos,  COLOR_PAIR(1));
+    wmove   (wInfos,  4, 1);
+    waddstr (wInfos,  "DICE:");
+    wattrset(wInfos,  COLOR_PAIR(piTurn + 2) | A_BOLD);
+    wmove   (wInfos,  5, 2);
+    waddstr (wInfos,  ssDice.str().c_str());
+
+    touchwin(wInfos);
+    wrefresh(wInfos);
 
     return ( ERR_SUCCESS );
 }
@@ -396,11 +437,11 @@ TextUserInterface::setCursorPosition(
 ErrCode
 TextUserInterface::setupColors()
 {
-    init_pair( 1,  COLOR_WHITE,   COLOR_BLUE);
-    init_pair( 2,  COLOR_BLACK,   COLOR_YELLOW);
-    init_pair( 3,  COLOR_CYAN,    COLOR_BLACK);
-    init_pair( 4,  COLOR_RED,     COLOR_WHITE);
-    init_pair( 5,  COLOR_BLACK,   COLOR_RED);
+    init_pair( 1,  COLOR_WHITE,   COLOR_BLUE);      //  画面背景。  //
+    init_pair( 2,  COLOR_BLACK,   COLOR_YELLOW);    //  将棋盤。    //
+    init_pair( 3,  COLOR_CYAN,    COLOR_BLACK);     //  先手の駒。  //
+    init_pair( 4,  COLOR_RED,     COLOR_WHITE);     //  後手の駒。  //
+    init_pair( 5,  COLOR_BLACK,   COLOR_RED);       //  カーソル。  //
     bkgd   (COLOR_PAIR(1));
     clear();
 
@@ -429,23 +470,25 @@ TextUserInterface::setupScreen()
     }
 
     //  画面のサイズを取得、検査する。  //
-    //  最低でも w40 x h30 以上が必要。  //
+    //  最低でも w48 x h30 以上が必要。  //
     int         sxW,  syH;
     getmaxyx(stdscr,  syH,  sxW);
-    if ( (sxW < 40) || (syH < 30) ) {
+    if ( (sxW < 48) || (syH < 30) ) {
         return ( ERR_FAILURE );
     }
 
     //  以下の条件でウィンドウを作成する。  //
     //  ボード表示：w30 x h20               //
     //  持ち駒表示：w30 x h 4               //
+    //  その他表示：w16 x h30               //
     //  さらに画面の中央に表示する。        //
-    const  int  sxCent  =  (sxW - 30) / 2;
+    const  int  sxCent  =  (sxW - 48) / 2;
     const  int  syCent  =  (syH - 30) / 2;
 
     WINDOW  *   wBoard  =  subwin(stdscr,  20,  30,  syCent +  5,  sxCent);
     WINDOW  *   wHandB  =  subwin(stdscr,   4,  30,  syCent + 26,  sxCent);
     WINDOW  *   wHandW  =  subwin(stdscr,   4,  30,  syCent +  0,  sxCent);
+    WINDOW  *   wInfos  =  subwin(stdscr,  30,  16,  syCent,  sxCent + 32);
     noecho();
     cbreak();
     keypad(stdscr,  TRUE);
@@ -456,6 +499,7 @@ TextUserInterface::setupScreen()
     this->m_wBoard      =  wBoard;
     this->m_wHands[0]   =  wHandB;
     this->m_wHands[1]   =  wHandW;
+    this->m_wInfos      =  wInfos;
     this->m_flgInitScr  =  BOOL_TRUE;
 
     return ( ERR_SUCCESS );

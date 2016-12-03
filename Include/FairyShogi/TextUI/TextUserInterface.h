@@ -89,6 +89,17 @@ public:
     virtual  ErrCode
     showCurrentState()  const;
 
+    //----------------------------------------------------------------
+    /**   追加の情報を表示する。
+    **
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    showInformations()  const;
+
 //========================================================================
 //
 //    Public Member Functions.
@@ -222,6 +233,11 @@ private:
     **    端末内のウィンドウ（持ち駒表示）。
     **/
     WINDOW  *           m_wHands[2];
+
+    /**
+    **    情報／コマンドウィンドウ。
+    **/
+    WINDOW  *           m_wInfos;
 
     /**   カーソル位置。    **/
     RankRow             m_yCurRow;
