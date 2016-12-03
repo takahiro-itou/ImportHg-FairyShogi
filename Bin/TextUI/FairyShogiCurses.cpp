@@ -50,9 +50,6 @@ int  main(int argc, char * argv[])
         gcTUI.getCursorPosition(cy,  cx);
         key = getch();
 
-        attrset(COLOR_PAIR(0));
-        mvprintw(40, 0, "# DEBUG : KEY = %x",  key);
-
         if ( key == 'q' ) { break; }
 
         if ( (key == '\n') || (key == KEY_ENTER) ) {

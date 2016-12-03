@@ -391,7 +391,7 @@ TextUserInterface::computeCursorPosition(
     {
         cW  =  (this->m_wBoard);
         cY  =  (wY - 2) / 3;
-        cX  =  (wX - 4) / 5;
+        cX  =  (wX - 3) / 5;
         return ( ERR_SUCCESS );
     }
 
