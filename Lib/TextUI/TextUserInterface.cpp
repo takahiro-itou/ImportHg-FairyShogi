@@ -131,9 +131,9 @@ TextUserInterface::getCursorColFromInternal(
     if ( (flgShow == GameInterface::SCF_FLIP_COLUMNS)
             || (flgShow == GameInterface::SCF_ROTATE_BOARD) )
     {
-        return ( 5 - xIntCol - 1 );
+        return ( xIntCol );
     }
-    return ( xIntCol );
+    return ( 5 - xIntCol - 1 );
 }
 
 //----------------------------------------------------------------
