@@ -37,9 +37,9 @@ int  main(int argc, char * argv[])
     // mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION,  NULL);
 
     gcTUI.setupColors();
-    gcTUI.showCurrentState();
 
     for (;;) {
+        gcTUI.showCurrentState();
         move(y, x);
         refresh();
 

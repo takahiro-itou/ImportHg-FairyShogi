@@ -126,8 +126,10 @@ TextUserInterface::showCurrentState()  const
     objGame.writeToViewBuffer(vb);
 
     //  盤面を表示する。    //
+    ::attrset(COLOR_PAIR(1));
     ::erase();
     ::move(0, 0);
+    ::attrset(COLOR_PAIR(1));
     if ( (flgShow == GameInterface::SCF_FLIP_COLUMNS)
             || (flgShow == GameInterface::SCF_ROTATE_BOARD) )
     {
@@ -137,6 +139,7 @@ TextUserInterface::showCurrentState()  const
     }
 
     ::move(1, 0);
+    ::attrset(COLOR_PAIR(1));
     ::addstr("----------------");
     for ( int y = 0; y < 5; ++ y ) {
         std::stringstream   ssLine;
@@ -150,8 +153,11 @@ TextUserInterface::showCurrentState()  const
             ssLine  <<  "|"  <<  (y+1);
         }
         ::move(y * 2 + 2, 0);
+        ::attrset(COLOR_PAIR(1));
         ::addstr(ssLine.str().c_str());
+
         ::move(y * 2 + 3, 0);
+        ::attrset(COLOR_PAIR(1));
         ::addstr("----------------");
     }
 
@@ -170,6 +176,7 @@ TextUserInterface::showCurrentState()  const
                     <<  ", ";
         }
         ::move(i + 14, 0);
+        ::attrset(COLOR_PAIR(i + 2));
         ::addstr(ssLine.str().c_str());
     }
     ::refresh();
@@ -203,13 +210,12 @@ TextUserInterface::setupColors()
 {
     ::start_color();
 
-    ::init_pair( 1,  COLOR_WHITE,  COLOR_BLUE);
-    ::init_pair( 2,  COLOR_BLACK,  COLOR_YELLOW);
-    ::init_pair( 3,  COLOR_WHITE,  COLOR_YELLOW);
-    ::init_pair(10,  COLOR_WHITE,  COLOR_BLUE);
+    ::init_pair( 1,  COLOR_WHITE,   COLOR_BLUE);
+    ::init_pair( 2,  COLOR_YELLOW,  COLOR_BLACK);
+    ::init_pair( 3,  COLOR_RED,     COLOR_WHITE);
 
-    ::bkgd(COLOR_PAIR(10));
-    ::clear();
+    ::bkgd(COLOR_PAIR(1));
+    ::attrset(COLOR_PAIR(1));
     ::erase();
 
     return ( ERR_SUCCESS );
