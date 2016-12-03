@@ -35,14 +35,14 @@ int  main(int argc, char * argv[])
         return ( 1 );
     }
 
+    MEVENT  mEvent;
     int     cx  =  0;
-    int     cy  = 0;
+    int     cy  =  0;
     int     key;
 
     gcTUI.setupColors();
 
     for (;;) {
-        gcTUI.setCursorPosition(cy,  cx);
         gcTUI.showInformations();
         gcTUI.showCurrentState();
         refresh();
@@ -59,6 +59,21 @@ int  main(int argc, char * argv[])
             continue;
         }
 
+        if ( key == KEY_MOUSE ) {
+            if ( getmouse(&mEvent) != OK ) {
+                continue;
+            }
+            WINDOW  *   wndTmp  =  nullptr;
+            if ( gcTUI.computeCursorPosition(
+                            mEvent.y,  mEvent.x,  wndTmp,  cy,  cx)
+                    != ERR_SUCCESS )
+            {
+                continue;
+            }
+            gcTUI.setCursorPosition(cy,  cx);
+            continue;
+        }
+
         switch ( key ) {
         case  KEY_LEFT:   case  'h':    -- cx;  break;
         case  KEY_DOWN:   case  'j':    ++ cy;  break;
@@ -68,16 +83,15 @@ int  main(int argc, char * argv[])
 
         if ( ('1' <= key) && (key <= '5') ) {
             cx  =  gcTUI.getCursorColFromInternal(key - '1');
-            continue;
         }
         if ( ('a' <= key) && (key <= 'e') ) {
             cy  =  gcTUI.getCursorRowFromInternal(key - 'a');
-            continue;
         }
         if ( ('A' <= key) && (key <= 'E') ) {
             cy  =  gcTUI.getCursorRowFromInternal(key - 'A');
-            continue;
         }
+        gcTUI.setCursorPosition(cy,  cx);
+
     }
 
     // endwin();
