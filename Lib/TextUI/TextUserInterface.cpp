@@ -284,7 +284,7 @@ TextUserInterface::showCurrentState()  const
 
     int         cx,  cy,  sx, sy;
     WINDOW  *   wCurIn;
-    computeScreenCursorPosition(sy,  sx,  wCurIn,  cy,  cx);
+    computeScreenPosition(sy,  sx,  wCurIn,  cy,  cx);
 
     // attrset(COLOR_PAIR(0));
     // mvprintw(40, 0, "# DEBUG : cy=%d, cx=%d",  cy, cx);
@@ -373,11 +373,55 @@ TextUserInterface::cleanupScreen()
 }
 
 //----------------------------------------------------------------
-//    カーソルを表示する座標を計算する。
+//    端末座標に対応する内部座標を計算する。
 //
 
 ErrCode
-TextUserInterface::computeScreenCursorPosition(
+TextUserInterface::computeCursorPosition(
+        const  CursorCoord  sY,
+        const  CursorCoord  sX,
+        WINDOW  *        &  cW,
+        RankRow          &  cY,
+        FileCol          &  cX)  const
+{
+    CursorCoord     wX,  wY;
+
+    //  盤面ウィンドウの中か？  //
+    if ( checkCoordInWindow(this->m_wBoard, sY, sX, wY, wX) )
+    {
+        cW  =  (this->m_wBoard);
+        cY  =  (wY - 2) / 3;
+        cX  =  (wX - 4) / 5;
+        return ( ERR_SUCCESS );
+    }
+
+    //  先手（黒）の持ち駒ウィンドウの中か？。  //
+    if ( checkCoordInWindow(this->m_wHands[0], sY, sX, wY, wX) )
+    {
+        cW  =  (this->m_wHands[0]);
+        cY  =  5;
+        cX  =  (wX - 1) / 4;
+        return ( ERR_SUCCESS );
+    }
+
+    //  後手（白）の持ち駒ウィンドウの中か？。  //
+    if ( checkCoordInWindow(this->m_wHands[1], sY, sX, wY, wX) )
+    {
+        cW  =  (this->m_wHands[1]);
+        cY  =  -1;
+        cX  =  (wX - 1) / 4;
+        return ( ERR_SUCCESS );
+    }
+
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    カーソルを表示する端末座標を計算する。
+//
+
+ErrCode
+TextUserInterface::computeScreenPosition(
         CursorCoord  &  sY,
         CursorCoord  &  sX,
         WINDOW  *    &  cW,
@@ -560,6 +604,37 @@ TextUserInterface::setupScreen()
 //
 //    Accessors.
 //
+
+//========================================================================
+//
+//    For Internal Use Only.
+//
+
+//----------------------------------------------------------------
+//    端末座標が指定したウィンドウ内にあるか判定する。
+//
+
+Boolean
+TextUserInterface::checkCoordInWindow(
+        WINDOW  *  const    wndTest,
+        const  CursorCoord  sY,
+        const  CursorCoord  sX,
+        CursorCoord      &  wY,
+        CursorCoord      &  wX)  const
+{
+    int     oX,  oY,  oW,  oH;
+
+    getbegyx(wndTest,  oY,  oX);
+    getmaxyx(wndTest,  oH,  oW);
+
+    wY  =  sY - oY;
+    wX  =  sX - oX;
+
+    if ( (wX < 0) || (oW <= wX) || (wY < 0) || (oH <= wY) ) {
+        return ( BOOL_FALSE );
+    }
+    return ( BOOL_TRUE );
+}
 
 }   //  End of namespace  TextUI
 FAIRYSHOGI_NAMESPACE_END

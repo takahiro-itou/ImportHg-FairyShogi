@@ -147,7 +147,28 @@ public:
     cleanupScreen();
 
     //----------------------------------------------------------------
-    /**   カーソルを表示する座標を計算する。
+    /**   端末座標に対応する内部座標を計算する。
+    **
+    **  @param [in] sY    画面全体での端末座標。
+    **  @param [in] sX    画面全体での端末座標。
+    **  @param[out] cW    カーソルを持つウィンドウ。
+    **  @param[out] cY    カーソル座標。
+    **  @param[out] cX    カーソル座標。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    ErrCode
+    computeCursorPosition(
+            const  CursorCoord  sY,
+            const  CursorCoord  sX,
+            WINDOW  *        &  cW,
+            RankRow          &  cY,
+            FileCol          &  cX)  const;
+
+    //----------------------------------------------------------------
+    /**   カーソルを表示する端末座標を計算する。
     **
     **  @param[out] sY    画面全体での座標。
     **  @param[out] sX    画面全体での座標。
@@ -160,7 +181,7 @@ public:
     **      -   正常終了の場合は、ゼロを返す。
     **/
     ErrCode
-    computeScreenCursorPosition(
+    computeScreenPosition(
             CursorCoord  &  sY,
             CursorCoord  &  sX,
             WINDOW  *    &  cW,
@@ -250,6 +271,27 @@ private:
     static  CONSTEXPR_VAR   RandResult
     RANDOM_MAX_VALUE    = RandomGenerator::MaxValue<28>::VALUE;
 
+private:
+
+    //----------------------------------------------------------------
+    /**   端末座標が指定したウィンドウ内にあるか判定する。
+    **
+    **  @param [in] wndTest   テストするウィンドウ。
+    **  @param [in] sY        画面全体での端末座標。
+    **  @param [in] sX        画面全体での端末座標。
+    **  @param[out] wY        ウィンドウ内での端末座標。
+    **  @param[out] wX        ウィンドウ内での端末座標。
+    **  @retval     BOOL_TRUE   : ウィンドウ内。
+    **  @retval     BOOL_FALSE  : ウィンドウ外。
+    **/
+    Boolean
+    checkCoordInWindow(
+            WINDOW  *  const    wndTest,
+            const  CursorCoord  sY,
+            const  CursorCoord  sX,
+            CursorCoord      &  wY,
+            CursorCoord      &  wX)  const;
+
 //========================================================================
 //
 //    Member Variables.
@@ -285,10 +327,10 @@ private:
     **/
     WINDOW  *           m_wInfos;
 
-    /**   カーソル位置。    **/
+    /**   カーソルの座標（内部座標）。  **/
     RankRow             m_yCurRow;
 
-    /**   カーソル位置。    **/
+    /**   カーソルの座標（内部座標）。  **/
     FileCol             m_xCurCol;
 
 //========================================================================
