@@ -35,40 +35,41 @@ int  main(int argc, char * argv[])
         return ( 1 );
     }
 
-    int     x = 0, y = 0;
+    int     cx  =  0;
+    int     cy  = 0;
     int     key;
 
     gcTUI.setupColors();
 
     for (;;) {
-        gcTUI.setCursorPosition(y, x);
+        gcTUI.setCursorPosition(cy,  cx);
         gcTUI.showInformations();
         gcTUI.showCurrentState();
         refresh();
 
-        gcTUI.getCursorPosition(y,  x);
+        gcTUI.getCursorPosition(cy,  cx);
         key = getch();
         if ( key == 'q' ) { break; }
         if ( key == ' ' ) { break; }
 
         switch ( key ) {
-        case  KEY_LEFT:   case  'h':    -- x;   break;
-        case  KEY_DOWN:   case  'j':    ++ y;   break;
-        case  KEY_UP:     case  'k':    -- y;   break;
-        case  KEY_RIGHT:  case  'l':    ++ x;   break;
+        case  KEY_LEFT:   case  'h':    -- cx;  break;
+        case  KEY_DOWN:   case  'j':    ++ cy;  break;
+        case  KEY_UP:     case  'k':    -- cy;  break;
+        case  KEY_RIGHT:  case  'l':    ++ cx;  break;
         case  '1':
         case  '2':
         case  '3':
         case  '4':
         case  '5':
-            x   =  key - '1';
+            cx  =  gcTUI.getCursorColFromInternal(key - '1');
             break;
         case  'a':
         case  'b':
         case  'c':
         case  'd':
         case  'e':
-            y   =  key - 'a';
+            cy  =  gcTUI.getCursorRowFromInternal(key - 'a');
             break;
         }
     }
