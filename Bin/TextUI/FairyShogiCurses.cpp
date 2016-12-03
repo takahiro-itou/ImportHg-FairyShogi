@@ -23,6 +23,12 @@
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
 
+enum  SelectMode
+{
+    SM_MODE_SOURCE  =  0,
+    SM_MODE_TARGET  =  1
+};
+
 int  main(int argc, char * argv[])
 {
     TextUI::TextUserInterface   gcTUI;
@@ -34,6 +40,8 @@ int  main(int argc, char * argv[])
                     <<  std::endl;
         return ( 1 );
     }
+
+    SelectMode  smFlag  =  SM_MODE_SOURCE;
 
     MEVENT  mEvent;
     int     cx  =  0;
@@ -53,7 +61,11 @@ int  main(int argc, char * argv[])
         if ( key == 'q' ) { break; }
 
         if ( (key == '\n') || (key == KEY_ENTER) || (key == ' ') ) {
-            gcTUI.setSourcePosition(cy,  cx);
+            if ( smFlag == SM_MODE_SOURCE ) {
+                gcTUI.setSourcePosition(cy,  cx);
+            } else {
+                gcTUI.setTargetPosition(cy,  cx);
+            }
             continue;
         }
 
