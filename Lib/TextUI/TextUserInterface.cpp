@@ -232,19 +232,11 @@ TextUserInterface::showCurrentState()  const
                 wmove   (wBoard,  y * 3 + 3, x * 5 + 3);
             }
 
-            // ssSqur.clear();
-            // ssSqur.str("");
-            // ssSqur  <<  " "
-            //         <<  s_tblPieceName[dp]
-            //         <<  " ";
             waddch  (wBoard,  ' ');
             waddstr (wBoard,  s_tblPieceName[dp]);
             waddch  (wBoard,  ' ');
         }
 
-//      wattrset(wBoard,  COLOR_PAIR(2));
-//        wmove   (wBoard,  y * 2 + 6, 1);
-//      waddstr (wBoard,  "---------------- ");
     }
 
     //  持ち駒を表示する。  //
