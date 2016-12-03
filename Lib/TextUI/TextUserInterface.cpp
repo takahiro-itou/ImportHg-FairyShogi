@@ -69,9 +69,10 @@ CONSTEXPR_VAR   int         FIELD_TOP_MARGIN        =  3;
 CONSTEXPR_VAR   int         FIELD_PIECE_WIDTH       =  5;
 CONSTEXPR_VAR   int         FIELD_PIECE_HEIGHT      =  3;
 
-CONSTEXPR_VAR   int         HANDS_PIECE_WIDTH       =  5;
-CONSTEXPR_VAR   int         HANDS_TOP_MARGIN        =  2;
+CONSTEXPR_VAR   PieceIndex  HANDS_NUM_PIECE_TYPES   =  5;
 CONSTEXPR_VAR   int         HANDS_LEFT_MARGIN       =  3;
+CONSTEXPR_VAR   int         HANDS_TOP_MARGIN        =  2;
+CONSTEXPR_VAR   int         HANDS_PIECE_WIDTH       =  5;
 
 }   //  End of (Unnamed) namespace.
 
@@ -531,10 +532,10 @@ TextUserInterface::setCursorPosition(
 
     if ( yNewRow == CURSOR_ROW_BLACK_HANDS ) {
         //  先手（黒）の持ち駒ウィンドウ。  //
-        xMaxCol = 5;
+        xMaxCol = HANDS_NUM_PIECE_TYPES;
     } else if ( yNewRow == CURSOR_ROW_WHITE_HANDS ) {
         //  後手（白）の持ち駒ウィンドウ。  //
-        xMaxCol = 5;
+        xMaxCol = HANDS_NUM_PIECE_TYPES;
     } else if ( (yTmpRow < 0) || (FIELD_NUM_Y_ROWS <= yTmpRow) ) {
         //  範囲外の座標。  //
         return ( ERR_FAILURE );
