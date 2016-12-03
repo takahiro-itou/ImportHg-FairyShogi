@@ -50,6 +50,13 @@ s_tblHandName[]     = {
     "p", "l", "n", "s", "g", "b", "r", "k"
 };
 
+CONSTEXPR_VAR   const  char  *
+s_tblHandOwnerNames[]   =  {
+    "BLACK",
+    "WHITE"
+};
+
+
 }   //  End of (Unnamed) namespace.
 
 //========================================================================
@@ -144,11 +151,6 @@ TextUserInterface::incrementCursorPosition(
 ErrCode
 TextUserInterface::showCurrentState()  const
 {
-    CONSTEXPR_VAR   const  char  *  s_tblHandOwnerNames[2]  =  {
-        "BLACK",
-        "WHITE"
-    };
-
     WINDOW  *  const        wBoard  =  (this->m_wBoard);
     const  GameInterface  &objGame  =  (this->m_giGameCtrl);
     const  GameInterface::ShowCoordFlags
@@ -162,63 +164,87 @@ TextUserInterface::showCurrentState()  const
     wattrset(wBoard,  COLOR_PAIR(1));
     werase  (wBoard);
     wborder (this->m_wBoard,  0, 0, 0, 0,  0, 0, 0, 0);
+    wbkgd   (wBoard,  COLOR_PAIR(2));
 
     //  盤面を表示する。    //
     wattrset(wBoard,  COLOR_PAIR(2));
     if ( (flgShow == GameInterface::SCF_FLIP_COLUMNS)
             || (flgShow == GameInterface::SCF_ROTATE_BOARD) )
     {
-        wmove   (wBoard,   3,  1);
-        waddstr (wBoard,  "| 1| 2| 3| 4| 5| ");
+        wmove   (wBoard,   1,  1);
+        waddstr (wBoard,  " |  1 |  2 |  3 |  4 |  5 | ");
 
-        wmove   (wBoard,  15,  1);
-        waddstr (wBoard,  "| 1| 2| 3| 4| 5| ");
+        wmove   (wBoard,  18,  1);
+        waddstr (wBoard,  " |  1 |  2 |  3 |  4 |  5 | ");
     } else {
-        wmove   (wBoard,   3,  1);
-        waddstr (wBoard,  "| 5| 4| 3| 2| 1| ");
+        wmove   (wBoard,   1,  1);
+        waddstr (wBoard,  " |  5 |  4 |  3 |  2 |  1 | ");
 
-        wmove   (wBoard,  15,  1);
-        waddstr (wBoard,  "| 5| 4| 3| 2| 1| ");
+        wmove   (wBoard,  18,  1);
+        waddstr (wBoard,  " |  5 |  4 |  3 |  2 |  1 | ");
     }
 
-    wmove   (wBoard,  4,  1);
-    waddstr (wBoard,  "---------------- ");
+    //  盤面の罫線を表示する。  //
+    for ( int y = 0; y < 6; ++ y ) {
+        wmove   (wBoard,  y * 3 + 2,  2);
+        whline  (wBoard,  0,  26);
+    }
+
+    std::stringstream   ssSqur;
     for ( int y = 0; y < 5; ++ y ) {
         std::stringstream   ssLine;
 
-        wmove   (wBoard,  y * 2 + 5, 1);
+        if ( (flgShow) & GameInterface::SCF_ROTATE_BOARD ) {
+            ssLine  <<  (5-y);
+        } else {
+            ssLine  <<  (y+1);
+        }
+
+        wattrset(wBoard,  COLOR_PAIR(2));
+        wmove   (wBoard,  y * 3 + 3, 1);
+        waddstr (wBoard,  " |    |    |    |    |    | ");
+
+        wmove   (wBoard,  y * 3 + 4, 1);
+        waddstr (wBoard,  ssLine.str().c_str());
+        waddstr (wBoard,  "|    |    |    |    |    |");
+        waddstr (wBoard,  ssLine.str().c_str());
+
         for ( int x = 0; x < 5; ++ x ) {
             const  PieceIndex   dp  = vb.fpBoard[y][x];
             wattrset(wBoard,  COLOR_PAIR(2));
-            waddstr (wBoard,  "|");
+            wmove   (wBoard,  y * 3 + 3, x * 5 + 3);
+            waddstr (wBoard,  "    ");
+            wmove   (wBoard,  y * 3 + 4, x * 5 + 3);
+            waddstr (wBoard,  "    ");
 
             if ( dp == 0 ) {
                 wattrset(wBoard,  COLOR_PAIR(2));
+                continue;
             } else if ( dp <= 14 ) {
                 wattrset(wBoard,  COLOR_PAIR(3));
+                wmove   (wBoard,  y * 3 + 3, x * 5 + 3);
+                waddstr (wBoard,  "  ^ ");
+                wmove   (wBoard,  y * 3 + 4, x * 5 + 3);
             } else {
                 wattrset(wBoard,  COLOR_PAIR(4));
+                wmove   (wBoard,  y * 3 + 4, x * 5 + 3);
+                waddstr (wBoard,  "  v ");
+                wmove   (wBoard,  y * 3 + 3, x * 5 + 3);
             }
 
-            ssLine.clear();
-            ssLine.str("");
-            ssLine  <<  s_tblPieceName[dp];
-            waddstr (wBoard,  ssLine.str().c_str());
+            // ssSqur.clear();
+            // ssSqur.str("");
+            // ssSqur  <<  " "
+            //         <<  s_tblPieceName[dp]
+            //         <<  " ";
+            waddch  (wBoard,  ' ');
+            waddstr (wBoard,  s_tblPieceName[dp]);
+            waddch  (wBoard,  ' ');
         }
 
-        ssLine.clear();
-        ssLine.str("");
-        if ( (flgShow) & GameInterface::SCF_ROTATE_BOARD ) {
-            ssLine  <<  "|"  <<  (5-y);
-        } else {
-            ssLine  <<  "|"  <<  (y+1);
-        }
-        wattrset(wBoard,  COLOR_PAIR(2));
-        waddstr (wBoard,  ssLine.str().c_str());
-
-        wattrset(wBoard,  COLOR_PAIR(2));
-        wmove   (wBoard,  y * 2 + 6, 1);
-        waddstr (wBoard,  "---------------- ");
+//      wattrset(wBoard,  COLOR_PAIR(2));
+//        wmove   (wBoard,  y * 2 + 6, 1);
+//      waddstr (wBoard,  "---------------- ");
     }
 
     //  持ち駒を表示する。  //
