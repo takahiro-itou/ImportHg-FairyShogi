@@ -70,14 +70,9 @@ s_tblHandName[]     = {
 
 TextUserInterface::TextUserInterface()
 {
-    initscr();
-    noecho();
-    cbreak();
-    keypad(stdscr,  TRUE);
-
-    mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION,  NULL);
-
     this->m_giGameCtrl.resetGame();
+
+    setupScreen();
 }
 
 //----------------------------------------------------------------
@@ -87,7 +82,7 @@ TextUserInterface::TextUserInterface()
 
 TextUserInterface::~TextUserInterface()
 {
-    endwin();
+    cleanupScreen();
 }
 
 //========================================================================
@@ -131,6 +126,7 @@ TextUserInterface::showCurrentState()  const
     objGame.writeToViewBuffer(vb);
 
     //  盤面を表示する。    //
+    ::erase();
     ::move(0, 0);
     if ( (flgShow == GameInterface::SCF_FLIP_COLUMNS)
             || (flgShow == GameInterface::SCF_ROTATE_BOARD) )
@@ -185,6 +181,56 @@ TextUserInterface::showCurrentState()  const
 //
 //    Public Member Functions.
 //
+
+//----------------------------------------------------------------
+//    画面制御ライブラリを終了する。
+//
+
+ErrCode
+TextUserInterface::cleanupScreen()
+{
+    ::endwin();
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    色を準備する。
+//
+
+ErrCode
+TextUserInterface::setupColors()
+{
+    ::start_color();
+
+    ::init_pair( 1,  COLOR_WHITE,  COLOR_BLUE);
+    ::init_pair( 2,  COLOR_BLACK,  COLOR_YELLOW);
+    ::init_pair( 3,  COLOR_WHITE,  COLOR_YELLOW);
+    ::init_pair(10,  COLOR_WHITE,  COLOR_BLUE);
+
+    ::bkgd(COLOR_PAIR(10));
+    ::clear();
+    ::erase();
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    画面制御ライブラリを初期化する。
+//
+
+ErrCode
+TextUserInterface::setupScreen()
+{
+    ::initscr();
+    ::noecho();
+    ::cbreak();
+    ::keypad(stdscr,  TRUE);
+
+    ::mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION,  NULL);
+
+    return ( ERR_SUCCESS );
+}
 
 //========================================================================
 //
