@@ -287,7 +287,7 @@ TextUserInterface::showCurrentState()  const
 
     int         cx,  cy,  sx, sy;
     WINDOW  *   wCurIn;
-    computeScreenCursorPosition(&cy,  &cx,  &sy,  &sx,  wCurIn);
+    computeScreenCursorPosition(sy,  sx,  wCurIn,  cy,  cx);
 
     wmove   (wCurIn,  cy,  cx);
     wattrset(wCurIn,  COLOR_PAIR(5));
@@ -372,40 +372,41 @@ TextUserInterface::cleanupScreen()
 
 ErrCode
 TextUserInterface::computeScreenCursorPosition(
-        int  *  const   pWY,
-        int  *  const   pWX,
-        int  *  const   pSY,
-        int  *  const   pSX,
-        WINDOW  *    &  pWnd)  const
+        CursorCoord  &  sY,
+        CursorCoord  &  sX,
+        WINDOW  *    &  cW,
+        CursorCoord  &  wY,
+        CursorCoord  &  wX)  const
+
 {
     WINDOW  *   wCurIn  =  nullptr;
-    int         wY,  wX;
+    int         wTempY,  wTempX;
     int         oY,  oX;
 
     if ( (this->m_yCurRow) == -1 ) {
         //  後手（白）の持ち駒ウィンドウ。  //
         wCurIn  =  (this->m_wHands[1]);
-        wY      =  2;
-        wX      =  (this->m_xCurCol) * 2 + 1;
+        wTempY  =  2;
+        wTempX  =  (this->m_xCurCol) * 2 + 1;
     } else if ( (this->m_yCurRow) == 5 ) {
         //  先手（黒）の持ち駒ウィンドウ。  //
         wCurIn  =  (this->m_wHands[0]);
-        wY      =  2;
-        wX      =  (this->m_xCurCol) * 2 + 1;
+        wTempY  =  2;
+        wTempX  =  (this->m_xCurCol) * 2 + 1;
     } else {
         //  盤面を表示しているウィンドウ。  //
         wCurIn  =  (this->m_wBoard);
-        wY      =  (this->m_yCurRow) * 3 + 3;
-        wX      =  (this->m_xCurCol) * 5 + 4;
+        wTempY  =  (this->m_yCurRow) * 3 + 3;
+        wTempX  =  (this->m_xCurCol) * 5 + 4;
     }
 
     getbegyx(wCurIn,  oY,  oX);
 
-    (*pWY)  =  wY;
-    (*pWX)  =  wX;
-    (*pSY)  =  wY + oY;
-    (*pSX)  =  wX + oX;
-    pWnd    =  wCurIn;
+    sY  =  wTempY + oY;
+    sX  =  wTempX + oX;
+    cW  =  wCurIn;
+    wY  =  wTempY;
+    wX  =  wTempX;
 
     return ( ERR_SUCCESS );
 }
@@ -416,11 +417,11 @@ TextUserInterface::computeScreenCursorPosition(
 
 ErrCode
 TextUserInterface::getCursorPosition(
-        int &   yNewRow,
-        int &   xNewCol)  const
+        RankRow  &  yCurRow,
+        FileCol  &  xCurCol)  const
 {
-    yNewRow = (this->m_yCurRow);
-    xNewCol = (this->m_xCurCol);
+    yCurRow = (this->m_yCurRow);
+    xCurCol = (this->m_xCurCol);
     return ( ERR_SUCCESS );
 }
 

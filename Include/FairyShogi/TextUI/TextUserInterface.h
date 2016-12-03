@@ -39,6 +39,15 @@ class  TextUserInterface
 
 //========================================================================
 //
+//    Internal Type Definitions.
+//
+public:
+
+    /**   カーソルの座標を指定する型。  **/
+    typedef     int     CursorCoord;
+
+//========================================================================
+//
 //    Constructor(s) and Destructor.
 //
 public:
@@ -140,27 +149,44 @@ public:
     //----------------------------------------------------------------
     /**   カーソルを表示する座標を計算する。
     **
+    **  @param[out] sY    画面全体での座標。
+    **  @param[out] sX    画面全体での座標。
+    **  @param[out] cW    カーソルを持つウィンドウ。
+    **  @param[out] wY    ウィンドウ内での座標。
+    **  @param[out] wX    ウィンドウ内での座標。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
     **/
     ErrCode
     computeScreenCursorPosition(
-            int  *  const   pWY,
-            int  *  const   pWX,
-            int  *  const   pSY,
-            int  *  const   pSX,
-            WINDOW  *   &   pWnd)  const;
+            CursorCoord  &  sY,
+            CursorCoord  &  sX,
+            WINDOW  *    &  cW,
+            CursorCoord  &  wY,
+            CursorCoord  &  wX)  const;
 
     //----------------------------------------------------------------
     /**   現在のカーソル位置を取得する。
     **
+    **  @param[out] yCurRow   垂直方向。
+    **  @param[out] xCurCol   水平方向。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
     **/
     ErrCode
     getCursorPosition(
-            int &   yNewRow,
-            int &   xNewCol)  const;
+            RankRow  &  yCurRow,
+            FileCol  &  xCurCol)  const;
 
     //----------------------------------------------------------------
     /**   カーソル位置を変更する。
     **
+    **  @param [in] yIncRow   垂直方向の増分。
+    **  @param [in] xIncCol   水平方向の増分。
     **/
     ErrCode
     incrementCursorPosition(
