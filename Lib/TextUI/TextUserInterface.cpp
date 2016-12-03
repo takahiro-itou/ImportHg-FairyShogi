@@ -56,6 +56,22 @@ s_tblPlayerNames[]  =  {
     "WHITE"
 };
 
+CONSTEXPR_VAR   RankRow     CURSOR_ROW_FIELD_FIRST  =  1;
+CONSTEXPR_VAR   RankRow     CURSOR_ROW_WHITE_HANDS  =  0;
+CONSTEXPR_VAR   RankRow     CURSOR_ROW_BLACK_HANDS  =  6;
+CONSTEXPR_VAR   FileCol     CURSOR_COL_FIELD_FIRST  =  0;
+
+CONSTEXPR_VAR   RankRow     FIELD_NUM_Y_ROWS        =  5;
+CONSTEXPR_VAR   FileCol     FIELD_NUM_X_COLS        =  5;
+
+CONSTEXPR_VAR   int         FIELD_LEFT_MARGIN       =  4;
+CONSTEXPR_VAR   int         FIELD_TOP_MARGIN        =  3;
+CONSTEXPR_VAR   int         FIELD_PIECE_WIDTH       =  5;
+CONSTEXPR_VAR   int         FIELD_PIECE_HEIGHT      =  3;
+
+CONSTEXPR_VAR   int         HANDS_PIECE_WIDTH       =  5;
+CONSTEXPR_VAR   int         HANDS_TOP_MARGIN        =  2;
+CONSTEXPR_VAR   int         HANDS_LEFT_MARGIN       =  3;
 
 }   //  End of (Unnamed) namespace.
 
@@ -154,10 +170,12 @@ TextUserInterface::getCursorRowFromInternal(
     const  GameInterface::ShowCoordFlags
         flgShow = gcGame.getShowFlag();
 
+    RankRow     yTmpRow = yIntRow;
     if ( (flgShow) & GameInterface::SCF_ROTATE_BOARD ) {
-        return ( 5 - yIntRow - 1 );
+        yTmpRow = (FIELD_NUM_Y_ROWS - yIntRow - 1);
     }
-    return ( yIntRow );
+
+    return ( yTmpRow + CURSOR_ROW_FIELD_FIRST );
 }
 
 //----------------------------------------------------------------
@@ -396,8 +414,8 @@ TextUserInterface::computeCursorPosition(
     if ( checkCoordInWindow(this->m_wBoard, sY, sX, wY, wX) )
     {
         cW  =  (this->m_wBoard);
-        cY  =  (wY - 2) / 3;
-        cX  =  (wX - 3) / 5;
+        cY  =  (wY - 2) / FIELD_PIECE_HEIGHT + CURSOR_ROW_FIELD_FIRST;
+        cX  =  (wX - 3) / FIELD_PIECE_WIDTH;
         return ( ERR_SUCCESS );
     }
 
@@ -405,8 +423,8 @@ TextUserInterface::computeCursorPosition(
     if ( checkCoordInWindow(this->m_wHands[0], sY, sX, wY, wX) )
     {
         cW  =  (this->m_wHands[0]);
-        cY  =  5;
-        cX  =  (wX - 1) / 4;
+        cY  =  CURSOR_ROW_BLACK_HANDS;
+        cX  =  (wX - 1) / HANDS_PIECE_WIDTH;
         return ( ERR_SUCCESS );
     }
 
@@ -414,8 +432,8 @@ TextUserInterface::computeCursorPosition(
     if ( checkCoordInWindow(this->m_wHands[1], sY, sX, wY, wX) )
     {
         cW  =  (this->m_wHands[1]);
-        cY  =  -1;
-        cX  =  (wX - 1) / 4;
+        cY  =  CURSOR_ROW_WHITE_HANDS;
+        cX  =  (wX - 1) / HANDS_PIECE_WIDTH;
         return ( ERR_SUCCESS );
     }
 
@@ -436,33 +454,37 @@ TextUserInterface::computeScreenPosition(
 
 {
     WINDOW  *   wCurIn  =  nullptr;
-    int         wTempY,  wTempX;
+    int         tY,  tX;
     int         oY,  oX;
 
-    if ( (this->m_yCurRow) == -1 ) {
+    if ( (this->m_yCurRow) == CURSOR_ROW_WHITE_HANDS ) {
         //  後手（白）の持ち駒ウィンドウ。  //
         wCurIn  =  (this->m_wHands[1]);
-        wTempY  =  2;
-        wTempX  =  (this->m_xCurCol) * 4 + 1;
-    } else if ( (this->m_yCurRow) == 5 ) {
+        tY  =  HANDS_TOP_MARGIN;
+        tX  =  (this->m_xCurCol) * HANDS_PIECE_WIDTH
+                +  HANDS_LEFT_MARGIN;
+    } else if ( (this->m_yCurRow) == CURSOR_ROW_BLACK_HANDS ) {
         //  先手（黒）の持ち駒ウィンドウ。  //
         wCurIn  =  (this->m_wHands[0]);
-        wTempY  =  2;
-        wTempX  =  (this->m_xCurCol) * 4 + 1;
+        tY  =  HANDS_TOP_MARGIN;
+        tX  =  (this->m_xCurCol) * HANDS_PIECE_WIDTH
+                +  HANDS_LEFT_MARGIN;
     } else {
         //  盤面を表示しているウィンドウ。  //
         wCurIn  =  (this->m_wBoard);
-        wTempY  =  (this->m_yCurRow) * 3 + 3;
-        wTempX  =  (this->m_xCurCol) * 5 + 4;
+        tY  =  (this->m_yCurRow - CURSOR_ROW_FIELD_FIRST)
+                *  FIELD_PIECE_HEIGHT + FIELD_TOP_MARGIN;
+        tX  =  (this->m_xCurCol - CURSOR_COL_FIELD_FIRST)
+                *  FIELD_PIECE_WIDTH + FIELD_LEFT_MARGIN;
     }
 
     getbegyx(wCurIn,  oY,  oX);
 
-    sY  =  wTempY + oY;
-    sX  =  wTempX + oX;
     cW  =  wCurIn;
-    wY  =  wTempY;
-    wX  =  wTempX;
+    wY  =  tY;
+    wX  =  tX;
+    sY  =  tY + oY;
+    sX  =  tX + oX;
 
     return ( ERR_SUCCESS );
 }
@@ -504,23 +526,23 @@ TextUserInterface::setCursorPosition(
         const  RankRow  yNewRow,
         const  FileCol  xNewCol)
 {
-    RankRow     yTmpRow = yNewRow;
-    FileCol     xTmpCol = xNewCol;
+    RankRow     yTmpRow = (yNewRow - CURSOR_ROW_FIELD_FIRST);
     FileCol     xMaxCol = 0;
 
-    if ( (yTmpRow < -1) || (5 < yTmpRow) ) {
+    if ( yNewRow == CURSOR_ROW_BLACK_HANDS ) {
+        //  先手（黒）の持ち駒ウィンドウ。  //
+        xMaxCol = 5;
+    } else if ( yNewRow == CURSOR_ROW_WHITE_HANDS ) {
+        //  後手（白）の持ち駒ウィンドウ。  //
+        xMaxCol = 5;
+    } else if ( (yTmpRow < 0) || (FIELD_NUM_Y_ROWS <= yTmpRow) ) {
         //  範囲外の座標。  //
         return ( ERR_FAILURE );
-    }
-
-    if ( (yTmpRow == -1) || (yTmpRow == 5) ) {
-        //  持ち駒ウィンドウ。  //
-        xMaxCol = 5;
     } else {
-        xMaxCol = 5;
+        xMaxCol = FIELD_NUM_X_COLS;
     }
 
-    if ( (xTmpCol < 0) || (xMaxCol <= xTmpCol) ) {
+    if ( (xNewCol < 0) || (xMaxCol <= xNewCol) ) {
         //  範囲外の座標。  //
         return ( ERR_FAILURE );
     }
