@@ -18,6 +18,7 @@
 #include    "FairyShogi/Helper/TerminalScreen.h"
 #include    "FairyShogi/TextUI/TextUserInterface.h"
 
+#include    <iostream>
 #include    <ncurses.h>
 
 using   namespace   FAIRYSHOGI_NAMESPACE;
@@ -25,6 +26,14 @@ using   namespace   FAIRYSHOGI_NAMESPACE;
 int  main(int argc, char * argv[])
 {
     TextUI::TextUserInterface   gcTUI;
+
+    if ( gcTUI.setupScreen() != ERR_SUCCESS )
+    {
+        gcTUI.cleanupScreen();
+        std::cerr   <<  "FATAL ERROR : Screen Initialize Failure."
+                    <<  std::endl;
+        return ( 1 );
+    }
 
     int     x = 0, y = 0;
     int     key;

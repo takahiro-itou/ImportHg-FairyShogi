@@ -71,8 +71,6 @@ s_tblHandName[]     = {
 TextUserInterface::TextUserInterface()
 {
     this->m_giGameCtrl.resetGame();
-
-    setupScreen();
 }
 
 //----------------------------------------------------------------
@@ -126,21 +124,21 @@ TextUserInterface::showCurrentState()  const
     objGame.writeToViewBuffer(vb);
 
     //  盤面を表示する。    //
-    ::attrset(COLOR_PAIR(1));
-    ::erase();
-    ::move(0, 0);
-    ::attrset(COLOR_PAIR(1));
+    attrset(COLOR_PAIR(1));
+    erase();
+    move(0, 0);
+    attrset(COLOR_PAIR(1));
     if ( (flgShow == GameInterface::SCF_FLIP_COLUMNS)
             || (flgShow == GameInterface::SCF_ROTATE_BOARD) )
     {
-        ::addstr("| 1| 2| 3| 4| 5|");
+        addstr("| 1| 2| 3| 4| 5|");
     } else {
-        ::addstr("| 5| 4| 3| 2| 1|");
+        addstr("| 5| 4| 3| 2| 1|");
     }
 
-    ::move(1, 0);
-    ::attrset(COLOR_PAIR(1));
-    ::addstr("----------------");
+    move(1, 0);
+    attrset(COLOR_PAIR(1));
+    addstr("----------------");
     for ( int y = 0; y < 5; ++ y ) {
         std::stringstream   ssLine;
         for ( int x = 0; x < 5; ++ x ) {
@@ -152,13 +150,13 @@ TextUserInterface::showCurrentState()  const
         } else {
             ssLine  <<  "|"  <<  (y+1);
         }
-        ::move(y * 2 + 2, 0);
-        ::attrset(COLOR_PAIR(1));
-        ::addstr(ssLine.str().c_str());
+        move(y * 2 + 2, 0);
+        attrset(COLOR_PAIR(1));
+        addstr(ssLine.str().c_str());
 
-        ::move(y * 2 + 3, 0);
-        ::attrset(COLOR_PAIR(1));
-        ::addstr("----------------");
+        move(y * 2 + 3, 0);
+        attrset(COLOR_PAIR(1));
+        addstr("----------------");
     }
 
     //  持ち駒を表示する。  //
@@ -175,11 +173,11 @@ TextUserInterface::showCurrentState()  const
                     <<  hcHand
                     <<  ", ";
         }
-        ::move(i + 14, 0);
-        ::attrset(COLOR_PAIR(i + 2));
-        ::addstr(ssLine.str().c_str());
+        move(i + 14, 0);
+        attrset(COLOR_PAIR(i + 2));
+        addstr(ssLine.str().c_str());
     }
-    ::refresh();
+    refresh();
 
     return ( ERR_SUCCESS );
 }
@@ -196,7 +194,7 @@ TextUserInterface::showCurrentState()  const
 ErrCode
 TextUserInterface::cleanupScreen()
 {
-    ::endwin();
+    endwin();
 
     return ( ERR_SUCCESS );
 }
@@ -208,15 +206,13 @@ TextUserInterface::cleanupScreen()
 ErrCode
 TextUserInterface::setupColors()
 {
-    ::start_color();
+    init_pair( 1,  COLOR_WHITE,   COLOR_BLUE);
+    init_pair( 2,  COLOR_YELLOW,  COLOR_BLACK);
+    init_pair( 3,  COLOR_RED,     COLOR_WHITE);
 
-    ::init_pair( 1,  COLOR_WHITE,   COLOR_BLUE);
-    ::init_pair( 2,  COLOR_YELLOW,  COLOR_BLACK);
-    ::init_pair( 3,  COLOR_RED,     COLOR_WHITE);
-
-    ::bkgd(COLOR_PAIR(1));
-    ::attrset(COLOR_PAIR(1));
-    ::erase();
+    bkgd(COLOR_PAIR(1));
+    attrset(COLOR_PAIR(1));
+    erase();
 
     return ( ERR_SUCCESS );
 }
@@ -228,12 +224,17 @@ TextUserInterface::setupColors()
 ErrCode
 TextUserInterface::setupScreen()
 {
-    ::initscr();
-    ::noecho();
-    ::cbreak();
-    ::keypad(stdscr,  TRUE);
+    initscr();
 
-    ::mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION,  NULL);
+    if ( has_colors() == FALSE || start_color() == ERR ) {
+        return ( ERR_FAILURE );
+    }
+
+    noecho();
+    cbreak();
+    keypad(stdscr,  TRUE);
+
+    mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION,  NULL);
 
     return ( ERR_SUCCESS );
 }
