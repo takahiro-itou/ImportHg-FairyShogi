@@ -305,12 +305,12 @@ TextUserInterface::computeScreenCursorPosition(
     if ( (this->m_yCurRow) == -1 ) {
         //  後手（白）の持ち駒ウィンドウ。  //
         wCurIn  =  (this->m_wHands[1]);
-        wY      =  1;
+        wY      =  2;
         wX      =  (this->m_xCurCol) * 2 + 1;
     } else if ( (this->m_yCurRow) == 5 ) {
         //  先手（黒）の持ち駒ウィンドウ。  //
         wCurIn  =  (this->m_wHands[0]);
-        wY      =  1;
+        wY      =  2;
         wX      =  (this->m_xCurCol) * 2 + 1;
     } else {
         //  盤面を表示しているウィンドウ。  //
