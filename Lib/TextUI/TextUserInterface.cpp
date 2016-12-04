@@ -532,6 +532,13 @@ TextUserInterface::showInformations()  const
     wmove   (wInfos,  5, 2);
     waddstr (wInfos,  ssDice.str().c_str());
 
+    wattrset(wInfos,  COLOR_PAIR(1));
+    wmove   (wInfos,  7, 1);
+    waddstr (wInfos,  "MOVE:");
+    wmove   (wInfos,  8, 2);
+    wprintw (wInfos,  "%d%d %d%d",
+             m_ySrcRow,  m_xSrcCol, m_yTrgRow,  m_xTrgCol);
+
     touchwin(wInfos);
     wrefresh(wInfos);
 
