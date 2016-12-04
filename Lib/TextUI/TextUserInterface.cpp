@@ -50,6 +50,26 @@ s_tblHandName[]     = {
     "p", "l", "n", "s", "g", "b", "r", "k"
 };
 
+CONSTEXPR_VAR   Common::EHandPiece
+s_tblHandEncBlack[] = {
+    Common::HAND_BLACK_PAWN,
+    Common::HAND_BLACK_SILVER,
+    Common::HAND_BLACK_GOLD,
+    Common::HAND_BLACK_BISHOP,
+    Common::HAND_BLACK_ROOK,
+    Common::HAND_BLACK_KING
+};
+
+CONSTEXPR_VAR   Common::EHandPiece
+s_tblHandEncWhite[] = {
+    Common::HAND_WHITE_PAWN,
+    Common::HAND_WHITE_SILVER,
+    Common::HAND_WHITE_GOLD,
+    Common::HAND_WHITE_BISHOP,
+    Common::HAND_WHITE_ROOK,
+    Common::HAND_WHITE_KING
+};
+
 CONSTEXPR_VAR   const  char  *
 s_tblPlayerNames[]  =  {
     "BLACK",
@@ -269,6 +289,40 @@ TextUserInterface::getCursorRowFromInternal(
     }
 
     return ( yTmpRow + CURSOR_ROW_FIELD_FIRST );
+}
+
+//----------------------------------------------------------------
+//    移動した先でなれる駒のリストを取得する。
+//
+
+ErrCode
+TextUserInterface::getPromotionList(
+        PromoteList  *  vProms,
+        ActionView   *  ptrAct)  const
+{
+    const  GameInterface  & giCtrl  =  (this->m_giGameCtrl);
+
+    if ( (this->m_ySrcRow) == CURSOR_ROW_WHITE_HANDS ) {
+        giCtrl.setupPutActionFromMouse(
+                (this->m_xTrgCol),  (this->m_yTrgRow),
+                s_tblHandEncWhite[(this->m_xSrcCol)],
+                vProms,  ptrAct);
+    } else if ( (this->m_ySrcRow) == CURSOR_ROW_BLACK_HANDS ) {
+        //  先手（黒）の持ち駒を打つ。  //
+        giCtrl.setupPutActionFromMouse(
+                (this->m_xTrgCol),  (this->m_yTrgRow),
+                s_tblHandEncBlack[(this->m_xSrcCol)],
+                vProms,  ptrAct);
+    } else {
+        //  盤上の駒を移動させる。      //
+        giCtrl.setupMoveActionFromMouse(
+                (this->m_xSrcCol),  (this->m_ySrcRow),
+                (this->m_xTrgCol),  (this->m_yTrgRow),
+                vProms,  ptrAct);
+
+    }
+
+    return ( ERR_SUCCESS );
 }
 
 //----------------------------------------------------------------

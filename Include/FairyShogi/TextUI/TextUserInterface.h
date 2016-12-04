@@ -41,10 +41,20 @@ class  TextUserInterface
 //
 //    Internal Type Definitions.
 //
+private:
+
+    typedef     Interface::GraphicalInterface       GameInterface;
+
 public:
 
     /**   カーソルの座標を指定する型。  **/
-    typedef     int     CursorCoord;
+    typedef     int                                 CursorCoord;
+
+    typedef     GameInterface::PromoteList          PromoteList;
+
+private:
+
+    typedef     Common::ActionView                  ActionView;
 
 //========================================================================
 //
@@ -148,6 +158,22 @@ public:
     virtual  RankRow
     getCursorRowFromInternal(
             const  RankRow  yIntRow)  const;
+
+    //----------------------------------------------------------------
+    /**   移動した先でなれる駒のリストを取得する。
+    **
+    **    移動元と移動先の座標はメンバ変数で指定される。
+    **  @param[out] vProms    移動先で成れる駒のリスト。
+    **  @param[out] ptrAct    変換した結果を受け取る変数。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    getPromotionList(
+            PromoteList  *  vProms,
+            ActionView   *  ptrAct)  const;
 
     //----------------------------------------------------------------
     /**   現在の盤面を表示する。
@@ -292,8 +318,6 @@ public:
 //    For Internal Use Only.
 //
 private:
-
-    typedef     Interface::GraphicalInterface       GameInterface;
 
     typedef     Common::MersenneTwister             RandomGenerator;
 
