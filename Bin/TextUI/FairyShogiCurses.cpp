@@ -81,9 +81,11 @@ int  main(int argc, char * argv[])
         if ( (key == '\n') || (key == KEY_ENTER) || (key == ' ') ) {
             if ( smFlag == SM_MODE_SOURCE ) {
                 gcTUI.setSourcePosition(cy,  cx);
+                smFlag  =  SM_MODE_TARGET;
             } else {
                 gcTUI.setTargetPosition(cy,  cx);
                 playForward(gcTUI);
+                smFlag  =  SM_MODE_SOURCE;
             }
             continue;
         }
