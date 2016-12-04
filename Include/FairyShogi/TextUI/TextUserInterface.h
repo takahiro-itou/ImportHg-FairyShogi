@@ -88,6 +88,48 @@ public:
 public:
 
     //----------------------------------------------------------------
+    /**   端末座標に対応する内部座標を計算する。
+    **
+    **  @param [in] sY    画面全体での端末座標。
+    **  @param [in] sX    画面全体での端末座標。
+    **  @param[out] cW    カーソルを持つウィンドウ。
+    **  @param[out] cY    カーソル座標。
+    **  @param[out] cX    カーソル座標。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    computeCursorPosition(
+            const  CursorCoord  sY,
+            const  CursorCoord  sX,
+            WINDOW  *        &  cW,
+            RankRow          &  cY,
+            FileCol          &  cX)  const;
+
+    //----------------------------------------------------------------
+    /**   カーソルを表示する端末座標を計算する。
+    **
+    **  @param[out] sY    画面全体での座標。
+    **  @param[out] sX    画面全体での座標。
+    **  @param[out] cW    カーソルを持つウィンドウ。
+    **  @param[out] wY    ウィンドウ内での座標。
+    **  @param[out] wX    ウィンドウ内での座標。
+    **  @return     エラーコードを返す。
+    **      -   異常終了の場合は、
+    **          エラーの種類を示す非ゼロ値を返す。
+    **      -   正常終了の場合は、ゼロを返す。
+    **/
+    virtual  ErrCode
+    computeScreenPosition(
+            CursorCoord  &  sY,
+            CursorCoord  &  sX,
+            WINDOW  *    &  cW,
+            CursorCoord  &  wY,
+            CursorCoord  &  wX)  const;
+
+    //----------------------------------------------------------------
     /**   内部座標をカーソル座標に変換する。
     **
     **  @param [in] xIntCol   内部座標。
@@ -147,46 +189,32 @@ public:
     cleanupScreen();
 
     //----------------------------------------------------------------
-    /**   端末座標に対応する内部座標を計算する。
+    /**   色を準備する。
     **
-    **  @param [in] sY    画面全体での端末座標。
-    **  @param [in] sX    画面全体での端末座標。
-    **  @param[out] cW    カーソルを持つウィンドウ。
-    **  @param[out] cY    カーソル座標。
-    **  @param[out] cX    カーソル座標。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
     **      -   正常終了の場合は、ゼロを返す。
     **/
     ErrCode
-    computeCursorPosition(
-            const  CursorCoord  sY,
-            const  CursorCoord  sX,
-            WINDOW  *        &  cW,
-            RankRow          &  cY,
-            FileCol          &  cX)  const;
+    setupColors();
 
     //----------------------------------------------------------------
-    /**   カーソルを表示する端末座標を計算する。
+    /**   端末制御ライブラリを初期化する。
     **
-    **  @param[out] sY    画面全体での座標。
-    **  @param[out] sX    画面全体での座標。
-    **  @param[out] cW    カーソルを持つウィンドウ。
-    **  @param[out] wY    ウィンドウ内での座標。
-    **  @param[out] wX    ウィンドウ内での座標。
     **  @return     エラーコードを返す。
     **      -   異常終了の場合は、
     **          エラーの種類を示す非ゼロ値を返す。
     **      -   正常終了の場合は、ゼロを返す。
     **/
     ErrCode
-    computeScreenPosition(
-            CursorCoord  &  sY,
-            CursorCoord  &  sX,
-            WINDOW  *    &  cW,
-            CursorCoord  &  wY,
-            CursorCoord  &  wX)  const;
+    setupScreen();
+
+//========================================================================
+//
+//    Accessors.
+//
+public:
 
     //----------------------------------------------------------------
     /**   現在のカーソル位置を取得する。
@@ -228,34 +256,6 @@ public:
     setCursorPosition(
             const  RankRow  yNewRow,
             const  FileCol  xNewCol);
-
-    //----------------------------------------------------------------
-    /**   色を準備する。
-    **
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    ErrCode
-    setupColors();
-
-    //----------------------------------------------------------------
-    /**   端末制御ライブラリを初期化する。
-    **
-    **  @return     エラーコードを返す。
-    **      -   異常終了の場合は、
-    **          エラーの種類を示す非ゼロ値を返す。
-    **      -   正常終了の場合は、ゼロを返す。
-    **/
-    ErrCode
-    setupScreen();
-
-//========================================================================
-//
-//    Accessors.
-//
-public:
 
     //----------------------------------------------------------------
     /**   移動元の座標を設定する。

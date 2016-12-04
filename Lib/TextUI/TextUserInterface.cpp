@@ -99,8 +99,8 @@ TextUserInterface::TextUserInterface()
       m_wBoard (nullptr),
       m_wHands (),
       m_wInfos (nullptr),
-      m_yCurRow(0),
-      m_xCurCol(0),
+      m_yCurRow(FIELD_NUM_Y_ROWS / 2 + CURSOR_ROW_FIELD_FIRST),
+      m_xCurCol(FIELD_NUM_Y_ROWS / 2 + CURSOR_COL_FIELD_FIRST),
       m_ySrcRow(-1),
       m_xSrcCol(-1),
       m_yTrgRow(-1),
@@ -138,6 +138,98 @@ TextUserInterface::~TextUserInterface()
 //
 //    Public Member Functions (Virtual Functions).
 //
+
+//----------------------------------------------------------------
+//    端末座標に対応する内部座標を計算する。
+//
+
+ErrCode
+TextUserInterface::computeCursorPosition(
+        const  CursorCoord  sY,
+        const  CursorCoord  sX,
+        WINDOW  *        &  cW,
+        RankRow          &  cY,
+        FileCol          &  cX)  const
+{
+    CursorCoord     wX,  wY;
+
+    //  盤面ウィンドウの中か？  //
+    if ( checkCoordInWindow(this->m_wBoard, sY, sX, wY, wX) )
+    {
+        cW  =  (this->m_wBoard);
+        cY  =  (wY - 2) / FIELD_PIECE_HEIGHT + CURSOR_ROW_FIELD_FIRST;
+        cX  =  (wX - 3) / FIELD_PIECE_WIDTH;
+        return ( ERR_SUCCESS );
+    }
+
+    //  先手（黒）の持ち駒ウィンドウの中か？。  //
+    if ( checkCoordInWindow(this->m_wHands[0], sY, sX, wY, wX) )
+    {
+        cW  =  (this->m_wHands[0]);
+        cY  =  CURSOR_ROW_BLACK_HANDS;
+        cX  =  (wX - 1) / HANDS_PIECE_WIDTH;
+        return ( ERR_SUCCESS );
+    }
+
+    //  後手（白）の持ち駒ウィンドウの中か？。  //
+    if ( checkCoordInWindow(this->m_wHands[1], sY, sX, wY, wX) )
+    {
+        cW  =  (this->m_wHands[1]);
+        cY  =  CURSOR_ROW_WHITE_HANDS;
+        cX  =  (wX - 1) / HANDS_PIECE_WIDTH;
+        return ( ERR_SUCCESS );
+    }
+
+    return ( ERR_FAILURE );
+}
+
+//----------------------------------------------------------------
+//    カーソルを表示する端末座標を計算する。
+//
+
+ErrCode
+TextUserInterface::computeScreenPosition(
+        CursorCoord  &  sY,
+        CursorCoord  &  sX,
+        WINDOW  *    &  cW,
+        CursorCoord  &  wY,
+        CursorCoord  &  wX)  const
+{
+    WINDOW  *   wCurIn  =  nullptr;
+    int         tY,  tX;
+    int         oY,  oX;
+
+    if ( (this->m_yCurRow) == CURSOR_ROW_WHITE_HANDS ) {
+        //  後手（白）の持ち駒ウィンドウ。  //
+        wCurIn  =  (this->m_wHands[1]);
+        tY  =  HANDS_TOP_MARGIN;
+        tX  =  (this->m_xCurCol) * HANDS_PIECE_WIDTH
+                +  HANDS_LEFT_MARGIN;
+    } else if ( (this->m_yCurRow) == CURSOR_ROW_BLACK_HANDS ) {
+        //  先手（黒）の持ち駒ウィンドウ。  //
+        wCurIn  =  (this->m_wHands[0]);
+        tY  =  HANDS_TOP_MARGIN;
+        tX  =  (this->m_xCurCol) * HANDS_PIECE_WIDTH
+                +  HANDS_LEFT_MARGIN;
+    } else {
+        //  盤面を表示しているウィンドウ。  //
+        wCurIn  =  (this->m_wBoard);
+        tY  =  (this->m_yCurRow - CURSOR_ROW_FIELD_FIRST)
+                *  FIELD_PIECE_HEIGHT + FIELD_TOP_MARGIN;
+        tX  =  (this->m_xCurCol - CURSOR_COL_FIELD_FIRST)
+                *  FIELD_PIECE_WIDTH + FIELD_LEFT_MARGIN;
+    }
+
+    getbegyx(wCurIn,  oY,  oX);
+
+    cW  =  wCurIn;
+    wY  =  tY;
+    wX  =  tX;
+    sY  =  tY + oY;
+    sX  =  tX + oX;
+
+    return ( ERR_SUCCESS );
+}
 
 //----------------------------------------------------------------
 //    内部座標をカーソル座標に変換する。
@@ -398,163 +490,6 @@ TextUserInterface::cleanupScreen()
 }
 
 //----------------------------------------------------------------
-//    端末座標に対応する内部座標を計算する。
-//
-
-ErrCode
-TextUserInterface::computeCursorPosition(
-        const  CursorCoord  sY,
-        const  CursorCoord  sX,
-        WINDOW  *        &  cW,
-        RankRow          &  cY,
-        FileCol          &  cX)  const
-{
-    CursorCoord     wX,  wY;
-
-    //  盤面ウィンドウの中か？  //
-    if ( checkCoordInWindow(this->m_wBoard, sY, sX, wY, wX) )
-    {
-        cW  =  (this->m_wBoard);
-        cY  =  (wY - 2) / FIELD_PIECE_HEIGHT + CURSOR_ROW_FIELD_FIRST;
-        cX  =  (wX - 3) / FIELD_PIECE_WIDTH;
-        return ( ERR_SUCCESS );
-    }
-
-    //  先手（黒）の持ち駒ウィンドウの中か？。  //
-    if ( checkCoordInWindow(this->m_wHands[0], sY, sX, wY, wX) )
-    {
-        cW  =  (this->m_wHands[0]);
-        cY  =  CURSOR_ROW_BLACK_HANDS;
-        cX  =  (wX - 1) / HANDS_PIECE_WIDTH;
-        return ( ERR_SUCCESS );
-    }
-
-    //  後手（白）の持ち駒ウィンドウの中か？。  //
-    if ( checkCoordInWindow(this->m_wHands[1], sY, sX, wY, wX) )
-    {
-        cW  =  (this->m_wHands[1]);
-        cY  =  CURSOR_ROW_WHITE_HANDS;
-        cX  =  (wX - 1) / HANDS_PIECE_WIDTH;
-        return ( ERR_SUCCESS );
-    }
-
-    return ( ERR_FAILURE );
-}
-
-//----------------------------------------------------------------
-//    カーソルを表示する端末座標を計算する。
-//
-
-ErrCode
-TextUserInterface::computeScreenPosition(
-        CursorCoord  &  sY,
-        CursorCoord  &  sX,
-        WINDOW  *    &  cW,
-        CursorCoord  &  wY,
-        CursorCoord  &  wX)  const
-
-{
-    WINDOW  *   wCurIn  =  nullptr;
-    int         tY,  tX;
-    int         oY,  oX;
-
-    if ( (this->m_yCurRow) == CURSOR_ROW_WHITE_HANDS ) {
-        //  後手（白）の持ち駒ウィンドウ。  //
-        wCurIn  =  (this->m_wHands[1]);
-        tY  =  HANDS_TOP_MARGIN;
-        tX  =  (this->m_xCurCol) * HANDS_PIECE_WIDTH
-                +  HANDS_LEFT_MARGIN;
-    } else if ( (this->m_yCurRow) == CURSOR_ROW_BLACK_HANDS ) {
-        //  先手（黒）の持ち駒ウィンドウ。  //
-        wCurIn  =  (this->m_wHands[0]);
-        tY  =  HANDS_TOP_MARGIN;
-        tX  =  (this->m_xCurCol) * HANDS_PIECE_WIDTH
-                +  HANDS_LEFT_MARGIN;
-    } else {
-        //  盤面を表示しているウィンドウ。  //
-        wCurIn  =  (this->m_wBoard);
-        tY  =  (this->m_yCurRow - CURSOR_ROW_FIELD_FIRST)
-                *  FIELD_PIECE_HEIGHT + FIELD_TOP_MARGIN;
-        tX  =  (this->m_xCurCol - CURSOR_COL_FIELD_FIRST)
-                *  FIELD_PIECE_WIDTH + FIELD_LEFT_MARGIN;
-    }
-
-    getbegyx(wCurIn,  oY,  oX);
-
-    cW  =  wCurIn;
-    wY  =  tY;
-    wX  =  tX;
-    sY  =  tY + oY;
-    sX  =  tX + oX;
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
-//    現在のカーソル位置を取得する。
-//
-
-ErrCode
-TextUserInterface::getCursorPosition(
-        RankRow  &  yCurRow,
-        FileCol  &  xCurCol)  const
-{
-    yCurRow = (this->m_yCurRow);
-    xCurCol = (this->m_xCurCol);
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
-//    カーソル位置を変更する。
-//
-
-ErrCode
-TextUserInterface::incrementCursorPosition(
-        const  RankRow  yIncRow,
-        const  FileCol  xIncCol)
-{
-    const  RankRow  yNewRow = (this->m_yCurRow) + yIncRow;
-    const  FileCol  xNewCol = (this->m_xCurCol) + xIncCol;
-    return ( setCursorPosition(yNewRow,  xNewCol) );
-}
-
-//----------------------------------------------------------------
-//    カーソル位置を変更する。
-//
-
-ErrCode
-TextUserInterface::setCursorPosition(
-        const  RankRow  yNewRow,
-        const  FileCol  xNewCol)
-{
-    RankRow     yTmpRow = (yNewRow - CURSOR_ROW_FIELD_FIRST);
-    FileCol     xMaxCol = 0;
-
-    if ( yNewRow == CURSOR_ROW_BLACK_HANDS ) {
-        //  先手（黒）の持ち駒ウィンドウ。  //
-        xMaxCol = HANDS_NUM_PIECE_TYPES;
-    } else if ( yNewRow == CURSOR_ROW_WHITE_HANDS ) {
-        //  後手（白）の持ち駒ウィンドウ。  //
-        xMaxCol = HANDS_NUM_PIECE_TYPES;
-    } else if ( (yTmpRow < 0) || (FIELD_NUM_Y_ROWS <= yTmpRow) ) {
-        //  範囲外の座標。  //
-        return ( ERR_FAILURE );
-    } else {
-        xMaxCol = FIELD_NUM_X_COLS;
-    }
-
-    if ( (xNewCol < 0) || (xMaxCol <= xNewCol) ) {
-        //  範囲外の座標。  //
-        return ( ERR_FAILURE );
-    }
-
-    this->m_yCurRow = yNewRow;
-    this->m_xCurCol = xNewCol;
-
-    return ( ERR_SUCCESS );
-}
-
-//----------------------------------------------------------------
 //    色を準備する。
 //
 
@@ -633,6 +568,70 @@ TextUserInterface::setupScreen()
 //
 //    Accessors.
 //
+
+//----------------------------------------------------------------
+//    現在のカーソル位置を取得する。
+//
+
+ErrCode
+TextUserInterface::getCursorPosition(
+        RankRow  &  yCurRow,
+        FileCol  &  xCurCol)  const
+{
+    yCurRow = (this->m_yCurRow);
+    xCurCol = (this->m_xCurCol);
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
+//    カーソル位置を変更する。
+//
+
+ErrCode
+TextUserInterface::incrementCursorPosition(
+        const  RankRow  yIncRow,
+        const  FileCol  xIncCol)
+{
+    const  RankRow  yNewRow = (this->m_yCurRow) + yIncRow;
+    const  FileCol  xNewCol = (this->m_xCurCol) + xIncCol;
+    return ( setCursorPosition(yNewRow,  xNewCol) );
+}
+
+//----------------------------------------------------------------
+//    カーソル位置を変更する。
+//
+
+ErrCode
+TextUserInterface::setCursorPosition(
+        const  RankRow  yNewRow,
+        const  FileCol  xNewCol)
+{
+    RankRow     yTmpRow = (yNewRow - CURSOR_ROW_FIELD_FIRST);
+    FileCol     xMaxCol = 0;
+
+    if ( yNewRow == CURSOR_ROW_BLACK_HANDS ) {
+        //  先手（黒）の持ち駒ウィンドウ。  //
+        xMaxCol = HANDS_NUM_PIECE_TYPES;
+    } else if ( yNewRow == CURSOR_ROW_WHITE_HANDS ) {
+        //  後手（白）の持ち駒ウィンドウ。  //
+        xMaxCol = HANDS_NUM_PIECE_TYPES;
+    } else if ( (yTmpRow < 0) || (FIELD_NUM_Y_ROWS <= yTmpRow) ) {
+        //  範囲外の座標。  //
+        return ( ERR_FAILURE );
+    } else {
+        xMaxCol = FIELD_NUM_X_COLS;
+    }
+
+    if ( (xNewCol < 0) || (xMaxCol <= xNewCol) ) {
+        //  範囲外の座標。  //
+        return ( ERR_FAILURE );
+    }
+
+    this->m_yCurRow = yNewRow;
+    this->m_xCurCol = xNewCol;
+
+    return ( ERR_SUCCESS );
+}
 
 //----------------------------------------------------------------
 //    移動元の座標を設定する。
