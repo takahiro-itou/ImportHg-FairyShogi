@@ -175,6 +175,10 @@ public:
             PromoteList  *  vProms,
             ActionView   *  ptrAct)  const;
 
+    virtual  ErrCode
+    playForward(
+            const  ActionView  &actView);
+
     //----------------------------------------------------------------
     /**   現在の盤面を表示する。
     **

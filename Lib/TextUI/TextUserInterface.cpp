@@ -326,6 +326,26 @@ TextUserInterface::getPromotionList(
 }
 
 //----------------------------------------------------------------
+
+ErrCode
+TextUserInterface::playForward(
+        const  ActionView  &actView)
+{
+    GameInterface    &  giCtrl  =  (this->m_giGameCtrl);
+
+    giCtrl.playForward(actView);
+    giCtrl.setPlayerToNext();
+    giCtrl.setConstraint(Common::DICE_DEFAULT_VALUE);
+
+    this->m_ySrcRow =  -1;
+    this->m_xSrcCol =  -1;
+    this->m_yTrgRow =  -1;
+    this->m_xTrgCol =  -1;
+
+    return ( ERR_SUCCESS );
+}
+
+//----------------------------------------------------------------
 //    現在の盤面を表示する。
 //
 
