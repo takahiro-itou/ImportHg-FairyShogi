@@ -18,6 +18,8 @@
 #include    "FairyShogi/Helper/TerminalScreen.h"
 #include    "FairyShogi/TextUI/TextUserInterface.h"
 
+#include    "FairyShogi/Common/ActionView.h"
+
 #include    <iostream>
 #include    <ncurses.h>
 
@@ -28,6 +30,22 @@ enum  SelectMode
     SM_MODE_SOURCE  =  0,
     SM_MODE_TARGET  =  1
 };
+
+ErrCode
+playForward(
+        TextUI::TextUserInterface   &gcTUI)
+{
+    TextUI::TextUserInterface::PromoteList  vProms;
+    Common::ActionView                      actView;
+
+    gcTUI.getPromotionList(&vProms,  &actView);
+    if ( vProms.empty() ) {
+        return ( ERR_FAILURE );
+    }
+
+    actView.fpAfter = vProms.back();
+    return ( gcTUI.playForward(actView) );
+}
 
 int  main(int argc, char * argv[])
 {
@@ -65,6 +83,7 @@ int  main(int argc, char * argv[])
                 gcTUI.setSourcePosition(cy,  cx);
             } else {
                 gcTUI.setTargetPosition(cy,  cx);
+                playForward(gcTUI);
             }
             continue;
         }
